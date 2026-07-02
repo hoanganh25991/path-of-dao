@@ -75,7 +75,7 @@ export class App {
       }
       if (event.code === 'KeyC') {
         event.preventDefault();
-        void SceneRouter.instance.switchTo('combat', { mapId: 'test' });
+        void SceneRouter.instance.switchTo('combat', { mapId: 'map.test.grove' });
       }
     });
   }
@@ -86,7 +86,7 @@ export class App {
       return;
     }
     if (scene === 'combat') {
-      await SceneRouter.instance.switchTo('combat', { mapId: 'test' });
+      await SceneRouter.instance.switchTo('combat', { mapId: 'map.test.grove' });
     }
   }
 }

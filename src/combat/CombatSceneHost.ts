@@ -1,30 +1,10 @@
 import Phaser from 'phaser';
 import type { SceneHost } from '@/app/SceneHost';
+import { BootScene } from '@/combat/scenes/BootScene';
+import { MapScene } from '@/combat/scenes/MapScene';
+import { PoolManager } from '@/combat/PoolManager';
 
-class BootScene extends Phaser.Scene {
-  private mapId = 'test';
-
-  constructor() {
-    super('BootScene');
-  }
-
-  init(data: { mapId?: string }): void {
-    this.mapId = data.mapId ?? this.registry.get('mapId') ?? 'test';
-  }
-
-  create(): void {
-    this.cameras.main.setBackgroundColor('#1a1a2e');
-    this.add
-      .text(this.scale.width / 2, this.scale.height / 2, `Combat: ${this.mapId}`, {
-        fontFamily: 'system-ui, sans-serif',
-        fontSize: '24px',
-        color: '#e8e4dc',
-      })
-      .setOrigin(0.5);
-  }
-}
-
-/** Stub Phaser combat scene — replaced in sub-plan 06. */
+/** Hosts the Phaser combat pipeline (BootScene → MapScene). */
 export class CombatSceneHost implements SceneHost {
   readonly id = 'combat' as const;
 
@@ -43,26 +23,36 @@ export class CombatSceneHost implements SceneHost {
     // Phaser.AUTO is not allowed with a custom canvas — renderType must be explicit.
     const renderType = window.WebGLRenderingContext ? Phaser.WEBGL : Phaser.CANVAS;
 
-    this.game = new Phaser.Game({
-      type: renderType,
-      canvas,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      backgroundColor: '#1a1a2e',
-      scale: {
-        mode: Phaser.Scale.RESIZE,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-      },
-      callbacks: {
-        preBoot: (game) => {
-          game.registry.set('mapId', mapId);
+    await new Promise<void>((resolve) => {
+      this.game = new Phaser.Game({
+        type: renderType,
+        canvas,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        backgroundColor: '#0d1117',
+        scale: {
+          mode: Phaser.Scale.RESIZE,
+          autoCenter: Phaser.Scale.CENTER_BOTH,
         },
-      },
-      scene: BootScene,
+        physics: {
+          default: 'arcade',
+          arcade: { gravity: { x: 0, y: 0 }, debug: false },
+        },
+        callbacks: {
+          preBoot: (game) => {
+            game.registry.set('mapId', mapId);
+          },
+          postBoot: () => {
+            resolve();
+          },
+        },
+        scene: [BootScene, MapScene],
+      });
     });
   }
 
   async unmount(): Promise<void> {
+    PoolManager.clear();
     if (this.game) {
       // Wake the loop so Phaser processes the deferred destroy (a sleeping
       // loop never steps), and keep the shared #canvas-2d in the DOM.

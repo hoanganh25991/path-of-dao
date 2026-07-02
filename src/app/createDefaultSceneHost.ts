@@ -9,7 +9,7 @@ export const createDefaultSceneHost: SceneHostFactory = (id, payload) => {
       return new HomeSceneHost();
     case 'combat': {
       const combatPayload = payload as ScenePayload['combat'] | undefined;
-      return new CombatSceneHost(combatPayload?.mapId ?? 'test');
+      return new CombatSceneHost(combatPayload?.mapId ?? 'map.test.grove');
     }
     case 'story':
       throw new Error('Story scene host is not implemented yet');
