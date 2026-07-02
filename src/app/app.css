@@ -54,7 +54,7 @@
 .dev-nav {
   position: absolute;
   top: max(0.75rem, env(safe-area-inset-top));
-  left: max(0.75rem, env(safe-area-inset-left));
+  right: max(0.75rem, env(safe-area-inset-right));
   display: flex;
   gap: 0.5rem;
   /* Stay above combat HUD overlay (z-index: 1) and its joystick touch zone. */

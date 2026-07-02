@@ -49,6 +49,11 @@ export class CombatSceneHost implements SceneHost {
         scene: [BootScene, MapScene],
       });
     });
+
+    if (import.meta.env.DEV) {
+      // Debug handle for browser smoke tests / console poking.
+      (window as unknown as Record<string, unknown>).__phaserGame = this.game;
+    }
   }
 
   async unmount(): Promise<void> {

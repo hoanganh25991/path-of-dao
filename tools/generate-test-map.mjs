@@ -122,6 +122,12 @@ for (let y = 13; y <= 17; y++) {
   }
 }
 
+// The collision layer is hidden at runtime — mirror its tiles onto the
+// visible decoration layer so walls/water/trunks render.
+for (let i = 0; i < collision.length; i++) {
+  if (collision[i] !== 0) decoration[i] = collision[i];
+}
+
 function tileLayer(id, name, data, visible = true) {
   return {
     id,
