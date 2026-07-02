@@ -3,6 +3,7 @@ import { SceneRouter } from '@/app/SceneRouter';
 import { createDefaultSceneHost } from '@/app/createDefaultSceneHost';
 import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
+import { CombatHUD } from '@/ui/hud/CombatHUD';
 
 export class App {
   private static initialized = false;
@@ -16,6 +17,7 @@ export class App {
     }
 
     const elements = GameShell.mount(root);
+    CombatHUD.init(elements.uiRoot);
     App.mountDevControls(elements.uiRoot);
     App.registerVisibilityHandlers();
 

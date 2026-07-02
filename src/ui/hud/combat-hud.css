@@ -1,0 +1,118 @@
+.combat-hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.combat-hud .joystick,
+.combat-hud .action-buttons,
+.combat-hud .action-btn {
+  pointer-events: auto;
+  touch-action: none;
+}
+
+/* --- Virtual joystick --- */
+
+.joystick {
+  position: fixed;
+  width: calc(var(--joystick-base-radius, 48px) * 2);
+  height: calc(var(--joystick-base-radius, 48px) * 2);
+  transform: translate(-50%, -50%);
+  opacity: 0.7;
+  transition: opacity 300ms ease;
+  z-index: 1;
+}
+
+.joystick.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.joystick--active {
+  opacity: 1;
+}
+
+.joystick--fading {
+  opacity: 0;
+}
+
+.joystick-base {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(143, 212, 196, 0.35);
+  background: rgba(10, 10, 18, 0.55);
+}
+
+.joystick-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(143, 212, 196, 0.85);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 12px rgba(143, 212, 196, 0.35);
+}
+
+/* --- Action buttons --- */
+
+.action-buttons {
+  --btn-size: 56px;
+  --btn-gap: 16px;
+
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: var(--btn-size) var(--btn-size);
+  grid-template-rows: var(--btn-size) var(--btn-size);
+  gap: var(--btn-gap);
+  z-index: 1;
+}
+
+.action-btn {
+  width: var(--btn-size);
+  height: var(--btn-size);
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(143, 212, 196, 0.45);
+  background: rgba(10, 10, 18, 0.82);
+  color: #e8e4dc;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.action-btn--skill {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.action-btn--dodge {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.action-btn--attack {
+  grid-column: 2;
+  grid-row: 2;
+  border-color: rgba(232, 196, 143, 0.55);
+  background: rgba(40, 28, 18, 0.88);
+}
+
+.action-btn--pressed {
+  transform: scale(0.92);
+  background: rgba(143, 212, 196, 0.22);
+}
+
+.action-btn--attack.action-btn--pressed {
+  background: rgba(232, 196, 143, 0.28);
+}
