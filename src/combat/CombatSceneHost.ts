@@ -1,0 +1,76 @@
+import Phaser from 'phaser';
+import type { SceneHost } from '@/app/SceneHost';
+
+class BootScene extends Phaser.Scene {
+  private mapId = 'test';
+
+  constructor() {
+    super('BootScene');
+  }
+
+  init(data: { mapId?: string }): void {
+    this.mapId = data.mapId ?? this.registry.get('mapId') ?? 'test';
+  }
+
+  create(): void {
+    this.cameras.main.setBackgroundColor('#1a1a2e');
+    this.add
+      .text(this.scale.width / 2, this.scale.height / 2, `Combat: ${this.mapId}`, {
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '24px',
+        color: '#e8e4dc',
+      })
+      .setOrigin(0.5);
+  }
+}
+
+/** Stub Phaser combat scene — replaced in sub-plan 06. */
+export class CombatSceneHost implements SceneHost {
+  readonly id = 'combat' as const;
+
+  private game: Phaser.Game | null = null;
+
+  constructor(private readonly mapId: string) {}
+
+  async mount(container: HTMLElement): Promise<void> {
+    const canvas = container.querySelector<HTMLCanvasElement>('#canvas-2d');
+    if (!canvas) {
+      throw new Error('CombatSceneHost: #canvas-2d not found');
+    }
+
+    const mapId = this.mapId;
+
+    this.game = new Phaser.Game({
+      type: Phaser.AUTO,
+      canvas,
+      width: window.innerWidth,
+      height: window.innerHeight,
+      backgroundColor: '#1a1a2e',
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+      },
+      callbacks: {
+        preBoot: (game) => {
+          game.registry.set('mapId', mapId);
+        },
+      },
+      scene: BootScene,
+    });
+  }
+
+  async unmount(): Promise<void> {
+    if (this.game) {
+      this.game.destroy(true);
+      this.game = null;
+    }
+  }
+
+  pause(): void {
+    this.game?.loop.sleep();
+  }
+
+  resume(): void {
+    this.game?.loop.wake();
+  }
+}
