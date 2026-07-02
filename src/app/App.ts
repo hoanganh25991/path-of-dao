@@ -3,6 +3,7 @@ import { SceneRouter } from '@/app/SceneRouter';
 import { createDefaultSceneHost } from '@/app/createDefaultSceneHost';
 import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
+import { connectAutosave, gameStore, startPlayTimeTracking } from '@/core/store/gameStore';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
 
 export class App {
@@ -15,6 +16,10 @@ export class App {
     if (!root) {
       throw new Error('App.init: #app element not found');
     }
+
+    await gameStore.getState().load();
+    connectAutosave();
+    startPlayTimeTracking();
 
     const elements = GameShell.mount(root);
     CombatHUD.init(elements.uiRoot);

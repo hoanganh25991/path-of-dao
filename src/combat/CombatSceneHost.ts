@@ -40,8 +40,11 @@ export class CombatSceneHost implements SceneHost {
 
     const mapId = this.mapId;
 
+    // Phaser.AUTO is not allowed with a custom canvas — renderType must be explicit.
+    const renderType = window.WebGLRenderingContext ? Phaser.WEBGL : Phaser.CANVAS;
+
     this.game = new Phaser.Game({
-      type: Phaser.AUTO,
+      type: renderType,
       canvas,
       width: window.innerWidth,
       height: window.innerHeight,
@@ -61,7 +64,10 @@ export class CombatSceneHost implements SceneHost {
 
   async unmount(): Promise<void> {
     if (this.game) {
-      this.game.destroy(true);
+      // Wake the loop so Phaser processes the deferred destroy (a sleeping
+      // loop never steps), and keep the shared #canvas-2d in the DOM.
+      this.game.loop.wake();
+      this.game.destroy(false);
       this.game = null;
     }
   }

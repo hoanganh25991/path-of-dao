@@ -91,8 +91,9 @@ export class HomeSceneHost implements SceneHost {
     }
 
     if (this.renderer) {
+      // No forceContextLoss(): #canvas-3d is reused on the next home mount,
+      // and a lost context cannot be re-acquired by a new WebGLRenderer.
       this.renderer.dispose();
-      this.renderer.forceContextLoss();
       this.renderer = null;
     }
 

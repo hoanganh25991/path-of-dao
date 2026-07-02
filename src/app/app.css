@@ -30,7 +30,9 @@
   z-index: 2;
 }
 
-#ui-root > * {
+/* Full-screen overlays (e.g. .combat-hud) opt out and scope pointer-events
+   to their interactive children instead. */
+#ui-root > :not(.combat-hud) {
   pointer-events: auto;
 }
 
@@ -55,6 +57,8 @@
   left: max(0.75rem, env(safe-area-inset-left));
   display: flex;
   gap: 0.5rem;
+  /* Stay above combat HUD overlay (z-index: 1) and its joystick touch zone. */
+  z-index: 5;
 }
 
 .dev-nav button {

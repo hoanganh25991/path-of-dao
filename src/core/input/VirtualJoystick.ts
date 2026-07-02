@@ -28,6 +28,8 @@ export function normalizeJoystick(
 
 export class VirtualJoystick {
   readonly element: HTMLElement;
+  /** Left-half touch capture area; the HUD container itself ignores pointer events. */
+  readonly zone: HTMLElement;
 
   private baseEl: HTMLElement;
   private thumbEl: HTMLElement;
@@ -86,17 +88,22 @@ export class VirtualJoystick {
     this.thumbEl.className = 'joystick-thumb';
 
     this.element.append(this.baseEl, this.thumbEl);
-    container.appendChild(this.element);
 
-    const zone = container;
-    zone.addEventListener('touchstart', this.onTouchStart, { passive: false });
-    zone.addEventListener('touchmove', this.onTouchMove, { passive: false });
-    zone.addEventListener('touchend', this.onTouchEnd, { passive: false });
-    zone.addEventListener('touchcancel', this.onTouchEnd, { passive: false });
+    this.zone = document.createElement('div');
+    this.zone.className = 'joystick-zone';
+    this.zone.hidden = true;
+
+    container.append(this.zone, this.element);
+
+    this.zone.addEventListener('touchstart', this.onTouchStart, { passive: false });
+    this.zone.addEventListener('touchmove', this.onTouchMove, { passive: false });
+    this.zone.addEventListener('touchend', this.onTouchEnd, { passive: false });
+    this.zone.addEventListener('touchcancel', this.onTouchEnd, { passive: false });
   }
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
+    this.zone.hidden = !enabled;
     if (!enabled) {
       this.release();
       this.hideImmediate();
@@ -127,11 +134,11 @@ export class VirtualJoystick {
       this.fadeTimer = null;
     }
 
-    const zone = this.element.parentElement;
-    zone?.removeEventListener('touchstart', this.onTouchStart);
-    zone?.removeEventListener('touchmove', this.onTouchMove);
-    zone?.removeEventListener('touchend', this.onTouchEnd);
-    zone?.removeEventListener('touchcancel', this.onTouchEnd);
+    this.zone.removeEventListener('touchstart', this.onTouchStart);
+    this.zone.removeEventListener('touchmove', this.onTouchMove);
+    this.zone.removeEventListener('touchend', this.onTouchEnd);
+    this.zone.removeEventListener('touchcancel', this.onTouchEnd);
+    this.zone.remove();
     this.element.remove();
   }
 

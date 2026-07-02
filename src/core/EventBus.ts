@@ -4,6 +4,7 @@ export type GameEvents = {
   'scene:changed': { id: SceneId; payload?: unknown };
   'app:pause': undefined;
   'app:resume': undefined;
+  'player:stats-changed': { hp: number; hpMax: number; mana: number; manaMax: number };
 };
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

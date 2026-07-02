@@ -5,11 +5,21 @@
   z-index: 1;
 }
 
+.combat-hud .joystick-zone,
 .combat-hud .joystick,
 .combat-hud .action-buttons,
 .combat-hud .action-btn {
   pointer-events: auto;
   touch-action: none;
+}
+
+/* Touch capture area for the floating joystick — left half of the screen. */
+.joystick-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%;
 }
 
 /* --- Virtual joystick --- */

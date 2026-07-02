@@ -1,0 +1,13 @@
+{
+  "id": "map.test.grove",
+  "chapterId": "chapter.00.test",
+  "displayNameKey": "map.test.grove.name",
+  "tiledPath": "assets/maps/test-grove.json",
+  "tilesetName": "grove",
+  "spawn": { "x": 320, "y": 480 },
+  "bounds": { "width": 1600, "height": 1216 },
+  "recommendedCp": 1000,
+  "connections": [],
+  "encounterTable": null,
+  "bgm": null
+}
