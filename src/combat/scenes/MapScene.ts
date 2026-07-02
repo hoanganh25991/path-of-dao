@@ -26,6 +26,7 @@ export class MapScene extends Phaser.Scene {
   private mapId = '';
   private player!: Player;
   private exiting = false;
+  private runtimePersisted = false;
 
   constructor() {
     super(MapScene.KEY);

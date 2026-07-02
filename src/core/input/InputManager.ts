@@ -94,6 +94,11 @@ export class InputManager {
   }
 
   static consume(): InputState {
+    // Re-poll before snapshotting: the rAF poll loop and the game loop run in
+    // the same frame with unspecified order, so relying on the loop alone can
+    // clear pressed/released edges before they were ever observed.
+    InputManager.poll();
+
     const snapshot = cloneInputState(InputManager.currentState);
 
     InputManager.buttons?.clearEdgeFlags();
