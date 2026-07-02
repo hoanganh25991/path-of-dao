@@ -5,6 +5,8 @@ export type GameEvents = {
   'app:pause': undefined;
   'app:resume': undefined;
   'player:stats-changed': { hp: number; hpMax: number; mana: number; manaMax: number };
+  'player:died': undefined;
+  'map:wave-cleared': { encounterId: string; waveIndex: number };
 };
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

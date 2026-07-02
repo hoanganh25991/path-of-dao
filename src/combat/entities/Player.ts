@@ -104,6 +104,7 @@ export class Player extends EntityBase {
     this.sm.kill();
     this.body.setVelocity(0, 0);
     this.respawning = true;
+    EventBus.emit('player:died', undefined);
 
     const camera = this.scene.cameras.main;
     camera.fadeOut(RESPAWN_FADE_MS, 0, 0, 0);

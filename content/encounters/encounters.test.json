@@ -1,0 +1,19 @@
+{
+  "id": "encounters.test",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        { "id": "enemy.slime", "count": 3, "spread": 80 },
+        { "id": "enemy.archer", "count": 1, "spread": 60 }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        { "id": "enemy.slime", "count": 5, "spread": 100 },
+        { "id": "enemy.totem", "count": 1, "spread": 0 }
+      ]
+    }
+  ]
+}

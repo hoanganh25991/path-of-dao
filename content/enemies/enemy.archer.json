@@ -1,0 +1,20 @@
+{
+  "id": "enemy.archer",
+  "displayNameKey": "enemy.archer.name",
+  "archetype": "ranged_kiter",
+  "stats": {
+    "hpMax": 28,
+    "atk": 10,
+    "def": 1,
+    "speed": 85,
+    "crit": 0.1,
+    "critDmg": 1.5
+  },
+  "aggroRange": 260,
+  "attackRange": 180,
+  "attackCooldownMs": 1800,
+  "xpReward": 22,
+  "goldReward": [2, 7],
+  "lootTable": null,
+  "spriteKey": "enemy_archer"
+}

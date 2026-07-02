@@ -8,6 +8,6 @@
   "bounds": { "width": 1600, "height": 1216 },
   "recommendedCp": 1000,
   "connections": [],
-  "encounterTable": null,
+  "encounterTable": "encounters.test",
   "bgm": null
 }

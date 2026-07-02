@@ -52,6 +52,8 @@ export const playerSaveV1Schema = z.object({
     unlockedChapters: z.array(z.string()),
     storySeen: z.array(z.string()),
     encountersFound: z.array(z.string()),
+    // default([]) keeps pre-bestiary v1 saves loadable (added in sub-plan 08).
+    bestiary: z.array(z.string()).default([]),
     currentMapId: z.string().nullable(),
   }),
   settings: z.object({

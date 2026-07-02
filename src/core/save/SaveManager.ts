@@ -106,6 +106,7 @@ export class SaveManager {
         unlockedChapters: ['chapter.01.fallen_village'],
         storySeen: [],
         encountersFound: [],
+        bestiary: [],
         currentMapId: null,
       },
       settings: { locale, sfxVolume: 1, musicVolume: 1 },

@@ -155,7 +155,7 @@ const map = {
   tilewidth: TILE,
   tileheight: TILE,
   nextlayerid: 6,
-  nextobjectid: 3,
+  nextobjectid: 4,
   tilesets: [
     {
       firstgid: 1,
@@ -187,6 +187,7 @@ const map = {
       objects: [
         { id: 1, name: 'spawn', type: 'spawn', x: 320, y: 480, width: 0, height: 0, point: true },
         { id: 2, name: 'exit_home', type: 'exit', x: 1472, y: 448, width: 96, height: 128 },
+        { id: 3, name: 'wave_center', type: 'encounter', x: 800, y: 480, width: 0, height: 0, point: true },
       ],
     },
   ],

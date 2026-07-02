@@ -1,0 +1,20 @@
+{
+  "id": "enemy.totem",
+  "displayNameKey": "enemy.totem.name",
+  "archetype": "stationary",
+  "stats": {
+    "hpMax": 60,
+    "atk": 12,
+    "def": 5,
+    "speed": 0,
+    "crit": 0,
+    "critDmg": 1.5
+  },
+  "aggroRange": 220,
+  "attackRange": 90,
+  "attackCooldownMs": 2500,
+  "xpReward": 30,
+  "goldReward": [3, 9],
+  "lootTable": null,
+  "spriteKey": "enemy_totem"
+}

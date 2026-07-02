@@ -1,0 +1,20 @@
+{
+  "id": "enemy.slime",
+  "displayNameKey": "enemy.slime.name",
+  "archetype": "melee_chaser",
+  "stats": {
+    "hpMax": 40,
+    "atk": 8,
+    "def": 2,
+    "speed": 70,
+    "crit": 0.05,
+    "critDmg": 1.5
+  },
+  "aggroRange": 200,
+  "attackRange": 36,
+  "attackCooldownMs": 1200,
+  "xpReward": 15,
+  "goldReward": [1, 5],
+  "lootTable": null,
+  "spriteKey": "enemy_slime"
+}

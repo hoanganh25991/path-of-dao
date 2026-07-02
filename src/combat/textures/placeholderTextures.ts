@@ -10,7 +10,12 @@ export const TEXTURE_KEYS = {
   player: 'player-placeholder',
   slash: 'slash-placeholder',
   bolt: 'bolt-placeholder',
+  arrow: 'arrow-placeholder',
+  coin: 'coin-placeholder',
 } as const;
+
+/** Keys here must match `spriteKey` values in content/enemies/*.json. */
+export const ENEMY_TEXTURE_KEYS = ['enemy_slime', 'enemy_archer', 'enemy_totem'] as const;
 
 const TILE = 32;
 
@@ -105,6 +110,94 @@ export function createPlaceholderTextures(scene: Phaser.Scene): void {
       ctx.fillRect(0, 0, 16, 8);
       ctx.fillStyle = '#d8f2ff';
       ctx.fillRect(10, 2, 6, 4);
+      canvas.refresh();
+    }
+  }
+
+  if (!textures.exists(TEXTURE_KEYS.arrow)) {
+    const canvas = textures.createCanvas(TEXTURE_KEYS.arrow, 14, 4);
+    if (canvas) {
+      const ctx = canvas.getContext();
+      ctx.fillStyle = '#c9a86a';
+      ctx.fillRect(0, 1, 10, 2);
+      ctx.fillStyle = '#e8e4dc';
+      ctx.fillRect(10, 0, 4, 4);
+      canvas.refresh();
+    }
+  }
+
+  if (!textures.exists(TEXTURE_KEYS.coin)) {
+    const size = 10;
+    const canvas = textures.createCanvas(TEXTURE_KEYS.coin, size, size);
+    if (canvas) {
+      const ctx = canvas.getContext();
+      ctx.fillStyle = '#e8c48f';
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#8f6b2f';
+      ctx.stroke();
+      canvas.refresh();
+    }
+  }
+
+  createEnemyTextures(scene);
+}
+
+function createEnemyTextures(scene: Phaser.Scene): void {
+  const textures = scene.textures;
+
+  if (!textures.exists('enemy_slime')) {
+    const w = 24;
+    const h = 18;
+    const canvas = textures.createCanvas('enemy_slime', w, h);
+    if (canvas) {
+      const ctx = canvas.getContext();
+      ctx.fillStyle = '#4a9d4a';
+      ctx.beginPath();
+      ctx.ellipse(w / 2, h - 7, w / 2 - 1, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#6cc26c';
+      ctx.beginPath();
+      ctx.ellipse(w / 2, h - 10, w / 2 - 5, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#1c331c';
+      ctx.fillRect(8, 6, 3, 3);
+      ctx.fillRect(14, 6, 3, 3);
+      canvas.refresh();
+    }
+  }
+
+  if (!textures.exists('enemy_archer')) {
+    const w = 24;
+    const h = 30;
+    const canvas = textures.createCanvas('enemy_archer', w, h);
+    if (canvas) {
+      const ctx = canvas.getContext();
+      ctx.fillStyle = '#7a5aa8';
+      ctx.fillRect(4, 8, w - 8, h - 8);
+      ctx.fillStyle = '#9a7ac8';
+      ctx.fillRect(6, 0, w - 12, 10);
+      ctx.fillStyle = '#2a1c3d';
+      ctx.fillRect(w - 10, 3, 3, 3);
+      canvas.refresh();
+    }
+  }
+
+  if (!textures.exists('enemy_totem')) {
+    const w = 28;
+    const h = 36;
+    const canvas = textures.createCanvas('enemy_totem', w, h);
+    if (canvas) {
+      const ctx = canvas.getContext();
+      ctx.fillStyle = '#5c5c68';
+      ctx.fillRect(4, 2, w - 8, h - 2);
+      ctx.fillStyle = '#42424c';
+      ctx.fillRect(0, h - 8, w, 8);
+      ctx.fillStyle = '#d94a3a';
+      ctx.beginPath();
+      ctx.arc(w / 2, 12, 4, 0, Math.PI * 2);
+      ctx.fill();
       canvas.refresh();
     }
   }

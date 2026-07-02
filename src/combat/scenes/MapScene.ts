@@ -6,6 +6,7 @@ import { getMapConfig } from '@/combat/map/MapLoader';
 import type { MapConfig } from '@/combat/map/MapConfig';
 import { CollisionLayer } from '@/combat/map/CollisionLayer';
 import { Player } from '@/combat/entities/Player';
+import { SpawnManager } from '@/combat/systems/SpawnManager';
 import { tilemapKey } from '@/combat/scenes/BootScene';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
@@ -25,6 +26,7 @@ export class MapScene extends Phaser.Scene {
 
   private mapId = '';
   private player!: Player;
+  private spawnManager: SpawnManager | null = null;
   private exiting = false;
   private runtimePersisted = false;
 
@@ -77,14 +79,32 @@ export class MapScene extends Phaser.Scene {
 
     this.createExitZone(map);
 
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.persistRuntime();
-      this.player.destroy();
-    });
+    if (config.encounterTable) {
+      this.spawnManager = new SpawnManager(
+        this,
+        this.player,
+        config.encounterTable,
+        this.resolveEncounterCenter(map, config),
+        collision,
+      );
+      this.spawnManager.start();
+    }
+
+    // Persist on either event: SHUTDOWN fires on scene.stop, but destroying
+    // the whole Phaser game (SceneRouter unmount) only fires DESTROY.
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.teardown());
+    this.events.once(Phaser.Scenes.Events.DESTROY, () => this.teardown());
   }
 
   override update(_time: number, delta: number): void {
     this.player.update(delta);
+    this.spawnManager?.update(delta);
+  }
+
+  private teardown(): void {
+    this.persistRuntime();
+    this.spawnManager?.destroy();
+    this.spawnManager = null;
   }
 
   private buildStatSheet(): StatSheet {
@@ -106,6 +126,19 @@ export class MapScene extends Phaser.Scene {
       return { x: spawnObj.x, y: spawnObj.y };
     }
     return config.spawn;
+  }
+
+  /** "encounter" marker from the Tiled objects layer, else map center. */
+  private resolveEncounterCenter(
+    map: Phaser.Tilemaps.Tilemap,
+    config: MapConfig,
+  ): { x: number; y: number } {
+    const objects = map.getObjectLayer('objects');
+    const marker = objects?.objects.find((o) => o.type === 'encounter');
+    if (marker && typeof marker.x === 'number' && typeof marker.y === 'number') {
+      return { x: marker.x, y: marker.y };
+    }
+    return { x: config.bounds.width / 2, y: config.bounds.height / 2 };
   }
 
   /** Temporary dev exit (06 §6.2): walk into the marked zone → back to Home. */
@@ -138,13 +171,16 @@ export class MapScene extends Phaser.Scene {
     this.physics.add.overlap(this.player.sprite, zone, () => {
       if (this.exiting) return;
       this.exiting = true;
+      this.persistRuntime();
       void SceneRouter.instance.switchTo('home');
     });
   }
 
   private persistRuntime(): void {
+    if (this.runtimePersisted) return;
     const store = gameStore.getState();
     if (!store.save) return;
+    this.runtimePersisted = true;
     const runtime = this.player.stats.runtime;
     store.patch({ runtime: { hp: runtime.hp, mana: runtime.mana } });
   }

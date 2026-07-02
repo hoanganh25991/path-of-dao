@@ -5,8 +5,18 @@ import type { Player } from '@/combat/entities/Player';
 export const SKILL_MANA_COST = 20;
 const SLASH_VISIBLE_MS = 100;
 const SLASH_OFFSET_PX = 26;
-/** Arc reach per combo step: 40 / 45 / 60 px (sub-plan 07 §5). */
-const SLASH_SCALES = [40 / 64, 45 / 64, 60 / 64] as const;
+/** Arc reach per combo step (sub-plan 07 §5). */
+const SLASH_REACH_PX = [40, 45, 60] as const;
+const SLASH_TEXTURE_SIZE = 64;
+
+/** Payload of the 'player:attacked' Phaser scene event. */
+export interface PlayerAttackEvent {
+  x: number;
+  y: number;
+  facing: 1 | -1;
+  multiplier: number;
+  reach: number;
+}
 
 const BOLT_SPEED_PX_PER_SEC = 420;
 const BOLT_RANGE_PX = 400;
@@ -28,6 +38,15 @@ export class CombatComponent {
     this.currentMultiplier = ATTACK_STEP_MULTIPLIERS[step - 1] ?? 1;
     this.player.body.setVelocity(0, 0);
     this.spawnSlash(step);
+
+    const event: PlayerAttackEvent = {
+      x: this.player.x,
+      y: this.player.y,
+      facing: this.player.facing,
+      multiplier: this.currentMultiplier,
+      reach: SLASH_REACH_PX[step - 1] ?? 40,
+    };
+    this.player.scene.events.emit('player:attacked', event);
     return true;
   }
 
@@ -43,7 +62,7 @@ export class CombatComponent {
 
   private spawnSlash(step: number): void {
     const { scene, sprite, facing } = this.player;
-    const scale = SLASH_SCALES[step - 1] ?? 1;
+    const scale = (SLASH_REACH_PX[step - 1] ?? 40) / SLASH_TEXTURE_SIZE;
 
     const slash = scene.add
       .image(sprite.x + facing * SLASH_OFFSET_PX, sprite.y, TEXTURE_KEYS.slash)
