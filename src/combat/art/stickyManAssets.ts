@@ -65,16 +65,20 @@ function createAnim(
   count: number,
   frameRate: number,
   repeat = -1,
+  /** Extra hold time (ms) per frame index — sells impact weight (timing > frames). */
+  holds?: Record<number, number>,
 ): void {
   if (scene.anims.exists(key)) {
     scene.anims.remove(key);
   }
-  scene.anims.create({
-    key,
-    frames: scene.anims.generateFrameNumbers(texture, { start, end: start + count - 1 }),
-    frameRate,
-    repeat,
-  });
+  const frames = scene.anims.generateFrameNumbers(texture, { start, end: start + count - 1 });
+  if (holds) {
+    for (const [idx, dur] of Object.entries(holds)) {
+      const frame = frames[Number(idx)];
+      if (frame) frame.duration = dur;
+    }
+  }
+  scene.anims.create({ key, frames, frameRate, repeat });
 }
 
 /** Register sticky-man spritesheets + Phaser animations (BootScene). */
@@ -92,10 +96,11 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
 
   createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset('idle'), 4, 6);
   createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset('walk'), 4, 12);
-  createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset('attack1'), 3, 14, 0);
-  createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset('attack2'), 3, 14, 0);
-  createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset('attack3'), 4, 12, 0);
-  createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset('hit'), 2, 10, 0);
+  // Attacks: quick wind-up, held impact frame, snappy recovery.
+  createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset('attack1'), 3, 16, 0, { 1: 110 });
+  createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset('attack2'), 3, 16, 0, { 1: 110 });
+  createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset('attack3'), 4, 14, 0, { 2: 150 });
+  createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset('hit'), 2, 10, 0, { 0: 70 });
 
   registerEnemySheet(
     scene,

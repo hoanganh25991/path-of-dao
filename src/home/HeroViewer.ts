@@ -1,5 +1,6 @@
 import {
   BackSide,
+  BoxGeometry,
   ConeGeometry,
   CylinderGeometry,
   Group,
@@ -201,6 +202,16 @@ export class HeroViewer {
     this.core = core;
     this.root.add(core);
 
+    // Hanging front stole (two robe panels with a gold seam) for depth.
+    for (const sx of [-0.07, 0.07]) {
+      const panel = new Mesh(new BoxGeometry(0.06, 0.62, 0.02), robeDarkMat);
+      panel.position.set(sx, 0.6, 0.17);
+      this.root.add(panel);
+    }
+    const seam = new Mesh(new BoxGeometry(0.015, 0.6, 0.025), goldMat);
+    seam.position.set(0, 0.6, 0.18);
+    this.root.add(seam);
+
     // Waist sash (gold) — animated sway.
     const sash = new Mesh(new TorusGeometry(0.25, 0.035, 8, 20), goldMat);
     sash.position.y = 0.5;
@@ -248,6 +259,13 @@ export class HeroViewer {
 
     const head = new Mesh(new SphereGeometry(0.155, 16, 16), skinMat);
     headGroup.add(head);
+
+    // Eyes on the front (+Z) face.
+    for (const sx of [-0.055, 0.055]) {
+      const eye = new Mesh(new SphereGeometry(0.02, 8, 8), hairMat);
+      eye.position.set(sx, 0.0, 0.14);
+      headGroup.add(eye);
+    }
 
     // Hair shell (back + top), leaving the face open.
     const hair = new Mesh(new SphereGeometry(0.16, 16, 16), hairMat);
