@@ -2,15 +2,19 @@ import Phaser from 'phaser';
 import { StatSheet } from '@/progression/StatSheet';
 import { moveSpeedPxPerSec } from '@/progression/DamageCalculator';
 import type { BaseStats } from '@/progression/types';
+import type { DamageResult } from '@/progression/types';
 import { EntityBase } from '@/combat/entities/EntityBase';
 import { createDecider } from '@/combat/ai/AIBrain';
 import type { AIDecider, AIPlayerState } from '@/combat/ai/AITypes';
 import type { EnemyConfig } from '@/combat/enemies/EnemyConfig';
+import type { HurtboxEntity, CombatTeam } from '@/combat/combat/Hurtbox';
+import type { Hitbox } from '@/combat/combat/Hitbox';
+import { startKnockback, tickKnockback, type KnockbackState } from '@/combat/combat/Knockback';
+import { clearHitFlash } from '@/combat/combat/HitFlash';
 
 export const TELEGRAPH_MS = 300;
 export const STRIKE_MS = 100;
 export const DEATH_ANIM_MS = 400;
-const HIT_FLASH_MS = 100;
 const HP_BAR_WIDTH = 26;
 const HP_BAR_HEIGHT = 3;
 
@@ -19,7 +23,7 @@ type AttackPhase = 'none' | 'telegraph' | 'strike';
 export interface EnemyCallbacks {
   /** Attack lands (strike frame). Owner resolves damage/projectiles. */
   onStrike(enemy: Enemy): void;
-  /** HP reached 0 — death anim already started. Owner grants rewards. */
+  /** HP reached 0 — death anim already started. */
   onDeath(enemy: Enemy): void;
   /** Death anim finished — owner releases the enemy to the pool. */
   onDeathAnimComplete(enemy: Enemy): void;
@@ -40,7 +44,8 @@ function toBaseStats(config: EnemyConfig): BaseStats {
 }
 
 /** Poolable enemy entity: AI-driven movement + telegraphed attacks. */
-export class Enemy extends EntityBase {
+export class Enemy extends EntityBase implements HurtboxEntity {
+  readonly team: CombatTeam = 'enemy';
   readonly config: EnemyConfig;
 
   alive = false;
@@ -53,8 +58,8 @@ export class Enemy extends EntityBase {
   private cooldownMs = 0;
   private attackPhase: AttackPhase = 'none';
   private attackPhaseMs = 0;
-  private hitFlashMs = 0;
   private deathMs = 0;
+  private knockback: KnockbackState | null = null;
   private readonly hpBarBg: Phaser.GameObjects.Rectangle;
   private readonly hpBarFill: Phaser.GameObjects.Rectangle;
 
@@ -81,6 +86,14 @@ export class Enemy extends EntityBase {
     this.deactivate();
   }
 
+  get invulnerable(): boolean {
+    return !this.alive || this.dying;
+  }
+
+  getDefenderStats(): BaseStats {
+    return this.stats.resolved;
+  }
+
   /** Reset + activate at a position (pool acquire). */
   spawnAt(x: number, y: number): void {
     this.spawnX = x;
@@ -90,13 +103,14 @@ export class Enemy extends EntityBase {
     this.cooldownMs = 0;
     this.attackPhase = 'none';
     this.attackPhaseMs = 0;
-    this.hitFlashMs = 0;
     this.deathMs = 0;
+    this.knockback = null;
     this.brain = createDecider(this.config.archetype);
     this.stats.refill();
 
     this.sprite.setPosition(x, y);
     this.sprite.setActive(true).setVisible(true).setAlpha(1).setScale(1);
+    clearHitFlash(this.sprite);
     this.sprite.clearTint();
     this.body.enable = true;
     this.body.reset(x, y);
@@ -110,9 +124,9 @@ export class Enemy extends EntityBase {
   deactivate(): void {
     this.alive = false;
     this.dying = false;
+    this.knockback = null;
+    clearHitFlash(this.sprite);
     this.sprite.setActive(false).setVisible(false);
-    // During game destroy the physics world tears down before scene DESTROY
-    // listeners run, so the body may already be gone.
     const body = this.sprite.body as Phaser.Physics.Arcade.Body | null;
     if (body) {
       body.enable = false;
@@ -136,9 +150,11 @@ export class Enemy extends EntityBase {
 
     this.cooldownMs = Math.max(0, this.cooldownMs - dtMs);
 
-    if (this.hitFlashMs > 0) {
-      this.hitFlashMs -= dtMs;
-      if (this.hitFlashMs <= 0) this.sprite.clearTint();
+    if (this.knockback) {
+      this.body.setVelocity(this.knockback.vx, this.knockback.vy);
+      this.knockback = tickKnockback(this.knockback, dtMs);
+      this.trackHpBar();
+      return;
     }
 
     if (this.attackPhase !== 'none') {
@@ -175,21 +191,22 @@ export class Enemy extends EntityBase {
     this.trackHpBar();
   }
 
-  /** Returns HP actually lost. Starts the death flow at 0 HP. */
-  takeDamage(amount: number): number {
-    if (!this.alive || this.dying) return 0;
+  receiveHit(result: DamageResult, hitbox: Hitbox): void {
+    if (this.invulnerable) return;
 
-    const lost = this.stats.applyDamage(amount);
-    if (lost <= 0) return 0;
+    const lost = this.stats.applyDamage(result.final);
+    if (lost <= 0) return;
 
-    this.sprite.setTint(0xffffff).setTintMode(Phaser.TintModes.FILL);
-    this.hitFlashMs = HIT_FLASH_MS;
+    if (hitbox.knockback && hitbox.knockback > 0) {
+      this.knockback = startKnockback(hitbox.shape.x, hitbox.shape.y, this.x, this.y, hitbox.knockback);
+      this.attackPhase = 'none';
+    }
+
     this.updateHpBar();
 
     if (this.stats.isDead) {
       this.startDeath();
     }
-    return lost;
   }
 
   get attackCooldownRemainingMs(): number {
@@ -197,6 +214,7 @@ export class Enemy extends EntityBase {
   }
 
   override destroy(): void {
+    clearHitFlash(this.sprite);
     this.hpBarBg.destroy();
     this.hpBarFill.destroy();
     super.destroy();
@@ -228,9 +246,11 @@ export class Enemy extends EntityBase {
     this.alive = false;
     this.dying = true;
     this.deathMs = 0;
+    this.knockback = null;
     this.attackPhase = 'none';
     this.body.enable = false;
     this.body.stop();
+    clearHitFlash(this.sprite);
     this.sprite.clearTint();
     this.hpBarBg.setVisible(false);
     this.hpBarFill.setVisible(false);

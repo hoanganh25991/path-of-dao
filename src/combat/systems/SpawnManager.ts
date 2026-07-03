@@ -1,11 +1,10 @@
 import Phaser from 'phaser';
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
-import { resolveDamage } from '@/progression/DamageCalculator';
-import type { BaseStats } from '@/progression/types';
-import { Enemy } from '@/combat/entities/Enemy';
 import type { Player } from '@/combat/entities/Player';
-import type { PlayerAttackEvent } from '@/combat/components/CombatComponent';
+import { Enemy, STRIKE_MS } from '@/combat/entities/Enemy';
+import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
+import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { getEncounterConfig, getEnemyConfig } from '@/combat/enemies/EnemyLoader';
 import type { EncounterConfig } from '@/combat/enemies/EnemyConfig';
 import { EnemyPool } from '@/combat/systems/EnemyPool';
@@ -14,7 +13,7 @@ import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
 export const MAX_ALIVE = 8;
 const NEXT_WAVE_DELAY_MS = 1500;
-const WAVE_RESET_DELAY_MS = 1700; // player death fade (1s) + respawn fade-in
+const WAVE_RESET_DELAY_MS = 1700;
 const MELEE_HIT_SLACK = 1.3;
 
 const ARROW_SPEED = 300;
@@ -34,7 +33,7 @@ interface QueuedSpawn {
 
 interface Arrow {
   img: Phaser.Physics.Arcade.Image;
-  attacker: BaseStats;
+  hitboxId: string;
   ttlMs: number;
 }
 
@@ -46,7 +45,7 @@ interface GoldPickup {
 
 /**
  * Owns the map's encounter: wave spawning (max 8 alive, queue overflow),
- * enemy strike resolution, arrows, gold pickups, and kill rewards.
+ * enemy strike hitboxes, arrows, gold pickups, and kill rewards.
  */
 export class SpawnManager {
   private readonly pool: EnemyPool;
@@ -65,6 +64,7 @@ export class SpawnManager {
     encounterId: string,
     private readonly center: { x: number; y: number },
     walls: Phaser.Tilemaps.TilemapLayer,
+    private readonly hitboxes: HitboxManager,
   ) {
     this.encounter = getEncounterConfig(encounterId);
 
@@ -83,7 +83,6 @@ export class SpawnManager {
     ];
     this.pool.prewarm(enemyIds);
 
-    scene.events.on('player:attacked', this.onPlayerAttack, this);
     this.unsubPlayerDied = EventBus.on('player:died', () => this.onPlayerDied());
   }
 
@@ -106,9 +105,13 @@ export class SpawnManager {
     this.updatePickups(dtMs);
   }
 
+  /** Alive enemies registered as hurtbox targets each frame. */
+  getHurtboxTargets(): HurtboxEntity[] {
+    return [...this.pool.aliveEnemies].filter((e) => e.alive);
+  }
+
   destroy(): void {
     this.destroyed = true;
-    this.scene.events.off('player:attacked', this.onPlayerAttack, this);
     this.unsubPlayerDied();
     for (const arrow of this.arrows) arrow.img.destroy();
     this.arrows = [];
@@ -174,7 +177,6 @@ export class SpawnManager {
   }
 
   private onPlayerDied(): void {
-    // MVP rule (08 §5.2): reset the current wave on player death.
     this.pool.releaseAll();
     this.queue = [];
     this.waveActive = false;
@@ -189,26 +191,6 @@ export class SpawnManager {
 
   // --- combat resolution ---
 
-  private onPlayerAttack(event: PlayerAttackEvent): void {
-    const attacker = this.player.stats.resolved;
-
-    for (const enemy of [...this.pool.aliveEnemies]) {
-      if (!enemy.alive) continue;
-
-      const dist = Phaser.Math.Distance.Between(event.x, event.y, enemy.x, enemy.y);
-      const inFront = (enemy.x - event.x) * event.facing >= -12;
-      if (dist > event.reach + 24 || !inFront) continue;
-
-      const result = resolveDamage({
-        attacker,
-        defender: enemy.stats.resolved,
-        skillMultiplier: event.multiplier,
-        damageType: 'physical',
-      });
-      enemy.takeDamage(result.final);
-    }
-  }
-
   private resolveStrike(enemy: Enemy): void {
     if (enemy.config.archetype === 'ranged_kiter') {
       this.spawnArrow(enemy);
@@ -219,20 +201,23 @@ export class SpawnManager {
       this.flashAoeRing(enemy);
     }
 
-    const dist = Phaser.Math.Distance.Between(enemy.x, enemy.y, this.player.x, this.player.y);
-    if (dist > enemy.config.attackRange * MELEE_HIT_SLACK) return;
-
-    this.damagePlayer(enemy.stats.resolved);
-  }
-
-  private damagePlayer(attacker: BaseStats): void {
-    const result = resolveDamage({
-      attacker,
-      defender: this.player.stats.resolved,
-      skillMultiplier: 1,
-      damageType: 'physical',
+    this.hitboxes.spawn({
+      ownerId: enemy.id,
+      team: 'enemy',
+      shape: {
+        kind: 'circle',
+        radius: enemy.config.attackRange * MELEE_HIT_SLACK,
+        x: enemy.x,
+        y: enemy.y,
+      },
+      damage: {
+        attacker: enemy.stats.resolved,
+        skillMultiplier: 1,
+        damageType: 'physical',
+      },
+      lifetimeMs: STRIKE_MS,
+      pierce: 1,
     });
-    this.player.applyDamage(result.final);
   }
 
   private spawnArrow(enemy: Enemy): void {
@@ -242,18 +227,25 @@ export class SpawnManager {
 
     const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.player.x, this.player.y);
     img.setRotation(angle);
-    this.scene.physics.velocityFromRotation(angle, ARROW_SPEED, img.body.velocity);
+    this.scene.physics.velocityFromRotation(angle, ARROW_SPEED, img.body!.velocity);
 
-    this.arrows.push({
-      img,
-      attacker: { ...enemy.stats.resolved },
-      ttlMs: ARROW_TTL_MS,
+    const hitbox = this.hitboxes.spawn({
+      ownerId: enemy.id,
+      team: 'enemy',
+      shape: { kind: 'circle', radius: ARROW_HIT_RADIUS, x: img.x, y: img.y },
+      damage: {
+        attacker: enemy.stats.resolved,
+        skillMultiplier: 1,
+        damageType: 'physical',
+      },
+      lifetimeMs: ARROW_TTL_MS,
+      pierce: 1,
     });
+
+    this.arrows.push({ img, hitboxId: hitbox.id, ttlMs: ARROW_TTL_MS });
   }
 
   private updateArrows(dtMs: number): void {
-    const playerAlive = this.player.sm.state !== 'dead';
-
     this.arrows = this.arrows.filter((arrow) => {
       arrow.ttlMs -= dtMs;
       if (arrow.ttlMs <= 0 || !arrow.img.active) {
@@ -261,32 +253,17 @@ export class SpawnManager {
         return false;
       }
 
-      const dist = Phaser.Math.Distance.Between(
-        arrow.img.x,
-        arrow.img.y,
-        this.player.x,
-        this.player.y,
-      );
-      if (playerAlive && dist <= ARROW_HIT_RADIUS && !this.player.isInvulnerable) {
-        this.damagePlayer(arrow.attacker);
-        arrow.img.destroy();
-        return false;
+      const hitbox = this.hitboxes.getHitbox(arrow.hitboxId);
+      if (hitbox) {
+        this.hitboxes.setHitboxShape(arrow.hitboxId, {
+          kind: 'circle',
+          radius: ARROW_HIT_RADIUS,
+          x: arrow.img.x,
+          y: arrow.img.y,
+        });
       }
-      return true;
-    });
-  }
 
-  private flashAoeRing(enemy: Enemy): void {
-    const ring = this.scene.add
-      .circle(enemy.x, enemy.y, enemy.config.attackRange)
-      .setStrokeStyle(3, 0xd94a3a, 0.8)
-      .setDepth(8);
-    this.scene.tweens.add({
-      targets: ring,
-      alpha: 0,
-      scale: 1.08,
-      duration: 250,
-      onComplete: () => ring.destroy(),
+      return true;
     });
   }
 
@@ -364,5 +341,19 @@ export class SpawnManager {
     store.patch((current) => ({
       inventory: { ...current.inventory, gold: current.inventory.gold + value },
     }));
+  }
+
+  private flashAoeRing(enemy: Enemy): void {
+    const ring = this.scene.add
+      .circle(enemy.x, enemy.y, enemy.config.attackRange)
+      .setStrokeStyle(3, 0xd94a3a, 0.8)
+      .setDepth(8);
+    this.scene.tweens.add({
+      targets: ring,
+      alpha: 0,
+      scale: 1.08,
+      duration: 250,
+      onComplete: () => ring.destroy(),
+    });
   }
 }

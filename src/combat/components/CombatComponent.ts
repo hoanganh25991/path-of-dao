@@ -1,6 +1,7 @@
-import { ATTACK_STEP_MULTIPLIERS } from '@/combat/state/PlayerStateMachine';
+import { ATTACK_STEP_MULTIPLIERS, MAX_COMBO_STEP } from '@/combat/state/PlayerStateMachine';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 import type { Player } from '@/combat/entities/Player';
+import type { HitboxManager } from '@/combat/combat/HitboxManager';
 
 export const SKILL_MANA_COST = 20;
 const SLASH_VISIBLE_MS = 100;
@@ -8,28 +9,22 @@ const SLASH_OFFSET_PX = 26;
 /** Arc reach per combo step (sub-plan 07 §5). */
 const SLASH_REACH_PX = [40, 45, 60] as const;
 const SLASH_TEXTURE_SIZE = 64;
-
-/** Payload of the 'player:attacked' Phaser scene event. */
-export interface PlayerAttackEvent {
-  x: number;
-  y: number;
-  facing: 1 | -1;
-  multiplier: number;
-  reach: number;
-}
+const SLASH_HIT_MS = 80;
+const SLASH_HALF_ARC = Math.PI / 3;
+const COMBO_FINISHER_KNOCKBACK = 180;
 
 const BOLT_SPEED_PX_PER_SEC = 420;
 const BOLT_RANGE_PX = 400;
 
-/**
- * Attack combo + skill stub. Hitbox overlap and damage application land in
- * sub-plan 09; this spawns the placeholder visuals and tracks multipliers.
- */
+/** Attack combo + skill stub. Spawns arc hitboxes via HitboxManager (09). */
 export class CombatComponent {
-  /** Multiplier of the attack in progress — consumed by hit resolution (09). */
+  /** Multiplier of the attack in progress — consumed by hit resolution. */
   currentMultiplier = 0;
 
-  constructor(private readonly player: Player) {}
+  constructor(
+    private readonly player: Player,
+    private readonly hitboxes: HitboxManager,
+  ) {}
 
   tryAttack(): boolean {
     const step = this.player.sm.tryAttack();
@@ -38,15 +33,7 @@ export class CombatComponent {
     this.currentMultiplier = ATTACK_STEP_MULTIPLIERS[step - 1] ?? 1;
     this.player.body.setVelocity(0, 0);
     this.spawnSlash(step);
-
-    const event: PlayerAttackEvent = {
-      x: this.player.x,
-      y: this.player.y,
-      facing: this.player.facing,
-      multiplier: this.currentMultiplier,
-      reach: SLASH_REACH_PX[step - 1] ?? 40,
-    };
-    this.player.scene.events.emit('player:attacked', event);
+    this.spawnSlashHitbox(step);
     return true;
   }
 
@@ -58,6 +45,29 @@ export class CombatComponent {
     this.player.emitStatsChanged();
     this.spawnBolt();
     return true;
+  }
+
+  private spawnSlashHitbox(step: number): void {
+    const { facing } = this.player;
+    const reach = SLASH_REACH_PX[step - 1] ?? 40;
+    const cx = this.player.x + facing * SLASH_OFFSET_PX;
+    const cy = this.player.y;
+    const startAngle = facing > 0 ? -SLASH_HALF_ARC : Math.PI - SLASH_HALF_ARC;
+    const endAngle = facing > 0 ? SLASH_HALF_ARC : Math.PI + SLASH_HALF_ARC;
+
+    this.hitboxes.spawn({
+      ownerId: this.player.id,
+      team: 'player',
+      shape: { kind: 'arc', radius: reach + 12, startAngle, endAngle, x: cx, y: cy },
+      damage: {
+        attacker: this.player.stats.resolved,
+        skillMultiplier: this.currentMultiplier,
+        damageType: 'physical',
+      },
+      lifetimeMs: SLASH_HIT_MS,
+      knockback: step === MAX_COMBO_STEP ? COMBO_FINISHER_KNOCKBACK : undefined,
+      pierce: 8,
+    });
   }
 
   private spawnSlash(step: number): void {

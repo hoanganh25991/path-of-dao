@@ -7,6 +7,7 @@ import type { MapConfig } from '@/combat/map/MapConfig';
 import { CollisionLayer } from '@/combat/map/CollisionLayer';
 import { Player } from '@/combat/entities/Player';
 import { SpawnManager } from '@/combat/systems/SpawnManager';
+import { HitboxManager } from '@/combat/combat/HitboxManager';
 import { tilemapKey } from '@/combat/scenes/BootScene';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
@@ -26,6 +27,7 @@ export class MapScene extends Phaser.Scene {
 
   private mapId = '';
   private player!: Player;
+  private hitboxManager!: HitboxManager;
   private spawnManager: SpawnManager | null = null;
   private exiting = false;
   private runtimePersisted = false;
@@ -69,7 +71,8 @@ export class MapScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, config.bounds.width, config.bounds.height);
 
     const spawn = this.resolveSpawn(map, config);
-    this.player = new Player(this, spawn.x, spawn.y, this.buildStatSheet());
+    this.hitboxManager = new HitboxManager(this);
+    this.player = new Player(this, spawn.x, spawn.y, this.buildStatSheet(), this.hitboxManager);
     this.physics.add.collider(this.player.sprite, collision);
 
     const camera = this.cameras.main;
@@ -86,6 +89,7 @@ export class MapScene extends Phaser.Scene {
         config.encounterTable,
         this.resolveEncounterCenter(map, config),
         collision,
+        this.hitboxManager,
       );
       this.spawnManager.start();
     }
@@ -97,14 +101,18 @@ export class MapScene extends Phaser.Scene {
   }
 
   override update(_time: number, delta: number): void {
+    const targets = [this.player, ...(this.spawnManager?.getHurtboxTargets() ?? [])];
+    this.hitboxManager.setTargets(targets);
     this.player.update(delta);
     this.spawnManager?.update(delta);
+    this.hitboxManager.update(delta);
   }
 
   private teardown(): void {
     this.persistRuntime();
     this.spawnManager?.destroy();
     this.spawnManager = null;
+    this.hitboxManager?.destroy();
   }
 
   private buildStatSheet(): StatSheet {
