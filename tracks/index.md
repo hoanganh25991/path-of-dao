@@ -1,10 +1,10 @@
 # Path of Dao — Master Track
 
-> **Spec:** [master-plan.md](./master-plan.md)  
-> **Detail notes:** [track/](./track/) (one file per sub-plan)  
+> **Spec:** [plans/index.md](../plans/index.md)  
+> **Detail notes:** [tracks/](./) (one file per sub-plan)  
 > **Last updated:** 2026-07-03
 
-This is the **master progress index**. Each sub-plan has a detailed track file under `track/` with done/remaining items, verification notes, and Tiên Nghịch gaps where relevant.
+This is the **master progress index**. Each sub-plan has a detailed track file under `tracks/` with done/remaining items, verification notes, and Tiên Nghịch gaps where relevant.
 
 ---
 
@@ -12,8 +12,8 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 
 | Metric | Value |
 |--------|-------|
-| Sub-plans done | **17 / 27** (63%) |
-| In progress | **9** |
+| Sub-plans done | **17 / 28** (61%) |
+| In progress | **10** (incl. 28 — Path & Journey, Phase A landed) |
 | Pending | **1** (26 — PWA & ship) |
 | Cross-cutting | Tiên Nghịch alignment **8 / 8 open or partial** |
 | Active thread | **25** audio/VFX polish → then **26** ship |
@@ -31,6 +31,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | **6 — MVP Content** | 21–23 | `[~]` All in progress |
 | **7 — Polish & Ship** | 24–26 | `[~]` 24–25 in progress; 26 pending |
 | **Cross** | 27 | `[x]` Ancient Echo demo done |
+| **Cross** | 28 | `[~]` Path & Journey — My Path landed; guided ancient walk pending |
 
 **Critical path:** `01 → 03 → 06 → 13 → 17 → 21 → 24` — through **17** complete; **21** and **24** active.
 
@@ -44,7 +45,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | `[~]` | In progress — core shipped; gaps or polish remain |
 | `[ ]` | Pending — not started or blocked |
 
-*(Tiên Nghịch gap open)* — sub-plan marked done but a design-alignment item (T1–T8) still needs work. See [track/tien-nghich-alignment.md](./track/tien-nghich-alignment.md).
+*(Tiên Nghịch gap open)* — sub-plan marked done but a design-alignment item (T1–T8) still needs work. See [tracks/tien-nghich-alignment.md](./tien-nghich-alignment.md).
 
 ---
 
@@ -52,33 +53,34 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 
 | ID | Title | Phase | Status | Detail | Plan |
 |----|-------|-------|--------|--------|------|
-| 01 | Project scaffold & tooling | 0 | `[x]` | [track](./track/01-project-scaffold.md) | [plan](./plans/01-project-scaffold.md) |
-| 02 | Scene router & app shell | 0 | `[x]` | [track](./track/02-scene-router-app-shell.md) | [plan](./plans/02-scene-router-app-shell.md) |
-| 03 | One-thumb input & virtual joystick | 1 | `[x]` | [track](./track/03-input-touch-controls.md) | [plan](./plans/03-input-touch-controls.md) |
-| 04 | Stat sheet & RPG core formulas | 1 | `[x]` | [track](./track/04-stat-sheet-rpg-core.md) | [plan](./plans/04-stat-sheet-rpg-core.md) |
-| 05 | Save system foundation | 1 | `[x]` | [track](./track/05-save-system-foundation.md) | [plan](./plans/05-save-system-foundation.md) |
-| 06 | Phaser map scene base & camera | 2 | `[x]` | [track](./track/06-phaser-map-scene-base.md) | [plan](./plans/06-phaser-map-scene-base.md) |
-| 07 | Player controller & basic combat | 2 | `[x]`* | [track](./track/07-player-controller-combat.md) | [plan](./plans/07-player-controller-combat.md) |
-| 08 | Enemy system & AI archetypes | 2 | `[x]` | [track](./track/08-enemy-system-ai.md) | [plan](./plans/08-enemy-system-ai.md) |
-| 09 | Hitboxes, damage, i-frames | 2 | `[x]` | [track](./track/09-hitbox-damage-combat-math.md) | [plan](./plans/09-hitbox-damage-combat-math.md) |
-| 10 | Three.js home scene & hero viewer | 3 | `[x]`* | [track](./track/10-threejs-home-scene.md) | [plan](./plans/10-threejs-home-scene.md) |
-| 11 | Equipment slots & 3D preview | 3 | `[x]`* | [track](./track/11-equipment-3d-preview.md) | [plan](./plans/11-equipment-3d-preview.md) |
-| 12 | Home UI panels & navigation | 3 | `[x]` | [track](./track/12-home-ui-panels.md) | [plan](./plans/12-home-ui-panels.md) |
-| 13 | Cultivation realm & breakthrough | 4 | `[x]` | [track](./track/13-cultivation-realm-system.md) | [plan](./plans/13-cultivation-realm-system.md) |
-| 14 | Insight progression & awakenings | 4 | `[x]`* | [track](./track/14-insight-system.md) | [plan](./plans/14-insight-system.md) |
-| 15 | Fortuitous encounter events | 4 | `[~]` | [track](./track/15-fortuitous-encounters.md) | [plan](./plans/15-fortuitous-encounters.md) |
-| 16 | Combat power & character profile | 4 | `[x]` | [track](./track/16-combat-power-profile.md) | [plan](./plans/16-combat-power-profile.md) |
-| 17 | World map & free travel | 5 | `[x]` | [track](./track/17-world-map-travel.md) | [plan](./plans/17-world-map-travel.md) |
-| 18 | Chapter flow & story scenes | 5 | `[~]` | [track](./track/18-chapter-story-system.md) | [plan](./plans/18-chapter-story-system.md) |
-| 19 | Skill executor & cultivation VFX | 5 | `[~]` | [track](./track/19-skill-executor-vfx.md) | [plan](./plans/19-skill-executor-vfx.md) |
-| 20 | Content pipeline & validators | 5 | `[~]` | [track](./track/20-content-pipeline.md) | [plan](./plans/20-content-pipeline.md) |
-| 21 | MVP maps: chapters 1–5 | 6 | `[~]` | [track](./track/21-mvp-maps-chapters-1-5.md) | [plan](./plans/21-mvp-maps-chapters-1-5.md) |
-| 22 | MVP maps: chapters 6–10 | 6 | `[~]` | [track](./track/22-mvp-maps-chapters-6-10.md) | [plan](./plans/22-mvp-maps-chapters-6-10.md) |
-| 23 | MVP enemies, bosses, skill data | 6 | `[~]` | [track](./track/23-mvp-enemies-bosses-skills.md) | [plan](./plans/23-mvp-enemies-bosses-skills.md) |
-| 24 | Localization en + vi | 7 | `[~]` | [track](./track/24-localization-en-vi.md) | [plan](./plans/24-localization-en-vi.md) |
-| 25 | Audio, aura VFX, juice | 7 | `[~]` | [track](./track/25-audio-vfx-polish.md) | [plan](./plans/25-audio-vfx-polish.md) |
-| 26 | PWA, performance, ship checklist | 7 | `[ ]` | [track](./track/26-pwa-performance-ship.md) | [plan](./plans/26-pwa-performance-ship.md) |
-| 27 | Echoes of the Ancients (guided demo) | Cross | `[x]` | [track](./track/27-ancient-echo-demo.md) | [plan](./plans/27-ancient-echo-demo.md) |
+| 01 | Project scaffold & tooling | 0 | `[x]` | [track](./01-project-scaffold.md) | [plan](../plans/01-project-scaffold.md) |
+| 02 | Scene router & app shell | 0 | `[x]` | [track](./02-scene-router-app-shell.md) | [plan](../plans/02-scene-router-app-shell.md) |
+| 03 | One-thumb input & virtual joystick | 1 | `[x]` | [track](./03-input-touch-controls.md) | [plan](../plans/03-input-touch-controls.md) |
+| 04 | Stat sheet & RPG core formulas | 1 | `[x]` | [track](./04-stat-sheet-rpg-core.md) | [plan](../plans/04-stat-sheet-rpg-core.md) |
+| 05 | Save system foundation | 1 | `[x]` | [track](./05-save-system-foundation.md) | [plan](../plans/05-save-system-foundation.md) |
+| 06 | Phaser map scene base & camera | 2 | `[x]` | [track](./06-phaser-map-scene-base.md) | [plan](../plans/06-phaser-map-scene-base.md) |
+| 07 | Player controller & basic combat | 2 | `[x]`* | [track](./07-player-controller-combat.md) | [plan](../plans/07-player-controller-combat.md) |
+| 08 | Enemy system & AI archetypes | 2 | `[x]` | [track](./08-enemy-system-ai.md) | [plan](../plans/08-enemy-system-ai.md) |
+| 09 | Hitboxes, damage, i-frames | 2 | `[x]` | [track](./09-hitbox-damage-combat-math.md) | [plan](../plans/09-hitbox-damage-combat-math.md) |
+| 10 | Three.js home scene & hero viewer | 3 | `[x]`* | [track](./10-threejs-home-scene.md) | [plan](../plans/10-threejs-home-scene.md) |
+| 11 | Equipment slots & 3D preview | 3 | `[x]`* | [track](./11-equipment-3d-preview.md) | [plan](../plans/11-equipment-3d-preview.md) |
+| 12 | Home UI panels & navigation | 3 | `[x]` | [track](./12-home-ui-panels.md) | [plan](../plans/12-home-ui-panels.md) |
+| 13 | Cultivation realm & breakthrough | 4 | `[x]` | [track](./13-cultivation-realm-system.md) | [plan](../plans/13-cultivation-realm-system.md) |
+| 14 | Insight progression & awakenings | 4 | `[x]`* | [track](./14-insight-system.md) | [plan](../plans/14-insight-system.md) |
+| 15 | Fortuitous encounter events | 4 | `[~]` | [track](./15-fortuitous-encounters.md) | [plan](../plans/15-fortuitous-encounters.md) |
+| 16 | Combat power & character profile | 4 | `[x]` | [track](./16-combat-power-profile.md) | [plan](../plans/16-combat-power-profile.md) |
+| 17 | World map & free travel | 5 | `[x]` | [track](./17-world-map-travel.md) | [plan](../plans/17-world-map-travel.md) |
+| 18 | Chapter flow & story scenes | 5 | `[~]` | [track](./18-chapter-story-system.md) | [plan](../plans/18-chapter-story-system.md) |
+| 19 | Skill executor & cultivation VFX | 5 | `[~]` | [track](./19-skill-executor-vfx.md) | [plan](../plans/19-skill-executor-vfx.md) |
+| 20 | Content pipeline & validators | 5 | `[~]` | [track](./20-content-pipeline.md) | [plan](../plans/20-content-pipeline.md) |
+| 21 | MVP maps: chapters 1–5 | 6 | `[~]` | [track](./21-mvp-maps-chapters-1-5.md) | [plan](../plans/21-mvp-maps-chapters-1-5.md) |
+| 22 | MVP maps: chapters 6–10 | 6 | `[~]` | [track](./22-mvp-maps-chapters-6-10.md) | [plan](../plans/22-mvp-maps-chapters-6-10.md) |
+| 23 | MVP enemies, bosses, skill data | 6 | `[~]` | [track](./23-mvp-enemies-bosses-skills.md) | [plan](../plans/23-mvp-enemies-bosses-skills.md) |
+| 24 | Localization en + vi | 7 | `[~]` | [track](./24-localization-en-vi.md) | [plan](../plans/24-localization-en-vi.md) |
+| 25 | Audio, aura VFX, juice | 7 | `[~]` | [track](./25-audio-vfx-polish.md) | [plan](../plans/25-audio-vfx-polish.md) |
+| 26 | PWA, performance, ship checklist | 7 | `[ ]` | [track](./26-pwa-performance-ship.md) | [plan](../plans/26-pwa-performance-ship.md) |
+| 27 | Echoes of the Ancients (guided demo) | Cross | `[x]` | [track](./27-ancient-echo-demo.md) | [plan](../plans/27-ancient-echo-demo.md) |
+| 28 | Path & Journey (My Path + follow ancients) | Cross | `[~]` | [track](./28-path-journey-system.md) | [plan](../plans/28-path-journey-system.md) |
 
 \* Done for sub-plan scope; Tiên Nghịch alignment items still open — see below.
 
@@ -86,8 +88,9 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 
 ## Tiên Nghịch alignment (T1–T8)
 
-**Detail:** [track/tien-nghich-alignment.md](./track/tien-nghich-alignment.md)  
-**Spec:** [master-plan.md §1.1, §7.7, §7.8](./master-plan.md)  
+**Detail:** [tracks/tien-nghich-alignment.md](./tien-nghich-alignment.md)  
+**Story reference:** [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · skill `tien-nghich`  
+**Spec:** [plans/index.md §1.1, §7.7, §7.8](../plans/index.md)  
 **Suggested order:** T4 → T1 → T2 → T3 → T7 → T6 → T5 → T8
 
 | # | Requirement | Status | Owner tracks |
@@ -105,9 +108,10 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 
 ## MVP definition of done
 
-From [master-plan.md §12](./master-plan.md). Checked items reflect current build state.
+From [plans/index.md §12](../plans/index.md). Checked items reflect current build state.
 
 - [x] Echoes of the Ancients — six focused demo walks; combat-first god-mode (sub-plan 27)
+- [~] Path & Journey — My Path scroll records realm/level/CP per milestone; ancient roads authored (sub-plan 28; guided walk pending)
 - [ ] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
 - [ ] **New game starts unarmed** — palm combo only; no sword in weapon slot (T1, T4)
 - [ ] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
@@ -152,7 +156,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Modal pause flow, rewards (items, gold, insight, lore, pet) | Wire full `weaponMilestone` flow on blade claim |
 | POI once-per-save tracking; dev force-trigger tools | |
 
-→ [full track](./track/15-fortuitous-encounters.md)
+→ [full track](./15-fortuitous-encounters.md)
 
 ### 18 — Chapter & story system `[~]`
 
@@ -162,7 +166,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Chapter 1 full en/vi copy | Sword destiny beat in ch1–2 slides |
 | Clear-on-exit advances chapter; rewards once | Expand ch1 narrative to tease ancient blade |
 
-→ [full track](./track/18-chapter-story-system.md)
+→ [full track](./18-chapter-story-system.md)
 
 ### 19 — Skill executor & VFX `[~]`
 
@@ -172,7 +176,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Cooldown manager; awakened void/flame behaviors | Audio sync on cast/impact frames |
 | Extended skill schema validated at load | More unique VFX beyond presets |
 
-→ [full track](./track/19-skill-executor-vfx.md)
+→ [full track](./19-skill-executor-vfx.md)
 
 ### 20 — Content pipeline `[~]`
 
@@ -182,7 +186,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Pack command, ID/CP/Tiled docs | Optional CI gate on `content:validate` |
 | 249+ unit tests green at last run | |
 
-→ [full track](./track/20-content-pipeline.md)
+→ [full track](./20-content-pipeline.md)
 
 ### 21 — MVP maps ch1–5 `[~]`
 
@@ -192,7 +196,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Ancient sword shrine POI on ch1 ordeal map | End-to-end POI reward → milestone flow (T2) |
 | 16 enemies, CP bands, hidden caves ch3–5 | Region polish and balance pass |
 
-→ [full track](./track/21-mvp-maps-chapters-1-5.md)
+→ [full track](./21-mvp-maps-chapters-1-5.md)
 
 ### 22 — MVP maps ch6–10 `[~]`
 
@@ -202,7 +206,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Void Throne 56×42 finale; CP ~45k–320k | Boss pattern and phase tuning |
 | 19 enemies; hidden caves ch6, 8, 10 | Playthrough balance on CP bands |
 
-→ [full track](./track/22-mvp-maps-chapters-6-10.md)
+→ [full track](./22-mvp-maps-chapters-6-10.md)
 
 ### 23 — Enemies, bosses, skills `[~]`
 
@@ -212,7 +216,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Boss phase tracker; en/vi skill strings | Distinct patterns for all 8 MVP bosses |
 | 292+ unit tests green at last run | ≥6 skills with full awakening VFX |
 
-→ [full track](./track/23-mvp-enemies-bosses-skills.md)
+→ [full track](./23-mvp-enemies-bosses-skills.md)
 
 ### 24 — Localization en + vi `[~]`
 
@@ -223,7 +227,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | 41 bestiary entries; settings language picker | Vietnamese layout overflow pass |
 | 300+ unit tests green at last run | |
 
-→ [full track](./track/24-localization-en-vi.md)
+→ [full track](./24-localization-en-vi.md)
 
 ### 25 — Audio & VFX polish `[~]`
 
@@ -235,7 +239,7 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Home aura pulse Core Formation+ | Low-end juice disable profile (26) |
 | | Player attack/dodge/land SFX from actions |
 
-→ [full track](./track/25-audio-vfx-polish.md)
+→ [full track](./25-audio-vfx-polish.md)
 
 ### 26 — PWA & ship `[ ]`
 
@@ -246,7 +250,19 @@ From [master-plan.md §12](./master-plan.md). Checked items reflect current buil
 | Scene engine disposal; 30 FPS mid-range Android |
 | Ship checklist: 10-min playthrough, no console errors |
 
-→ [full track](./track/26-pwa-performance-ship.md)
+→ [full track](./26-pwa-performance-ship.md)
+
+### 28 — Path & Journey `[~]`
+
+| Done (Phase A) | Remaining (Phase B) |
+|------|-----------|
+| `progress.journey[]` save field (back-compat default `[]`) | `PathWalkManager` — guided multi-map ancient walk |
+| `JourneyLog` snapshot/append/dedupe; recording on map clear, story, breakthrough | Story beats play between an ancient's map stages |
+| My Path scroll (`StoryPanel` + `journeyView`) with `Realm · Lv · CP` per step | "His Road" list + Follow button in `AncientDemoModal` |
+| Ancient `path[]` authored for all 6; `getAncientPath()` | `boss` / `encounter` journey kinds wired |
+| Tests: journey-log, ancient road; 319 tests green | en/vi `demo.path.*` follow strings |
+
+→ [full track](./28-path-journey-system.md)
 
 ---
 
@@ -264,7 +280,7 @@ Sub-plans **01–14**, **16–17**, **27** are complete for their acceptance cri
 | 16–17 | Combat power profile, world map travel |
 | 27 | Ancient Echo demo — six ancients, god mode, Echoes tab |
 
-→ Per-sub-plan notes in [track/](./track/)
+→ Per-sub-plan notes in [tracks/](./)
 
 ---
 
@@ -284,6 +300,6 @@ Sub-plans **01–14**, **16–17**, **27** are complete for their acceptance cri
 ## How to update this file
 
 1. Implement work against a sub-plan in `plans/`.
-2. Update the matching detail file in `track/` (done / remaining / verification).
+2. Update the matching detail file in `tracks/` (done / remaining / verification).
 3. Refresh status symbols and this master table when a sub-plan crosses done or picks up new gaps.
-4. For Tiên Nghịch items, update [track/tien-nghich-alignment.md](./track/tien-nghich-alignment.md) and the T1–T8 table here.
+4. For Tiên Nghịch items, update [tracks/tien-nghich-alignment.md](./tien-nghich-alignment.md) and the T1–T8 table here.

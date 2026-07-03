@@ -130,6 +130,7 @@ export class SaveManager {
         encountersFound: [],
         bestiary: [],
         loreUnlocked: [],
+        journey: [],
         currentMapId: null,
       },
       cosmetics: { pet: null },

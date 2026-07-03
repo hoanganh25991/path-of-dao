@@ -2,7 +2,7 @@
 
 > Canonical visual direction for **2D combat** characters and enemies.  
 > Implementation: `src/combat/art/` (procedural spritesheets at boot).  
-> Linked from [master-plan.md](./master-plan.md) §3.2 Rendering.  
+> Linked from [plans/index.md](../plans/index.md) §3.2 Rendering.  
 > Review screenshot: [docs/screenshots/sticky-man-review.png](./screenshots/sticky-man-review.png)
 
 ---

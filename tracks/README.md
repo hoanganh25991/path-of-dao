@@ -1,6 +1,6 @@
 # Sub-plan tracks
 
-Detailed implementation notes for each sub-plan. The master index lives in [TRACK.md](../TRACK.md).
+Detailed implementation notes for each sub-plan. The master index lives in [index.md](./index.md).
 
 | ID | Track file | Plan spec |
 |----|------------|-----------|

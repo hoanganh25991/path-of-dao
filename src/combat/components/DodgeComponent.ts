@@ -1,3 +1,4 @@
+import { EventBus } from '@/core/EventBus';
 import { DODGE_SPEED_PX_PER_SEC } from '@/combat/state/PlayerStateMachine';
 import type { MoveVector } from '@/combat/components/MovementComponent';
 import type { Player } from '@/combat/entities/Player';
@@ -26,6 +27,7 @@ export class DodgeComponent {
 
     this.afterimageAccumulatorMs = 0;
     this.player.sprite.setAlpha(DODGE_ALPHA);
+    EventBus.emit('player:dodge-started', undefined);
     return true;
   }
 

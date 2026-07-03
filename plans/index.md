@@ -3,7 +3,7 @@
 > **Working title:** Path of Dao (candidate names: Void Ascension, Echoes of the Void)  
 > **Genre:** Mobile-first 2D Action RPG with 3D Home shrine  
 > **Design sources:** `echoes-of-the-void-game-design.md`, `void-ascension-game-concept.md`  
-> **Narrative north star:** *Tiên Nghịch* (Renegade Immortal) — mortal beginnings, map-by-map hardship, fortuitous inheritance, and a legendary sword earned late, not given at birth.
+> **Narrative north star:** [*Tiên Nghịch* (Renegade Immortal)](../docs/tien-nghich-reference.md) — mortal beginnings, map-by-map hardship, fortuitous inheritance, and a legendary sword earned late, not given at birth.
 
 ---
 
@@ -33,7 +33,7 @@ These pillars override generic ARPG defaults when in conflict.
 | **Retreat & return** | Flee, cultivate elsewhere, come back overwhelming | CP badges + rematch scaling on lower maps (§7.5) |
 | **Story tone** | Cold perseverance, loss, obsession with dao | Chapter-end scenes: sparse prose, consequence, no power-fantasy quips in early acts |
 
-**Legal note:** We take *structure and feeling* from *Tiên Nghịch* — mortal rise, fortuitous sword, map odyssey — not plot, names, or verbatim text. Original characters, regions, and dialogue only.
+**Legal note:** We take *structure and feeling* from *Tiên Nghịch* — mortal rise, fortuitous sword, map odyssey — not plot, names, or verbatim text. Original characters, regions, and dialogue only. **Story reference for agents:** [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · skill: `tien-nghich`
 
 ---
 
@@ -100,10 +100,12 @@ These pillars override generic ARPG defaults when in conflict.
 
 ```
 path-of-dao/
-├── master-plan.md
-├── TRACK.md                        # Master progress index
-├── track/                          # Per sub-plan implementation notes
-├── plans/                          # Sub-plans (this document's children)
+├── plans/
+│   ├── index.md                    # Master implementation plan (this document)
+│   └── …                           # Sub-plans (01–27)
+├── tracks/
+│   ├── index.md                    # Master progress index
+│   └── …                           # Per sub-plan implementation notes
 ├── content/
 │   ├── chapters/
 │   ├── maps/
@@ -240,6 +242,7 @@ Each file in `plans/` is sized for **1–3 focused implementation sessions** (~4
 | 25 | `plans/25-audio-vfx-polish.md` | Audio, aura VFX, juice | 7 |
 | 26 | `plans/26-pwa-performance-ship.md` | PWA, performance, ship checklist | 7 |
 | 27 | `plans/27-ancient-echo-demo.md` | Echoes of the Ancients (guided demo) | Cross |
+| 28 | `plans/28-path-journey-system.md` | Path & Journey (My Path + follow the ancients) | Cross |
 
 ---
 
@@ -356,6 +359,25 @@ World Map → pick region → Map .01 (explore, POIs, farm) → Map .02 (boss) �
 
 **POI distribution (minimum):** 1× `hidden_cave` + 1× `ancient_sword` across ch1–2; 1× `secret_manual` by ch5; fortuitous tables per region in `content/encounters/fortuitous/`.
 
+### 7.9 Path & Journey (My Path + Follow the Ancients)
+
+A **Path** is an *ordered journey* of milestones (maps cleared, breakthroughs, story
+beats), each stamped with the cultivator's strength **at that step**. It unifies the
+world road, chapter stories, and Echoes into one readable spine. See
+[`plans/28-path-journey-system.md`](./28-path-journey-system.md).
+
+| Concept | Approach |
+|---------|----------|
+| My Path | Auto-recorded `progress.journey[]`; the Story archive becomes a chronological scroll with `Realm · Lv · CP` per step |
+| Ancient Paths | Each ancient has an authored `path[]` (maps + realm + story beat); reading it in order = *learn from history* |
+| Follow vs. forge | **Follow** an ancient's road (god-mode showcase, story between maps) or **forge** your own via free travel |
+| Recording | `map_clear` (map exit), `story` (chapter finale), `breakthrough` (ceremony); `boss`/`encounter` reserved |
+| Snapshot rule | Strength (realm/level/CP) captured once at the step — never recomputed |
+| Safety | Demo walks record against the discarded demo save — never pollute the player's My Path |
+
+**Key files:** `JourneyLog`, `SaveSchema.journeyEntrySchema`, `ChapterManager`,
+`BreakthroughManager`, `journeyView`, `StoryPanel` (My Path), `AncientDemoManager.getPath`.
+
 ---
 
 ## 8. Data Model Overview
@@ -378,6 +400,7 @@ interface PlayerSave {
     storySeen: string[];
     encountersFound: string[];
     weaponMilestone: 'none' | 'ancient_sword';  // Tiên Nghịch sword gate
+    journey: JourneyEntry[];                     // My Path timeline (sub-plan 28)
   };
   meta: {
     totalPlaySeconds: number;
@@ -457,13 +480,14 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 - [ ] PWA installable; 30 FPS on mid-range Android
 - [ ] No console errors in 10-minute playthrough
 - [x] Echoes of the Ancients — six focused demo walks; combat-first with god-mode power fantasy (sub-plan 27)
+- [~] Path & Journey — My Path scroll records realm/level/CP per milestone; ancient roads authored (sub-plan 28; guided walk pending)
 
 ---
 
 ## 13. Next Step
 
-**Active thread:** Sub-plan **25** (audio/VFX polish) — unlock overlay once per device, improved procedural SFX/BGM; then **26** PWA & ship. Progress: [TRACK.md](./TRACK.md) · detail in [track/](./track/).
+**Active thread:** Sub-plan **25** (audio/VFX polish) — unlock overlay once per device, improved procedural SFX/BGM; then **26** PWA & ship. Progress: [tracks/index.md](../tracks/index.md) · detail in [tracks/](../tracks/).
 
 Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
 
-**Design alignment:** §1.1 Tiên Nghịch pillars — see [track/tien-nghich-alignment.md](./track/tien-nghich-alignment.md).
+**Design alignment:** §1.1 Tiên Nghịch pillars — [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · [tracks/tien-nghich-alignment.md](../tracks/tien-nghich-alignment.md) · skill `tien-nghich`

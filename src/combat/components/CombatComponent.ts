@@ -44,6 +44,7 @@ export class CombatComponent {
     this.player.body.setVelocity(0, 0);
     this.spawnSlash(step);
     this.spawnSlashHitbox(step);
+    EventBus.emit('player:attack-started', { step: step as 1 | 2 | 3 });
     return true;
   }
 

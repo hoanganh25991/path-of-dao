@@ -5,7 +5,7 @@
 **Depends on:** `12-home-ui-panels`, `13-cultivation-realm-system`, `14-insight-system`, `15-fortuitous-encounters`  
 **Blocks:** — (enhances onboarding; optional ancients added in `21`–`23`)
 
-> **Master plan:** [master-plan.md](../master-plan.md) · §2 MVP Scope · §6 Sub-Plan Index · §7.6 Ancient Echo Demo
+> **Master plan:** [index.md](./index.md) · §2 MVP Scope · §6 Sub-Plan Index · §7.6 Ancient Echo Demo
 
 ---
 
@@ -174,7 +174,7 @@ Realm `breakthroughReady` is derived via `syncRealmProgress()` — do not hardco
 - [x] God-mode HP/Mana — internal pools; HUD **∞** only
 - [x] Fortuitous encounters skipped during demo
 - [x] Journey backup + restore works; combat runtime not persisted
-- [x] Documented in master-plan.md §7.6
+- [x] Documented in plans/index.md §7.6
 - [x] Unit tests pass
 
 ---

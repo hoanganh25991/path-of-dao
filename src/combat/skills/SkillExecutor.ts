@@ -1,3 +1,4 @@
+import { EventBus } from '@/core/EventBus';
 import type { Player } from '@/combat/entities/Player';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import type { SkillDefinition } from '@/progression/SkillDefinition';
@@ -46,6 +47,8 @@ export class SkillExecutor {
     if (this.player.stats.isGodMode) {
       burstAncientSkill(this.player.scene, this.player.x, this.player.y, skill.intent, skill.kind);
     }
+
+    EventBus.emit('skill:cast', { intent: skill.intent });
 
     const ctx: EffectRunnerContext = {
       player: this.player,

@@ -1,7 +1,7 @@
 # Implementation Plans Index
 
 Detailed sub-plans for **Path of Dao / Void Ascension** MVP.  
-Master document: [`../master-plan.md`](../master-plan.md)
+Master document: [index.md](./index.md)
 
 ---
 
@@ -60,6 +60,8 @@ Master document: [`../master-plan.md`](../master-plan.md)
 | 24 | [Localization en/vi](./24-localization-en-vi.md) | 10–14h | 12, 18, 20–23 |
 | 25 | [Audio & VFX polish](./25-audio-vfx-polish.md) | 10–14h | 10, 13, 19, 21, 23 |
 | 26 | [PWA & ship](./26-pwa-performance-ship.md) | 10–12h | all |
+| 27 | [Echoes of the Ancients (demo)](./27-ancient-echo-demo.md) | 8–10h | 13–15 |
+| 28 | [Path & Journey (My Path + ancients)](./28-path-journey-system.md) | 10–12h | 13, 16, 17, 18, 27 |
 
 **Total estimated effort:** ~240–310 hours (solo dev, implementation only — excludes art/audio production)
 

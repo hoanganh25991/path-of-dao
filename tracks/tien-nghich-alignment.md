@@ -1,10 +1,12 @@
 # Tiên Nghịch alignment
 
 **Status:** `[~]` In progress  
-**Spec:** [master-plan.md §1.1, §7.7, §7.8](../master-plan.md)  
+**Spec:** [plans/index.md §1.1, §7.7, §7.8](../plans/index.md)  
 **Last updated:** 2026-07-03
 
 Design north star: mortal beginnings, map-by-map hardship, fortuitous inheritance, legendary sword earned late — structure and *feeling* from *Tiên Nghịch*, original story only.
+
+**Story reference:** [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · **Skill:** `tien-nghich`
 
 **Suggested order:** T4 → T1 → T2 → T3 → T7 → T6 → T5 → T8
 

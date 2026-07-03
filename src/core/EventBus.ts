@@ -28,6 +28,9 @@ export type GameEvents = {
     attackerTeam: 'player' | 'enemy';
     victimTeam: 'player' | 'enemy';
   };
+  'player:attack-started': { step: 1 | 2 | 3 };
+  'player:dodge-started': undefined;
+  'skill:cast': { intent: string };
   'progression:level-up': { level: number };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;

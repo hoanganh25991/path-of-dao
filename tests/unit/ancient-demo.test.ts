@@ -6,6 +6,7 @@ import {
   buildAncientSave,
   enterAncientDemo,
   exitAncientDemo,
+  getAncientPath,
   hasMeaningfulProgress,
   isAncientDemoActive,
   listAncientProfiles,
@@ -13,6 +14,8 @@ import {
   resetAncientDemoSession,
 } from '@/progression/AncientDemoManager';
 import { checkAwakeningReady } from '@/progression/InsightSystem';
+import { findWorldMapNode } from '@/progression/WorldMapLoader';
+import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { gameStore } from '@/core/store/gameStore';
 
 beforeEach(async () => {
@@ -89,6 +92,21 @@ describe('AncientDemoManager', () => {
   it('each ancient exposes at least four unlocked skills', () => {
     for (const profile of listAncientProfiles()) {
       expect(profile.unlockedSkills.length).toBeGreaterThanOrEqual(4);
+    }
+  });
+
+  it('each ancient has an ordered road of real maps', () => {
+    for (const profile of listAncientProfiles()) {
+      const path = getAncientPath(profile.id);
+      expect(path.length).toBeGreaterThanOrEqual(2);
+
+      let prevOrder = 0;
+      for (const step of path) {
+        expect(findWorldMapNode(step.mapId)).not.toBeNull();
+        const order = getRealmOrder(step.realmId);
+        expect(order).toBeGreaterThanOrEqual(prevOrder);
+        prevOrder = order;
+      }
     }
   });
 

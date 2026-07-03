@@ -9,7 +9,7 @@
 
 ## 1. Objective
 
-Create a production-ready TypeScript monolith with Vite, linting, testing, and folder structure matching `master-plan.md`. After this sub-plan, `pnpm dev` serves a blank page with no runtime errors.
+Create a production-ready TypeScript monolith with Vite, linting, testing, and folder structure matching `plans/index.md`. After this sub-plan, `pnpm dev` serves a blank page with no runtime errors.
 
 ---
 
