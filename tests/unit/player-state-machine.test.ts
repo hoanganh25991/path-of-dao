@@ -50,20 +50,30 @@ describe('PlayerStateMachine', () => {
     expect(sm.tryAttack()).toBe(1);
   });
 
-  it('cycles heavy finisher variant on each step-3 attack', () => {
+  it('cycles heavy finisher strike on each step-3 attack', () => {
     expect(sm.tryAttack()).toBe(1);
     advance(ATTACK_STEP_DURATIONS_MS[0] + 20);
     expect(sm.tryAttack()).toBe(2);
     advance(ATTACK_STEP_DURATIONS_MS[1] + 20);
     expect(sm.tryAttack()).toBe(3);
-    expect(sm.heavyFinisherVariant).toBe(0);
+    expect(sm.strikeKind).toBe('heavyHaymaker');
     advance(ATTACK_STEP_DURATIONS_MS[2] + 20);
     expect(sm.tryAttack()).toBe(1);
     advance(ATTACK_STEP_DURATIONS_MS[0] + 20);
     expect(sm.tryAttack()).toBe(2);
     advance(ATTACK_STEP_DURATIONS_MS[1] + 20);
     expect(sm.tryAttack()).toBe(3);
-    expect(sm.heavyFinisherVariant).toBe(1);
+    expect(sm.strikeKind).toBe('heavyUppercut');
+  });
+
+  it('rotates light strikes between punch and kick', () => {
+    const kinds = new Set<string>();
+    for (let i = 0; i < 8; i++) {
+      sm.tryAttack();
+      kinds.add(sm.strikeKind);
+      advance(ATTACK_STEP_DURATIONS_MS[0] + 20);
+    }
+    expect(kinds.size).toBeGreaterThan(1);
   });
 
   it('resets the combo after 700ms of no attack', () => {

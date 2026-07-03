@@ -16,12 +16,22 @@ import {
   POSES_ARCHER_ATTACK,
   POSES_ARCHER_IDLE,
   POSES_ARCHER_WALK,
+  POSES_ATTACK_1_SMOOTH,
+  POSES_ATTACK_2_SMOOTH,
+  POSES_ATTACK_3_SMOOTH,
+  POSES_HIT,
   POSES_SLIME_IDLE,
   POSES_SLIME_WALK,
   POSES_TOTEM_ATTACK,
   POSES_TOTEM_IDLE,
   type HeroCombatStyle,
 } from '@/combat/art/stickyManDraw';
+import {
+  STRIKE_ANIM,
+  STRIKE_POSES,
+  UNARMED_STRIKE_KINDS,
+  type UnarmedStrikeKind,
+} from '@/combat/art/stickyManStrikes';
 import type { AttackStyle } from '@/progression/WeaponProgression';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
@@ -31,11 +41,6 @@ export const ANIM = {
   heroAttack1: 'hero_sticky_attack_1',
   heroAttack2: 'hero_sticky_attack_2',
   heroAttack3: 'hero_sticky_attack_3',
-  heroPalmAttack1: 'hero_sticky_palm_1',
-  heroPalmAttack2: 'hero_sticky_palm_2',
-  heroPalmHeavyHaymaker: 'hero_sticky_palm_heavy_haymaker',
-  heroPalmHeavyUppercut: 'hero_sticky_palm_heavy_uppercut',
-  heroPalmHeavyBody: 'hero_sticky_palm_heavy_body',
   heroHit: 'hero_sticky_hit',
   slimeIdle: 'enemy_slime_idle',
   slimeWalk: 'enemy_slime_walk',
@@ -52,16 +57,22 @@ const HERO_ANIM_KEYS = [
   ANIM.heroAttack1,
   ANIM.heroAttack2,
   ANIM.heroAttack3,
-  ANIM.heroPalmAttack1,
-  ANIM.heroPalmAttack2,
-  ANIM.heroPalmHeavyHaymaker,
-  ANIM.heroPalmHeavyUppercut,
-  ANIM.heroPalmHeavyBody,
   ANIM.heroHit,
+  ...UNARMED_STRIKE_KINDS.map((k) => STRIKE_ANIM[k]),
 ] as const;
 
 function toHeroCombatStyle(style: AttackStyle): HeroCombatStyle {
   return style;
+}
+
+function strikeImpactHold(kind: UnarmedStrikeKind): Record<number, number> | undefined {
+  if (kind.startsWith('heavy')) {
+    return { 2: 150, 3: kind === 'heavyHaymaker' ? 170 : 140 };
+  }
+  if (kind.includes('Kick')) {
+    return { 2: 120 };
+  }
+  return { 1: 85 };
 }
 
 function addSheetFromCanvas(
@@ -90,7 +101,6 @@ function createAnim(
   count: number,
   frameRate: number,
   repeat = -1,
-  /** Extra hold time (ms) per frame index — sells impact weight (timing > frames). */
   holds?: Record<number, number>,
 ): void {
   if (scene.anims.exists(key)) {
@@ -114,6 +124,24 @@ function removeHeroAnims(scene: Phaser.Scene): void {
   }
 }
 
+function registerUnarmedStrikes(scene: Phaser.Scene, heroKey: string): void {
+  let offset = heroFrameOffset('unarmed', 'hit') + POSES_HIT.length;
+  for (const kind of UNARMED_STRIKE_KINDS) {
+    const poses = STRIKE_POSES[kind];
+    createAnim(
+      scene,
+      STRIKE_ANIM[kind],
+      heroKey,
+      offset,
+      poses.length,
+      14,
+      0,
+      strikeImpactHold(kind),
+    );
+    offset += poses.length;
+  }
+}
+
 /** Rebuild hero spritesheet + anims for hand strikes (unarmed) or equipped weapon type. */
 export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle = 'unarmed'): void {
   const combatStyle = toHeroCombatStyle(style);
@@ -131,50 +159,45 @@ export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle
 
   createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset(combatStyle, 'idle'), 4, 6);
   createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset(combatStyle, 'walk'), 6, 10);
-  createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset(combatStyle, 'hit'), 2, 10, 0, { 0: 70 });
+  createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset(combatStyle, 'hit'), POSES_HIT.length, 10, 0, {
+    0: 70,
+  });
 
   if (combatStyle === 'unarmed') {
-    createAnim(scene, ANIM.heroPalmAttack1, heroKey, heroFrameOffset(combatStyle, 'palm1'), 3, 14, 0, {
-      1: 90,
-    });
-    createAnim(scene, ANIM.heroPalmAttack2, heroKey, heroFrameOffset(combatStyle, 'palm2'), 3, 14, 0, {
-      1: 85,
-    });
-    createAnim(
-      scene,
-      ANIM.heroPalmHeavyHaymaker,
-      heroKey,
-      heroFrameOffset(combatStyle, 'heavyHaymaker'),
-      4,
-      12,
-      0,
-      { 1: 100, 2: 160 },
-    );
-    createAnim(
-      scene,
-      ANIM.heroPalmHeavyUppercut,
-      heroKey,
-      heroFrameOffset(combatStyle, 'heavyUppercut'),
-      4,
-      12,
-      0,
-      { 2: 150 },
-    );
-    createAnim(scene, ANIM.heroPalmHeavyBody, heroKey, heroFrameOffset(combatStyle, 'heavyBody'), 4, 12, 0, {
-      2: 140,
-    });
+    registerUnarmedStrikes(scene, heroKey);
     return;
   }
 
-  createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset(combatStyle, 'attack1'), 4, 16, 0, {
-    2: 120,
-  });
-  createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset(combatStyle, 'attack2'), 3, 16, 0, {
-    1: 110,
-  });
-  createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset(combatStyle, 'attack3'), 4, 14, 0, {
-    2: 150,
-  });
+  createAnim(
+    scene,
+    ANIM.heroAttack1,
+    heroKey,
+    heroFrameOffset(combatStyle, 'attack1'),
+    POSES_ATTACK_1_SMOOTH.length,
+    14,
+    0,
+    { 2: 120, 3: 100 },
+  );
+  createAnim(
+    scene,
+    ANIM.heroAttack2,
+    heroKey,
+    heroFrameOffset(combatStyle, 'attack2'),
+    POSES_ATTACK_2_SMOOTH.length,
+    14,
+    0,
+    { 2: 110 },
+  );
+  createAnim(
+    scene,
+    ANIM.heroAttack3,
+    heroKey,
+    heroFrameOffset(combatStyle, 'attack3'),
+    POSES_ATTACK_3_SMOOTH.length,
+    13,
+    0,
+    { 3: 140, 4: 130 },
+  );
 }
 
 /** Register sticky-man spritesheets + Phaser animations (BootScene). */
@@ -283,3 +306,5 @@ export function enemyAnimKeys(spriteKey: string): {
 export function isBossSpriteKey(spriteKey: string): boolean {
   return spriteKey === 'enemy_totem';
 }
+
+export { STRIKE_ANIM } from '@/combat/art/stickyManStrikes';

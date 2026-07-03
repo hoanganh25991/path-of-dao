@@ -5,7 +5,7 @@ Pixel-art cultivator + ancient sword on a void background, matching
 sticky-man palettes from src/combat/art/stickyManPalette.ts.
 
 Run:  python3 tools/gen-app-icon.py
-Writes: public/icons/icon-192.png, public/icons/icon-512.png
+Writes: public/favicon.ico, public/icons/icon-192.png, public/icons/icon-512.png
 """
 import math
 import os
@@ -185,12 +185,15 @@ def build_icon():
 def save_icons():
     os.makedirs(OUT_DIR, exist_ok=True)
     src = build_icon()
-    src.save(os.path.join(OUT_DIR, 'icon-512.png'),
-             'PNG', optimize=True)
+    src.resize((512, 512), Image.NEAREST).save(
+        os.path.join(OUT_DIR, 'icon-512.png'), 'PNG', optimize=True)
     src.resize((192, 192), Image.NEAREST).save(
         os.path.join(OUT_DIR, 'icon-192.png'), 'PNG', optimize=True)
+    src.resize((32, 32), Image.NEAREST).save(
+        os.path.join(ROOT, 'public', 'favicon.ico'), format='ICO')
     print(f'Wrote {OUT_DIR}/icon-512.png (512×512)')
     print(f'Wrote {OUT_DIR}/icon-192.png (192×192)')
+    print(f'Wrote {ROOT}/public/favicon.ico (32×32)')
 
 
 if __name__ == '__main__':

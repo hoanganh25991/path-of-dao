@@ -8,6 +8,7 @@ import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { recordSkillInsight } from '@/progression/InsightSystem';
 import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/SkillLoader';
 import { canUseSwordIntent, isArmedAttackStyle } from '@/progression/WeaponProgression';
+import { isKickStrike } from '@/combat/art/stickyManStrikes';
 import { canCastEquippedSkill } from '@/progression/SkillLoadout';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
@@ -21,7 +22,8 @@ export interface SkillCooldownSnapshot {
 const SLASH_VISIBLE_MS = 100;
 const SLASH_OFFSET_PX = 26;
 const SWORD_REACH_PX = [40, 45, 60] as const;
-const PALM_REACH_PX = [28, 32, 46] as const;
+const PALM_REACH_PX = [28, 34, 48] as const;
+const KICK_REACH_PX = [32, 40, 54] as const;
 const SLASH_TEXTURE_SIZE = 64;
 const SLASH_HIT_MS = 80;
 const SLASH_HALF_ARC = Math.PI / 3;
@@ -49,7 +51,10 @@ export class CombatComponent {
     this.player.body.setVelocity(0, 0);
     if (this.player.attackStyle === 'sword') {
       this.spawnSlash(step);
-    } else if (step === MAX_COMBO_STEP) {
+    } else if (
+      !isArmedAttackStyle(this.player.attackStyle) &&
+      (step === MAX_COMBO_STEP || isKickStrike(this.player.sm.strikeKind))
+    ) {
       this.spawnHeavyPalmImpact(step);
     }
     this.spawnAttackHitbox(step);
@@ -96,7 +101,10 @@ export class CombatComponent {
   }
 
   private reachForStep(step: number): number {
-    const table = isArmedAttackStyle(this.player.attackStyle) ? SWORD_REACH_PX : PALM_REACH_PX;
+    if (isArmedAttackStyle(this.player.attackStyle)) {
+      return SWORD_REACH_PX[step - 1] ?? SWORD_REACH_PX[0];
+    }
+    const table = isKickStrike(this.player.sm.strikeKind) ? KICK_REACH_PX : PALM_REACH_PX;
     return table[step - 1] ?? table[0];
   }
 

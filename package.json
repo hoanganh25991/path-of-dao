@@ -16,6 +16,7 @@
     "story:stubs": "node tools/generate-story-stubs.mjs",
     "content:validate": "node tools/content/validate-all.mjs",
     "art:encounters": "node tools/generate-encounter-art.mjs",
+    "icons:gen": "python3 tools/gen-app-icon.py",
     "content:pack": "node tools/content/pack-manifest.mjs",
     "i18n:lint": "node tools/content/lint-i18n.mjs",
     "i18n:bestiary": "node tools/content/generate-bestiary-locales.mjs",
