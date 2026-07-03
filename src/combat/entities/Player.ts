@@ -10,6 +10,8 @@ import { CombatComponent } from '@/combat/components/CombatComponent';
 import { DodgeComponent } from '@/combat/components/DodgeComponent';
 import { PlayerAnimController } from '@/combat/animations/PlayerAnimController';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import { applyStickyManSprite } from '@/combat/art/stickyManAssets';
+import { FRAME_H } from '@/combat/art/stickyManPalette';
 import type { HurtboxEntity, CombatTeam } from '@/combat/combat/Hurtbox';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
@@ -42,10 +44,11 @@ export class Player extends EntityBase implements HurtboxEntity {
     super(scene, x, y, TEXTURE_KEYS.player, stats);
 
     this.spawnPoint = { x, y };
+    applyStickyManSprite(this.sprite);
     this.sprite.setDepth(10);
     this.sprite.setCollideWorldBounds(true);
-    this.body.setSize(22, 26);
-    this.body.setOffset(3, 10);
+    this.body.setSize(16, 12);
+    this.body.setOffset(8, FRAME_H - 12);
 
     this.movement = new MovementComponent(this);
     this.combat = new CombatComponent(this, hitboxes);
@@ -100,6 +103,7 @@ export class Player extends EntityBase implements HurtboxEntity {
 
     this.movement.update(move);
     this.dodge.update(dtMs);
+    this.combat.update(dtMs);
     this.applyKnockback(dtMs);
     this.anim.update();
   }

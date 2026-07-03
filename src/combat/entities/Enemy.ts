@@ -11,6 +11,12 @@ import type { HurtboxEntity, CombatTeam } from '@/combat/combat/Hurtbox';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 import { startKnockback, tickKnockback, type KnockbackState } from '@/combat/combat/Knockback';
 import { clearHitFlash } from '@/combat/combat/HitFlash';
+import {
+  applyStickyManSprite,
+  enemyAnimKeys,
+  isBossSpriteKey,
+} from '@/combat/art/stickyManAssets';
+import { BOSS_FRAME_H, FRAME_H } from '@/combat/art/stickyManPalette';
 
 export const TELEGRAPH_MS = 300;
 export const STRIKE_MS = 100;
@@ -60,6 +66,7 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   private attackPhaseMs = 0;
   private deathMs = 0;
   private knockback: KnockbackState | null = null;
+  private animKeys!: ReturnType<typeof enemyAnimKeys>;
   private readonly hpBarBg: Phaser.GameObjects.Rectangle;
   private readonly hpBarFill: Phaser.GameObjects.Rectangle;
 
@@ -70,8 +77,10 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   ) {
     super(scene, -1000, -1000, config.spriteKey, new StatSheet(toBaseStats(config)));
     this.config = config;
+    this.animKeys = enemyAnimKeys(config.spriteKey);
     this.brain = createDecider(config.archetype);
     this.sprite.setDepth(9);
+    applyStickyManSprite(this.sprite, isBossSpriteKey(config.spriteKey));
 
     this.hpBarBg = scene.add
       .rectangle(0, 0, HP_BAR_WIDTH, HP_BAR_HEIGHT, 0x000000, 0.6)
@@ -114,10 +123,12 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.sprite.clearTint();
     this.body.enable = true;
     this.body.reset(x, y);
+    this.configureBody();
 
     this.hpBarBg.setVisible(true);
     this.hpBarFill.setVisible(true).setScale(1, 1);
     this.updateHpBar();
+    this.sprite.play(this.animKeys.idle);
   }
 
   /** Hide + disable (pool release). Does not destroy the GameObject. */
@@ -182,6 +193,8 @@ export class Enemy extends EntityBase implements HurtboxEntity {
       this.beginAttack();
     } else {
       this.body.setVelocity(decision.vx, decision.vy);
+      const moving = Math.abs(decision.vx) > 1 || Math.abs(decision.vy) > 1;
+      this.updateLocomotionAnim(moving);
       if (Math.abs(decision.vx) > 1) {
         this.facing = decision.vx > 0 ? 1 : -1;
         this.sprite.setFlipX(this.facing < 0);
@@ -226,6 +239,9 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.cooldownMs = this.config.attackCooldownMs;
     this.body.setVelocity(0, 0);
     this.sprite.setTint(0xff5a4a);
+    if (this.animKeys.attack) {
+      this.sprite.play(this.animKeys.attack);
+    }
   }
 
   private updateAttackPhase(dtMs: number): void {
@@ -263,8 +279,26 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   }
 
   private trackHpBar(): void {
-    const y = this.y - this.sprite.displayHeight / 2 - 6;
+    const y = this.y - this.sprite.displayHeight - 4;
     this.hpBarBg.setPosition(this.x, y);
     this.hpBarFill.setPosition(this.x - HP_BAR_WIDTH / 2, y);
+  }
+
+  private configureBody(): void {
+    const boss = isBossSpriteKey(this.config.spriteKey);
+    if (boss) {
+      this.body.setSize(22, 14);
+      this.body.setOffset(13, BOSS_FRAME_H - 14);
+    } else {
+      this.body.setSize(16, 12);
+      this.body.setOffset(8, FRAME_H - 12);
+    }
+  }
+
+  private updateLocomotionAnim(moving: boolean): void {
+    const key = moving ? this.animKeys.walk : this.animKeys.idle;
+    if (this.sprite.anims.currentAnim?.key !== key) {
+      this.sprite.play(key);
+    }
   }
 }

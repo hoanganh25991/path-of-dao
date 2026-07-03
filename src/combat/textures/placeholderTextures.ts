@@ -7,7 +7,7 @@ import type Phaser from 'phaser';
 
 export const TEXTURE_KEYS = {
   tileset: 'tiles-grove',
-  player: 'player-placeholder',
+  player: 'hero_sticky',
   slash: 'slash-placeholder',
   bolt: 'bolt-placeholder',
   arrow: 'arrow-placeholder',
@@ -72,22 +72,6 @@ export function createPlaceholderTextures(scene: Phaser.Scene): void {
     }
   }
 
-  if (!textures.exists(TEXTURE_KEYS.player)) {
-    const w = 28;
-    const h = 36;
-    const canvas = textures.createCanvas(TEXTURE_KEYS.player, w, h);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.fillStyle = '#d9c78f';
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = '#8f7b4a';
-      ctx.fillRect(0, 0, w, 10); // "head" band to make facing/flip readable
-      ctx.fillStyle = '#3b2f1b';
-      ctx.fillRect(w - 8, 3, 4, 4); // eye marks the facing side (right)
-      canvas.refresh();
-    }
-  }
-
   if (!textures.exists(TEXTURE_KEYS.slash)) {
     const size = 64;
     const canvas = textures.createCanvas(TEXTURE_KEYS.slash, size, size);
@@ -141,64 +125,5 @@ export function createPlaceholderTextures(scene: Phaser.Scene): void {
     }
   }
 
-  createEnemyTextures(scene);
-}
-
-function createEnemyTextures(scene: Phaser.Scene): void {
-  const textures = scene.textures;
-
-  if (!textures.exists('enemy_slime')) {
-    const w = 24;
-    const h = 18;
-    const canvas = textures.createCanvas('enemy_slime', w, h);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.fillStyle = '#4a9d4a';
-      ctx.beginPath();
-      ctx.ellipse(w / 2, h - 7, w / 2 - 1, 7, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#6cc26c';
-      ctx.beginPath();
-      ctx.ellipse(w / 2, h - 10, w / 2 - 5, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#1c331c';
-      ctx.fillRect(8, 6, 3, 3);
-      ctx.fillRect(14, 6, 3, 3);
-      canvas.refresh();
-    }
-  }
-
-  if (!textures.exists('enemy_archer')) {
-    const w = 24;
-    const h = 30;
-    const canvas = textures.createCanvas('enemy_archer', w, h);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.fillStyle = '#7a5aa8';
-      ctx.fillRect(4, 8, w - 8, h - 8);
-      ctx.fillStyle = '#9a7ac8';
-      ctx.fillRect(6, 0, w - 12, 10);
-      ctx.fillStyle = '#2a1c3d';
-      ctx.fillRect(w - 10, 3, 3, 3);
-      canvas.refresh();
-    }
-  }
-
-  if (!textures.exists('enemy_totem')) {
-    const w = 28;
-    const h = 36;
-    const canvas = textures.createCanvas('enemy_totem', w, h);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.fillStyle = '#5c5c68';
-      ctx.fillRect(4, 2, w - 8, h - 2);
-      ctx.fillStyle = '#42424c';
-      ctx.fillRect(0, h - 8, w, 8);
-      ctx.fillStyle = '#d94a3a';
-      ctx.beginPath();
-      ctx.arc(w / 2, 12, 4, 0, Math.PI * 2);
-      ctx.fill();
-      canvas.refresh();
-    }
-  }
+  // Enemy sticky-man sheets registered in registerStickyManAssets (BootScene).
 }

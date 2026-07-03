@@ -1,13 +1,10 @@
 import Phaser from 'phaser';
-import { arcContains, circlesOverlap } from '@/combat/combat/geometry';
+import { arcOverlapsCircle, circlesOverlap } from '@/combat/combat/geometry';
 import { resolveHit } from '@/combat/combat/CombatResolver';
 import { Hitbox, type HitboxConfig, type HitboxShape } from '@/combat/combat/Hitbox';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import { updateHitFlashes } from '@/combat/combat/HitFlash';
 import { DamageNumberPool } from '@/combat/vfx/DamageNumber';
-
-const ARC_SAMPLE_COUNT = 3;
-const HURTBOX_SAMPLE_RADIUS = 4;
 
 /** Spawns, tracks, and resolves active hitboxes against registered hurtboxes. */
 export class HitboxManager {
@@ -89,25 +86,22 @@ export class HitboxManager {
       case 'circle':
         return circlesOverlap(shape.x, shape.y, shape.radius, tx, ty, tr);
       case 'arc':
-        if (arcContains(shape.x, shape.y, shape.radius, shape.startAngle, shape.endAngle, tx, ty)) {
-          return true;
-        }
-        // Also sample hurtbox edge points for partial overlap.
-        for (let i = 0; i < ARC_SAMPLE_COUNT; i++) {
-          const a = shape.startAngle + ((shape.endAngle - shape.startAngle) * i) / (ARC_SAMPLE_COUNT - 1);
-          const sx = tx + Math.cos(a) * tr;
-          const sy = ty + Math.sin(a) * tr;
-          if (arcContains(shape.x, shape.y, shape.radius, shape.startAngle, shape.endAngle, sx, sy)) {
-            return true;
-          }
-        }
-        return false;
+        return arcOverlapsCircle(
+          shape.x,
+          shape.y,
+          shape.radius,
+          shape.startAngle,
+          shape.endAngle,
+          tx,
+          ty,
+          tr,
+        );
       case 'rect': {
         const halfW = shape.width / 2;
         const halfH = shape.height / 2;
         const closestX = Phaser.Math.Clamp(tx, shape.x - halfW, shape.x + halfW);
         const closestY = Phaser.Math.Clamp(ty, shape.y - halfH, shape.y + halfH);
-        return circlesOverlap(closestX, closestY, HURTBOX_SAMPLE_RADIUS, tx, ty, tr);
+        return circlesOverlap(closestX, closestY, 4, tx, ty, tr);
       }
     }
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arcContains, angleInSweep, circlesOverlap } from '@/combat/combat/geometry';
+import { arcContains, arcOverlapsCircle, angleInSweep, circlesOverlap } from '@/combat/combat/geometry';
 
 describe('circlesOverlap', () => {
   it('detects touching circles', () => {
@@ -42,5 +42,16 @@ describe('arcContains', () => {
 
   it('includes points on arc boundary radius', () => {
     expect(arcContains(cx, cy, radius, -Math.PI / 4, Math.PI / 4, cx + radius, cy)).toBe(true);
+  });
+});
+
+describe('arcOverlapsCircle', () => {
+  it('hits large boss hurtbox when center is just outside arc but body overlaps', () => {
+    const hit = arcOverlapsCircle(0, 0, 50, -Math.PI / 3, Math.PI / 3, 58, 0, 18);
+    expect(hit).toBe(true);
+  });
+
+  it('misses when circle is beyond arc radius + hurtbox', () => {
+    expect(arcOverlapsCircle(0, 0, 40, -Math.PI / 3, Math.PI / 3, 100, 0, 10)).toBe(false);
   });
 });

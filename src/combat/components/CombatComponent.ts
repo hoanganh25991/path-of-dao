@@ -1,3 +1,4 @@
+import type Phaser from 'phaser';
 import { ATTACK_STEP_MULTIPLIERS, MAX_COMBO_STEP } from '@/combat/state/PlayerStateMachine';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 import type { Player } from '@/combat/entities/Player';
@@ -15,11 +16,20 @@ const COMBO_FINISHER_KNOCKBACK = 180;
 
 const BOLT_SPEED_PX_PER_SEC = 420;
 const BOLT_RANGE_PX = 400;
+const BOLT_HIT_RADIUS = 12;
+const BOLT_SKILL_MULTIPLIER = 1.8;
 
-/** Attack combo + skill stub. Spawns arc hitboxes via HitboxManager (09). */
+interface SkillBolt {
+  img: Phaser.Physics.Arcade.Image;
+  hitboxId: string;
+  ttlMs: number;
+}
+
+/** Attack combo + spirit skill bolt (damages enemies including bosses). */
 export class CombatComponent {
   /** Multiplier of the attack in progress — consumed by hit resolution. */
   currentMultiplier = 0;
+  private bolts: SkillBolt[] = [];
 
   constructor(
     private readonly player: Player,
@@ -37,7 +47,7 @@ export class CombatComponent {
     return true;
   }
 
-  /** Skill stub: spend mana, fire skill.basic_bolt forward (full system in 19). */
+  /** Spirit bolt — pierces enemies (K / skill button). */
   trySkill(): boolean {
     if (!this.player.sm.canAct) return false;
     if (!this.player.stats.spendMana(SKILL_MANA_COST)) return false;
@@ -45,6 +55,23 @@ export class CombatComponent {
     this.player.emitStatsChanged();
     this.spawnBolt();
     return true;
+  }
+
+  update(dtMs: number): void {
+    this.bolts = this.bolts.filter((bolt) => {
+      bolt.ttlMs -= dtMs;
+      if (bolt.ttlMs <= 0 || !bolt.img.active) {
+        bolt.img.destroy();
+        return false;
+      }
+      this.hitboxes.setHitboxShape(bolt.hitboxId, {
+        kind: 'circle',
+        radius: BOLT_HIT_RADIUS,
+        x: bolt.img.x,
+        y: bolt.img.y,
+      });
+      return true;
+    });
   }
 
   private spawnSlashHitbox(step: number): void {
@@ -75,7 +102,7 @@ export class CombatComponent {
     const scale = (SLASH_REACH_PX[step - 1] ?? 40) / SLASH_TEXTURE_SIZE;
 
     const slash = scene.add
-      .image(sprite.x + facing * SLASH_OFFSET_PX, sprite.y, TEXTURE_KEYS.slash)
+      .image(sprite.x + facing * SLASH_OFFSET_PX, sprite.y - sprite.displayHeight * 0.45, TEXTURE_KEYS.slash)
       .setFlipX(facing < 0)
       .setScale(scale)
       .setDepth(sprite.depth + 1);
@@ -87,12 +114,25 @@ export class CombatComponent {
     const { scene, sprite, facing } = this.player;
 
     const bolt = scene.physics.add
-      .image(sprite.x + facing * 20, sprite.y - 4, TEXTURE_KEYS.bolt)
+      .image(sprite.x + facing * 20, sprite.y - sprite.displayHeight * 0.55, TEXTURE_KEYS.bolt)
       .setFlipX(facing < 0)
       .setDepth(sprite.depth + 1);
     bolt.setVelocity(facing * BOLT_SPEED_PX_PER_SEC, 0);
 
     const lifetimeMs = (BOLT_RANGE_PX / BOLT_SPEED_PX_PER_SEC) * 1000;
-    scene.time.delayedCall(lifetimeMs, () => bolt.destroy());
+    const hitbox = this.hitboxes.spawn({
+      ownerId: this.player.id,
+      team: 'player',
+      shape: { kind: 'circle', radius: BOLT_HIT_RADIUS, x: bolt.x, y: bolt.y },
+      damage: {
+        attacker: this.player.stats.resolved,
+        skillMultiplier: BOLT_SKILL_MULTIPLIER,
+        damageType: 'spirit',
+      },
+      lifetimeMs,
+      pierce: 6,
+    });
+
+    this.bolts.push({ img: bolt, hitboxId: hitbox.id, ttlMs: lifetimeMs });
   }
 }

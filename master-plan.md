@@ -56,6 +56,7 @@ The player should always feel: *my character has grown, my realm matters, my aur
 | 2D maps (combat) | **Phaser 3** | Mature mobile 2D, tilemaps, physics, particles, touch input |
 | 3D Home | **Three.js r170+** | Hero viewer, aura VFX, equipment attach points |
 | UI overlay | **HTML/CSS** (not Phaser DOM) | Responsive HUD, menus, story reader; easier i18n |
+| 2D character art | **Sticky-man pixel** (procedural MVP) | See [docs/pixel-art-style.md](./docs/pixel-art-style.md) — 32×40 frames, 2× display, ≤6 colors |
 | Bridge | Custom `SceneRouter` | Single canvas stack; swap Phaser ↔ Three without full page reload |
 
 ### 3.3 Data & State
@@ -322,6 +323,7 @@ Every sub-plan must satisfy before marking done:
 | Save corruption | Player rage-quit | Checksum, autosave rotation, export backup |
 | i18n string overflow (Vietnamese) | UI breaks | Flexible layouts, max-width tokens, test both locales early |
 | Insight system complexity | Over-engineering | MVP: 6 base skills + 6 awakenings; expand to 40 via variants in Phase 6 data |
+| Art consistency | Characters feel disconnected | Locked sticky-man style guide: [docs/pixel-art-style.md](./docs/pixel-art-style.md) |
 
 ---
 

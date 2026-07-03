@@ -46,3 +46,32 @@ export function angleInSweep(angle: number, start: number, end: number): boolean
 
   return a >= s && a <= e;
 }
+
+const ARC_CIRCLE_SAMPLES = 8;
+
+/** Arc sector vs circular hurtbox — samples hurtbox circumference. */
+export function arcOverlapsCircle(
+  ax: number,
+  ay: number,
+  radius: number,
+  startAngle: number,
+  endAngle: number,
+  cx: number,
+  cy: number,
+  cr: number,
+): boolean {
+  const dx = cx - ax;
+  const dy = cy - ay;
+  const dist = Math.hypot(dx, dy);
+  if (dist > radius + cr) return false;
+
+  if (arcContains(ax, ay, radius + cr, startAngle, endAngle, cx, cy)) return true;
+
+  for (let i = 0; i < ARC_CIRCLE_SAMPLES; i++) {
+    const a = (i / ARC_CIRCLE_SAMPLES) * Math.PI * 2;
+    const px = cx + Math.cos(a) * cr;
+    const py = cy + Math.sin(a) * cr;
+    if (arcContains(ax, ay, radius, startAngle, endAngle, px, py)) return true;
+  }
+  return false;
+}
