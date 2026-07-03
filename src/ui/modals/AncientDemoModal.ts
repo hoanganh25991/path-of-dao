@@ -94,7 +94,16 @@ export function showAncientDemoModal(
     confirm.textContent = I18nManager.t('demo.enter.confirm');
 
     actions.append(cancel, confirm);
-    card.append(header, skillsLabel, tabs, detailHost, note, actions);
+
+    const body = document.createElement('div');
+    body.className = 'ancient-demo-modal__body';
+    body.append(header, skillsLabel, tabs, detailHost);
+
+    const footer = document.createElement('footer');
+    footer.className = 'ancient-demo-modal__footer';
+    footer.append(note, actions);
+
+    card.append(body, footer);
     overlay.append(backdrop, card);
     uiRoot.appendChild(overlay);
 

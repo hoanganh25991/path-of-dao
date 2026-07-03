@@ -180,6 +180,11 @@
       ],
       "startScene": "combat",
       "startMapId": "map.test.grove",
+      "path": [
+        { "mapId": "map.mist_forest.02", "realmId": "foundation_establishment", "storySceneId": "story.ch02.spirit_fox" },
+        { "mapId": "map.burning_desert.02", "realmId": "core_formation", "storySceneId": "story.ch05.survival" },
+        { "mapId": "map.thunder_peaks.02", "realmId": "nascent_soul", "storySceneId": "story.ch06.lightning_step" }
+      ],
       "save": {
         "level": 38,
         "realmId": "nascent_soul",
@@ -231,6 +236,11 @@
       ],
       "startScene": "home",
       "startMapId": "map.test.grove",
+      "path": [
+        { "mapId": "map.fallen_village.02", "realmId": "qi_condensation", "storySceneId": "story.ch01.awakening_jade" },
+        { "mapId": "map.mist_forest.02", "realmId": "foundation_establishment", "storySceneId": "story.ch02.spirit_fox" },
+        { "mapId": "map.moon_lake.02", "realmId": "core_formation", "storySceneId": "story.ch04.ancient_seal" }
+      ],
       "save": {
         "level": 22,
         "realmId": "core_formation",
@@ -292,6 +302,11 @@
       ],
       "startScene": "combat",
       "startMapId": "map.test.grove",
+      "path": [
+        { "mapId": "map.stone_canyon.02", "realmId": "foundation_establishment", "storySceneId": "story.ch03.bandit_end" },
+        { "mapId": "map.thunder_peaks.02", "realmId": "nascent_soul", "storySceneId": "story.ch06.lightning_step" },
+        { "mapId": "map.abyss_rift.02", "realmId": "void_spirit", "storySceneId": "story.ch08.corruption" }
+      ],
       "save": {
         "level": 52,
         "realmId": "void_spirit",

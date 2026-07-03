@@ -11,6 +11,7 @@ import { normalizeLoadout } from '@/progression/SkillLoadout';
 import { buildPlayerStats } from '@/progression/playerStats';
 import {
   ancientsFileSchema,
+  type AncientPathStep,
   type AncientProfile,
   type AncientSaveTemplate,
 } from '@/shared/schemas/ancient-demo';
@@ -140,6 +141,11 @@ export function getAncientProfile(ancientId: string): AncientProfile {
   return profileById(ancientId);
 }
 
+/** The ordered road an ancient walked to reach their power — the "follow his path" content. */
+export function getAncientPath(ancientId: string): AncientPathStep[] {
+  return [...profileById(ancientId).path];
+}
+
 export function isAncientDemoActive(): boolean {
   return activeAncientId !== null;
 }
@@ -266,6 +272,7 @@ export function resetAncientDemoSession(): void {
 export class AncientDemoManager {
   static listProfiles = listAncientProfiles;
   static getProfile = getAncientProfile;
+  static getPath = getAncientPath;
   static buildSave = buildAncientSave;
   static isActive = isAncientDemoActive;
   static getActiveId = getActiveAncientId;
