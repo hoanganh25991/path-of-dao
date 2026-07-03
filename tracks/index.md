@@ -12,8 +12,8 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 
 | Metric | Value |
 |--------|-------|
-| Sub-plans done | **17 / 28** (61%) |
-| In progress | **10** (incl. 28 — Path & Journey, Phase A landed) |
+| Sub-plans done | **18 / 28** (64%) |
+| In progress | **9** |
 | Pending | **1** (26 — PWA & ship) |
 | Cross-cutting | Tiên Nghịch alignment **8 / 8 open or partial** |
 | Active thread | **25** audio/VFX polish → then **26** ship |
@@ -31,7 +31,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | **6 — MVP Content** | 21–23 | `[~]` All in progress |
 | **7 — Polish & Ship** | 24–26 | `[~]` 24–25 in progress; 26 pending |
 | **Cross** | 27 | `[x]` Ancient Echo demo done |
-| **Cross** | 28 | `[~]` Path & Journey — My Path landed; guided ancient walk pending |
+| **Cross** | 28 | `[x]` Path & Journey — My Path + guided ancient walk |
 
 **Critical path:** `01 → 03 → 06 → 13 → 17 → 21 → 24` — through **17** complete; **21** and **24** active.
 
@@ -80,7 +80,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | 25 | Audio, aura VFX, juice | 7 | `[~]` | [track](./25-audio-vfx-polish.md) | [plan](../plans/25-audio-vfx-polish.md) |
 | 26 | PWA, performance, ship checklist | 7 | `[ ]` | [track](./26-pwa-performance-ship.md) | [plan](../plans/26-pwa-performance-ship.md) |
 | 27 | Echoes of the Ancients (guided demo) | Cross | `[x]` | [track](./27-ancient-echo-demo.md) | [plan](../plans/27-ancient-echo-demo.md) |
-| 28 | Path & Journey (My Path + follow ancients) | Cross | `[~]` | [track](./28-path-journey-system.md) | [plan](../plans/28-path-journey-system.md) |
+| 28 | Path & Journey (My Path + follow ancients) | Cross | `[x]` | [track](./28-path-journey-system.md) | [plan](../plans/28-path-journey-system.md) |
 
 \* Done for sub-plan scope; Tiên Nghịch alignment items still open — see below.
 
@@ -111,7 +111,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 From [plans/index.md §12](../plans/index.md). Checked items reflect current build state.
 
 - [x] Echoes of the Ancients — six focused demo walks; combat-first god-mode (sub-plan 27)
-- [~] Path & Journey — My Path scroll records realm/level/CP per milestone; ancient roads authored (sub-plan 28; guided walk pending)
+- [x] Path & Journey — My Path scroll + guided ancient walk (sub-plan 28)
 - [ ] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
 - [ ] **New game starts unarmed** — palm combo only; no sword in weapon slot (T1, T4)
 - [ ] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
@@ -252,15 +252,14 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 → [full track](./26-pwa-performance-ship.md)
 
-### 28 — Path & Journey `[~]`
+### 28 — Path & Journey `[x]`
 
-| Done (Phase A) | Remaining (Phase B) |
-|------|-----------|
-| `progress.journey[]` save field (back-compat default `[]`) | `PathWalkManager` — guided multi-map ancient walk |
-| `JourneyLog` snapshot/append/dedupe; recording on map clear, story, breakthrough | Story beats play between an ancient's map stages |
-| My Path scroll (`StoryPanel` + `journeyView`) with `Realm · Lv · CP` per step | "His Road" list + Follow button in `AncientDemoModal` |
-| Ancient `path[]` authored for all 6; `getAncientPath()` | `boss` / `encounter` journey kinds wired |
-| Tests: journey-log, ancient road; 319 tests green | en/vi `demo.path.*` follow strings |
+| Done |
+|------|
+| My Path scroll, journey recording, ancient `path[]` data |
+| PathWalkManager guided walk (map → story → map → Home) |
+| Modal **Their Road** + Follow / Walk Here; en/vi strings |
+| 330 tests green |
 
 → [full track](./28-path-journey-system.md)
 

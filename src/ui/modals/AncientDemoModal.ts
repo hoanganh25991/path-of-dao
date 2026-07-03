@@ -137,8 +137,8 @@ export function showAncientDemoModal(
     const walkHere = document.createElement('button');
     walkHere.type = 'button';
     walkHere.className = 'ancient-demo-modal__walk-here';
-    walkHere.textContent = I18nManager.t('demo.path.walk_here');
-    walkHere.hidden = path.length === 0;
+    walkHere.textContent =
+      path.length > 0 ? I18nManager.t('demo.path.walk_here') : I18nManager.t('demo.enter.confirm');
 
     const followPath = document.createElement('button');
     followPath.type = 'button';
@@ -146,7 +146,10 @@ export function showAncientDemoModal(
     followPath.textContent = I18nManager.t('demo.path.follow');
     followPath.hidden = path.length === 0;
 
-    actions.append(cancel, walkHere, followPath);
+    actions.append(cancel, walkHere);
+    if (path.length > 0) {
+      actions.appendChild(followPath);
+    }
 
     const body = document.createElement('div');
     body.className = 'ancient-demo-modal__body';

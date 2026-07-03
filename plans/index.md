@@ -480,7 +480,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 - [ ] PWA installable; 30 FPS on mid-range Android
 - [ ] No console errors in 10-minute playthrough
 - [x] Echoes of the Ancients — six focused demo walks; combat-first with god-mode power fantasy (sub-plan 27)
-- [~] Path & Journey — My Path scroll records realm/level/CP per milestone; ancient roads authored (sub-plan 28; guided walk pending)
+- [x] Path & Journey — My Path scroll + guided ancient walk (sub-plan 28)
 
 ---
 

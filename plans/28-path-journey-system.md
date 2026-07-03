@@ -91,14 +91,16 @@ Labels are derived at render time (region name via `WorldMapLoader`, realm name 
 | `tests/unit/journey-log.test.ts` | snapshot, dedupe, hook recording | ✅ |
 | `tests/unit/ancient-demo.test.ts` | ordered road of real maps per ancient | ✅ |
 
-**Phase B (pending):**
+**Phase B (landed):**
 
-| File | Purpose |
-|------|---------|
-| `src/progression/PathWalkManager.ts` | active ancient path cursor; advance map → story → map |
-| `src/ui/modals/AncientDemoModal.ts` | render "His Road" list; Follow starts a walk |
-| `src/ui/home/panels/EchoesPanel.ts` | Follow-path entry (vs. single-map showcase) |
-| `content/locales/{en,vi}/demo.json` | `demo.path.*` follow strings |
+| File | Purpose | Status |
+|------|---------|--------|
+| `src/progression/PathWalkManager.ts` | active ancient path cursor; advance map → story → map | ✅ |
+| `src/ui/modals/AncientDemoModal.ts` | render "Their Road" list; Follow / Walk Here | ✅ |
+| `src/ui/home/panels/EchoesPanel.ts` | Follow-path entry (vs. single-map showcase) | ✅ |
+| `src/ui/home/ancientPathView.ts` | path step labels for modal | ✅ |
+| `content/locales/{en,vi}/demo.json` | `demo.path.*` follow strings | ✅ |
+| `tests/unit/path-walk.test.ts` | guided walk routing | ✅ |
 
 ---
 
@@ -120,21 +122,20 @@ Labels are derived at render time (region name via `WorldMapLoader`, realm name 
 - [x] Every ancient has a ≥2-step road of real maps, realm order non-decreasing.
 - [x] Pre-28 saves load (default `[]`); `typecheck` + 319 tests green.
 
-## 6. Phase B — Follow the Ancient's Path (pending)
+## 6. Phase B — Follow the Ancient's Path (landed)
 
-1. `PathWalkManager` tracks the active ancient + current step index (session only,
-   like the demo backup — never persists to IndexedDB).
-2. Selecting **Follow his path** enters the ancient demo save, routes to step 1's map
-   in god-mode; on map clear, play the step's `storySceneId` (if any), then advance to
-   the next step's map; finish → return Home.
-3. `AncientDemoModal` shows the road as a readable list (region · realm · story) so it
-   teaches even before walking.
-4. "Forge your own path" remains the default free-travel loop (no code change).
+1. `PathWalkManager` tracks the active ancient + current step index (session only;
+   cleared on `exitAncientDemo`).
+2. **Follow Their Path** enters the ancient demo save, routes to step 1's map in
+   god-mode; on map clear, plays the step's `storySceneId` (replay, no rewards),
+   then advances to the next map; finish → `exitAncientDemo` + Home.
+3. **Walk Here** keeps the single-map god-mode showcase on the player's current map.
+4. `AncientDemoModal` shows **Their Road** (region · realm · story) before walking.
 
-**Acceptance (target):**
-- [ ] Following a path visits each step's map in order with story beats between.
-- [ ] Exiting mid-walk restores the player's real journey (no demo leakage to IDB).
-- [ ] The ancient's road is readable in the modal in en + vi.
+**Acceptance (met):**
+- [x] Following a path visits each step's map in order with story beats between.
+- [x] Exiting mid-walk restores the player's real journey (no demo leakage to IDB).
+- [x] The ancient's road is readable in the modal in en + vi.
 
 ---
 
