@@ -1,0 +1,8 @@
+{
+  "id": "skill.time.slow",
+  "intent": "time",
+  "nameKey": "skill.time.slow.name",
+  "kind": "bolt",
+  "manaCost": 25,
+  "skillMultiplier": 1.5
+}

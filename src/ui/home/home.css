@@ -463,6 +463,28 @@
   transition: width 200ms ease;
 }
 
+.home-skills__row--ready {
+  border-color: rgba(255, 210, 96, 0.45);
+}
+
+.home-skills__row--awakened .home-skills__bar-fill {
+  background: linear-gradient(90deg, #c9a227, #ffe08a);
+}
+
+.home-skills__awaken {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgba(255, 210, 96, 0.5);
+  border-radius: 0.35rem;
+  background: rgba(255, 210, 96, 0.1);
+  color: #ffe08a;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 /* Story */
 .home-story__list {
   display: flex;

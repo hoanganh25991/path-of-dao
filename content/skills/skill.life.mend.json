@@ -1,0 +1,11 @@
+{
+  "id": "skill.life.mend",
+  "intent": "life",
+  "nameKey": "skill.life.mend.name",
+  "kind": "heal",
+  "manaCost": 15,
+  "skillMultiplier": 0,
+  "awakenedOverrides": {
+    "healPct": 0.1
+  }
+}

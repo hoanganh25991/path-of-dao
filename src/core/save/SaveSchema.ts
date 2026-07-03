@@ -34,8 +34,20 @@ export const playerSaveV1Schema = z.object({
     z.object({
       xp: z.number().min(0),
       awakened: z.boolean(),
+      totalUses: z.number().int().min(0).default(0),
     }),
   ),
+  equippedSkills: z
+    .object({
+      primary: z.string(),
+      secondary: z.string(),
+      ultimate: z.string(),
+    })
+    .default({
+      primary: 'skill.void.slash',
+      secondary: 'skill.sword.slash',
+      ultimate: 'skill.time.slow',
+    }),
   inventory: z.object({
     items: z.array(z.object({ id: z.string(), qty: z.number().int().min(0) })),
     gold: z.number().min(0),

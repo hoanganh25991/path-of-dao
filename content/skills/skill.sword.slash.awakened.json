@@ -1,0 +1,12 @@
+{
+  "id": "skill.sword.slash.awakened",
+  "intent": "sword",
+  "nameKey": "skill.sword.slash.awakened.name",
+  "kind": "arc",
+  "manaCost": 20,
+  "skillMultiplier": 2.0,
+  "awakenedOverrides": {
+    "arcHalfAngle": 1.5708,
+    "arcReachBonus": 24
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "skill.void.slash.awakened",
+  "intent": "void",
+  "nameKey": "skill.void.slash.awakened.name",
+  "kind": "bolt",
+  "manaCost": 20,
+  "skillMultiplier": 2.0,
+  "awakenedOverrides": {
+    "pullForce": 140
+  }
+}

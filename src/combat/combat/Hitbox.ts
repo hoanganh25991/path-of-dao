@@ -22,7 +22,11 @@ export interface HitboxConfig {
   damage: DamagePayload;
   lifetimeMs: number;
   knockback?: number;
+  /** Pull target toward hit origin (void awakening). */
+  pullForce?: number;
   hitStunMs?: number;
+  /** Insight intent tagged on player skill hits. */
+  insightIntent?: string;
   /** Targets hit before the hitbox expires; default 1. */
   pierce?: number;
 }
@@ -37,7 +41,9 @@ export class Hitbox {
   shape: HitboxShape;
   readonly damage: DamagePayload;
   readonly knockback?: number;
+  readonly pullForce?: number;
   readonly hitStunMs?: number;
+  readonly insightIntent?: string;
   readonly lifetimeMs: number;
   elapsedMs = 0;
   pierceRemaining: number;
@@ -50,7 +56,9 @@ export class Hitbox {
     this.shape = config.shape;
     this.damage = config.damage;
     this.knockback = config.knockback;
+    this.pullForce = config.pullForce;
     this.hitStunMs = config.hitStunMs;
+    this.insightIntent = config.insightIntent;
     this.lifetimeMs = config.lifetimeMs;
     this.pierceRemaining = config.pierce ?? 1;
   }

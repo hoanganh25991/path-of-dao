@@ -99,6 +99,10 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     return !this.alive || this.dying;
   }
 
+  get isBoss(): boolean {
+    return !!this.config.bossClearId;
+  }
+
   getDefenderStats(): BaseStats {
     return this.stats.resolved;
   }
@@ -210,7 +214,10 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     const lost = this.stats.applyDamage(result.final);
     if (lost <= 0) return;
 
-    if (hitbox.knockback && hitbox.knockback > 0) {
+    if (hitbox.pullForce && hitbox.pullForce > 0) {
+      this.knockback = startKnockback(this.x, this.y, hitbox.shape.x, hitbox.shape.y, hitbox.pullForce);
+      this.attackPhase = 'none';
+    } else if (hitbox.knockback && hitbox.knockback > 0) {
       this.knockback = startKnockback(hitbox.shape.x, hitbox.shape.y, this.x, this.y, hitbox.knockback);
       this.attackPhase = 'none';
     }

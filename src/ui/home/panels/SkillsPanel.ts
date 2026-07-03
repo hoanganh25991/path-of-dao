@@ -1,13 +1,20 @@
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
+import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
+import {
+  checkAwakeningReady,
+  getInsightState,
+  insightDisplayPct,
+} from '@/progression/InsightSystem';
+import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
 
-const SIGNATURE_SKILLS = [
-  { id: 'skill.sword.slash', icon: '⚔' },
-  { id: 'skill.void.slash', icon: '◈' },
-  { id: 'skill.flame.bolt', icon: '🔥' },
-  { id: 'skill.lightning.strike', icon: '⚡' },
-  { id: 'skill.time.slow', icon: '⏳' },
-  { id: 'skill.life.mend', icon: '✦' },
+const SIGNATURE_INTENTS = [
+  { intentId: 'sword', icon: '⚔' },
+  { intentId: 'void', icon: '◈' },
+  { intentId: 'flame', icon: '🔥' },
+  { intentId: 'lightning', icon: '⚡' },
+  { intentId: 'time', icon: '⏳' },
+  { intentId: 'life', icon: '✦' },
 ] as const;
 
 export interface SkillsPanelHandles {
@@ -30,20 +37,26 @@ export function createSkillsPanel(): SkillsPanelHandles {
 
   root.append(title, list);
 
+  let ceremonyActive = false;
+
   const refresh = (): void => {
     const save = gameStore.getState().save;
     list.replaceChildren();
 
-    for (const skill of SIGNATURE_SKILLS) {
-      const insight = save?.insights[skill.id];
-      const progress = insight ? Math.min(100, insight.xp) : 0;
+    for (const entry of SIGNATURE_INTENTS) {
+      const config = getInsightIntentConfig(entry.intentId);
+      const state = save ? getInsightState(save, entry.intentId) : null;
+      const progress = state ? (state.awakened ? 100 : insightDisplayPct(state.xp)) : 0;
+      const ready = save ? checkAwakeningReady(save, entry.intentId) : false;
 
       const row = document.createElement('div');
       row.className = 'home-skills__row';
+      if (state?.awakened) row.classList.add('home-skills__row--awakened');
+      if (ready) row.classList.add('home-skills__row--ready');
 
       const icon = document.createElement('div');
       icon.className = 'home-skills__icon';
-      icon.textContent = skill.icon;
+      icon.textContent = entry.icon;
       icon.setAttribute('aria-hidden', 'true');
 
       const info = document.createElement('div');
@@ -51,7 +64,10 @@ export function createSkillsPanel(): SkillsPanelHandles {
 
       const name = document.createElement('p');
       name.className = 'home-skills__name';
-      name.textContent = I18nManager.t(`${skill.id}.name`);
+      name.textContent = I18nManager.t(`${config.baseSkillId}.name`);
+      if (state?.awakened) {
+        name.textContent = I18nManager.t(`${config.awakenedSkillId}.name`);
+      }
 
       const bar = document.createElement('div');
       bar.className = 'home-skills__bar';
@@ -66,7 +82,27 @@ export function createSkillsPanel(): SkillsPanelHandles {
       bar.appendChild(fill);
 
       info.append(name, bar);
-      row.append(icon, info);
+
+      if (ready) {
+        const awakenBtn = document.createElement('button');
+        awakenBtn.type = 'button';
+        awakenBtn.className = 'home-skills__awaken';
+        awakenBtn.textContent = I18nManager.t('home.skills.awaken');
+        awakenBtn.addEventListener('click', () => {
+          if (ceremonyActive) return;
+          const uiRoot = document.getElementById('ui-root');
+          if (!uiRoot) return;
+          ceremonyActive = true;
+          void showAwakeningModal(uiRoot, { intentId: entry.intentId }).finally(() => {
+            ceremonyActive = false;
+            refresh();
+          });
+        });
+        row.append(icon, info, awakenBtn);
+      } else {
+        row.append(icon, info);
+      }
+
       list.appendChild(row);
     }
   };

@@ -44,5 +44,14 @@
   "skill.flame.bolt.name": "Flame Bolt",
   "skill.lightning.strike.name": "Lightning Strike",
   "skill.time.slow.name": "Time Slow",
-  "skill.life.mend.name": "Life Mend"
+  "skill.life.mend.name": "Life Mend",
+  "skill.sword.slash.awakened.name": "Sword Flash",
+  "skill.void.slash.awakened.name": "Void Fracture",
+  "skill.flame.bolt.awakened.name": "Twin Flame Lotus",
+  "skill.lightning.strike.awakened.name": "Thunder Step",
+  "skill.time.slow.awakened.name": "Time Domain",
+  "skill.life.mend.awakened.name": "Spirit Mend",
+  "home.skills.awaken": "Awaken",
+  "awakening.title": "Insight Awakened",
+  "awakening.confirm": "Embrace the Dao"
 }

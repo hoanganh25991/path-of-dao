@@ -44,5 +44,14 @@
   "skill.flame.bolt.name": "Hỏa Cầu",
   "skill.lightning.strike.name": "Lôi Kích",
   "skill.time.slow.name": "Thời Chậm",
-  "skill.life.mend.name": "Hồi Sinh"
+  "skill.life.mend.name": "Hồi Sinh",
+  "skill.sword.slash.awakened.name": "Kiếm Quang",
+  "skill.void.slash.awakened.name": "Hư Vỡ",
+  "skill.flame.bolt.awakened.name": "Song Hỏa Liên",
+  "skill.lightning.strike.awakened.name": "Lôi Bộ",
+  "skill.time.slow.awakened.name": "Lĩnh Thời",
+  "skill.life.mend.awakened.name": "Hồi Linh",
+  "home.skills.awaken": "Thức Tỉnh",
+  "awakening.title": "Ngộ Đạo Thức Tỉnh",
+  "awakening.confirm": "Nắm Giữ Đạo"
 }

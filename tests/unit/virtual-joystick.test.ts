@@ -82,6 +82,33 @@ describe('VirtualJoystick', () => {
     joystick.destroy();
   });
 
+  it('accepts pointer input on the visible stick element', () => {
+    const joystick = new VirtualJoystick(container);
+    joystick.setEnabled(true);
+
+    joystick.element.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        clientX: 68,
+        clientY: 300,
+        pointerId: 2,
+        pointerType: 'touch',
+      }),
+    );
+    joystick.element.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        clientX: 148,
+        clientY: 300,
+        pointerId: 2,
+        pointerType: 'touch',
+      }),
+    );
+
+    expect(Math.hypot(joystick.getMoveVector().x, joystick.getMoveVector().y)).toBeGreaterThan(0.5);
+    joystick.destroy();
+  });
+
   it('accepts pointer input on the zone in portrait-rotated layout', () => {
     Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390, writable: true });
     Object.defineProperty(window, 'innerHeight', { configurable: true, value: 844, writable: true });

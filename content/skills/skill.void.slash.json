@@ -1,0 +1,8 @@
+{
+  "id": "skill.void.slash",
+  "intent": "void",
+  "nameKey": "skill.void.slash.name",
+  "kind": "bolt",
+  "manaCost": 20,
+  "skillMultiplier": 1.8
+}

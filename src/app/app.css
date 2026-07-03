@@ -53,29 +53,66 @@
 
 .dev-nav {
   position: absolute;
-  top: max(0.75rem, env(safe-area-inset-top));
-  right: max(0.75rem, env(safe-area-inset-right));
-  display: flex;
-  gap: 0.5rem;
-  /* Stay above combat HUD overlay (z-index: 1) and its joystick touch zone. */
   z-index: 5;
+  display: flex;
+  gap: 0.25rem;
+  pointer-events: auto;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: rgba(10, 10, 18, 0.82);
+  border: 1px solid rgba(143, 212, 196, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  /* Default — combat / story: top-right clears HUD controls. */
+  top: max(0.65rem, env(safe-area-inset-top));
+  right: max(0.65rem, env(safe-area-inset-right));
+  left: auto;
+  bottom: auto;
+  flex-direction: row;
+}
+
+/* Home: float over the shrine viewport — clears left nav tabs and right play panel. */
+html[data-scene='home'] .dev-nav {
+  top: auto;
+  right: auto;
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: row;
+  border-color: rgba(201, 162, 39, 0.28);
+  background: rgba(20, 25, 35, 0.88);
+}
+
+html.landscape-layout[data-scene='home'] .dev-nav {
+  /* Center in the middle column between left rail and play panel. */
+  left: calc(4.25rem + (100% - 4.25rem - min(36vw, 400px)) / 2);
+}
+
+html[data-scene='home'] .dev-nav button {
+  border-color: rgba(201, 162, 39, 0.35);
+  background: rgba(13, 17, 23, 0.92);
+}
+
+html[data-scene='home'] .dev-nav button:active {
+  background: rgba(201, 162, 39, 0.18);
 }
 
 .dev-nav button {
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  min-width: 44px;
-  min-height: 44px;
+  width: 2.35rem;
+  height: 2.35rem;
+  min-width: 38px;
+  min-height: 38px;
   padding: 0;
   border: 1px solid rgba(143, 212, 196, 0.35);
   background: rgba(10, 10, 18, 0.85);
   color: #e8e4dc;
   font: inherit;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   line-height: 1;
-  border-radius: 0.5rem;
+  border-radius: 50%;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }

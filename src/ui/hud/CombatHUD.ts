@@ -2,6 +2,7 @@ import type { SceneId } from '@/app/SceneId';
 import { EventBus } from '@/core/EventBus';
 import { InputManager } from '@/core/input/InputManager';
 import { PlayerStatusBar } from '@/ui/hud/PlayerStatusBar';
+import { InsightMeter } from '@/ui/hud/InsightMeter';
 import '@/ui/hud/combat-hud.css';
 
 /** Mounts combat input widgets when the active scene is combat. */
@@ -20,6 +21,7 @@ export class CombatHUD {
 
     InputManager.mount(CombatHUD.root);
     PlayerStatusBar.init(CombatHUD.root);
+    InsightMeter.init(CombatHUD.root);
 
     CombatHUD.unsubscribe = EventBus.on('scene:changed', ({ id }) => {
       CombatHUD.applyScene(id);
@@ -32,6 +34,7 @@ export class CombatHUD {
     CombatHUD.unsubscribe?.();
     CombatHUD.unsubscribe = null;
     PlayerStatusBar.destroy();
+    InsightMeter.destroy();
     InputManager.destroy();
     CombatHUD.root?.remove();
     CombatHUD.root = null;

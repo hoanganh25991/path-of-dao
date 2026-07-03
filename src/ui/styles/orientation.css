@@ -108,11 +108,6 @@ html.landscape-layout .status-bar--mana {
   width: min(22vw, 160px);
 }
 
-html.landscape-layout .dev-nav {
-  top: max(0.65rem, env(safe-area-inset-top, 0px));
-  right: max(0.65rem, env(safe-area-inset-right, 0px));
-}
-
 /* Breakthrough modal stays centered in layout space. */
 html.landscape-layout .breakthrough-modal__content {
   max-width: min(24rem, 50vw);

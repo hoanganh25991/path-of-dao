@@ -4,6 +4,7 @@ import { checksumOf } from '@/core/save/checksum';
 import { migrate } from '@/core/save/SaveMigration';
 import { SAVE_VERSION, type PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { DB_NAME, DB_VERSION, DEFAULT_SLOT, STORE_NAME, slotKey } from '@/core/save/SaveSlot';
+import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { buildPlayerStats } from '@/progression/playerStats';
 
 export class SaveCorruptError extends Error {
@@ -97,7 +98,12 @@ export class SaveManager {
       runtime: { hp: stats.hpMax, mana: stats.manaMax },
       xp: 0,
       realm: { id: 'mortal_body', tier: 'early', breakthroughReady: false },
-      insights: {},
+      insights: seedDefaultInsights(),
+      equippedSkills: {
+        primary: 'skill.void.slash',
+        secondary: 'skill.sword.slash',
+        ultimate: 'skill.time.slow',
+      },
       inventory: {
         items: [
           { id: 'item.sword.iron', qty: 1 },

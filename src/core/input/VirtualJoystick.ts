@@ -10,7 +10,7 @@ export const JOYSTICK_DEADZONE = 0.08;
 const ANCHOR_INSET_PX = 20;
 
 /** Bottom-left anchor in landscape layout space — matches combat-hud.css inset. */
-export function getJoystickAnchor(layoutWidth: number, layoutHeight: number): Vec2 {
+export function getJoystickAnchor(_layoutWidth: number, layoutHeight: number): Vec2 {
   return {
     x: ANCHOR_INSET_PX + JOYSTICK_BASE_RADIUS_PX,
     y: layoutHeight - ANCHOR_INSET_PX - JOYSTICK_BASE_RADIUS_PX,
@@ -52,13 +52,16 @@ export class VirtualJoystick {
   private centerY = 0;
   private moveVector: Vec2 = { x: 0, y: 0 };
   private layoutUnsub: (() => void) | null = null;
+  private captureEl: HTMLElement | null = null;
+  private readonly pointerTargets: HTMLElement[] = [];
 
   private readonly onPointerDown = (event: PointerEvent): void => {
     if (!this.enabled || this.activePointerId !== null) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
     this.activePointerId = event.pointerId;
-    this.zone.setPointerCapture?.(event.pointerId);
+    this.captureEl = event.currentTarget as HTMLElement;
+    this.captureEl.setPointerCapture?.(event.pointerId);
     this.snapToAnchor();
 
     const { x, y } = OrientationManager.toLayoutCoords(event.clientX, event.clientY);
@@ -78,9 +81,10 @@ export class VirtualJoystick {
   private readonly onPointerEnd = (event: PointerEvent): void => {
     if (!this.enabled || this.activePointerId !== event.pointerId) return;
 
-    if (this.zone.hasPointerCapture?.(event.pointerId)) {
-      this.zone.releasePointerCapture?.(event.pointerId);
+    if (this.captureEl?.hasPointerCapture?.(event.pointerId)) {
+      this.captureEl.releasePointerCapture?.(event.pointerId);
     }
+    this.captureEl = null;
     this.release();
     event.preventDefault();
   };
@@ -104,10 +108,26 @@ export class VirtualJoystick {
 
     container.append(this.zone, this.element);
 
-    this.zone.addEventListener('pointerdown', this.onPointerDown);
-    this.zone.addEventListener('pointermove', this.onPointerMove);
-    this.zone.addEventListener('pointerup', this.onPointerEnd);
-    this.zone.addEventListener('pointercancel', this.onPointerEnd);
+    this.bindPointerEvents(this.zone);
+    this.bindPointerEvents(this.element);
+  }
+
+  private bindPointerEvents(target: HTMLElement): void {
+    target.addEventListener('pointerdown', this.onPointerDown);
+    target.addEventListener('pointermove', this.onPointerMove);
+    target.addEventListener('pointerup', this.onPointerEnd);
+    target.addEventListener('pointercancel', this.onPointerEnd);
+    this.pointerTargets.push(target);
+  }
+
+  private unbindPointerEvents(): void {
+    for (const target of this.pointerTargets) {
+      target.removeEventListener('pointerdown', this.onPointerDown);
+      target.removeEventListener('pointermove', this.onPointerMove);
+      target.removeEventListener('pointerup', this.onPointerEnd);
+      target.removeEventListener('pointercancel', this.onPointerEnd);
+    }
+    this.pointerTargets.length = 0;
   }
 
   setEnabled(enabled: boolean): void {
@@ -151,16 +171,14 @@ export class VirtualJoystick {
     this.layoutUnsub?.();
     this.layoutUnsub = null;
 
-    this.zone.removeEventListener('pointerdown', this.onPointerDown);
-    this.zone.removeEventListener('pointermove', this.onPointerMove);
-    this.zone.removeEventListener('pointerup', this.onPointerEnd);
-    this.zone.removeEventListener('pointercancel', this.onPointerEnd);
+    this.unbindPointerEvents();
     this.zone.remove();
     this.element.remove();
   }
 
   private snapToAnchor(): void {
     const { width, height } = OrientationManager.getLayoutSize();
+    if (width <= 0 || height <= 0) return;
     const anchor = getJoystickAnchor(width, height);
     this.showAt(anchor.x, anchor.y);
   }

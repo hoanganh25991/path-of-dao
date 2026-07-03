@@ -1,0 +1,101 @@
+{
+  "xpToFull": 200,
+  "intents": {
+    "sword": {
+      "displayKey": "intent.sword",
+      "baseSkillId": "skill.sword.slash",
+      "awakenedSkillId": "skill.sword.slash.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    },
+    "void": {
+      "displayKey": "intent.void",
+      "baseSkillId": "skill.void.slash",
+      "awakenedSkillId": "skill.void.slash.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    },
+    "flame": {
+      "displayKey": "intent.flame",
+      "baseSkillId": "skill.flame.bolt",
+      "awakenedSkillId": "skill.flame.bolt.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    },
+    "lightning": {
+      "displayKey": "intent.lightning",
+      "baseSkillId": "skill.lightning.strike",
+      "awakenedSkillId": "skill.lightning.strike.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    },
+    "time": {
+      "displayKey": "intent.time",
+      "baseSkillId": "skill.time.slow",
+      "awakenedSkillId": "skill.time.slow.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    },
+    "life": {
+      "displayKey": "intent.life",
+      "baseSkillId": "skill.life.mend",
+      "awakenedSkillId": "skill.life.mend.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    }
+  }
+}

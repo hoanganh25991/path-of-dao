@@ -14,6 +14,8 @@ export interface HurtboxEntity {
   readonly y: number;
   readonly hurtRadius: number;
   readonly invulnerable: boolean;
+  /** True when this target counts as a boss for insight XP. */
+  readonly isBoss?: boolean;
   getDefenderStats(): BaseStats;
   /** Apply resolved damage + optional knockback from the hitbox origin. */
   receiveHit(result: DamageResult, hitbox: Hitbox): void;

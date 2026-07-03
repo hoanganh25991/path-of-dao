@@ -13,13 +13,14 @@
   touch-action: none;
 }
 
-/* Touch capture area for the floating joystick — left half of the screen. */
+/* Touch capture area — left half; stick itself is also a direct target. */
 .joystick-zone {
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   width: 50%;
+  z-index: 1;
 }
 
 /* --- Virtual joystick --- */
@@ -30,7 +31,13 @@
   height: calc(var(--joystick-base-radius, 48px) * 2);
   transform: translate(-50%, -50%);
   opacity: 0.78;
-  z-index: 1;
+  z-index: 2;
+  touch-action: none;
+}
+
+.joystick-base,
+.joystick-thumb {
+  pointer-events: none;
 }
 
 .joystick.hidden {

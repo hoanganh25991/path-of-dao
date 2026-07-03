@@ -1,0 +1,8 @@
+{
+  "id": "skill.lightning.strike.awakened",
+  "intent": "lightning",
+  "nameKey": "skill.lightning.strike.awakened.name",
+  "kind": "bolt",
+  "manaCost": 20,
+  "skillMultiplier": 2.0
+}

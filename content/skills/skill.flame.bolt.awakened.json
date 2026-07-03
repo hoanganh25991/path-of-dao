@@ -1,0 +1,8 @@
+{
+  "id": "skill.flame.bolt.awakened",
+  "intent": "flame",
+  "nameKey": "skill.flame.bolt.awakened.name",
+  "kind": "bolt",
+  "manaCost": 20,
+  "skillMultiplier": 2.0
+}

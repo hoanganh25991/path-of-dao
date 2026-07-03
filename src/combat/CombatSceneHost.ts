@@ -56,7 +56,9 @@ export class CombatSceneHost implements SceneHost {
       });
     });
 
-    this.game.scale.resize(width, height);
+    const game = this.game;
+    if (!game) throw new Error('CombatSceneHost: Phaser game failed to boot');
+    game.scale.resize(width, height);
 
     this.unsubscribeLayout = EventBus.on('layout:changed', ({ width: w, height: h }) => {
       this.game?.scale.resize(w, h);

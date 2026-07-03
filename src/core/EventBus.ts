@@ -12,6 +12,9 @@ export type GameEvents = {
   'equipment:changed': { modifiers: StatModifier[] };
   'realm:breakthrough-ready': undefined;
   'realm:breakthrough': { realmId: string; auraTier: AuraTier };
+  'insight:xp-changed': { intentId: string; xp: number; displayPct: number };
+  'insight:ready-to-awaken': { intentId: string };
+  'insight:awakened': { intentId: string; skillId: string };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
 };
 

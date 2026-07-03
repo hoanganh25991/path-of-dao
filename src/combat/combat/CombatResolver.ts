@@ -1,8 +1,17 @@
+import { EventBus } from '@/core/EventBus';
+import { gameStore } from '@/core/store/gameStore';
 import { resolveDamage } from '@/progression/DamageCalculator';
+import { checkAwakeningReady, recordSkillHitInsight } from '@/progression/InsightSystem';
 import type { DamageResult } from '@/progression/types';
+import type { StatSheet } from '@/progression/StatSheet';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import { applyHitFlash } from '@/combat/combat/HitFlash';
+
+function targetIsDead(target: HurtboxEntity): boolean {
+  if (!('stats' in target)) return false;
+  return (target as HurtboxEntity & { stats: StatSheet }).stats.isDead;
+}
 
 export interface DamageNumberSpawner {
   spawn(value: number, isCrit: boolean, x: number, y: number): void;
@@ -11,6 +20,27 @@ export interface DamageNumberSpawner {
 export interface CombatResolverDeps {
   damageNumbers: DamageNumberSpawner;
   random?: () => number;
+}
+
+function applyInsightHitRewards(hitbox: Hitbox, target: HurtboxEntity, result: DamageResult): void {
+  if (!hitbox.insightIntent || target.team !== 'enemy') return;
+
+  const save = gameStore.getState().save;
+  if (!save) return;
+
+  const { patch, emitReady } = recordSkillHitInsight(save, hitbox.insightIntent, {
+    isCrit: result.isCrit,
+    isBoss: target.isBoss ?? false,
+    isKill: targetIsDead(target),
+  });
+
+  if (Object.keys(patch).length > 0) {
+    gameStore.getState().patch(patch);
+    const nextSave = gameStore.getState().save;
+    if (emitReady && nextSave && checkAwakeningReady(nextSave, hitbox.insightIntent)) {
+      EventBus.emit('insight:ready-to-awaken', { intentId: hitbox.insightIntent });
+    }
+  }
 }
 
 /**
@@ -46,6 +76,7 @@ export function resolveHit(
 
   applyHitFlash(target.sprite);
   deps.damageNumbers.spawn(result.final, result.isCrit, target.x, target.y - 12);
+  applyInsightHitRewards(hitbox, target, result);
 
   return result;
 }

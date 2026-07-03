@@ -1,0 +1,135 @@
+.awakening-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.awakening-modal--active {
+  opacity: 1;
+}
+
+.awakening-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+}
+
+.awakening-modal--sword .awakening-modal__backdrop {
+  background: radial-gradient(circle at 50% 45%, rgba(200, 205, 220, 0.12), rgba(0, 0, 0, 0.9));
+}
+
+.awakening-modal--void .awakening-modal__backdrop {
+  background: radial-gradient(circle at 50% 45%, rgba(90, 70, 160, 0.18), rgba(0, 0, 0, 0.92));
+}
+
+.awakening-modal__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  max-width: 20rem;
+  text-align: center;
+}
+
+.awakening-modal__title {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e8e4dc;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.awakening-modal__subtitle {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 1.25rem;
+  color: #ffd260;
+}
+
+.awakening-modal__confirm {
+  margin-top: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  border: 1px solid rgba(255, 210, 96, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 210, 96, 0.12);
+  color: #ffe8a8;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.awakening-modal__confirm--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.awakening-modal__slash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(220, 225, 235, 0.85) 49%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(220, 225, 235, 0.85) 51%,
+    transparent 58%
+  );
+  opacity: 0;
+  animation: awakening-slash 0.9s ease-out 0.3s forwards;
+}
+
+@keyframes awakening-slash {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.2) rotate(-8deg);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1.2) rotate(-8deg);
+  }
+}
+
+.awakening-modal__crack {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(35deg, transparent 48%, rgba(140, 110, 220, 0.5) 49.5%, transparent 51%),
+    linear-gradient(-25deg, transparent 46%, rgba(90, 70, 160, 0.6) 50%, transparent 54%);
+  opacity: 0;
+  animation: awakening-crack 1s ease-out 0.2s forwards;
+}
+
+@keyframes awakening-crack {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+}

@@ -7,6 +7,7 @@ import { I18nManager } from '@/core/i18n/I18nManager';
 import { OrientationManager } from '@/app/OrientationManager';
 import { connectAutosave, gameStore, startPlayTimeTracking } from '@/core/store/gameStore';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
+import { devPrepareAwakening } from '@/combat/components/CombatComponent';
 import { buildPlayerStats } from '@/progression/playerStats';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
 import { HomeUI } from '@/ui/home/HomeUI';
@@ -74,6 +75,11 @@ export class App {
         const { realm } = syncRealmProgress(interim);
         return { stats: interim.stats, realm };
       });
+    };
+    (window as unknown as Record<string, unknown>).__devPrepareAwakening = (
+      intentId = 'void',
+    ): void => {
+      devPrepareAwakening(intentId);
     };
 
     const panel = document.createElement('div');
