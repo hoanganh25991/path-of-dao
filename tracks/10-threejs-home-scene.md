@@ -11,7 +11,7 @@
 ## Done
 
 - Home scene with floating mountain village environment
-- Procedural hero model (no GLB required for MVP); robe/skin/gold colors match `PALETTE_HERO` (`stickyManPalette.ts`)
+- Procedural hero model (no GLB required for MVP); robe/skin/gold/hair colors match `PALETTE_HERO`; crown hair matches icon top-cap read
 - Trees, lanterns, and cloud decoration
 - **Journey-synced backdrop** — sky/fog/island/lantern colors follow current road map chapter (`getJourneyHomeMapId` → `homeEnvironmentThemes`)
 - **Chapter signature prop** on island edge (ruined pillar, mist pine, moon stone, etc.) — gentle idle sway

@@ -156,6 +156,13 @@ export class HeroViewer {
     const robeDarkMat = new MeshStandardMaterial({ color: 0x687888, roughness: 0.6 });
     const skinMat = new MeshStandardMaterial({ color: 0xffd5a8, roughness: 0.55 });
     const eyeMat = new MeshStandardMaterial({ color: 0x0c0c14, roughness: 0.4 });
+    const hairMat = new MeshStandardMaterial({
+      color: 0xf0f4f8,
+      roughness: 0.42,
+      emissive: 0xc8d0dc,
+      emissiveIntensity: 0.18,
+    });
+    const hairShadowMat = new MeshStandardMaterial({ color: 0xa8b4c4, roughness: 0.48 });
     const goldMat = new MeshStandardMaterial({
       color: 0xd4a840,
       metalness: 0.7,
@@ -249,7 +256,7 @@ export class HeroViewer {
       else this.armR = arm;
     }
 
-    // Head group (neck, head, gold band) — subtle nod.
+    // Head group (neck, head, icon-matched crown hair, gold band) — subtle nod.
     const headGroup = new Group();
     headGroup.position.y = 1.02;
 
@@ -260,6 +267,19 @@ export class HeroViewer {
     const head = new Mesh(new SphereGeometry(0.155, 16, 16), skinMat);
     headGroup.add(head);
 
+    // Crown hair — flat white cap on top/back (matches icon-512 / drawHeroTopHair).
+    const hairDome = new Mesh(
+      new SphereGeometry(0.162, 14, 10, 0, Math.PI * 2, 0, Math.PI * 0.5),
+      hairMat,
+    );
+    hairDome.position.set(0, 0.02, -0.025);
+    hairDome.scale.set(1.04, 0.92, 0.94);
+    headGroup.add(hairDome);
+
+    const hairSide = new Mesh(new BoxGeometry(0.05, 0.1, 0.12), hairShadowMat);
+    hairSide.position.set(-0.12, 0.03, -0.03);
+    headGroup.add(hairSide);
+
     for (const sx of [-0.055, 0.055]) {
       const eye = new Mesh(new SphereGeometry(0.02, 8, 8), eyeMat);
       eye.position.set(sx, 0.0, 0.14);
@@ -269,6 +289,7 @@ export class HeroViewer {
     const headband = new Mesh(new TorusGeometry(0.155, 0.018, 8, 20), goldMat);
     headband.position.y = 0.03;
     headband.rotation.x = Math.PI / 2;
+    headband.renderOrder = 1;
     headGroup.add(headband);
 
     this.headGroup = headGroup;
