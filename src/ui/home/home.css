@@ -809,6 +809,45 @@
   cursor: pointer;
 }
 
+/* My Path — journey scroll */
+.home-path__row {
+  align-items: flex-start;
+  border-left: 3px solid var(--dao-border);
+}
+
+.home-path__row--breakthrough {
+  border-left-color: var(--dao-gold);
+}
+
+.home-path__row--story {
+  border-left-color: var(--dao-jade);
+}
+
+.home-path__main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.home-path__kind {
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dao-muted);
+}
+
+.home-path__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.home-path__strength {
+  margin: 0;
+  font-size: 0.6875rem;
+  color: var(--dao-gold);
+}
+
 .home-toast {
   position: fixed;
   left: 50%;
