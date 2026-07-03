@@ -66,6 +66,12 @@ export class MapScene extends Phaser.Scene {
   }
 
   create(): void {
+    // Idempotent setup — leaked EventBus listeners can fire after Phaser clears cameras.main.
+    this.unsubscribeCombatEvents?.();
+    this.unsubscribeCombatEvents = null;
+    this.juiceBridge?.destroy();
+    this.juiceBridge = null;
+
     const config = getMapConfig(this.mapId);
     this.exiting = false;
 

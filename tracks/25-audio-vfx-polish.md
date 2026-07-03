@@ -27,6 +27,7 @@ Game feel through audio, combat juice, and enhanced Home aura — player should 
 - Hit-stop on heavy hits
 - Camera shake on crits and heavy impacts
 - Brief crit screen flash
+- Guard against stale EventBus callbacks after Phaser scene shutdown (`cameras.main` cleared)
 
 ### Home aura
 - Pulsing point light for Core Formation+ aura tiers

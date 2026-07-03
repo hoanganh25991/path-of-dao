@@ -19,15 +19,22 @@ export class JuiceController {
     this.enabled = on;
   }
 
+  /** Main camera — undefined after Phaser scene shutdown (CameraManager.shutdown). */
+  private getMainCamera(): Phaser.Cameras.Scene2D.Camera | null {
+    return this.scene?.cameras?.main ?? null;
+  }
+
   applyHitJuice(opts: HitJuiceOptions): void {
     if (!this.enabled) return;
+    const camera = this.getMainCamera();
+    if (!camera) return;
 
     const profile = hitJuiceProfile(opts.isCrit, opts.finalDamage, opts.skillMultiplier);
 
     if (profile.shakePx > 0) {
       const duration = profile.shakePx * 18;
       const intensity = profile.shakePx * 0.002;
-      this.scene.cameras.main.shake(duration, intensity);
+      camera.shake(duration, intensity);
     }
 
     if (profile.stopMs > 0) {
@@ -41,7 +48,9 @@ export class JuiceController {
 
   applyBossPhaseJuice(): void {
     if (!this.enabled) return;
-    this.scene.cameras.main.shake(500, 0.012);
+    const camera = this.getMainCamera();
+    if (!camera) return;
+    camera.shake(500, 0.012);
     this.applyHitStop(60);
     this.darkenScreen(500);
   }

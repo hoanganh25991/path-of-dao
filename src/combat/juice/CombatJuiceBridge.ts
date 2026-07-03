@@ -5,6 +5,7 @@ import { JuiceController } from '@/combat/juice/JuiceController';
 /** Bridges combat EventBus events to JuiceController while MapScene is active. */
 export class CombatJuiceBridge {
   private readonly unsubs: Array<() => void> = [];
+  private active = false;
 
   constructor(
     _scene: Phaser.Scene,
@@ -12,8 +13,10 @@ export class CombatJuiceBridge {
   ) {}
 
   mount(): void {
+    this.active = true;
     this.unsubs.push(
       EventBus.on('combat:hit-landed', (payload) => {
+        if (!this.active) return;
         if (payload.attackerTeam !== 'player' || payload.victimTeam !== 'enemy') return;
         this.juice.applyHitJuice({
           isCrit: payload.isCrit,
@@ -22,12 +25,14 @@ export class CombatJuiceBridge {
         });
       }),
       EventBus.on('map:enemy-killed', ({ isBoss }) => {
-        if (isBoss) this.juice.applyBossPhaseJuice();
+        if (!this.active || !isBoss) return;
+        this.juice.applyBossPhaseJuice();
       }),
     );
   }
 
   destroy(): void {
+    this.active = false;
     for (const unsub of this.unsubs) unsub();
     this.unsubs.length = 0;
     this.juice.destroy();
