@@ -86,6 +86,9 @@ export function showAncientDemoModal(
     const header = document.createElement('header');
     header.className = 'ancient-demo-modal__header';
 
+    const identity = document.createElement('div');
+    identity.className = 'ancient-demo-modal__identity';
+
     const epithet = document.createElement('p');
     epithet.className = 'ancient-demo-modal__epithet';
     epithet.textContent = I18nManager.t(profile.epithetKey);
@@ -94,7 +97,15 @@ export function showAncientDemoModal(
     name.className = 'ancient-demo-modal__name';
     name.textContent = I18nManager.t(profile.nameKey);
 
-    header.append(epithet, name);
+    identity.append(epithet, name);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'ancient-demo-modal__close';
+    closeBtn.setAttribute('aria-label', I18nManager.t('home.settings.close'));
+    closeBtn.textContent = '×';
+
+    header.append(identity, closeBtn);
 
     const skillsLabel = document.createElement('p');
     skillsLabel.className = 'ancient-demo-modal__skills-label';
@@ -129,11 +140,6 @@ export function showAncientDemoModal(
     const actions = document.createElement('div');
     actions.className = 'ancient-demo-modal__actions';
 
-    const cancel = document.createElement('button');
-    cancel.type = 'button';
-    cancel.className = 'ancient-demo-modal__cancel';
-    cancel.textContent = I18nManager.t('demo.enter.cancel');
-
     const walkHere = document.createElement('button');
     walkHere.type = 'button';
     walkHere.className = 'ancient-demo-modal__walk-here';
@@ -146,7 +152,7 @@ export function showAncientDemoModal(
     followPath.textContent = I18nManager.t('demo.path.follow');
     followPath.hidden = path.length === 0;
 
-    actions.append(cancel, walkHere);
+    actions.append(walkHere);
     if (path.length > 0) {
       actions.appendChild(followPath);
     }
@@ -174,15 +180,14 @@ export function showAncientDemoModal(
       setTimeout(() => overlay.remove(), 350);
     };
 
-    cancel.addEventListener('click', () => {
+    const dismiss = (): void => {
       cleanup();
       resolve({ mode: 'cancel' });
-    });
+    };
 
-    backdrop.addEventListener('click', () => {
-      cleanup();
-      resolve({ mode: 'cancel' });
-    });
+    closeBtn.addEventListener('click', dismiss);
+
+    backdrop.addEventListener('click', dismiss);
 
     walkHere.addEventListener('click', () => {
       cleanup();

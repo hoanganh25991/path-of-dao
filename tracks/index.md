@@ -13,10 +13,10 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | Metric | Value |
 |--------|-------|
 | Sub-plans done | **18 / 28** (64%) |
-| In progress | **9** |
-| Pending | **1** (26 — PWA & ship) |
+| In progress | **9** (incl. 26 — PWA foundation) |
+| Pending | **0** |
 | Cross-cutting | Tiên Nghịch alignment **8 / 8 open or partial** |
-| Active thread | **25** audio/VFX polish → then **26** ship |
+| Active thread | **26** PWA & ship (foundation landed) |
 
 ### By phase
 
@@ -29,7 +29,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | **4 — Progression** | 13–16 | `[x]` Complete *(Tiên Nghịch gaps in 14, 15)* |
 | **5 — World & Content** | 17–20 | `[~]` 17 done; 18–20 in progress |
 | **6 — MVP Content** | 21–23 | `[~]` All in progress |
-| **7 — Polish & Ship** | 24–26 | `[~]` 24–25 in progress; 26 pending |
+| **7 — Polish & Ship** | 24–26 | `[~]` 24–25 in progress; **26 foundation landed** |
 | **Cross** | 27 | `[x]` Ancient Echo demo done |
 | **Cross** | 28 | `[x]` Path & Journey — My Path + guided ancient walk |
 
@@ -78,7 +78,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | 23 | MVP enemies, bosses, skill data | 6 | `[~]` | [track](./23-mvp-enemies-bosses-skills.md) | [plan](../plans/23-mvp-enemies-bosses-skills.md) |
 | 24 | Localization en + vi | 7 | `[~]` | [track](./24-localization-en-vi.md) | [plan](../plans/24-localization-en-vi.md) |
 | 25 | Audio, aura VFX, juice | 7 | `[~]` | [track](./25-audio-vfx-polish.md) | [plan](../plans/25-audio-vfx-polish.md) |
-| 26 | PWA, performance, ship checklist | 7 | `[ ]` | [track](./26-pwa-performance-ship.md) | [plan](../plans/26-pwa-performance-ship.md) |
+| 26 | PWA, performance, ship checklist | 7 | `[~]` | [track](./26-pwa-performance-ship.md) | [plan](../plans/26-pwa-performance-ship.md) |
 | 27 | Echoes of the Ancients (guided demo) | Cross | `[x]` | [track](./27-ancient-echo-demo.md) | [plan](../plans/27-ancient-echo-demo.md) |
 | 28 | Path & Journey (My Path + follow ancients) | Cross | `[x]` | [track](./28-path-journey-system.md) | [plan](../plans/28-path-journey-system.md) |
 
@@ -133,16 +133,14 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Active thread
 
-**Now:** Sub-plan **25** — audio/VFX polish  
-- First-visit audio unlock overlay (mobile autoplay) — **done**
-- Procedural SFX/BGM with improved synthesis — **done**
-- Combat juice: hit-stop, camera shake, crit flash — **done**
-- Home aura pulse for Core Formation+ — **done**
-- **Remaining:** real OGG assets, BGM crossfade, boss phase sting, low-end juice profile (ties to 26)
+**Now:** Sub-plan **26** — PWA & ship (foundation landed)  
+- QualityProfile + settings picker — **done**
+- vite-plugin-pwa + service worker + manifest — **done**
+- CI workflow (typecheck, test, validate, build) — **done**
+- Version in settings — **done**
+- **Remaining:** real icons, E2E smoke, SHIP_CHECKLIST, Lighthouse sign-off
 
-**Next:** Sub-plan **26** — PWA, performance profiles, ship checklist
-
-**Parallel (content):** Finish Tiên Nghịch weapon arc (T4 → T1 → T2 → T3) while polishing audio — unblocks MVP DoD sword items.
+**Parallel (deferred):** Tiên Nghịch weapon arc (T4 → T1 → T2 → T3), audio OGG assets (25), content polish (18–24)
 
 ---
 
@@ -241,14 +239,14 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 → [full track](./25-audio-vfx-polish.md)
 
-### 26 — PWA & ship `[ ]`
+### 26 — PWA & ship `[~]`
 
-| Planned |
-|---------|
-| Service worker, offline shell, app manifest |
-| Quality profiles (particles, juice, audio) |
-| Scene engine disposal; 30 FPS mid-range Android |
-| Ship checklist: 10-min playthrough, no console errors |
+| Done | Remaining |
+|------|-----------|
+| QualityProfile + settings picker; low tier disables juice | Real app icons |
+| vite-plugin-pwa, manifest, SW precache | E2E smoke (Playwright) |
+| CI workflow; build chunks (phaser/three/vendor) | SHIP_CHECKLIST manual QA |
+| Version in settings; ErrorReporter stub | Lighthouse PWA + 30 FPS sign-off |
 
 → [full track](./26-pwa-performance-ship.md)
 
@@ -259,7 +257,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | My Path scroll, journey recording, ancient `path[]` data |
 | PathWalkManager guided walk (map → story → map → Home) |
 | Modal **Their Road** + Follow / Walk Here; en/vi strings |
-| 330 tests green |
+| 334 tests green |
 
 → [full track](./28-path-journey-system.md)
 
@@ -267,7 +265,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Detail tracks — done (reference)
 
-Sub-plans **01–14**, **16–17**, **27** are complete for their acceptance criteria. Several have open Tiên Nghịch gaps (07, 10, 11, 14) tracked under T1–T8 above.
+Sub-plans **01–14**, **16–17**, **27–28** are complete for their acceptance criteria. Several have open Tiên Nghịch gaps (07, 10, 11, 14) tracked under T1–T8 above.
 
 | ID | Highlight |
 |----|-----------|
@@ -278,6 +276,7 @@ Sub-plans **01–14**, **16–17**, **27** are complete for their acceptance cri
 | 13–14 | Realm breakthrough, insight meter *(Sword gate T7)* |
 | 16–17 | Combat power profile, world map travel |
 | 27 | Ancient Echo demo — six ancients, god mode, Echoes tab |
+| 28 | Path & Journey — My Path scroll + guided ancient walk |
 
 → Per-sub-plan notes in [tracks/](./)
 

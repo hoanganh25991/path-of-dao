@@ -13,6 +13,8 @@ import {
   TorusGeometry,
 } from 'three';
 import type { AuraTier } from '@/home/realmAura';
+import { getQualitySettingsFromSave } from '@/app/QualityProfile';
+import { gameStore } from '@/core/store/gameStore';
 
 const ANCHOR_Y = 0.55;
 
@@ -36,25 +38,51 @@ export class AuraController {
     this.clearEffects();
     this.tier = tier;
 
+    const { auraParticles } = getQualitySettingsFromSave(gameStore.getState().save);
+    if (auraParticles === 0 || tier === 'none') {
+      return;
+    }
+
+    const particleScale = auraParticles / 24;
+
     switch (tier) {
-      case 'none':
-        break;
       case 'faint':
-        this.points = this.createRisingPoints(18, 0x88ccff, 0.35, 0.8, 1.4);
+        this.points = this.createRisingPoints(
+          Math.max(4, Math.round(18 * particleScale)),
+          0x88ccff,
+          0.35,
+          0.8,
+          1.4,
+        );
         this.addCoreLight(0x88ccff, 0.35);
         break;
       case 'swirling':
-        this.points = this.createOrbitingPoints(30, 0xaaddff, 0.55, 0.9);
+        this.points = this.createOrbitingPoints(
+          Math.max(6, Math.round(30 * particleScale)),
+          0xaaddff,
+          0.55,
+          0.9,
+        );
         this.ring = this.createRing(0.55, 0x88bbee, 0.25);
         this.addCoreLight(0xaaddff, 0.5);
         break;
       case 'void':
-        this.points = this.createOrbitingPoints(24, 0xbb66ff, 0.65, 1.1);
+        this.points = this.createOrbitingPoints(
+          Math.max(6, Math.round(24 * particleScale)),
+          0xbb66ff,
+          0.65,
+          1.1,
+        );
         this.voidRing = this.createVoidRing();
         this.addCoreLight(0xbb66ff, 0.55);
         break;
       case 'true_dao':
-        this.points = this.createOrbitingPoints(36, 0xffd966, 0.75, 1.2);
+        this.points = this.createOrbitingPoints(
+          Math.max(8, Math.round(36 * particleScale)),
+          0xffd966,
+          0.75,
+          1.2,
+        );
         this.ring = this.createRing(0.65, 0xffcc44, 0.45);
         this.addCoreLight(0xffd966, 0.65);
         break;

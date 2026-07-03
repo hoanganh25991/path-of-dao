@@ -114,3 +114,10 @@
 .settings-modal__option input {
   accent-color: #c9a227;
 }
+
+.settings-modal__version {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  color: rgba(232, 230, 227, 0.45);
+  text-align: center;
+}

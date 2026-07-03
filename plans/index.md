@@ -486,7 +486,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 ## 13. Next Step
 
-**Active thread:** Sub-plan **25** (audio/VFX polish) — unlock overlay once per device, improved procedural SFX/BGM; then **26** PWA & ship. Progress: [tracks/index.md](../tracks/index.md) · detail in [tracks/](../tracks/).
+**Active thread:** Sub-plan **26** (PWA & ship) — foundation landed (QualityProfile, PWA shell, CI); ship checklist + E2E smoke next. Sub-plan **28** Phase B (guided ancient path) complete. Progress: [tracks/index.md](../tracks/index.md) · detail in [tracks/](../tracks/).
 
 Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
 

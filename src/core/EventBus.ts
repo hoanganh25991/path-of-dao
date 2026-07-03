@@ -1,3 +1,4 @@
+import type { QualityPreference } from '@/app/QualityProfile';
 import type { SceneId } from '@/app/SceneId';
 import type { Locale, LocalePreference } from '@/core/i18n/I18nManager';
 import type { AuraTier } from '@/home/realmAura';
@@ -43,6 +44,7 @@ export type GameEvents = {
   };
   'home:open-tab': { tab: HomeTab };
   'settings:locale-changed': { preference: LocalePreference; locale: Locale };
+  'settings:quality-changed': { preference: QualityPreference };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
   'cp:changed': { cp: number };
 };

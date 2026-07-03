@@ -1,15 +1,22 @@
 import '@/ui/modals/settings.css';
 import { EventBus } from '@/core/EventBus';
 import { I18nManager, type LocalePreference } from '@/core/i18n/I18nManager';
+import type { QualityPreference } from '@/app/QualityProfile';
+import { VERSION } from '@/app/version';
 import { gameStore } from '@/core/store/gameStore';
 
 const LOCALE_OPTIONS: LocalePreference[] = ['system', 'en', 'vi'];
+const QUALITY_OPTIONS: QualityPreference[] = ['auto', 'low', 'mid', 'high'];
 
 function localeLabelKey(preference: LocalePreference): string {
   return `home.settings.locale.${preference}`;
 }
 
-/** Settings overlay — language preference with system default support. */
+function qualityLabelKey(preference: QualityPreference): string {
+  return `home.settings.quality.${preference}`;
+}
+
+/** Settings overlay — language, performance, version. */
 export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
   return new Promise((resolve) => {
     const save = gameStore.getState().save;
@@ -18,7 +25,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       return;
     }
 
-    let selected = save.settings.locale;
+    let selectedLocale = save.settings.locale;
+    let selectedQuality = save.settings.quality;
 
     const overlay = document.createElement('div');
     overlay.className = 'settings-modal';
@@ -45,22 +53,46 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
 
     header.append(title, closeBtn);
 
-    const sectionTitle = document.createElement('p');
-    sectionTitle.className = 'settings-modal__section-title';
-    sectionTitle.textContent = I18nManager.t('home.settings.language');
+    const localeTitle = document.createElement('p');
+    localeTitle.className = 'settings-modal__section-title';
+    localeTitle.textContent = I18nManager.t('home.settings.language');
 
-    const options = document.createElement('div');
-    options.className = 'settings-modal__options';
-    options.setAttribute('role', 'radiogroup');
-    options.setAttribute('aria-label', I18nManager.t('home.settings.language'));
+    const localeOptions = document.createElement('div');
+    localeOptions.className = 'settings-modal__options';
+    localeOptions.setAttribute('role', 'radiogroup');
+    localeOptions.setAttribute('aria-label', I18nManager.t('home.settings.language'));
 
-    const optionButtons: HTMLLabelElement[] = [];
+    const qualityTitle = document.createElement('p');
+    qualityTitle.className = 'settings-modal__section-title';
+    qualityTitle.textContent = I18nManager.t('home.settings.quality');
 
-    const syncSelection = (): void => {
-      for (const label of optionButtons) {
+    const qualityOptions = document.createElement('div');
+    qualityOptions.className = 'settings-modal__options';
+    qualityOptions.setAttribute('role', 'radiogroup');
+    qualityOptions.setAttribute('aria-label', I18nManager.t('home.settings.quality'));
+
+    const version = document.createElement('p');
+    version.className = 'settings-modal__version';
+    version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
+
+    const localeButtons: HTMLLabelElement[] = [];
+    const qualityButtons: HTMLLabelElement[] = [];
+
+    const syncLocaleSelection = (): void => {
+      for (const label of localeButtons) {
         const value = label.dataset.value as LocalePreference;
         const input = label.querySelector('input');
-        const active = value === selected;
+        const active = value === selectedLocale;
+        label.classList.toggle('settings-modal__option--selected', active);
+        if (input instanceof HTMLInputElement) input.checked = active;
+      }
+    };
+
+    const syncQualitySelection = (): void => {
+      for (const label of qualityButtons) {
+        const value = label.dataset.value as QualityPreference;
+        const input = label.querySelector('input');
+        const active = value === selectedQuality;
         label.classList.toggle('settings-modal__option--selected', active);
         if (input instanceof HTMLInputElement) input.checked = active;
       }
@@ -69,12 +101,21 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     const refreshModalCopy = (): void => {
       title.textContent = I18nManager.t('home.settings.title');
       closeBtn.setAttribute('aria-label', I18nManager.t('home.settings.close'));
-      sectionTitle.textContent = I18nManager.t('home.settings.language');
-      options.setAttribute('aria-label', I18nManager.t('home.settings.language'));
-      for (const label of optionButtons) {
+      localeTitle.textContent = I18nManager.t('home.settings.language');
+      localeOptions.setAttribute('aria-label', I18nManager.t('home.settings.language'));
+      qualityTitle.textContent = I18nManager.t('home.settings.quality');
+      qualityOptions.setAttribute('aria-label', I18nManager.t('home.settings.quality'));
+      version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
+
+      for (const label of localeButtons) {
         const value = label.dataset.value as LocalePreference;
         const text = label.querySelector('span');
         if (text) text.textContent = I18nManager.t(localeLabelKey(value));
+      }
+      for (const label of qualityButtons) {
+        const value = label.dataset.value as QualityPreference;
+        const text = label.querySelector('span');
+        if (text) text.textContent = I18nManager.t(qualityLabelKey(value));
       }
     };
 
@@ -93,21 +134,47 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
 
       label.append(input, text);
       label.addEventListener('click', () => {
-        if (selected === preference) return;
-        selected = preference;
-        syncSelection();
+        if (selectedLocale === preference) return;
+        selectedLocale = preference;
+        syncLocaleSelection();
         void applyLocalePreference(preference).then(refreshModalCopy);
       });
 
-      optionButtons.push(label);
-      options.appendChild(label);
+      localeButtons.push(label);
+      localeOptions.appendChild(label);
     }
 
-    card.append(header, sectionTitle, options);
+    for (const preference of QUALITY_OPTIONS) {
+      const label = document.createElement('label');
+      label.className = 'settings-modal__option';
+      label.dataset.value = preference;
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'quality-preference';
+      input.value = preference;
+
+      const text = document.createElement('span');
+      text.textContent = I18nManager.t(qualityLabelKey(preference));
+
+      label.append(input, text);
+      label.addEventListener('click', () => {
+        if (selectedQuality === preference) return;
+        selectedQuality = preference;
+        syncQualitySelection();
+        void applyQualityPreference(preference);
+      });
+
+      qualityButtons.push(label);
+      qualityOptions.appendChild(label);
+    }
+
+    card.append(header, localeTitle, localeOptions, qualityTitle, qualityOptions, version);
     overlay.append(backdrop, card);
     uiRoot.appendChild(overlay);
 
-    syncSelection();
+    syncLocaleSelection();
+    syncQualitySelection();
     requestAnimationFrame(() => overlay.classList.add('settings-modal--active'));
 
     const cleanup = (): void => {
@@ -138,4 +205,16 @@ async function applyLocalePreference(preference: LocalePreference): Promise<void
     preference,
     locale: I18nManager.locale,
   });
+}
+
+async function applyQualityPreference(preference: QualityPreference): Promise<void> {
+  const current = gameStore.getState().save;
+  if (!current || current.settings.quality === preference) return;
+
+  gameStore.getState().patch((save) => ({
+    settings: { ...save.settings, quality: preference },
+  }));
+  await gameStore.getState().persist();
+
+  EventBus.emit('settings:quality-changed', { preference });
 }

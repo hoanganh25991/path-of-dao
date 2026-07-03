@@ -134,7 +134,7 @@ export class SaveManager {
         currentMapId: null,
       },
       cosmetics: { pet: null },
-      settings: { locale: 'system', sfxVolume: 1, musicVolume: 1 },
+      settings: { locale: 'system', quality: 'auto', sfxVolume: 1, musicVolume: 1 },
       meta: { totalPlaySeconds: 0, createdAt: now, updatedAt: now },
     };
 

@@ -104,6 +104,7 @@ export const playerSaveV1Schema = z.object({
     .default({ pet: null }),
   settings: z.object({
     locale: z.enum(['system', 'en', 'vi']).default('system'),
+    quality: z.enum(['auto', 'low', 'mid', 'high']).default('auto'),
     sfxVolume: z.number().min(0).max(1),
     musicVolume: z.number().min(0).max(1),
   }),

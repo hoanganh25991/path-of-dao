@@ -19,6 +19,7 @@ import { EncounterTrigger } from '@/combat/systems/EncounterTrigger';
 import { HitboxManager } from '@/combat/combat/HitboxManager';
 import { tilemapKey } from '@/combat/scenes/BootScene';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import { getQualitySettingsFromSave } from '@/app/QualityProfile';
 import { CombatJuiceBridge } from '@/combat/juice/CombatJuiceBridge';
 import { JuiceController } from '@/combat/juice/JuiceController';
 
@@ -130,6 +131,8 @@ export class MapScene extends Phaser.Scene {
     this.encounterTrigger = new EncounterTrigger(this, this.player, config);
 
     const juice = new JuiceController(this);
+    const quality = getQualitySettingsFromSave(gameStore.getState().save);
+    juice.setEnabled(quality.juiceEnabled);
     this.juiceBridge = new CombatJuiceBridge(this, juice);
     this.juiceBridge.mount();
 

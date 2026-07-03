@@ -21,7 +21,6 @@ import { mountUiSounds } from '@/core/audio/UiSound';
 
 export class App {
   private static initialized = false;
-  private static unmountUiSounds: (() => void) | null = null;
 
   static async init(): Promise<void> {
     if (App.initialized) return;
@@ -44,7 +43,7 @@ export class App {
 
     const elements = GameShell.mount(root);
     AudioUnlock.mount(root);
-    App.unmountUiSounds = mountUiSounds(root);
+    mountUiSounds(root);
     CombatHUD.init(elements.uiRoot);
     HomeUI.init(elements.uiRoot);
     App.mountDevControls(elements.uiRoot);
