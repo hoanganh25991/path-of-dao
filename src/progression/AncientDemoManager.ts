@@ -7,10 +7,12 @@ import { gameStore } from '@/core/store/gameStore';
 import { INSIGHT_XP_TO_FULL, listInsightIntentIds } from '@/progression/InsightDefinitions';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
+import { normalizeLoadout } from '@/progression/SkillLoadout';
 import { buildPlayerStats } from '@/progression/playerStats';
 import {
   ancientsFileSchema,
   type AncientProfile,
+  type AncientSaveTemplate,
 } from '@/shared/schemas/ancient-demo';
 
 const ancientsData = ancientsFileSchema.parse(ancientsJson);
@@ -71,7 +73,7 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
     xp: template.level * 100,
     realm,
     insights,
-    equippedSkills: { ...template.equippedSkills },
+    equippedSkills: normalizeLoadout({ ...template.equippedSkills }, profile.unlockedSkills),
     inventory: {
       gold: template.gold,
       items: template.inventoryItemIds.map((id) => ({ id, qty: 1 })),
@@ -207,7 +209,7 @@ export async function enterAncientDemo(
   activeAncientId = ancientId;
   const demoSave = buildAncientSave(ancientId);
   if (equippedSkills) {
-    demoSave.equippedSkills = { ...equippedSkills };
+    demoSave.equippedSkills = normalizeLoadout(equippedSkills, profileById(ancientId).unlockedSkills);
     demoSave.checksum = checksumOf(demoSave);
   }
   store.patch(demoSave);

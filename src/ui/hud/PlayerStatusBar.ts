@@ -67,20 +67,26 @@ export class PlayerStatusBar {
       PlayerStatusBar.hpFill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
     }
     if (PlayerStatusBar.hpText) {
-      const hpStr = Math.ceil(hp).toLocaleString();
-      const maxStr = Math.ceil(stats.hpMax).toLocaleString();
-      PlayerStatusBar.hpText.textContent = ancient ? `${hpStr} / ${maxStr} ∞` : `${hpStr} / ${maxStr}`;
+      if (ancient) {
+        PlayerStatusBar.hpText.textContent = '∞';
+      } else {
+        const hpStr = Math.ceil(stats.hp).toLocaleString();
+        const maxStr = Math.ceil(stats.hpMax).toLocaleString();
+        PlayerStatusBar.hpText.textContent = `${hpStr} / ${maxStr}`;
+      }
     }
     if (PlayerStatusBar.manaFill) {
       const pct = stats.manaMax > 0 ? (mana / stats.manaMax) * 100 : 100;
       PlayerStatusBar.manaFill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
     }
     if (PlayerStatusBar.manaText) {
-      const manaStr = Math.ceil(mana).toLocaleString();
-      const maxStr = Math.ceil(stats.manaMax).toLocaleString();
-      PlayerStatusBar.manaText.textContent = ancient
-        ? `${manaStr} / ${maxStr} ∞`
-        : `${manaStr} / ${maxStr}`;
+      if (ancient) {
+        PlayerStatusBar.manaText.textContent = '∞';
+      } else {
+        const manaStr = Math.ceil(stats.mana).toLocaleString();
+        const maxStr = Math.ceil(stats.manaMax).toLocaleString();
+        PlayerStatusBar.manaText.textContent = `${manaStr} / ${maxStr}`;
+      }
     }
   }
 }

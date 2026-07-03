@@ -7,6 +7,12 @@
       "loreKey": "demo.ancient.breakthrough_sage.lore",
       "focusKey": "demo.focus.breakthrough",
       "visualTheme": "jade",
+      "unlockedSkills": [
+        "skill.void.slash",
+        "skill.sword.slash",
+        "skill.flame.bolt",
+        "skill.life.mend"
+      ],
       "highlightKeys": ["demo.highlight.breakthrough", "demo.highlight.qi_condensation", "demo.highlight.cultivate"],
       "startScene": "home",
       "startMapId": "map.test.grove",
@@ -47,6 +53,14 @@
       "loreKey": "demo.ancient.insight_seeker.lore",
       "focusKey": "demo.focus.awakening",
       "visualTheme": "insight",
+      "unlockedSkills": [
+        "skill.void.slash",
+        "skill.sword.slash",
+        "skill.lightning.strike",
+        "skill.time.slow",
+        "skill.void.slash.awakened",
+        "skill.sword.slash.awakened"
+      ],
       "highlightKeys": ["demo.highlight.insight_meter", "demo.highlight.awaken_button", "demo.highlight.foundation"],
       "startScene": "home",
       "startMapId": "map.test.grove",
@@ -87,6 +101,14 @@
       "loreKey": "demo.ancient.sword_ancestor.lore",
       "focusKey": "demo.focus.combat",
       "visualTheme": "sword",
+      "unlockedSkills": [
+        "skill.sword.slash",
+        "skill.sword.slash.awakened",
+        "skill.lightning.strike",
+        "skill.lightning.strike.awakened",
+        "skill.flame.bolt.awakened",
+        "skill.void.slash.awakened"
+      ],
       "highlightKeys": [
         "demo.highlight.core_formation",
         "demo.highlight.awakened_sword",
@@ -130,6 +152,14 @@
       "loreKey": "demo.ancient.flame_sovereign.lore",
       "focusKey": "demo.focus.combat",
       "visualTheme": "flame",
+      "unlockedSkills": [
+        "skill.flame.bolt",
+        "skill.flame.bolt.awakened",
+        "skill.life.mend",
+        "skill.life.mend.awakened",
+        "skill.void.slash.awakened",
+        "skill.lightning.strike.awakened"
+      ],
       "highlightKeys": [
         "demo.highlight.nascent_soul",
         "demo.highlight.awakened_flame",
@@ -173,6 +203,14 @@
       "loreKey": "demo.ancient.fortune_emissary.lore",
       "focusKey": "demo.focus.fortune",
       "visualTheme": "fortune",
+      "unlockedSkills": [
+        "skill.void.slash",
+        "skill.void.slash.awakened",
+        "skill.flame.bolt",
+        "skill.life.mend",
+        "skill.time.slow",
+        "skill.sword.slash.awakened"
+      ],
       "highlightKeys": [
         "demo.highlight.encounters",
         "demo.highlight.lore_archive",
@@ -226,6 +264,14 @@
       "loreKey": "demo.ancient.void_walker.lore",
       "focusKey": "demo.focus.endgame",
       "visualTheme": "void",
+      "unlockedSkills": [
+        "skill.void.slash.awakened",
+        "skill.sword.slash.awakened",
+        "skill.flame.bolt.awakened",
+        "skill.lightning.strike.awakened",
+        "skill.time.slow.awakened",
+        "skill.life.mend.awakened"
+      ],
       "highlightKeys": [
         "demo.highlight.void_spirit",
         "demo.highlight.awakened_void",

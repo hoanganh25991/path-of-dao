@@ -5,7 +5,9 @@ import { isAncientCombatActive } from '@/progression/AncientCombatMode';
 import { AncientEchoBanner } from '@/ui/hud/AncientEchoBanner';
 import { PlayerStatusBar } from '@/ui/hud/PlayerStatusBar';
 import { InsightMeter } from '@/ui/hud/InsightMeter';
+import { CombatSkillPicker } from '@/ui/hud/CombatSkillPicker';
 import '@/ui/hud/combat-hud.css';
+import '@/ui/hud/combat-skill-picker.css';
 
 /** Mounts combat input widgets when the active scene is combat. */
 export class CombatHUD {
@@ -25,6 +27,7 @@ export class CombatHUD {
     PlayerStatusBar.init(CombatHUD.root);
     AncientEchoBanner.init(CombatHUD.root);
     InsightMeter.init(CombatHUD.root);
+    CombatSkillPicker.init(CombatHUD.root);
 
     CombatHUD.unsubscribe = EventBus.on('scene:changed', ({ id }) => {
       CombatHUD.applyScene(id);
@@ -39,6 +42,7 @@ export class CombatHUD {
     PlayerStatusBar.destroy();
     AncientEchoBanner.destroy();
     InsightMeter.destroy();
+    CombatSkillPicker.destroy();
     InputManager.destroy();
     CombatHUD.root?.remove();
     CombatHUD.root = null;
@@ -58,5 +62,6 @@ export class CombatHUD {
     InputManager.setEnabled(showCombat);
     AncientEchoBanner.syncVisible(showCombat);
     PlayerStatusBar.setAncientMode(showCombat && isAncientCombatActive());
+    if (!showCombat) CombatSkillPicker.close();
   }
 }

@@ -4,7 +4,7 @@
   "nameKey": "skill.life.mend.name",
   "kind": "heal",
   "manaCost": 15,
-  "skillMultiplier": 0,
+  "skillMultiplier": 1,
   "awakenedOverrides": {
     "healPct": 0.1
   }

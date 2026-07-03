@@ -79,6 +79,22 @@ describe('AncientDemoManager', () => {
     expect(gameStore.getState().save!.stats.level).toBe(4);
   });
 
+  it('enter with custom loadout applies equipped skills', async () => {
+    await enterAncientDemo('ancient.sword_ancestor', {
+      primary: 'skill.lightning.strike.awakened',
+      secondary: 'skill.sword.slash.awakened',
+      ultimate: 'skill.flame.bolt.awakened',
+    });
+    expect(gameStore.getState().save!.equippedSkills.primary).toBe('skill.lightning.strike.awakened');
+    await exitAncientDemo();
+  });
+
+  it('each ancient exposes at least four unlocked skills', () => {
+    for (const profile of listAncientProfiles()) {
+      expect(profile.unlockedSkills.length).toBeGreaterThanOrEqual(4);
+    }
+  });
+
   it('does not persist demo stats to IndexedDB while active', async () => {
     await enterAncientDemo('ancient.flame_sovereign');
     await gameStore.getState().persist();

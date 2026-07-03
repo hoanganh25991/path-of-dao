@@ -1,0 +1,109 @@
+.combat-skill-picker {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.combat-skill-picker--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.combat-skill-picker__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+
+.combat-skill-picker__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.85rem 1rem max(1rem, env(safe-area-inset-bottom));
+  border-radius: 1rem 1rem 0 0;
+  border: 1px solid rgba(143, 212, 196, 0.25);
+  border-bottom: none;
+  background: linear-gradient(180deg, rgba(18, 22, 32, 0.97), rgba(8, 10, 16, 0.98));
+  transform: translateY(100%);
+  transition: transform 0.22s ease;
+}
+
+.combat-skill-picker--open .combat-skill-picker__panel {
+  transform: translateY(0);
+}
+
+.combat-skill-picker__title {
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--dao-gold);
+}
+
+.combat-skill-picker__hint {
+  margin: 0 0 0.65rem;
+  font-size: 0.72rem;
+  color: var(--dao-muted);
+}
+
+.combat-skill-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  max-height: 42vh;
+  overflow-y: auto;
+}
+
+.combat-skill-picker__skill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 10, 16, 0.92);
+  color: #e8e4dc;
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.combat-skill-picker__skill--active {
+  border-color: rgba(45, 212, 168, 0.65);
+  box-shadow: inset 0 0 0 1px rgba(45, 212, 168, 0.25);
+}
+
+.combat-skill-picker__skill--awakened {
+  border-color: rgba(255, 220, 120, 0.4);
+  background: rgba(36, 28, 10, 0.55);
+}
+
+.combat-skill-picker__name {
+  line-height: 1.25;
+}
+
+.action-btn--skill-primary::before,
+.action-btn--skill-secondary::before,
+.action-btn--skill-ultimate::before {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(143, 212, 196, 0.35);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ancient-demo-modal__pool-skill--active {
+  border-color: rgba(45, 212, 168, 0.65);
+}

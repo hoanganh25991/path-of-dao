@@ -10,7 +10,7 @@ export function isAncientCombatActive(): boolean {
   return getActiveAncientId() !== null;
 }
 
-/** God-mode pools: unlimited combat, inflated numbers for show-off HUD. */
+/** God-mode pools: unlimited combat; inflated internal maxima (HUD shows ∞ only). */
 export function applyAncientGodMode(sheet: StatSheet): void {
   const resolved = sheet.resolved;
   const hpMax = Math.max(ANCIENT_HP_FLOOR, Math.floor(resolved.hpMax * ANCIENT_POOL_AMP));

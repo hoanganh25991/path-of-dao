@@ -12,7 +12,7 @@ import { computeKillRewards } from '@/combat/systems/rewards';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
-export const MAX_ALIVE = 8;
+export const MAX_ALIVE = 18;
 const NEXT_WAVE_DELAY_MS = 1500;
 const WAVE_RESET_DELAY_MS = 1700;
 const MELEE_HIT_SLACK = 1.3;

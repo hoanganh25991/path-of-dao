@@ -104,3 +104,98 @@
   background: linear-gradient(135deg, #2dd4a8, #1a9e7a);
   color: #041410;
 }
+
+.ancient-demo-modal__loadout {
+  margin-bottom: 0.85rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.ancient-demo-modal__loadout-title {
+  margin: 0 0 0.25rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--dao-gold);
+}
+
+.ancient-demo-modal__loadout-hint {
+  margin: 0 0 0.65rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--dao-muted);
+}
+
+.ancient-demo-modal__slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  margin-bottom: 0.65rem;
+}
+
+.ancient-demo-modal__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 72px;
+  padding: 0.35rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 14, 20, 0.85);
+  cursor: pointer;
+}
+
+.ancient-demo-modal__slot--active {
+  border-color: rgba(45, 212, 168, 0.65);
+  box-shadow: 0 0 12px rgba(45, 212, 168, 0.15);
+}
+
+.ancient-demo-modal__slot--awakened {
+  border-color: rgba(255, 220, 120, 0.45);
+}
+
+.ancient-demo-modal__slot-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dao-muted);
+}
+
+.ancient-demo-modal__pool {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.ancient-demo-modal__pool-skill {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.35rem 0.45rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 10, 16, 0.9);
+  color: #e8e4dc;
+  font: inherit;
+  font-size: 0.72rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ancient-demo-modal__pool-skill--awakened {
+  border-color: rgba(255, 220, 120, 0.35);
+  background: rgba(40, 32, 12, 0.55);
+}
+
+.ancient-demo-modal__pool-name {
+  line-height: 1.25;
+}
+
+.ancient-demo-modal__pool-icon .skill-btn__icon {
+  font-size: 1.1rem;
+}

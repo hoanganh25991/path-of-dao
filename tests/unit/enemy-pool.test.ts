@@ -54,11 +54,11 @@ describe('EnemyPool', () => {
     const { pool, created } = makePool();
     pool.prewarm(['enemy.slime', 'enemy.archer']);
 
-    expect(created).toHaveLength(10); // 5 per type
+    expect(created).toHaveLength(20); // 10 per type
     expect(pool.aliveCount).toBe(0);
 
     pool.acquire('enemy.slime', 0, 0);
-    expect(created).toHaveLength(10); // reused, not newly created
+    expect(created).toHaveLength(20); // reused, not newly created
     expect(pool.aliveCount).toBe(1);
   });
 

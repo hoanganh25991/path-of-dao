@@ -62,5 +62,7 @@
   "home.settings.locale.en": "English",
   "home.settings.locale.vi": "Tiếng Việt",
   "awakening.title": "Ngộ Đạo Thức Tỉnh",
-  "awakening.confirm": "Nắm Giữ Đạo"
+  "awakening.confirm": "Nắm Giữ Đạo",
+  "combat.skills.pick_title": "Gán {slot}",
+  "combat.skills.pick_hint": "Chỉ kỹ chưa gán ở nút khác — không trùng."
 }

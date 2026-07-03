@@ -4,15 +4,25 @@
     {
       "trigger": "onEnter",
       "enemies": [
-        { "id": "enemy.slime", "count": 3, "spread": 80 },
-        { "id": "enemy.archer", "count": 1, "spread": 60 }
+        { "id": "enemy.slime", "count": 8, "spread": 140 },
+        { "id": "enemy.archer", "count": 4, "spread": 180 },
+        { "id": "enemy.totem", "count": 2, "spread": 100 }
       ]
     },
     {
       "trigger": "onWaveCleared",
       "enemies": [
-        { "id": "enemy.slime", "count": 3, "spread": 120 },
-        { "id": "enemy.totem", "count": 1, "spread": 0 }
+        { "id": "enemy.slime", "count": 10, "spread": 200 },
+        { "id": "enemy.archer", "count": 6, "spread": 220 },
+        { "id": "enemy.totem", "count": 3, "spread": 160 }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        { "id": "enemy.slime", "count": 12, "spread": 240 },
+        { "id": "enemy.archer", "count": 8, "spread": 260 },
+        { "id": "enemy.totem", "count": 4, "spread": 180 }
       ]
     }
   ]

@@ -1,6 +1,6 @@
 import type { Enemy } from '@/combat/entities/Enemy';
 
-const PREWARM_COUNT = 5;
+const PREWARM_COUNT = 10;
 
 /**
  * Per-enemy-type pool (sub-plan 08 §7). Released enemies are hidden and

@@ -278,7 +278,7 @@ Maps have recommended CP range. Returning to lower maps: enemies have `-40% HP/D
 | Safety | Real save in `sessionStorage` backup; demo skips IndexedDB persist; combat runtime not saved |
 | Content | `content/demo/ancients.json` — profile + save template + `visualTheme` per ancient |
 | Focus groups | Breakthrough · Awakening · Combat · Fortune · Endgame |
-| Combat fantasy | God-mode pools (no damage, infinite mana); HUD shows inflated HP/Mana with ∞ suffix |
+| Combat fantasy | God-mode pools (no damage, infinite mana); HUD shows **∞** only (internal pools tracked in StatSheet) |
 | Hero look | Themed sticky-man palette, weapon, clothes, aura, name/epithet tag (`ancientHeroVisuals`) |
 | HUD | `AncientEchoBanner` + gold `PlayerStatusBar` ancient mode during demo combat |
 | Encounters | Fortuitous encounter rolls **skipped** during demo (no interrupting skill showcase) |

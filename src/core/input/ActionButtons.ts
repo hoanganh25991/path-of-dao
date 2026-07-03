@@ -1,6 +1,6 @@
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
-import { I18nManager } from '@/core/i18n/I18nManager';
+import { isAncientCombatActive } from '@/progression/AncientCombatMode';
 import {
   isAwakenedSkillId,
   renderSkillButtonHtml,
@@ -50,6 +50,8 @@ const SKILL_SLOTS: Array<{ id: ActionButtonId; slot: SkillSlotId; className: str
   { id: 'skillUltimate', slot: 'ultimate', className: 'action-btn--skill-ultimate' },
 ];
 
+const LONG_PRESS_MS = 450;
+
 export class ActionButtons {
   readonly element: HTMLElement;
 
@@ -62,8 +64,10 @@ export class ActionButtons {
       pressed: boolean;
       released: boolean;
       slot?: SkillSlotId;
+      longPressArmed: boolean;
     }
   >();
+  private readonly longPressTimers = new Map<ActionButtonId, ReturnType<typeof setTimeout>>();
   private unsubscribers: Array<() => void> = [];
 
   constructor(container: HTMLElement) {
@@ -96,6 +100,7 @@ export class ActionButtons {
     this.unsubscribers.push(
       EventBus.on('scene:changed', () => this.syncFromSave()),
       EventBus.on('demo:entered', () => this.syncFromSave()),
+      EventBus.on('loadout:changed', () => this.syncFromSave()),
     );
     this.syncFromSave();
   }
@@ -103,6 +108,8 @@ export class ActionButtons {
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     if (!enabled) {
+      for (const timer of this.longPressTimers.values()) clearTimeout(timer);
+      this.longPressTimers.clear();
       for (const state of this.buttons.values()) {
         state.held = false;
         state.pressed = false;
@@ -116,6 +123,7 @@ export class ActionButtons {
 
   syncFromSave(): void {
     const save = gameStore.getState().save;
+    this.element.classList.toggle('action-buttons--ancient', isAncientCombatActive());
     if (!save) return;
 
     for (const { id, slot } of SKILL_SLOTS) {
@@ -158,6 +166,8 @@ export class ActionButtons {
   destroy(): void {
     for (const unsub of this.unsubscribers) unsub();
     this.unsubscribers = [];
+    for (const timer of this.longPressTimers.values()) clearTimeout(timer);
+    this.longPressTimers.clear();
     this.element.remove();
     this.buttons.clear();
   }
@@ -173,7 +183,7 @@ export class ActionButtons {
     button.addEventListener('pointerdown', (event) => {
       if (!this.enabled) return;
       event.preventDefault();
-      this.onPointerDown(layout.id);
+      this.onPointerDown(layout.id, layout.slot);
     });
 
     button.addEventListener('pointerup', () => this.onPointerUp(layout.id));
@@ -186,11 +196,12 @@ export class ActionButtons {
       pressed: false,
       released: false,
       slot: layout.slot,
+      longPressArmed: false,
     });
     parent.appendChild(button);
   }
 
-  private onPointerDown(id: ActionButtonId): void {
+  private onPointerDown(id: ActionButtonId, slot?: SkillSlotId): void {
     if (!this.enabled) return;
 
     const state = this.buttons.get(id);
@@ -199,13 +210,41 @@ export class ActionButtons {
     state.held = true;
     state.pressed = true;
     state.released = false;
+    state.longPressArmed = false;
     state.el.classList.add('action-btn--pressed');
     this.tryHaptic();
+
+    if (slot) {
+      const timer = setTimeout(() => {
+        this.longPressTimers.delete(id);
+        state.longPressArmed = true;
+        state.held = false;
+        state.pressed = false;
+        state.released = false;
+        state.el.classList.remove('action-btn--pressed');
+        EventBus.emit('combat:open-skill-picker', { slot });
+      }, LONG_PRESS_MS);
+      this.longPressTimers.set(id, timer);
+    }
   }
 
   private onPointerUp(id: ActionButtonId): void {
+    const pending = this.longPressTimers.get(id);
+    if (pending) {
+      clearTimeout(pending);
+      this.longPressTimers.delete(id);
+    }
+
     const state = this.buttons.get(id);
     if (!state || !state.held) return;
+
+    if (state.longPressArmed) {
+      state.held = false;
+      state.pressed = false;
+      state.released = false;
+      state.el.classList.remove('action-btn--pressed');
+      return;
+    }
 
     state.held = false;
     state.released = true;
@@ -219,9 +258,4 @@ export class ActionButtons {
       // Vibration API unavailable or blocked.
     }
   }
-}
-
-/** @internal Skill slot labels for loadout UI. */
-export function skillSlotLabel(slot: SkillSlotId): string {
-  return I18nManager.t(`demo.skills.slot.${slot}`);
 }

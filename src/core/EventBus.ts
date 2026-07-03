@@ -21,6 +21,8 @@ export type GameEvents = {
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
+  'combat:open-skill-picker': { slot: 'primary' | 'secondary' | 'ultimate' };
+  'loadout:changed': { equippedSkills: { primary: string; secondary: string; ultimate: string } };
   'home:open-tab': { tab: HomeTab };
   'settings:locale-changed': { preference: LocalePreference; locale: Locale };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };

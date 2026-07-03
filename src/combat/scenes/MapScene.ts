@@ -18,7 +18,9 @@ import { tilemapKey } from '@/combat/scenes/BootScene';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
 const CAMERA_LERP = 0.08;
-const CAMERA_DEADZONE = 80;
+const CAMERA_DEADZONE = 100;
+const COMBAT_ZOOM = 0.72;
+const ANCIENT_COMBAT_ZOOM = 0.58;
 
 const DEPTH = {
   ground: 0,
@@ -99,6 +101,7 @@ export class MapScene extends Phaser.Scene {
 
     const camera = this.cameras.main;
     camera.setBounds(0, 0, config.bounds.width, config.bounds.height);
+    camera.setZoom(isAncientCombatActive() ? ANCIENT_COMBAT_ZOOM : COMBAT_ZOOM);
     camera.startFollow(this.player.sprite, true, CAMERA_LERP, CAMERA_LERP);
     camera.setDeadzone(CAMERA_DEADZONE, CAMERA_DEADZONE);
 

@@ -62,5 +62,7 @@
   "home.settings.locale.en": "English",
   "home.settings.locale.vi": "Tiếng Việt",
   "awakening.title": "Insight Awakened",
-  "awakening.confirm": "Embrace the Dao"
+  "awakening.confirm": "Embrace the Dao",
+  "combat.skills.pick_title": "Assign {slot}",
+  "combat.skills.pick_hint": "Only skills not on other buttons — no duplicates."
 }

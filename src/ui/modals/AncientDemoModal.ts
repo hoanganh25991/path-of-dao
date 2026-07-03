@@ -1,14 +1,10 @@
 import '@/ui/modals/ancient-demo.css';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getAncientProfile } from '@/progression/AncientDemoManager';
-import { getSkillDefinition } from '@/progression/SkillLoader';
+import { normalizeLoadout } from '@/progression/SkillLoadout';
 import type { AncientProfile, AncientSaveTemplate } from '@/shared/schemas/ancient-demo';
-import {
-  isAwakenedSkillId,
-  renderSkillButtonHtml,
-  skillSlotLabel,
-  type SkillSlotId,
-} from '@/ui/skills/SkillIcon';
+import { renderSkillButtonHtml } from '@/ui/skills/SkillIcon';
+import { createLoadoutPickerElement } from '@/ui/skills/SkillLoadoutPicker';
 
 export interface AncientDemoModalOptions {
   ancientId: string;
@@ -20,93 +16,6 @@ export interface AncientDemoModalResult {
   equippedSkills?: AncientSaveTemplate['equippedSkills'];
 }
 
-const SKILL_SLOTS: SkillSlotId[] = ['primary', 'secondary', 'ultimate'];
-
-function createLoadoutPicker(
-  profile: AncientProfile,
-  onChange: (loadout: AncientSaveTemplate['equippedSkills']) => void,
-): {
-  root: HTMLElement;
-  getLoadout: () => AncientSaveTemplate['equippedSkills'];
-} {
-  const loadout: AncientSaveTemplate['equippedSkills'] = { ...profile.save.equippedSkills };
-  let activeSlot: SkillSlotId = 'primary';
-
-  const root = document.createElement('div');
-  root.className = 'ancient-demo-modal__loadout';
-
-  const heading = document.createElement('p');
-  heading.className = 'ancient-demo-modal__loadout-title';
-  heading.textContent = I18nManager.t('demo.skills.loadout_title');
-
-  const hint = document.createElement('p');
-  hint.className = 'ancient-demo-modal__loadout-hint';
-  hint.textContent = I18nManager.t('demo.skills.loadout_hint');
-
-  const slotsRow = document.createElement('div');
-  slotsRow.className = 'ancient-demo-modal__slots';
-
-  const slotButtons = new Map<SkillSlotId, HTMLButtonElement>();
-
-  const renderSlots = (): void => {
-    for (const slot of SKILL_SLOTS) {
-      let btn = slotButtons.get(slot);
-      if (!btn) {
-        btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'ancient-demo-modal__slot';
-        btn.dataset.slot = slot;
-        btn.addEventListener('click', () => {
-          activeSlot = slot;
-          renderSlots();
-        });
-        slotButtons.set(slot, btn);
-        slotsRow.appendChild(btn);
-      }
-
-      const skillId = loadout[slot];
-      btn.innerHTML = `
-        <span class="ancient-demo-modal__slot-label">${skillSlotLabel(slot)}</span>
-        <span class="ancient-demo-modal__slot-icon">${renderSkillButtonHtml(skillId)}</span>
-      `;
-      btn.classList.toggle('ancient-demo-modal__slot--active', slot === activeSlot);
-      btn.classList.toggle('ancient-demo-modal__slot--awakened', isAwakenedSkillId(skillId));
-    }
-  };
-
-  const pool = document.createElement('div');
-  pool.className = 'ancient-demo-modal__pool';
-
-  for (const skillId of profile.unlockedSkills) {
-    const def = getSkillDefinition(skillId);
-    const pick = document.createElement('button');
-    pick.type = 'button';
-    pick.className = 'ancient-demo-modal__pool-skill';
-    pick.dataset.skillId = skillId;
-    pick.innerHTML = `
-      <span class="ancient-demo-modal__pool-icon">${renderSkillButtonHtml(skillId)}</span>
-      <span class="ancient-demo-modal__pool-name">${I18nManager.t(`${def.nameKey}`)}</span>
-    `;
-    if (isAwakenedSkillId(skillId)) {
-      pick.classList.add('ancient-demo-modal__pool-skill--awakened');
-    }
-    pick.addEventListener('click', () => {
-      loadout[activeSlot] = skillId;
-      renderSlots();
-      onChange({ ...loadout });
-    });
-    pool.appendChild(pick);
-  }
-
-  renderSlots();
-  root.append(heading, hint, slotsRow, pool);
-
-  return {
-    root,
-    getLoadout: () => ({ ...loadout }),
-  };
-}
-
 /** Lore card + skill loadout before walking in an ancient cultivator's footsteps. */
 export function showAncientDemoModal(
   uiRoot: HTMLElement,
@@ -114,7 +23,8 @@ export function showAncientDemoModal(
 ): Promise<AncientDemoModalResult> {
   return new Promise((resolve) => {
     const profile = getAncientProfile(options.ancientId);
-    const loadoutPicker = createLoadoutPicker(profile, () => {});
+    const defaults = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
+    const loadoutPicker = createLoadoutPickerElement(defaults, profile.unlockedSkills, () => {});
 
     const overlay = document.createElement('div');
     overlay.className = 'ancient-demo-modal';
@@ -202,6 +112,8 @@ export function renderAncientCard(profile: AncientProfile, active: boolean): HTM
   card.dataset.ancientId = profile.id;
   if (active) card.classList.add('home-ancient-card--active');
 
+  const defaults = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
+
   const epithet = document.createElement('span');
   epithet.className = 'home-ancient-card__epithet';
   epithet.textContent = I18nManager.t(profile.epithetKey);
@@ -216,9 +128,8 @@ export function renderAncientCard(profile: AncientProfile, active: boolean): HTM
 
   const skillPreview = document.createElement('span');
   skillPreview.className = 'home-ancient-card__skills';
-  skillPreview.innerHTML = profile.unlockedSkills
-    .slice(0, 5)
-    .map((id) => `<span class="home-ancient-card__skill">${renderSkillButtonHtml(id)}</span>`)
+  skillPreview.innerHTML = (['primary', 'secondary', 'ultimate'] as const)
+    .map((slot) => `<span class="home-ancient-card__skill">${renderSkillButtonHtml(defaults[slot])}</span>`)
     .join('');
 
   card.append(epithet, name, chips, skillPreview);

@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { InsightIntentId, SkillKind } from '@/progression/SkillDefinition';
 import { getIntentVisual } from '@/ui/skills/SkillIcon';
 
-const ANCIENT_AMP = 2.8;
+const ANCIENT_AMP = 4.5;
 
 export function getAncientSkillAmp(isGodMode: boolean): number {
   return isGodMode ? ANCIENT_AMP : 1;
