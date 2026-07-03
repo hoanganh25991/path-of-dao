@@ -1,34 +1,40 @@
-import {
-  AmbientLight,
-  BoxGeometry,
-  Color,
-  DirectionalLight,
-  FogExp2,
-  Mesh,
-  MeshStandardMaterial,
-  PerspectiveCamera,
-  Scene,
-  WebGLRenderer,
-} from 'three';
+import { PerspectiveCamera, WebGLRenderer } from 'three';
 import type { SceneHost } from '@/app/SceneHost';
+import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
+import { gameStore } from '@/core/store/gameStore';
+import { resizeCamera } from '@/home/CameraRig';
+import { disposeRenderer } from '@/home/disposeThree';
+import { HomeScene } from '@/home/HomeScene';
 
-/** Stub Three.js home scene — replaced in sub-plan 10. */
+/** Full Three.js home shrine — floating island, hero viewer, realm aura. */
 export class HomeSceneHost implements SceneHost {
   readonly id = 'home' as const;
 
   private renderer: WebGLRenderer | null = null;
-  private scene: Scene | null = null;
-  private camera: PerspectiveCamera | null = null;
+  private homeScene: HomeScene | null = null;
   private rafId: number | null = null;
   private running = false;
+  private lastTapMs = 0;
+  private unsubscribeEquipment: (() => void) | null = null;
+
   private readonly onResize = (): void => {
-    if (!this.renderer || !this.camera) return;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height, false);
+    if (!this.renderer || !this.homeScene?.cameraRig) return;
+    resizeCamera(
+      this.homeScene.cameraRig.controls.object as PerspectiveCamera,
+      this.renderer,
+      window.innerWidth,
+      window.innerHeight,
+    );
+  };
+
+  private readonly onDoubleTap = (event: PointerEvent): void => {
+    const now = performance.now();
+    if (now - this.lastTapMs < 320) {
+      this.homeScene?.cameraRig?.reset();
+      event.preventDefault();
+    }
+    this.lastTapMs = now;
   };
 
   async mount(container: HTMLElement): Promise<void> {
@@ -37,32 +43,27 @@ export class HomeSceneHost implements SceneHost {
       throw new Error('HomeSceneHost: #canvas-3d not found');
     }
 
-    this.renderer = new WebGLRenderer({ canvas, antialias: true });
+    const save = gameStore.getState().save;
+    if (!save) {
+      throw new Error('HomeSceneHost: save not loaded');
+    }
+
+    this.renderer = new WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(window.innerWidth, window.innerHeight, false);
 
-    this.scene = new Scene();
-    this.scene.background = new Color(0x0a1628);
-    this.scene.fog = new FogExp2(0x0a1628, 0.035);
+    this.homeScene = new HomeScene();
+    await this.homeScene.build(this.renderer, canvas, save);
 
-    this.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.camera.position.set(0, 1.5, 4);
-    this.camera.lookAt(0, 0.5, 0);
-
-    this.scene.add(new AmbientLight(0x6688aa, 0.6));
-    const keyLight = new DirectionalLight(0xffffff, 1.1);
-    keyLight.position.set(3, 6, 4);
-    this.scene.add(keyLight);
-
-    // Hero Placeholder — replaced in sub-plan 10
-    const hero = new Mesh(
-      new BoxGeometry(1, 1.6, 0.6),
-      new MeshStandardMaterial({ color: 0x3d8b5a }),
-    );
-    hero.position.y = 0.8;
-    this.scene.add(hero);
+    this.unsubscribeEquipment = EventBus.on('equipment:changed', () => {
+      const current = gameStore.getState().save;
+      if (!current || !this.homeScene) return;
+      void this.homeScene.syncEquipment(current.equipped);
+    });
 
     window.addEventListener('resize', this.onResize);
+    canvas.addEventListener('pointerdown', this.onDoubleTap);
+
     this.running = true;
     this.startLoop();
   }
@@ -75,33 +76,26 @@ export class HomeSceneHost implements SceneHost {
     }
 
     window.removeEventListener('resize', this.onResize);
+    this.unsubscribeEquipment?.();
+    this.unsubscribeEquipment = null;
 
-    if (this.scene) {
-      this.scene.traverse((object) => {
-        if (!(object instanceof Mesh)) return;
-        object.geometry.dispose();
-        const { material } = object;
-        if (Array.isArray(material)) {
-          material.forEach((entry) => entry.dispose());
-        } else {
-          material.dispose();
-        }
-      });
-      this.scene = null;
+    const canvas = this.renderer?.domElement;
+    if (canvas) {
+      canvas.removeEventListener('pointerdown', this.onDoubleTap);
     }
+
+    this.homeScene?.dispose();
+    this.homeScene = null;
 
     if (this.renderer) {
-      // No forceContextLoss(): #canvas-3d is reused on the next home mount,
-      // and a lost context cannot be re-acquired by a new WebGLRenderer.
-      this.renderer.dispose();
+      disposeRenderer(this.renderer);
       this.renderer = null;
     }
-
-    this.camera = null;
   }
 
   pause(): void {
     this.running = false;
+    GameClock.pause();
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
@@ -109,19 +103,25 @@ export class HomeSceneHost implements SceneHost {
   }
 
   resume(): void {
-    if (this.running && this.rafId === null) {
-      this.startLoop();
-    } else if (!this.running) {
+    GameClock.resume();
+    if (!this.running) {
       this.running = true;
+    }
+    if (this.rafId === null) {
       this.startLoop();
     }
   }
 
   private startLoop(): void {
     const tick = (now: number): void => {
-      if (!this.running || !this.renderer || !this.scene || !this.camera) return;
+      if (!this.running || !this.renderer || !this.homeScene) return;
+
       GameClock.tick(now);
-      this.renderer.render(this.scene, this.camera);
+      const delta = GameClock.deltaMs / 1000;
+
+      this.homeScene.update(delta);
+      this.homeScene.render(this.renderer);
+
       this.rafId = requestAnimationFrame(tick);
     };
     this.rafId = requestAnimationFrame(tick);

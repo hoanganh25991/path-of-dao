@@ -1,0 +1,14 @@
+{
+  "id": "item.bracelet.copper",
+  "displayNameKey": "item.bracelet.copper.name",
+  "descriptionKey": "item.bracelet.copper.desc",
+  "slot": "accessory",
+  "rarity": "uncommon",
+  "modelId": "models/items/copper-bracelet.glb",
+  "modifiers": [
+    { "stat": "crit", "kind": "flat", "value": 0.03 },
+    { "stat": "critDmg", "kind": "flat", "value": 0.1 },
+    { "stat": "speed", "kind": "flat", "value": 5 }
+  ],
+  "requiredLevel": 3
+}

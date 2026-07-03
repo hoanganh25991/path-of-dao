@@ -13,10 +13,10 @@ import { startKnockback, tickKnockback, type KnockbackState } from '@/combat/com
 import { clearHitFlash } from '@/combat/combat/HitFlash';
 import {
   applyStickyManSprite,
+  configureStickyManBody,
   enemyAnimKeys,
-  isBossSpriteKey,
 } from '@/combat/art/stickyManAssets';
-import { BOSS_FRAME_H, FRAME_H } from '@/combat/art/stickyManPalette';
+import { DISPLAY_SCALE } from '@/combat/art/stickyManPalette';
 
 export const TELEGRAPH_MS = 300;
 export const STRIKE_MS = 100;
@@ -80,7 +80,7 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.animKeys = enemyAnimKeys(config.spriteKey);
     this.brain = createDecider(config.archetype);
     this.sprite.setDepth(9);
-    applyStickyManSprite(this.sprite, isBossSpriteKey(config.spriteKey));
+    applyStickyManSprite(this.sprite);
 
     this.hpBarBg = scene.add
       .rectangle(0, 0, HP_BAR_WIDTH, HP_BAR_HEIGHT, 0x000000, 0.6)
@@ -118,7 +118,7 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.stats.refill();
 
     this.sprite.setPosition(x, y);
-    this.sprite.setActive(true).setVisible(true).setAlpha(1).setScale(1);
+    this.sprite.setActive(true).setVisible(true).setAlpha(1).setScale(DISPLAY_SCALE);
     clearHitFlash(this.sprite);
     this.sprite.clearTint();
     this.body.enable = true;
@@ -285,14 +285,7 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   }
 
   private configureBody(): void {
-    const boss = isBossSpriteKey(this.config.spriteKey);
-    if (boss) {
-      this.body.setSize(22, 14);
-      this.body.setOffset(13, BOSS_FRAME_H - 14);
-    } else {
-      this.body.setSize(16, 12);
-      this.body.setOffset(8, FRAME_H - 12);
-    }
+    configureStickyManBody(this.sprite);
   }
 
   private updateLocomotionAnim(moving: boolean): void {

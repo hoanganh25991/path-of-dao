@@ -1,4 +1,5 @@
 import type { SceneId } from '@/app/SceneId';
+import type { StatModifier } from '@/progression/StatModifier';
 
 export type GameEvents = {
   'scene:changed': { id: SceneId; payload?: unknown };
@@ -7,6 +8,7 @@ export type GameEvents = {
   'player:stats-changed': { hp: number; hpMax: number; mana: number; manaMax: number };
   'player:died': undefined;
   'map:wave-cleared': { encounterId: string; waveIndex: number };
+  'equipment:changed': { modifiers: StatModifier[] };
 };
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

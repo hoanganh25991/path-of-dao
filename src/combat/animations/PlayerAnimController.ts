@@ -1,5 +1,6 @@
-import type Phaser from 'phaser';
+import Phaser from 'phaser';
 import { ANIM } from '@/combat/art/stickyManAssets';
+import { moveSpeedPxPerSec } from '@/progression/DamageCalculator';
 import type { PlayerStateId } from '@/combat/state/PlayerStateMachine';
 import type { Player } from '@/combat/entities/Player';
 
@@ -61,10 +62,12 @@ export class PlayerAnimController {
       this.lastAttackStep = 0;
       if (state === 'move') {
         this.playLoop(ANIM.heroWalk);
+        this.syncWalkTimeScale(sprite);
       } else if (state === 'dodge') {
-        // DodgeComponent owns alpha; keep walk-ish motion readable
         this.playLoop(ANIM.heroWalk);
+        this.syncWalkTimeScale(sprite);
       } else {
+        sprite.anims.timeScale = 1;
         this.playLoop(ANIM.heroIdle);
       }
     }
@@ -87,7 +90,17 @@ export class PlayerAnimController {
   private playOnce(key: string): void {
     const sprite = this.player.sprite;
     if (sprite.anims.currentAnim?.key !== key || !sprite.anims.isPlaying) {
+      sprite.anims.timeScale = 1;
       sprite.play(key);
     }
+  }
+
+  /** Scale walk playback to actual velocity so feet do not slide. */
+  private syncWalkTimeScale(sprite: Phaser.Physics.Arcade.Sprite): void {
+    const body = this.player.body;
+    const speed = Math.hypot(body.velocity.x, body.velocity.y);
+    const base = moveSpeedPxPerSec(this.player.stats.resolved.speed);
+    const scale = base > 0 ? Phaser.Math.Clamp(speed / base, 0.6, 1.4) : 1;
+    sprite.anims.timeScale = scale;
   }
 }

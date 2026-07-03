@@ -1,0 +1,13 @@
+{
+  "id": "item.ring.speed",
+  "displayNameKey": "item.ring.speed.name",
+  "descriptionKey": "item.ring.speed.desc",
+  "slot": "accessory",
+  "rarity": "uncommon",
+  "modelId": "models/items/speed-ring.glb",
+  "modifiers": [
+    { "stat": "speed", "kind": "flat", "value": 12 },
+    { "stat": "critDmg", "kind": "flat", "value": 0.05 }
+  ],
+  "requiredLevel": 5
+}

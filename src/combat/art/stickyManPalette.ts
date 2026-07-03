@@ -50,9 +50,7 @@ export const PALETTE_TOTEM: StickPalette = {
 };
 
 export const FRAME_W = 32;
-export const FRAME_H = 44;
-export const BOSS_FRAME_W = 48;
-export const BOSS_FRAME_H = 60;
+export const FRAME_H = 48;
 export const DISPLAY_SCALE = 2;
 
 /** Two-segment limb: upper (shoulder/hip → elbow/knee) + lower (→ hand/foot). */

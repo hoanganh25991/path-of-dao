@@ -1,0 +1,13 @@
+{
+  "id": "item.robe.novice",
+  "displayNameKey": "item.robe.novice.name",
+  "descriptionKey": "item.robe.novice.desc",
+  "slot": "armor",
+  "rarity": "common",
+  "modelId": "models/items/novice-robe.glb",
+  "modifiers": [
+    { "stat": "def", "kind": "flat", "value": 6 },
+    { "stat": "hpMax", "kind": "flat", "value": 20 }
+  ],
+  "requiredLevel": 1
+}

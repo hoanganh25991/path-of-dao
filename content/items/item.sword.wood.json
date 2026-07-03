@@ -1,0 +1,12 @@
+{
+  "id": "item.sword.wood",
+  "displayNameKey": "item.sword.wood.name",
+  "descriptionKey": "item.sword.wood.desc",
+  "slot": "weapon",
+  "rarity": "common",
+  "modelId": "models/items/wood-sword.glb",
+  "modifiers": [
+    { "stat": "atk", "kind": "flat", "value": 4 }
+  ],
+  "requiredLevel": 1
+}

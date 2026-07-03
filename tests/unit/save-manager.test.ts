@@ -53,6 +53,8 @@ describe('SaveManager', () => {
     expect(save.stats.hpMax).toBe(100);
     expect(save.runtime.hp).toBe(save.stats.hpMax);
     expect(save.progress.unlockedChapters).toEqual(['chapter.01.fallen_village']);
+    expect(save.equipped.weapon).toBe('item.sword.wood');
+    expect(save.equipped.armor).toBe('item.robe.novice');
     expect(checksumOf(save)).toBe(save.checksum);
   });
 

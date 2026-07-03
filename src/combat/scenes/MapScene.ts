@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { SceneRouter } from '@/app/SceneRouter';
 import { gameStore } from '@/core/store/gameStore';
+import { EquipmentManager } from '@/progression/EquipmentManager';
 import { StatSheet } from '@/progression/StatSheet';
 import { getMapConfig } from '@/combat/map/MapLoader';
 import type { MapConfig } from '@/combat/map/MapConfig';
@@ -121,7 +122,8 @@ export class MapScene extends Phaser.Scene {
       throw new Error('MapScene: game store has no save loaded');
     }
 
-    const sheet = new StatSheet(save.stats);
+    const modifiers = EquipmentManager.getModifiers(save.equipped);
+    const sheet = new StatSheet(save.stats, modifiers);
     sheet.setRuntime(save.runtime.hp, save.runtime.mana);
     return sheet;
   }

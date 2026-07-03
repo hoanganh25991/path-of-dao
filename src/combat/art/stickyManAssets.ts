@@ -1,7 +1,5 @@
 import type Phaser from 'phaser';
 import {
-  BOSS_FRAME_H,
-  BOSS_FRAME_W,
   DISPLAY_SCALE,
   FRAME_H,
   FRAME_W,
@@ -11,7 +9,6 @@ import {
   PALETTE_TOTEM,
 } from '@/combat/art/stickyManPalette';
 import {
-  BOSS,
   buildHeroFrames,
   buildSheetCanvas,
   heroFrameOffset,
@@ -49,7 +46,9 @@ function addSheetFromCanvas(
   fw: number,
   fh: number,
 ): void {
-  if (scene.textures.exists(key)) return;
+  if (scene.textures.exists(key)) {
+    scene.textures.remove(key);
+  }
   scene.textures.addCanvas(key, canvas);
   const texture = scene.textures.get(key);
   const count = Math.floor(canvas.width / fw);
@@ -67,7 +66,9 @@ function createAnim(
   frameRate: number,
   repeat = -1,
 ): void {
-  if (scene.anims.exists(key)) return;
+  if (scene.anims.exists(key)) {
+    scene.anims.remove(key);
+  }
   scene.anims.create({
     key,
     frames: scene.anims.generateFrameNumbers(texture, { start, end: start + count - 1 }),
@@ -90,7 +91,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
   addSheetFromCanvas(scene, heroKey, heroCanvas, FRAME_W, FRAME_H);
 
   createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset('idle'), 4, 6);
-  createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset('walk'), 6, 10);
+  createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset('walk'), 4, 12);
   createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset('attack1'), 3, 14, 0);
   createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset('attack2'), 3, 14, 0);
   createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset('attack3'), 4, 12, 0);
@@ -142,7 +143,7 @@ function registerEnemySheet(
   let offset = 0;
   createAnim(scene, animKeys.idle, key, offset, idle.length, 5);
   offset += idle.length;
-  createAnim(scene, animKeys.walk, key, offset, walk.length, 8);
+  createAnim(scene, animKeys.walk, key, offset, walk.length, 12);
   offset += walk.length;
   if (attack && animKeys.attack) {
     createAnim(scene, animKeys.attack, key, offset, attack.length, 10, 0);
@@ -152,24 +153,26 @@ function registerEnemySheet(
 function registerBossSheet(scene: Phaser.Scene): void {
   const key = 'enemy_totem';
   const frames = [...POSES_TOTEM_IDLE, ...POSES_TOTEM_ATTACK];
-  const canvas = buildSheetCanvas(
-    frames,
-    BOSS_FRAME_W,
-    BOSS_FRAME_H,
-    PALETTE_TOTEM,
-    BOSS,
-    'boss',
-  );
-  addSheetFromCanvas(scene, key, canvas, BOSS_FRAME_W, BOSS_FRAME_H);
+  const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, PALETTE_TOTEM, NORMAL, 'boss');
+  addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
   createAnim(scene, ANIM.totemIdle, key, 0, POSES_TOTEM_IDLE.length, 4);
   createAnim(scene, ANIM.totemAttack, key, POSES_TOTEM_IDLE.length, POSES_TOTEM_ATTACK.length, 8, 0);
 }
 
-/** Scale + origin for sticky-man sprites (feet at bottom center). */
-export function applyStickyManSprite(sprite: Phaser.Physics.Arcade.Sprite, isBoss = false): void {
+/** Arcade body at the feet — call after origin/scale changes. */
+export function configureStickyManBody(sprite: Phaser.Physics.Arcade.Sprite): void {
+  const body = sprite.body as Phaser.Physics.Arcade.Body;
+  body.setSize(16, 12);
+  body.setOffset(8, FRAME_H - 12);
+  sprite.refreshBody();
+}
+
+/** Scale + origin for sticky-man sprites (feet at bottom center). All characters share size. */
+export function applyStickyManSprite(sprite: Phaser.Physics.Arcade.Sprite): void {
   sprite.setOrigin(0.5, 1);
-  sprite.setScale(isBoss ? DISPLAY_SCALE * 1.15 : DISPLAY_SCALE);
+  sprite.setScale(DISPLAY_SCALE);
+  configureStickyManBody(sprite);
 }
 
 export function enemyAnimKeys(spriteKey: string): {

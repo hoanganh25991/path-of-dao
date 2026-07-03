@@ -99,7 +99,12 @@ export class SaveManager {
       realm: { id: 'mortal_body', tier: 'early', breakthroughReady: false },
       insights: {},
       inventory: { items: [], gold: 0 },
-      equipped: { weapon: null, armor: null, accessory: null, spirit: null },
+      equipped: {
+        weapon: 'item.sword.wood',
+        armor: 'item.robe.novice',
+        accessory: null,
+        spirit: null,
+      },
       progress: {
         clearedMaps: [],
         clearedBosses: [],

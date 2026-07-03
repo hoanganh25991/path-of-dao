@@ -1,0 +1,13 @@
+{
+  "id": "item.sword.iron",
+  "displayNameKey": "item.sword.iron.name",
+  "descriptionKey": "item.sword.iron.desc",
+  "slot": "weapon",
+  "rarity": "common",
+  "modelId": "models/items/iron-sword.glb",
+  "modifiers": [
+    { "stat": "atk", "kind": "flat", "value": 12 },
+    { "stat": "crit", "kind": "flat", "value": 0.02 }
+  ],
+  "requiredLevel": 1
+}

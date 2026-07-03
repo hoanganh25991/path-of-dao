@@ -1,0 +1,13 @@
+{
+  "id": "item.spirit.jade",
+  "displayNameKey": "item.spirit.jade.name",
+  "descriptionKey": "item.spirit.jade.desc",
+  "slot": "spirit",
+  "rarity": "rare",
+  "modelId": "models/items/jade-spirit.glb",
+  "modifiers": [
+    { "stat": "spirit", "kind": "flat", "value": 8 },
+    { "stat": "manaMax", "kind": "flat", "value": 15 }
+  ],
+  "requiredLevel": 1
+}

@@ -1,0 +1,484 @@
+:root {
+  --dao-bg: #0d1117;
+  --dao-panel: rgba(20, 25, 35, 0.92);
+  --dao-gold: #c9a227;
+  --dao-jade: #2dd4a8;
+  --dao-text: #e8e6e3;
+  --dao-muted: rgba(232, 230, 227, 0.65);
+  --dao-border: rgba(201, 162, 39, 0.25);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+.home-ui {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  color: var(--dao-text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.home-ui[hidden] {
+  display: none;
+}
+
+.home-ui__interactive {
+  pointer-events: auto;
+}
+
+/* Profile header — top overlay, does not block hero orbit area below */
+.home-profile {
+  position: absolute;
+  top: max(0.75rem, var(--safe-top));
+  left: max(0.75rem, env(safe-area-inset-left, 0px));
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--dao-panel);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--dao-border);
+  border-radius: 0.65rem;
+  max-width: 22rem;
+}
+
+.home-profile__name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.home-profile__realm {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--dao-jade);
+}
+
+.home-profile__stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.15rem;
+}
+
+.home-profile__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.home-profile__stat-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dao-muted);
+}
+
+.home-profile__stat-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dao-gold);
+}
+
+/* Bottom nav */
+.home-bottom-nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  gap: 0.25rem;
+  padding: 0.5rem max(0.75rem, env(safe-area-inset-left, 0px))
+    calc(0.5rem + var(--safe-bottom)) max(0.75rem, env(safe-area-inset-right, 0px));
+  background: var(--dao-panel);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid var(--dao-border);
+}
+
+.home-bottom-nav__tab {
+  flex: 1;
+  min-height: 48px;
+  min-width: 48px;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--dao-muted);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.home-bottom-nav__tab:focus-visible {
+  outline: 2px solid var(--dao-jade);
+  outline-offset: 2px;
+}
+
+.home-bottom-nav__tab[aria-selected='true'] {
+  color: var(--dao-gold);
+  background: rgba(201, 162, 39, 0.12);
+}
+
+.home-bottom-nav__tab:active {
+  background: rgba(45, 212, 168, 0.1);
+}
+
+/* Slide-up panel sheet — bottom 40%, leaves top 60% for hero orbit */
+.home-panel-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(3.75rem + var(--safe-bottom));
+  max-height: 40vh;
+  overflow: hidden;
+  background: var(--dao-panel);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid var(--dao-border);
+  transform: translateY(100%);
+  transition: transform 280ms ease-out;
+}
+
+.home-panel-sheet--open {
+  transform: translateY(0);
+}
+
+.home-panel-sheet__inner {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding: 0.85rem max(0.85rem, env(safe-area-inset-left, 0px))
+    0.85rem max(0.85rem, env(safe-area-inset-right, 0px));
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-panel__title {
+  margin: 0 0 0.65rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dao-gold);
+}
+
+.home-panel__empty {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--dao-muted);
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+/* Play panel */
+.home-play__portal {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--dao-gold);
+  border-radius: 0.65rem;
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.18), rgba(201, 162, 39, 0.06));
+  color: var(--dao-gold);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 0.65rem;
+}
+
+.home-play__portal:focus-visible {
+  outline: 2px solid var(--dao-jade);
+  outline-offset: 2px;
+}
+
+.home-play__hint {
+  margin: 0 0 0.85rem;
+  font-size: 0.75rem;
+  color: var(--dao-muted);
+  text-align: center;
+}
+
+.home-play__continue {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.5rem;
+  background: rgba(45, 212, 168, 0.08);
+  color: var(--dao-jade);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.home-play__continue:focus-visible {
+  outline: 2px solid var(--dao-jade);
+  outline-offset: 2px;
+}
+
+/* Inventory */
+.home-inventory__slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.home-inventory__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.25rem;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.45rem;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.625rem;
+  color: var(--dao-muted);
+}
+
+.home-inventory__slot--filled {
+  border-color: rgba(45, 212, 168, 0.35);
+  color: var(--dao-jade);
+}
+
+.home-inventory__slot-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.35rem;
+  background: rgba(201, 162, 39, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.home-inventory__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.45rem;
+}
+
+.home-inventory__card {
+  aspect-ratio: 1;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.45rem;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.35rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  font-size: 0.55rem;
+  text-align: center;
+  color: var(--dao-text);
+}
+
+.home-inventory__card:focus-visible {
+  outline: 2px solid var(--dao-jade);
+  outline-offset: 1px;
+}
+
+.home-inventory__card--equipped {
+  border-color: var(--dao-gold);
+}
+
+.home-inventory__card-rarity {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  color: var(--dao-muted);
+}
+
+/* Item detail popover */
+.home-item-detail {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 1rem;
+  padding-bottom: calc(5rem + var(--safe-bottom));
+}
+
+.home-item-detail__card {
+  width: min(100%, 20rem);
+  padding: 1rem;
+  background: var(--dao-panel);
+  border: 1px solid var(--dao-border);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(8px);
+}
+
+.home-item-detail__name {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: var(--dao-gold);
+}
+
+.home-item-detail__desc {
+  margin: 0 0 0.65rem;
+  font-size: 0.8125rem;
+  color: var(--dao-muted);
+  line-height: 1.4;
+}
+
+.home-item-detail__mods {
+  margin: 0 0 0.85rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+}
+
+.home-item-detail__mods li {
+  color: var(--dao-jade);
+}
+
+.home-item-detail__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.home-item-detail__btn {
+  flex: 1;
+  min-height: 48px;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.home-item-detail__btn--primary {
+  border: 1px solid var(--dao-gold);
+  background: rgba(201, 162, 39, 0.15);
+  color: var(--dao-gold);
+}
+
+.home-item-detail__btn--secondary {
+  border: 1px solid var(--dao-border);
+  background: transparent;
+  color: var(--dao-muted);
+}
+
+/* Skills */
+.home-skills__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.home-skills__row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.home-skills__icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.4rem;
+  background: rgba(45, 212, 168, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+}
+
+.home-skills__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-skills__name {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.home-skills__bar {
+  margin-top: 0.3rem;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.home-skills__bar-fill {
+  height: 100%;
+  background: var(--dao-jade);
+  border-radius: 2px;
+  transition: width 200ms ease;
+}
+
+/* Story */
+.home-story__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.home-story__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.home-story__title {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.home-story__replay {
+  min-height: 36px;
+  min-width: 64px;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--dao-jade);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.home-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(5rem + var(--safe-bottom));
+  transform: translateX(-50%);
+  z-index: 4;
+  padding: 0.65rem 1rem;
+  background: var(--dao-panel);
+  border: 1px solid var(--dao-border);
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--dao-text);
+  pointer-events: none;
+  animation: home-toast-fade 2.4s ease forwards;
+}
+
+@keyframes home-toast-fade {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

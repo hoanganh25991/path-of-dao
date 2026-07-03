@@ -2,7 +2,8 @@
 
 > Canonical visual direction for **2D combat** characters and enemies.  
 > Implementation: `src/combat/art/` (procedural spritesheets at boot).  
-> Linked from [master-plan.md](./master-plan.md) §3.2 Rendering.
+> Linked from [master-plan.md](./master-plan.md) §3.2 Rendering.  
+> Review screenshot: [docs/screenshots/sticky-man-review.png](./screenshots/sticky-man-review.png)
 
 ---
 
@@ -10,11 +11,9 @@
 
 | Pillar | Rule |
 |--------|------|
-| **Silhouette first** | Chibi head + **two-segment limbs** (upper + lower stick); readable at 32×44 px, 2× display |
-| **Sticky-man anatomy** | Separate shoulder/hip joints; **2 sticks per arm** (upper+forearm) and **2 per leg** (thigh+shin); Y-fork hands/feet |
-| **Pixel crisp** | Integer coords, no anti-aliasing; 2–3 px limb thickness |
-| **Limited palette** | outline + skin + fill + shadow + accent + highlight |
-| **Character variants** | Hero robe, slime jelly blob, archer cape, boss runes |
+| **Silhouette first** | Chibi head + two-segment limbs; readable at 32×58 px, 2× display |
+| **Sticky-man anatomy** | 5px chest + spine; arms ±7px, hips ±5px; 2-segment limbs + Y-fork extremities |
+| **Unified skeleton** | All characters share the same rig; slime = jelly overlay, archer = cape, boss = runes |
 | **Feet anchor** | Origin `(0.5, 1)` — locomotion bobs from ground |
 
 Distinct from generic stick figures: **joint dots**, **torso block**, **gold sash**, and forked extremities.
@@ -25,13 +24,14 @@ Distinct from generic stick figures: **joint dots**, **torso block**, **gold sas
 
 | Property | Hero / Minion | Boss (totem) |
 |----------|---------------|--------------|
-| Source frame | 32 × 44 px | 48 × 60 px |
-| Display scale | 2× (64 × 88) | 2.3× (~110 × 138) |
-| Limb segments | upper + lower + fork | same, scaled up |
-| Upper arm / forearm | 5 + 6 px | 7 + 8 px |
-| Upper leg / shin | 6 + 7 px | 8 + 9 px |
-| Hand / foot fork | 3 px × 2 sticks | 4 px × 2 sticks |
-| Head radius | 5 px | 6 px |
+| Source frame | **32 × 58 px** (all characters — hero, minions, boss) |
+| Display scale | **2× uniform** (64 × 116) — no boss upscale |
+| Limb segments | upper + lower + fork |
+| Upper leg / shin | **12 + 13 px** |
+| Upper arm / forearm | 5 + 6 px |
+| Hand / foot fork | 3–4 px × 2 sticks |
+| Head radius | 4 px |
+| Torso height | ~8 px (compact — legs dominate silhouette) |
 
 Spritesheets are generated in `registerStickyManAssets()` (`BootScene`) — no external PNGs required for MVP.
 
