@@ -128,28 +128,12 @@ def draw_background(g):
 
 
 def draw_hero_top_hair(g, cx, head_y, head_r):
-    """White crown puff on top of head — short volume, no long trail."""
-    for dy in range(-head_r - 3, -head_r):
-        layer = dy + head_r + 3
-        half_w = head_r + 1 - layer
-        for dx in range(-half_w, half_w + 1):
-            edge = abs(dx) == half_w or dy == -head_r - 3
-            if edge:
-                g.px(cx + dx, head_y + dy, OUTLINE)
-            elif dx <= -1:
-                g.px(cx + dx, head_y + dy, HAIR_SH)
-            elif dx >= 1:
-                g.px(cx + dx, head_y + dy, HAIR_HI)
-            else:
-                g.px(cx + dx, head_y + dy, HAIR)
-    g.px(cx, head_y - head_r - 4, HAIR_HI)
-    for dy in range(-head_r, 1):
+    """White tint on top arc of head only — no bowl/puff above."""
+    for dy in range(-head_r, 0):
         for dx in range(-head_r, head_r + 1):
             if dx * dx + dy * dy > head_r * head_r:
                 continue
             if dx >= 2 and dy >= -2:
-                continue
-            if dy > -1 and abs(dx) > 2:
                 continue
             g.px(cx + dx, head_y + dy, HAIR if dx >= -1 else HAIR_SH)
 

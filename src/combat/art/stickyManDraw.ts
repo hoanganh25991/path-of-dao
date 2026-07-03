@@ -434,6 +434,7 @@ function drawBossRunes(
   }
 }
 
+/** White on top/back of skull only — no puff/bowl above the head. */
 function drawHeroTopHair(
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -443,37 +444,15 @@ function drawHeroTopHair(
 ): void {
   const hair = palette.hair ?? '#f0f4f8';
   const hairSh = palette.hairShadow ?? '#a8b4c4';
-  const hairHi = palette.hairHi ?? '#ffffff';
   const r = headR;
 
-  // Puffed crown above the head (wide, short — not long trailing hair).
-  for (let dy = -r - 3; dy <= -r - 1; dy++) {
-    const layer = dy + r + 3;
-    const halfW = r + 1 - layer;
-    for (let dx = -halfW; dx <= halfW; dx++) {
-      const edge = Math.abs(dx) === halfW || dy === -r - 3;
-      px(ctx, cx + dx, headY + dy, edge ? palette.outline : dx <= -1 ? hairSh : dx >= 1 ? hairHi : hair);
-    }
-  }
-  px(ctx, cx, headY - r - 4, hairHi);
-  px(ctx, cx - 1, headY - r - 3, hair);
-  px(ctx, cx + 1, headY - r - 3, hairHi);
-
-  // White cap on top/back of skull — face stays open on +X.
-  for (let dy = -r; dy <= 0; dy++) {
+  for (let dy = -r; dy <= -1; dy++) {
     for (let dx = -r; dx <= r; dx++) {
       if (dx * dx + dy * dy > r * r) continue;
       if (dx >= 2 && dy >= -2) continue;
-      if (dy > -1 && Math.abs(dx) > 2) continue;
       const edge = Math.hypot(dx, dy) >= r - 0.55;
       px(ctx, cx + dx, headY + dy, edge ? palette.outline : dx <= -1 ? hairSh : hair);
     }
-  }
-
-  // Short temple fluff at ear height only.
-  for (let dy = -2; dy <= 1; dy++) {
-    px(ctx, cx - r - 1, headY + dy, dy <= -1 ? hairSh : hair);
-    px(ctx, cx + r + 1, headY + dy - 1, hairSh);
   }
 }
 

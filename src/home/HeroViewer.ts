@@ -156,7 +156,6 @@ export class HeroViewer {
     const robeDarkMat = new MeshStandardMaterial({ color: 0x687888, roughness: 0.6 });
     const skinMat = new MeshStandardMaterial({ color: 0xffd5a8, roughness: 0.55 });
     const eyeMat = new MeshStandardMaterial({ color: 0x0c0c14, roughness: 0.4 });
-    const hairMat = new MeshStandardMaterial({ color: 0xf0f4f8, roughness: 0.42 });
     const goldMat = new MeshStandardMaterial({
       color: 0xd4a840,
       metalness: 0.7,
@@ -250,7 +249,7 @@ export class HeroViewer {
       else this.armR = arm;
     }
 
-    // Head group (neck, head, gold band, white crown hair) — subtle nod.
+    // Head group (neck, head, gold band) — subtle nod.
     const headGroup = new Group();
     headGroup.position.y = 1.02;
 
@@ -271,15 +270,6 @@ export class HeroViewer {
     headband.position.y = 0.03;
     headband.rotation.x = Math.PI / 2;
     headGroup.add(headband);
-
-    const hairCap = new Mesh(new SphereGeometry(0.17, 12, 12), hairMat);
-    hairCap.scale.set(1.08, 0.52, 0.88);
-    hairCap.position.set(0, 0.05, -0.03);
-    headGroup.add(hairCap);
-
-    const hairCrown = new Mesh(new SphereGeometry(0.085, 10, 10), hairMat);
-    hairCrown.position.set(0, 0.17, -0.02);
-    headGroup.add(hairCrown);
 
     this.headGroup = headGroup;
     this.root.add(headGroup);

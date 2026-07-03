@@ -4,10 +4,10 @@ dist
 .DS_Store
 coverage
 .vite
+dev-dist
 test-results
 playwright-report
 .cursor
 !.cursor/rules/
 !plans/
 !tracks/
-!dist/

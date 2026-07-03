@@ -50,6 +50,9 @@ export default defineConfig({
     port: 5173,
   },
   build: {
+    /** GitHub Pages serves /docs on the default branch. */
+    outDir: 'docs',
+    emptyOutDir: true,
     target: 'es2022',
     sourcemap: true,
     rollupOptions: {
