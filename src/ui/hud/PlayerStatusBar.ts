@@ -1,4 +1,5 @@
 import { EventBus } from '@/core/EventBus';
+import { isAncientCombatActive } from '@/progression/AncientCombatMode';
 import '@/ui/hud/player-status.css';
 
 /** Top-left HP/Mana bars — updated via 'player:stats-changed' (07 §9). */
@@ -8,6 +9,7 @@ export class PlayerStatusBar {
   private static manaFill: HTMLElement | null = null;
   private static hpText: HTMLElement | null = null;
   private static manaText: HTMLElement | null = null;
+  private static ancientMode = false;
   private static unsubscribe: (() => void) | null = null;
 
   static init(parent: HTMLElement): void {
@@ -47,22 +49,38 @@ export class PlayerStatusBar {
     PlayerStatusBar.manaFill = null;
     PlayerStatusBar.hpText = null;
     PlayerStatusBar.manaText = null;
+    PlayerStatusBar.ancientMode = false;
+  }
+
+  static setAncientMode(enabled: boolean): void {
+    PlayerStatusBar.ancientMode = enabled;
+    PlayerStatusBar.root?.classList.toggle('player-status--ancient', enabled);
   }
 
   private static render(stats: { hp: number; hpMax: number; mana: number; manaMax: number }): void {
+    const ancient = PlayerStatusBar.ancientMode || isAncientCombatActive();
+    const hp = ancient ? stats.hpMax : stats.hp;
+    const mana = ancient ? stats.manaMax : stats.mana;
+
     if (PlayerStatusBar.hpFill) {
-      const pct = stats.hpMax > 0 ? (stats.hp / stats.hpMax) * 100 : 0;
+      const pct = stats.hpMax > 0 ? (hp / stats.hpMax) * 100 : 100;
       PlayerStatusBar.hpFill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
     }
     if (PlayerStatusBar.hpText) {
-      PlayerStatusBar.hpText.textContent = `${Math.ceil(stats.hp)} / ${Math.ceil(stats.hpMax)}`;
+      const hpStr = Math.ceil(hp).toLocaleString();
+      const maxStr = Math.ceil(stats.hpMax).toLocaleString();
+      PlayerStatusBar.hpText.textContent = ancient ? `${hpStr} / ${maxStr} ∞` : `${hpStr} / ${maxStr}`;
     }
     if (PlayerStatusBar.manaFill) {
-      const pct = stats.manaMax > 0 ? (stats.mana / stats.manaMax) * 100 : 0;
+      const pct = stats.manaMax > 0 ? (mana / stats.manaMax) * 100 : 100;
       PlayerStatusBar.manaFill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
     }
     if (PlayerStatusBar.manaText) {
-      PlayerStatusBar.manaText.textContent = `${Math.ceil(stats.mana)} / ${Math.ceil(stats.manaMax)}`;
+      const manaStr = Math.ceil(mana).toLocaleString();
+      const maxStr = Math.ceil(stats.manaMax).toLocaleString();
+      PlayerStatusBar.manaText.textContent = ancient
+        ? `${manaStr} / ${maxStr} ∞`
+        : `${manaStr} / ${maxStr}`;
     }
   }
 }

@@ -34,14 +34,23 @@ export const ancientSaveTemplateSchema = z.object({
 
 export const ANCIENT_START_SCENES = ['home', 'combat'] as const;
 
+export const ANCIENT_VISUAL_THEMES = [
+  'void',
+  'sword',
+  'flame',
+  'fortune',
+  'jade',
+  'insight',
+] as const;
+
 export const ancientProfileSchema = z.object({
   id: z.string().min(1),
   nameKey: z.string().min(1),
   epithetKey: z.string().min(1),
   loreKey: z.string().min(1),
-  /** i18n key grouping card in Play panel (e.g. demo.focus.breakthrough). */
   focusKey: z.string().min(1),
   highlightKeys: z.array(z.string()).min(1),
+  visualTheme: z.enum(ANCIENT_VISUAL_THEMES).default('jade'),
   startScene: z.enum(ANCIENT_START_SCENES).default('combat'),
   startMapId: z.string().min(1),
   save: ancientSaveTemplateSchema,

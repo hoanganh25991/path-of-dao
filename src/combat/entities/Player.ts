@@ -11,6 +11,13 @@ import { DodgeComponent } from '@/combat/components/DodgeComponent';
 import { PlayerAnimController } from '@/combat/animations/PlayerAnimController';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 import { applyStickyManSprite } from '@/combat/art/stickyManAssets';
+import {
+  applyAncientHeroVisual,
+  mapAncientToHeroAnim,
+  tickAncientCombatFx,
+  type AncientCombatFx,
+} from '@/combat/art/ancientHeroVisuals';
+import type { AncientProfile } from '@/shared/schemas/ancient-demo';
 import type { HurtboxEntity, CombatTeam } from '@/combat/combat/Hurtbox';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
@@ -35,6 +42,10 @@ export class Player extends EntityBase implements HurtboxEntity {
   attackerRealmOrder = 1;
   /** Map recommended realm order — applied to enemies hurt by player. */
   mapRecommendedRealmOrder = 1;
+  /** Set when walking an ancient echo — custom sprite palette + tags. */
+  ancientId: string | null = null;
+
+  private ancientFx: AncientCombatFx | null = null;
 
   constructor(
     scene: Phaser.Scene,
@@ -71,7 +82,7 @@ export class Player extends EntityBase implements HurtboxEntity {
   }
 
   receiveHit(result: DamageResult, hitbox: Hitbox): void {
-    if (this.sm.state === 'dead' || this.isInvulnerable) return;
+    if (this.sm.state === 'dead' || this.isInvulnerable || this.stats.isGodMode) return;
 
     const lost = this.stats.applyDamage(result.final);
     if (lost <= 0) return;
@@ -106,6 +117,25 @@ export class Player extends EntityBase implements HurtboxEntity {
     this.combat.update(dtMs);
     this.applyKnockback(dtMs);
     this.anim.update();
+    if (this.ancientFx) {
+      tickAncientCombatFx(this.ancientFx, this.x, this.y);
+    }
+  }
+
+  applyAncientEcho(profile: AncientProfile, displayName: string, epithet: string): void {
+    this.ancientId = profile.id;
+    this.ancientFx = applyAncientHeroVisual(
+      this.scene,
+      this.sprite,
+      profile,
+      displayName,
+      epithet,
+    );
+  }
+
+  resolveAnim(key: string): string {
+    if (!this.ancientId) return key;
+    return mapAncientToHeroAnim(this.ancientId, key);
   }
 
   heal(amount: number): void {
@@ -124,6 +154,10 @@ export class Player extends EntityBase implements HurtboxEntity {
   }
 
   override destroy(): void {
+    this.ancientFx?.aura.destroy();
+    this.ancientFx?.nameTag.destroy();
+    this.ancientFx?.titleTag.destroy();
+    this.ancientFx = null;
     clearHitFlash(this.sprite);
     this.anim.destroy();
     super.destroy();

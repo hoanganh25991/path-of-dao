@@ -11,6 +11,7 @@ export class StatSheet {
   private resolvedStats: BaseStats;
   private hp: number;
   private mana: number;
+  private godMode = false;
 
   constructor(base: BaseStats, modifiers: StatModifier[] = []) {
     this.base = { ...base };
@@ -29,7 +30,19 @@ export class StatSheet {
   }
 
   get isDead(): boolean {
-    return this.hp <= 0;
+    return !this.godMode && this.hp <= 0;
+  }
+
+  get isGodMode(): boolean {
+    return this.godMode;
+  }
+
+  /** Ancient echo — infinite pools with display maxima for HUD flex. */
+  enableGodMode(hpMax: number, manaMax: number): void {
+    this.godMode = true;
+    this.resolvedStats = { ...this.resolvedStats, hpMax, manaMax };
+    this.hp = hpMax;
+    this.mana = manaMax;
   }
 
   setBase(base: BaseStats): void {
@@ -61,21 +74,31 @@ export class StatSheet {
 
   /** Returns actual HP lost (never drives HP below 0). */
   applyDamage(amount: number): number {
+    if (this.godMode) return 0;
     const lost = Math.min(this.hp, Math.max(0, amount));
     this.hp -= lost;
     return lost;
   }
 
   heal(amount: number): void {
+    if (this.godMode) {
+      this.hp = this.resolvedStats.hpMax;
+      return;
+    }
     this.hp = Math.min(this.resolvedStats.hpMax, this.hp + Math.max(0, amount));
   }
 
   restoreMana(amount: number): void {
+    if (this.godMode) {
+      this.mana = this.resolvedStats.manaMax;
+      return;
+    }
     this.mana = Math.min(this.resolvedStats.manaMax, this.mana + Math.max(0, amount));
   }
 
   /** Returns false (and spends nothing) when mana is insufficient. */
   spendMana(cost: number): boolean {
+    if (this.godMode) return true;
     if (cost > this.mana) return false;
     this.mana -= cost;
     return true;

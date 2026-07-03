@@ -6,6 +6,7 @@
       "epithetKey": "demo.ancient.breakthrough_sage.epithet",
       "loreKey": "demo.ancient.breakthrough_sage.lore",
       "focusKey": "demo.focus.breakthrough",
+      "visualTheme": "jade",
       "highlightKeys": ["demo.highlight.breakthrough", "demo.highlight.qi_condensation", "demo.highlight.cultivate"],
       "startScene": "home",
       "startMapId": "map.test.grove",
@@ -45,6 +46,7 @@
       "epithetKey": "demo.ancient.insight_seeker.epithet",
       "loreKey": "demo.ancient.insight_seeker.lore",
       "focusKey": "demo.focus.awakening",
+      "visualTheme": "insight",
       "highlightKeys": ["demo.highlight.insight_meter", "demo.highlight.awaken_button", "demo.highlight.foundation"],
       "startScene": "home",
       "startMapId": "map.test.grove",
@@ -84,6 +86,7 @@
       "epithetKey": "demo.ancient.sword_ancestor.epithet",
       "loreKey": "demo.ancient.sword_ancestor.lore",
       "focusKey": "demo.focus.combat",
+      "visualTheme": "sword",
       "highlightKeys": [
         "demo.highlight.core_formation",
         "demo.highlight.awakened_sword",
@@ -126,6 +129,7 @@
       "epithetKey": "demo.ancient.flame_sovereign.epithet",
       "loreKey": "demo.ancient.flame_sovereign.lore",
       "focusKey": "demo.focus.combat",
+      "visualTheme": "flame",
       "highlightKeys": [
         "demo.highlight.nascent_soul",
         "demo.highlight.awakened_flame",
@@ -168,6 +172,7 @@
       "epithetKey": "demo.ancient.fortune_emissary.epithet",
       "loreKey": "demo.ancient.fortune_emissary.lore",
       "focusKey": "demo.focus.fortune",
+      "visualTheme": "fortune",
       "highlightKeys": [
         "demo.highlight.encounters",
         "demo.highlight.lore_archive",
@@ -220,6 +225,7 @@
       "epithetKey": "demo.ancient.void_walker.epithet",
       "loreKey": "demo.ancient.void_walker.lore",
       "focusKey": "demo.focus.endgame",
+      "visualTheme": "void",
       "highlightKeys": [
         "demo.highlight.void_spirit",
         "demo.highlight.awakened_void",

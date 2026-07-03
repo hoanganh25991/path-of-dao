@@ -1,6 +1,8 @@
 import type { SceneId } from '@/app/SceneId';
 import { EventBus } from '@/core/EventBus';
 import { InputManager } from '@/core/input/InputManager';
+import { isAncientCombatActive } from '@/progression/AncientCombatMode';
+import { AncientEchoBanner } from '@/ui/hud/AncientEchoBanner';
 import { PlayerStatusBar } from '@/ui/hud/PlayerStatusBar';
 import { InsightMeter } from '@/ui/hud/InsightMeter';
 import '@/ui/hud/combat-hud.css';
@@ -21,6 +23,7 @@ export class CombatHUD {
 
     InputManager.mount(CombatHUD.root);
     PlayerStatusBar.init(CombatHUD.root);
+    AncientEchoBanner.init(CombatHUD.root);
     InsightMeter.init(CombatHUD.root);
 
     CombatHUD.unsubscribe = EventBus.on('scene:changed', ({ id }) => {
@@ -34,6 +37,7 @@ export class CombatHUD {
     CombatHUD.unsubscribe?.();
     CombatHUD.unsubscribe = null;
     PlayerStatusBar.destroy();
+    AncientEchoBanner.destroy();
     InsightMeter.destroy();
     InputManager.destroy();
     CombatHUD.root?.remove();
@@ -52,5 +56,7 @@ export class CombatHUD {
     const showCombat = id === 'combat';
     CombatHUD.root.hidden = !showCombat;
     InputManager.setEnabled(showCombat);
+    AncientEchoBanner.syncVisible(showCombat);
+    PlayerStatusBar.setAncientMode(showCombat && isAncientCombatActive());
   }
 }
