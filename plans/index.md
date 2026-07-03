@@ -486,7 +486,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 ## 13. Next Step
 
-**Active thread:** Base flow — **384 unit + 29 E2E tests green**. Seeded 20-map road loop + **fresh-save ch1 loop** (no dev seeds). Sub-plan **26** deferred (polish). Next: fresh-save ch2 loop or Echoes path-walk E2E; bugs/polish deferred.
+**Active thread:** Base flow — **384 unit + 30 E2E tests** (3 seeded ch6–7 cases deferred). Seeded 20-map road loop + **fresh-save full road loop ch1–10** (no dev seeds). Sub-plan **26** deferred (polish). Next: Echoes guided-path E2E; bugs/polish deferred.
 
 Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
 

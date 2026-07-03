@@ -40,4 +40,5 @@ Clearing a chapter finale triggers a full-screen story scene; archive replays un
 - E2E: ch2–ch9 boss → story → Continue Journey targets next explore map
 - E2E: ch10 boss → story → journey complete (no Continue CTA)
 - E2E: **fresh save** ch1 loop — Begin Journey → Void Slash → boss story → Life Pulse v2 → Foggy Trail + My Path rows
+- E2E: **fresh save** full road ch1–10 — all explore + chapter skills, epilogue story, journey complete (no dev seeds)
 - E2E: Path tab story replay without duplicate spirit rewards

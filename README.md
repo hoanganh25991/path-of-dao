@@ -19,4 +19,16 @@ Regenerate app icons (favicon + PWA):
 pnpm icons:gen
 ```
 
-See [plans/index.md](plans/index.md) and [docs/SHIP_CHECKLIST.md](docs/SHIP_CHECKLIST.md).
+## Documentation
+
+### Ideas (core)
+
+- [ideas/game-concept.md](ideas/game-concept.md) — high concept, pillars, Home, stats, story regions
+- [ideas/void-ascension.md](ideas/void-ascension.md) — vision, cultivation loop, fortuitous encounters, naming candidates
+
+### Plans & tracks
+
+- [plans/index.md](plans/index.md) — master implementation plan (what to build)
+- [tracks/index.md](tracks/index.md) — master progress index (what is done)
+
+Ship checklist: [docs/SHIP_CHECKLIST.md](docs/SHIP_CHECKLIST.md)

@@ -169,6 +169,133 @@ async function expectSkillUnlocked(
   expect(unlocked).toBe(true);
 }
 
+/** One chapter on a fresh save: explore clear → boss clear → story → chapter skill. */
+async function runFreshChapter(
+  page: import('@playwright/test').Page,
+  step: {
+    enterHint?: string;
+    exploreMapId: string;
+    exploreSkillId: string;
+    bossMapId: string;
+    chapterSkillId: string;
+  },
+  isFirst = false,
+): Promise<void> {
+  if (!isFirst && step.enterHint) {
+    await openPlayPanel(page);
+    await expect(page.getByTestId('continue-journey-hint')).toContainText(step.enterHint);
+  }
+
+  await page.getByTestId('continue-journey-btn').click();
+  await waitForCombatCanvas(page);
+  await dismissEncounters(page);
+  await departClearedMap(page, step.exploreMapId);
+
+  await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+  await expectSkillUnlocked(page, step.exploreSkillId);
+
+  await openPlayPanel(page);
+  await page.getByTestId('continue-journey-btn').click();
+  await waitForCombatCanvas(page);
+  await dismissEncounters(page);
+  await departClearedMap(page, step.bossMapId);
+
+  await expect(page.getByTestId('story-reader')).toBeVisible({ timeout: 20_000 });
+  await finishStoryReader(page);
+  await expectSkillUnlocked(page, step.chapterSkillId);
+}
+
+const FRESH_CHAPTER_STEPS = [
+  {
+    exploreMapId: 'map.fallen_village.01',
+    exploreSkillId: 'skill.void.slash',
+    bossMapId: 'map.fallen_village.02',
+    chapterSkillId: 'skill.life.pulse.v2',
+    nextRegionHint: 'Foggy Trail',
+    storySceneId: 'story.ch01.awakening_jade',
+  },
+  {
+    enterHint: 'Foggy Trail',
+    exploreMapId: 'map.mist_forest.01',
+    exploreSkillId: 'skill.sword.slash',
+    bossMapId: 'map.mist_forest.02',
+    chapterSkillId: 'skill.time.drift.v2',
+    nextRegionHint: 'Canyon Mouth',
+    storySceneId: 'story.ch02.spirit_fox',
+  },
+  {
+    enterHint: 'Canyon Mouth',
+    exploreMapId: 'map.stone_canyon.01',
+    exploreSkillId: 'skill.flame.bolt',
+    bossMapId: 'map.stone_canyon.02',
+    chapterSkillId: 'skill.sword.heaven.v5',
+    nextRegionHint: 'Lakeshore',
+    storySceneId: 'story.ch03.bandit_end',
+  },
+  {
+    enterHint: 'Lakeshore',
+    exploreMapId: 'map.moon_lake.01',
+    exploreSkillId: 'skill.life.mend',
+    bossMapId: 'map.moon_lake.02',
+    chapterSkillId: 'skill.flame.lotus.v4',
+    nextRegionHint: 'Scorched Dunes',
+    storySceneId: 'story.ch04.ancient_seal',
+  },
+  {
+    enterHint: 'Scorched Dunes',
+    exploreMapId: 'map.burning_desert.01',
+    exploreSkillId: 'skill.lightning.strike',
+    bossMapId: 'map.burning_desert.02',
+    chapterSkillId: 'skill.lightning.judgment.v4',
+    nextRegionHint: 'Storm Pass',
+    storySceneId: 'story.ch05.survival',
+  },
+  {
+    enterHint: 'Storm Pass',
+    exploreMapId: 'map.thunder_peaks.01',
+    exploreSkillId: 'skill.time.slow',
+    bossMapId: 'map.thunder_peaks.02',
+    chapterSkillId: 'skill.lightning.fork.v1',
+    nextRegionHint: 'Ice Gate',
+    storySceneId: 'story.ch06.lightning_step',
+  },
+  {
+    enterHint: 'Ice Gate',
+    exploreMapId: 'map.frozen_palace.01',
+    exploreSkillId: 'skill.flame.scorch.v1',
+    bossMapId: 'map.frozen_palace.02',
+    chapterSkillId: 'skill.life.bloom.v1',
+    nextRegionHint: 'Rift Edge',
+    storySceneId: 'story.ch07.forgotten_queen',
+  },
+  {
+    enterHint: 'Rift Edge',
+    exploreMapId: 'map.abyss_rift.01',
+    exploreSkillId: 'skill.void.rift.v1',
+    bossMapId: 'map.abyss_rift.02',
+    chapterSkillId: 'skill.void.abyss.v5',
+    nextRegionHint: 'Celestial Steps',
+    storySceneId: 'story.ch08.corruption',
+  },
+  {
+    enterHint: 'Celestial Steps',
+    exploreMapId: 'map.heavenly_gate.01',
+    exploreSkillId: 'skill.sword.crescent.v1',
+    bossMapId: 'map.heavenly_gate.02',
+    chapterSkillId: 'skill.time.stasis.v4',
+    nextRegionHint: 'Throne Approach',
+    storySceneId: 'story.ch09.guardians',
+  },
+  {
+    enterHint: 'Throne Approach',
+    exploreMapId: 'map.void_throne.01',
+    exploreSkillId: 'skill.void.tear.v2',
+    bossMapId: 'map.void_throne.02',
+    chapterSkillId: 'skill.time.echo.v5',
+    storySceneId: 'story.ch10.epilogue',
+  },
+] as const;
+
 test.describe('Journey base flow', () => {
   test('chapter 1 complete → Continue Journey opens Mist Forest', async ({ page }) => {
     await page.goto('/');
@@ -461,5 +588,34 @@ test.describe('Fresh save', () => {
     await page.getByRole('tab', { name: 'Path' }).click();
     await expect(page.getByTestId('home-path-row-map_clear-map.fallen_village.01')).toBeVisible();
     await expect(page.getByTestId('home-path-row-story-story.ch01.awakening_jade')).toBeVisible();
+  });
+
+  test('full road loop without dev seeds (chapters 1–10)', async ({ page }) => {
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Begin Journey');
+
+    for (let i = 0; i < FRESH_CHAPTER_STEPS.length; i += 1) {
+      const step = FRESH_CHAPTER_STEPS[i]!;
+      await runFreshChapter(page, step, i === 0);
+
+      if (step.nextRegionHint) {
+        await openPlayPanel(page);
+        await expect(page.getByTestId('continue-journey-hint')).toContainText(step.nextRegionHint);
+      }
+    }
+
+    await openPlayPanel(page);
+    await expect(page.getByTestId('continue-journey-btn')).toBeHidden();
+    await expect(page.getByTestId('journey-complete-hint')).toBeVisible();
+
+    await page.getByRole('tab', { name: 'Path' }).click();
+    await expect(page.getByTestId('home-path-row-story-story.ch10.epilogue')).toBeVisible();
+
+    const exploreSkills = FRESH_CHAPTER_STEPS.map((s) => s.exploreSkillId);
+    for (const skillId of exploreSkills) {
+      await expectSkillUnlocked(page, skillId);
+    }
   });
 });

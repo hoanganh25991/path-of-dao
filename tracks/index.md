@@ -16,7 +16,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | In progress | **9** (incl. 26 — PWA foundation) |
 | Pending | **0** |
 | Cross-cutting | Tiên Nghịch alignment **8 / 8 open or partial** |
-| Active thread | **Base flow** — full road E2E + fresh-save ch1 loop (29 E2E) |
+| Active thread | **Base flow** — full road E2E + fresh-save ch1–10 loop (30 E2E) |
 
 ### By phase
 
@@ -133,10 +133,10 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Active thread
 
-**Now:** Base flow — seeded 20-map road E2E + fresh-save ch1 loop (Begin → explore → boss → story → ch2)  
-- **384 unit tests** · **29 E2E tests green** (`npm run test:e2e` shows live progress)
+**Now:** Base flow — seeded 20-map road E2E + **fresh-save full road ch1–10** (Begin → epilogue → journey complete)  
+- **384 unit tests** · **30 E2E tests** (`npm run test:e2e`); 3 seeded ch6–7 cases known red — deferred
 
-**Next:** Fresh-save ch2 loop or Echoes guided-path E2E; then **26** ship sign-off
+**Next:** Echoes guided-path E2E; then **26** ship sign-off
 
 **Deferred:** story tone (T6), world copy (T5), boss pattern polish (23), audio OGG (25)
 

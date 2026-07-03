@@ -4,21 +4,25 @@ import { smoothPoseStrip } from '@/combat/art/stickyManPoseMath';
 import { STRIKE_POSES, UNARMED_STRIKE_KINDS } from '@/combat/art/stickyManStrikes';
 
 const HEAD_R = 4;
-const UPPER_ARM = 5;
+const UPPER_ARM = 4;
 const LOWER_ARM = 5;
 const WRIST_LEN = 2;
 const FIST_LEN = 2;
-/** Max leg segment caps — legs use the space freed by a short torso. */
-const LEG_UPPER_MAX = 9;
-const LEG_LOWER_MAX = 9;
+/** Fixed thigh + shin — do not stretch to frame bottom. */
+const LEG_UPPER = 6;
+const LEG_LOWER = 6;
 const ANKLE_LEN = 2;
 const FOOT_LEN = 3;
-/** Shoulder → hip span — compact torso; legs dominate the silhouette. */
-const TORSO_HEIGHT = 10;
-const CHEST_DEPTH = 6;
+/** Shoulder → hip — compact block (~35% of leg chain). */
+const TORSO_HEIGHT = 11;
+const CHEST_DEPTH = 5;
 const CHEST_WIDTH = 3; // half-width (7px total)
 const HEAD_TOP = 2;
 const NECK_GAP = 2;
+const SHOULDER_SPREAD = 4;
+const HIP_SPREAD = 3;
+/** hip → toe pixel budget (upper + lower + ankle + foot). */
+const LEG_CHAIN_PX = LEG_UPPER + LEG_LOWER + ANKLE_LEN + FOOT_LEN;
 
 interface DrawScale {
   s: number;
@@ -33,18 +37,22 @@ const NORMAL: DrawScale = {
   s: 1,
   upperArm: UPPER_ARM,
   lowerArm: LOWER_ARM,
-  upperLeg: LEG_UPPER_MAX,
-  lowerLeg: LEG_LOWER_MAX,
+  upperLeg: LEG_UPPER,
+  lowerLeg: LEG_LOWER,
   headR: HEAD_R,
 };
 
-/** Split hip→foot room into thigh + shin (foot is drawn as 2 segments after shin). */
-function legSegmentsForRoom(legRoom: number): { upper: number; lower: number } {
-  const footRoom = ANKLE_LEN + FOOT_LEN;
-  const remain = Math.max(4, legRoom - footRoom);
-  const upper = Math.min(LEG_UPPER_MAX, Math.round(remain * 0.5));
-  const lower = Math.max(2, remain - upper);
-  return { upper, lower };
+/** Bottom-up rig: feet anchor at frame bottom, fixed leg length, compact torso above. */
+function resolveBodyLayout(
+  frameH: number,
+  headR: number,
+  bob: number,
+): { headY: number; shoulderY: number; hipY: number; footY: number } {
+  const footY = frameH - 1;
+  const hipY = footY - LEG_CHAIN_PX;
+  const shoulderY = hipY - TORSO_HEIGHT;
+  const headY = shoulderY - NECK_GAP - headR - bob;
+  return { headY, shoulderY, hipY, footY };
 }
 
 function px(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size = 1): void {
@@ -110,7 +118,11 @@ function pixelLine(
 }
 
 function drawJoint(ctx: CanvasRenderingContext2D, x: number, y: number, palette: StickPalette): void {
+  px(ctx, x - 1, y, palette.outline);
+  px(ctx, x, y - 1, palette.outline);
   px(ctx, x, y, palette.outline, 2);
+  px(ctx, x + 1, y, palette.outline);
+  px(ctx, x, y + 1, palette.outline);
   px(ctx, x, y, palette.accent, 1);
 }
 
@@ -242,6 +254,7 @@ function drawSegmentLimb(
   const knee = limbEnd(elbow.x, elbow.y, angles.lower, lowerLen);
   pixelLine(ctx, elbow.x, elbow.y, knee.x, knee.y, palette.outline, thickness + 1);
   pixelLine(ctx, elbow.x, elbow.y, knee.x, knee.y, fillColor, thickness);
+  drawJoint(ctx, knee.x, knee.y, palette);
 
   if (end === 'foot') {
     drawFoot2Seg(ctx, knee.x, knee.y, angles.lower, palette, fillColor);
@@ -281,8 +294,8 @@ function drawNarrowTorso(
     px(ctx, x + dx, shoulderRow, palette.accent);
   }
   px(ctx, x + CHEST_WIDTH - 1, shoulderRow + 1, palette.highlight ?? palette.accent);
-  for (let y = shoulderRow + 2; y <= chestBot - 1; y += 2) {
-    px(ctx, x + 1, y, palette.highlight ?? palette.fill);
+  if (chestBot - shoulderRow >= 3) {
+    px(ctx, x + 1, shoulderRow + 3, palette.highlight ?? palette.fill);
   }
 
   // Lower robe panel (chest to hip) — narrow waist above pelvis
@@ -303,6 +316,22 @@ function drawNarrowTorso(
   const sashY = Math.round(hipY - 2);
   for (let dx = -2; dx <= 2; dx++) {
     px(ctx, x + dx, sashY, palette.accent);
+  }
+}
+
+function drawNeck(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  shoulderY: number,
+  palette: StickPalette,
+): void {
+  const top = Math.round(headY + headR);
+  const bot = Math.round(shoulderY);
+  for (let y = top; y <= bot; y++) {
+    px(ctx, cx, y, palette.shadow);
+    px(ctx, cx + 1, y, palette.skin);
   }
 }
 
@@ -585,26 +614,21 @@ export function drawStickyFrame(
   const shift = pose.shiftX ?? 0;
   const bob = pose.bob ?? 0;
   const lean = pose.lean ?? 0;
-  const footY = h - 1;
   const leanX = Math.round(lean * 0.35);
+  const layout = resolveBodyLayout(h, scale.headR, bob);
+  const { headY, shoulderY, hipY, footY } = layout;
   const torsoCx = w / 2 + shift;
   const shoulderCx = torsoCx + leanX;
   const hipCx = torsoCx + Math.round(lean * 0.22);
 
   drawGroundShadow(ctx, torsoCx + Math.round(lean * 0.12), footY);
 
-  // Top-down layout: head → torso (fixed) → legs fill the rest to the feet.
-  const headY = HEAD_TOP + scale.headR;
-  const shoulderY = headY + scale.headR + NECK_GAP - bob + lean * 0.1;
-  const hipY = shoulderY + TORSO_HEIGHT;
-  const legRoom = Math.max(8, footY - hipY);
-  const legLen = legSegmentsForRoom(legRoom);
-  const drawScale: DrawScale = { ...scale, upperLeg: legLen.upper, lowerLeg: legLen.lower };
+  const drawScale: DrawScale = { ...scale, upperLeg: LEG_UPPER, lowerLeg: LEG_LOWER };
 
-  const hipBackX = hipCx - 4;
-  const hipFrontX = hipCx + 4;
-  const shoulderBackX = shoulderCx - 6;
-  const shoulderFrontX = shoulderCx + 6;
+  const hipBackX = hipCx - HIP_SPREAD;
+  const hipFrontX = hipCx + HIP_SPREAD;
+  const shoulderBackX = shoulderCx - SHOULDER_SPREAD;
+  const shoulderFrontX = shoulderCx + SHOULDER_SPREAD;
 
   const legFillBack = palette.shadow;
   const legFillFront = palette.fill;
@@ -681,7 +705,8 @@ export function drawStickyFrame(
     'hand',
   );
 
-  // --- head ---
+  // --- head + neck ---
+  drawNeck(ctx, torsoCx, headY, scale.headR, shoulderY, palette);
   drawHead(ctx, torsoCx + Math.round(lean * 0.18), headY, scale.headR, palette, variant);
 
   // --- props (weapon types read clearly in silhouette) ---
@@ -746,10 +771,42 @@ export function buildSheetCanvas(
 // --- poses (upper/lower angles: degrees from vertical-down, − = forward when facing right) ---
 
 export const POSES_IDLE: StickPose[] = [
-  { bob: 0, limbs: { armBack: seg(-38, -28), armFront: seg(38, 28), legBack: seg(-6, -5), legFront: seg(6, 5) } },
-  { bob: -1, limbs: { armBack: seg(-36, -26), armFront: seg(36, 26), legBack: seg(-5, -4), legFront: seg(5, 4) } },
-  { bob: 0, limbs: { armBack: seg(-38, -28), armFront: seg(38, 28), legBack: seg(-6, -5), legFront: seg(6, 5) } },
-  { bob: 1, limbs: { armBack: seg(-40, -30), armFront: seg(40, 30), legBack: seg(-7, -5), legFront: seg(7, 5) } },
+  {
+    bob: 0,
+    limbs: {
+      armBack: seg(18, 14),
+      armFront: seg(-14, -10),
+      legBack: seg(-5, -4),
+      legFront: seg(5, 4),
+    },
+  },
+  {
+    bob: -1,
+    limbs: {
+      armBack: seg(17, 13),
+      armFront: seg(-13, -9),
+      legBack: seg(-4, -3),
+      legFront: seg(4, 3),
+    },
+  },
+  {
+    bob: 0,
+    limbs: {
+      armBack: seg(18, 14),
+      armFront: seg(-14, -10),
+      legBack: seg(-5, -4),
+      legFront: seg(5, 4),
+    },
+  },
+  {
+    bob: 1,
+    limbs: {
+      armBack: seg(19, 15),
+      armFront: seg(-15, -11),
+      legBack: seg(-6, -4),
+      legFront: seg(6, 4),
+    },
+  },
 ];
 
 export const POSES_WALK: StickPose[] = [
