@@ -265,6 +265,163 @@ function drawBossStonePlate(
   }
 }
 
+function drawBossRunes(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  shoulderY: number,
+  hipY: number,
+  palette: StickPalette,
+): void {
+  drawBossStonePlate(ctx, cx, shoulderY, hipY, palette);
+  // Ember rune zigzag down the stone plate.
+  for (let y = Math.round(shoulderY + 5); y < Math.round(hipY - 4); y += 4) {
+    const off = ((y / 4) | 0) % 2 === 0 ? -1 : 1;
+    px(ctx, cx + off, y, palette.accent);
+    px(ctx, cx + off, y + 1, palette.highlight ?? palette.accent);
+    px(ctx, cx, y + 2, palette.accent);
+  }
+}
+
+function drawHeadHero(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx * dx + dy * dy <= r * r) {
+        const dist = Math.hypot(dx, dy);
+        let color: string;
+        if (dist >= r - 0.5) {
+          color = dx >= 1 && dy <= 0 ? palette.skin : palette.outline;
+        } else if (dx >= 1 && dy <= 0) {
+          color = palette.highlight ?? palette.skin;
+        } else if (dx <= -2) {
+          color = palette.shadow;
+        } else {
+          color = palette.skin;
+        }
+        px(ctx, cx + dx, headY + dy, color);
+      }
+    }
+  }
+  const bandY = headY - Math.round(r * 0.4);
+  for (let dx = -r + 1; dx <= r - 1; dx++) {
+    if (dx * dx + (bandY - headY) * (bandY - headY) <= (r - 0.6) * (r - 0.6)) {
+      px(ctx, cx + dx, bandY, palette.accent);
+    }
+  }
+  px(ctx, cx, bandY, palette.highlight ?? palette.accent);
+  px(ctx, cx - 1, headY - r - 1, palette.accent);
+  px(ctx, cx, headY - r - 1, palette.accent);
+  px(ctx, cx, headY - r - 2, palette.highlight ?? palette.accent);
+  px(ctx, cx + 1, headY - 1, palette.outline);
+  px(ctx, cx + 2, headY - 1, palette.outline);
+  px(ctx, cx + 2, headY + 1, palette.outline);
+  px(ctx, cx + 3, headY, palette.highlight ?? palette.skin);
+}
+
+function drawHeadSlime(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx * dx + dy * dy <= r * r) {
+        const dist = Math.hypot(dx, dy);
+        const lit = dx >= 1 && dy <= 0;
+        px(
+          ctx,
+          cx + dx,
+          headY + dy,
+          dist >= r - 0.5 ? palette.outline : lit ? palette.accent : dx <= -1 ? palette.shadow : palette.skin,
+        );
+      }
+    }
+  }
+  px(ctx, cx + 3, headY - 2, palette.accent);
+  // Big goo eyes (readable at 1×).
+  for (const ex of [cx - 1, cx + 2]) {
+    px(ctx, ex, headY, palette.outline);
+    px(ctx, ex + 1, headY, palette.outline);
+    px(ctx, ex, headY + 1, palette.highlight ?? palette.accent);
+    px(ctx, ex + 1, headY + 1, palette.highlight ?? palette.accent);
+    px(ctx, ex + 1, headY, palette.outline);
+  }
+}
+
+function drawHeadArcher(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx * dx + dy * dy <= r * r) {
+        const dist = Math.hypot(dx, dy);
+        const hood = dy <= -1;
+        let color: string;
+        if (dist >= r - 0.5) {
+          color = palette.outline;
+        } else if (hood) {
+          color = dx <= -1 ? palette.shadow : palette.fill;
+        } else if (dx >= 1) {
+          color = palette.highlight ?? palette.skin;
+        } else if (dx <= -2) {
+          color = palette.shadow;
+        } else {
+          color = palette.skin;
+        }
+        px(ctx, cx + dx, headY + dy, color);
+      }
+    }
+  }
+  // Hood trim + mask shadow over eyes.
+  for (let dx = -r + 1; dx <= r - 1; dx++) {
+    if (dx * dx <= (r - 1) * (r - 1)) px(ctx, cx + dx, headY - r + 1, palette.accent);
+  }
+  px(ctx, cx + 1, headY, palette.outline);
+  px(ctx, cx + 2, headY, palette.outline);
+  px(ctx, cx + 3, headY - 1, palette.highlight ?? palette.skin);
+}
+
+function drawHeadBoss(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  // Squarer stone head — reads as totem, not human.
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (Math.abs(dx) + Math.abs(dy) * 0.85 <= r + 0.2) {
+        const edge = Math.abs(dx) === r || dy === -r || dy === r;
+        const shade = dx <= -1 || dy >= 1;
+        px(ctx, cx + dx, headY + dy, edge ? palette.outline : shade ? palette.shadow : palette.skin);
+      }
+    }
+  }
+  // Ember eyes.
+  px(ctx, cx, headY - 1, palette.accent);
+  px(ctx, cx + 1, headY - 1, palette.highlight ?? palette.accent);
+  px(ctx, cx, headY, palette.accent);
+  px(ctx, cx + 1, headY, palette.highlight ?? palette.accent);
+  // Cracked stone seam.
+  pixelLine(ctx, cx - 1, headY + 2, cx + 1, headY + 3, palette.shadow, 1);
+}
+
 function drawHead(
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -273,61 +430,18 @@ function drawHead(
   palette: StickPalette,
   variant: 'hero' | 'slime' | 'archer' | 'boss' = 'hero',
 ): void {
-  const r = headR;
-  // Round head. Convention: front (+X) is lit, back (−X) is core shadow, with a
-  // selective outline that softens on the lit top-front edge.
-  for (let dy = -r; dy <= r; dy++) {
-    for (let dx = -r; dx <= r; dx++) {
-      if (dx * dx + dy * dy <= r * r) {
-        const dist = Math.hypot(dx, dy);
-        let color: string;
-        if (dist >= r - 0.5) {
-          color = dx >= 1 && dy <= 0 ? palette.skin : palette.outline; // sel-out on lit edge
-        } else if (dx >= 1 && dy <= 0) {
-          color = palette.highlight ?? palette.skin; // lit forehead/cheek
-        } else if (dx <= -2) {
-          color = palette.shadow; // back-of-head shadow
-        } else {
-          color = palette.skin;
-        }
-        px(ctx, cx + dx, headY + dy, color);
-      }
-    }
-  }
-
-  // Cultivator identity: gold headband + topknot (humanoid variants only).
-  if (variant === 'hero' || variant === 'archer') {
-    const bandY = headY - Math.round(r * 0.4);
-    for (let dx = -r + 1; dx <= r - 1; dx++) {
-      if (dx * dx + (bandY - headY) * (bandY - headY) <= (r - 0.6) * (r - 0.6)) {
-        px(ctx, cx + dx, bandY, dx <= -1 ? palette.accent : palette.accent);
-      }
-    }
-    px(ctx, cx, bandY, palette.highlight ?? palette.accent);
-  }
-  if (variant === 'hero') {
-    px(ctx, cx - 1, headY - r - 1, palette.accent);
-    px(ctx, cx, headY - r - 1, palette.accent);
-    px(ctx, cx, headY - r - 2, palette.highlight ?? palette.accent);
-  }
-
-  // Brow + eye, facing +X (kept below the headband).
-  px(ctx, cx + 1, headY - 1, palette.outline);
-  px(ctx, cx + 2, headY - 1, palette.outline);
-  px(ctx, cx + 2, headY + 1, palette.outline);
-  px(ctx, cx + 3, headY, palette.highlight ?? palette.skin);
-}
-
-function drawBossRunes(
-  ctx: CanvasRenderingContext2D,
-  cx: number,
-  shoulderY: number,
-  hipY: number,
-  palette: StickPalette,
-): void {
-  for (let y = Math.round(shoulderY + 3); y < Math.round(hipY - 2); y += 3) {
-    px(ctx, cx, y, palette.accent);
-    px(ctx, cx - 1, y + 1, palette.highlight ?? palette.accent);
+  switch (variant) {
+    case 'slime':
+      drawHeadSlime(ctx, cx, headY, headR, palette);
+      break;
+    case 'archer':
+      drawHeadArcher(ctx, cx, headY, headR, palette);
+      break;
+    case 'boss':
+      drawHeadBoss(ctx, cx, headY, headR, palette);
+      break;
+    default:
+      drawHeadHero(ctx, cx, headY, headR, palette);
   }
 }
 
@@ -459,26 +573,42 @@ export function drawStickyFrame(
   if (pose.prop === 'bow') {
     const bx = frontArm.endX + 2;
     const by = frontArm.endY;
-    ctx.strokeStyle = palette.accent;
+    ctx.strokeStyle = palette.outline;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(bx, by, 7, -1.1, 1.1);
+    ctx.arc(bx, by, 7, -1.15, 1.15);
     ctx.stroke();
-    pixelLine(ctx, bx, by - 6, bx, by + 6, palette.highlight ?? palette.accent, 1);
-  }
-  if (pose.prop === 'crown') {
-    px(ctx, cx - 2, headY - scale.headR - 2, palette.accent, 2);
-    px(ctx, cx, headY - scale.headR - 4, palette.highlight ?? palette.accent, 2);
-    px(ctx, cx + 2, headY - scale.headR - 2, palette.accent, 2);
-  }
-  if (pose.prop === 'aura') {
     ctx.strokeStyle = palette.accent;
-    ctx.globalAlpha = 0.4;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.ellipse(cx, hipY - 6, 15 * scale.s, 20 * scale.s, 0, 0, Math.PI * 2);
+    ctx.arc(bx, by, 6, -1.1, 1.1);
     ctx.stroke();
-    ctx.globalAlpha = 1;
+    pixelLine(ctx, bx, by - 6, bx, by + 6, palette.highlight ?? palette.accent, 1);
+    // Arrow on drawn frames (front arm pulled back).
+    if (pose.limbs.armFront.upper < -20) {
+      pixelLine(ctx, bx - 8, by, bx + 2, by, palette.accent, 1);
+      px(ctx, bx + 2, by, palette.highlight ?? palette.accent);
+    }
+  }
+  if (pose.prop === 'crown') {
+    px(ctx, cx - 3, headY - scale.headR - 2, palette.accent);
+    px(ctx, cx - 2, headY - scale.headR - 4, palette.highlight ?? palette.accent);
+    px(ctx, cx - 1, headY - scale.headR - 2, palette.accent);
+    px(ctx, cx, headY - scale.headR - 5, palette.highlight ?? palette.accent);
+    px(ctx, cx + 1, headY - scale.headR - 2, palette.accent);
+    px(ctx, cx + 2, headY - scale.headR - 4, palette.highlight ?? palette.accent);
+    px(ctx, cx + 3, headY - scale.headR - 2, palette.accent);
+    for (let dx = -3; dx <= 3; dx++) px(ctx, cx + dx, headY - scale.headR - 1, palette.accent);
+  }
+  if (pose.prop === 'aura') {
+    const ay = hipY - 6;
+    const ar = 14 * scale.s;
+    for (let a = 0; a < 24; a++) {
+      const rad = (a / 24) * Math.PI * 2;
+      const x = cx + Math.cos(rad) * ar;
+      const y = ay + Math.sin(rad) * ar * 1.3;
+      px(ctx, x, y, a % 3 === 0 ? palette.highlight ?? palette.accent : palette.accent);
+    }
   }
 }
 

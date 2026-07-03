@@ -14,7 +14,8 @@
     "maps:stubs": "node tools/generate-map-stubs.mjs",
     "story:stubs": "node tools/generate-story-stubs.mjs",
     "content:validate": "node tools/content/validate-all.mjs",
-    "content:pack": "node tools/content/pack-manifest.mjs"
+    "content:pack": "node tools/content/pack-manifest.mjs",
+    "mvp:ch1-5": "node tools/generate-mvp-chapters-1-5.mjs"
   },
   "engines": {
     "node": ">=20"

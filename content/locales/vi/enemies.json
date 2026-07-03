@@ -1,0 +1,21 @@
+{
+  "enemy.slime.name": "Yêu Linh Nhầy",
+  "enemy.archer.name": "Cung Thủ Cướp",
+  "enemy.totem.name": "Thạch Đài",
+  "enemy.wolf.name": "Sói Rừng",
+  "enemy.bandit.thug.name": "Côn Đồ Cướp",
+  "enemy.spirit.moth.name": "Bướm Linh",
+  "enemy.spirit.wisp.name": "Tinh Linh Sương",
+  "enemy.guard.patrol.name": "Lính Tuần Hẻm",
+  "enemy.bandit.archer.name": "Xạ Thủ Cướp",
+  "enemy.water.sprite.name": "Tinh Linh Nước",
+  "enemy.cultist.acolyte.name": "Tín Đồ Ấn",
+  "enemy.scorpion.name": "Bọ Cạp Cát",
+  "enemy.sand.wisp.name": "Tinh Linh Cát",
+  "enemy.sand.spirit.name": "Linh Cát",
+  "boss.jade_guardian.name": "Hộ Vệ Ngọc",
+  "boss.mist_stalker.name": "Kẻ Rình Sương",
+  "boss.bandit_lord.name": "Đại Ca Cướp",
+  "boss.seal_warden.name": "Hộ Ấn",
+  "boss.desert_sovereign.name": "Chúa Sa Mạc"
+}
