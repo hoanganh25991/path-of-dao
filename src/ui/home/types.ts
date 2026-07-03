@@ -1,1 +1,1 @@
-export type HomeTab = 'play' | 'inventory' | 'skills' | 'story';
+export type HomeTab = 'play' | 'echoes' | 'inventory' | 'skills' | 'story';

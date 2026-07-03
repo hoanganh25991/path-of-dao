@@ -9,8 +9,10 @@ import {
   hasMeaningfulProgress,
   isAncientDemoActive,
   listAncientProfiles,
+  listAncientProfilesGrouped,
   resetAncientDemoSession,
 } from '@/progression/AncientDemoManager';
+import { checkAwakeningReady } from '@/progression/InsightSystem';
 import { gameStore } from '@/core/store/gameStore';
 
 beforeEach(async () => {
@@ -22,8 +24,30 @@ beforeEach(async () => {
 });
 
 describe('AncientDemoManager', () => {
-  it('lists three ancient cultivator profiles', () => {
-    expect(listAncientProfiles()).toHaveLength(3);
+  it('lists six ancient cultivator profiles', () => {
+    expect(listAncientProfiles()).toHaveLength(6);
+    expect(listAncientProfilesGrouped()).toHaveLength(5);
+  });
+
+  it('breakthrough sage is ready to cultivate', () => {
+    const save = buildAncientSave('ancient.breakthrough_sage');
+    expect(save.realm.id).toBe('qi_condensation');
+    expect(save.realm.breakthroughReady).toBe(true);
+    expect(save.stats.spirit).toBeGreaterThanOrEqual(50);
+  });
+
+  it('insight seeker can awaken void and sword', () => {
+    const save = buildAncientSave('ancient.insight_seeker');
+    expect(checkAwakeningReady(save, 'void')).toBe(true);
+    expect(checkAwakeningReady(save, 'sword')).toBe(true);
+    expect(save.insights.void?.awakened).toBe(false);
+  });
+
+  it('fortune emissary has all encounter types recorded', () => {
+    const save = buildAncientSave('ancient.fortune_emissary');
+    expect(save.progress.encountersFound.length).toBeGreaterThanOrEqual(6);
+    expect(save.progress.loreUnlocked.length).toBeGreaterThanOrEqual(2);
+    expect(save.cosmetics.pet).toBe('pet.spirit_fox');
   });
 
   it('builds void walker with awakened void and high realm', () => {
@@ -31,8 +55,6 @@ describe('AncientDemoManager', () => {
     expect(save.realm.id).toBe('void_spirit');
     expect(save.insights.void?.awakened).toBe(true);
     expect(save.equippedSkills.primary).toBe('skill.void.slash.awakened');
-    expect(save.cosmetics.pet).toBe('pet.spirit_fox');
-    expect(save.stats.level).toBeGreaterThan(50);
   });
 
   it('detects meaningful progress on leveled save', () => {

@@ -6,6 +6,7 @@ import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { INSIGHT_XP_TO_FULL, listInsightIntentIds } from '@/progression/InsightDefinitions';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
+import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { buildPlayerStats } from '@/progression/playerStats';
 import {
   ancientsFileSchema,
@@ -32,9 +33,16 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
   const template = profile.save;
   const base = SaveManager.createNew();
   const stats = buildPlayerStats('hero.wanderer', template.level, template.realmId);
+  if (template.spirit !== undefined) {
+    stats.spirit = template.spirit;
+  }
 
   const insights = seedDefaultInsights();
   for (const intentId of listInsightIntentIds()) {
+    if (template.insightReadyIntents.includes(intentId)) {
+      insights[intentId] = { xp: INSIGHT_XP_TO_FULL, awakened: false, totalUses: 60 };
+      continue;
+    }
     const awakened = template.awakenedIntents.includes(intentId);
     insights[intentId] = {
       xp: awakened ? INSIGHT_XP_TO_FULL : insights[intentId]!.xp,
@@ -43,16 +51,25 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
     };
   }
 
+  const interimForRealm: PlayerSaveV1 = {
+    ...base,
+    stats,
+    insights,
+    progress: {
+      ...base.progress,
+      clearedBosses: [...template.clearedBosses],
+      clearedMaps: [...template.clearedMaps],
+    },
+    realm: { id: template.realmId, tier: template.realmTier, breakthroughReady: false },
+  } as PlayerSaveV1;
+  const { realm } = syncRealmProgress(interimForRealm);
+
   const save: PlayerSaveV1 = {
     ...base,
     stats,
     runtime: { hp: stats.hpMax, mana: stats.manaMax },
     xp: template.level * 100,
-    realm: {
-      id: template.realmId,
-      tier: template.realmTier,
-      breakthroughReady: false,
-    },
+    realm,
     insights,
     equippedSkills: { ...template.equippedSkills },
     inventory: {
@@ -86,6 +103,35 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
 
 export function listAncientProfiles(): AncientProfile[] {
   return [...ancientsData.ancients];
+}
+
+const FOCUS_ORDER = [
+  'demo.focus.breakthrough',
+  'demo.focus.awakening',
+  'demo.focus.combat',
+  'demo.focus.fortune',
+  'demo.focus.endgame',
+] as const;
+
+/** Profiles grouped by focusKey for Play panel sections. */
+export function listAncientProfilesGrouped(): Array<{ focusKey: string; profiles: AncientProfile[] }> {
+  const groups = new Map<string, AncientProfile[]>();
+  for (const profile of ancientsData.ancients) {
+    const list = groups.get(profile.focusKey) ?? [];
+    list.push(profile);
+    groups.set(profile.focusKey, list);
+  }
+
+  const ordered: Array<{ focusKey: string; profiles: AncientProfile[] }> = [];
+  for (const key of FOCUS_ORDER) {
+    const profiles = groups.get(key);
+    if (profiles?.length) ordered.push({ focusKey: key, profiles });
+    groups.delete(key);
+  }
+  for (const [focusKey, profiles] of groups) {
+    ordered.push({ focusKey, profiles });
+  }
+  return ordered;
 }
 
 export function getAncientProfile(ancientId: string): AncientProfile {

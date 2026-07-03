@@ -4,6 +4,7 @@ import { gameStore } from '@/core/store/gameStore';
 import { createBottomNav } from '@/ui/home/BottomNav';
 import { createProfileHeader } from '@/ui/home/ProfileHeader';
 import { createInventoryPanel } from '@/ui/home/panels/InventoryPanel';
+import { createEchoesPanel } from '@/ui/home/panels/EchoesPanel';
 import { createPlayPanel } from '@/ui/home/panels/PlayPanel';
 import { createSkillsPanel } from '@/ui/home/panels/SkillsPanel';
 import { createStoryPanel } from '@/ui/home/panels/StoryPanel';
@@ -30,6 +31,7 @@ export class HomeUI {
   private static profileHeader: ReturnType<typeof createProfileHeader> | null = null;
   private static unsubscribeScene: (() => void) | null = null;
   private static unsubscribeStore: (() => void) | null = null;
+  private static unsubscribeOpenTab: (() => void) | null = null;
 
   static init(uiRoot: HTMLElement): void {
     if (HomeUI.mounted) return;
@@ -92,6 +94,7 @@ export class HomeUI {
 
     const panels: Record<HomeTab, PanelHandles> = {
       play: createPlayPanel(),
+      echoes: createEchoesPanel(),
       inventory: createInventoryPanel(),
       skills: createSkillsPanel(),
       story: createStoryPanel(),
@@ -115,6 +118,10 @@ export class HomeUI {
       HomeUI.refreshAll();
     });
 
+    HomeUI.unsubscribeOpenTab = EventBus.on('home:open-tab', ({ tab }) => {
+      HomeUI.openTab(tab);
+    });
+
     HomeUI.setTab('play');
   }
 
@@ -125,6 +132,9 @@ export class HomeUI {
 
     HomeUI.unsubscribeStore?.();
     HomeUI.unsubscribeStore = null;
+
+    HomeUI.unsubscribeOpenTab?.();
+    HomeUI.unsubscribeOpenTab = null;
 
     HomeUI.bottomNav?.destroy();
     HomeUI.bottomNav = null;

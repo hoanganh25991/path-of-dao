@@ -2,7 +2,7 @@ import { SceneRouter } from '@/app/SceneRouter';
 import {
   AncientDemoManager,
   getActiveAncientId,
-  listAncientProfiles,
+  listAncientProfilesGrouped,
 } from '@/progression/AncientDemoManager';
 import { gameStore } from '@/core/store/gameStore';
 import { I18nManager } from '@/core/i18n/I18nManager';
@@ -11,9 +11,10 @@ import {
   showAncientDemoModal,
 } from '@/ui/modals/AncientDemoModal';
 
-export interface AncientDemoSectionHandles {
+export interface EchoesPanelHandles {
   root: HTMLElement;
   refresh(): void;
+  destroy(): void;
 }
 
 async function startAncientWalk(ancientId: string): Promise<void> {
@@ -31,32 +32,37 @@ async function startAncientWalk(ancientId: string): Promise<void> {
 
   await AncientDemoManager.enter(ancientId);
   const profile = AncientDemoManager.getProfile(ancientId);
+  if (profile.startScene === 'home') {
+    await SceneRouter.instance.switchTo('home');
+    return;
+  }
   await SceneRouter.instance.switchTo('combat', { mapId: profile.startMapId });
 }
 
-export function createAncientDemoSection(): AncientDemoSectionHandles {
-  const root = document.createElement('section');
-  root.className = 'home-ancients';
-  root.dataset.testid = 'home-ancients';
+export function createEchoesPanel(): EchoesPanelHandles {
+  const root = document.createElement('div');
+  root.className = 'home-panel home-echoes';
+  root.dataset.panel = 'echoes';
+  root.dataset.testid = 'home-echoes';
 
-  const heading = document.createElement('h3');
-  heading.className = 'home-ancients__heading';
-  heading.textContent = I18nManager.t('demo.section.title');
+  const title = document.createElement('h2');
+  title.className = 'home-panel__title';
+  title.textContent = I18nManager.t('home.nav.echoes');
 
   const intro = document.createElement('p');
-  intro.className = 'home-ancients__intro';
+  intro.className = 'home-echoes__intro';
   intro.textContent = I18nManager.t('demo.section.intro');
 
   const list = document.createElement('div');
-  list.className = 'home-ancients__list';
+  list.className = 'home-echoes__list';
 
   const exitRow = document.createElement('div');
-  exitRow.className = 'home-ancients__exit-row';
+  exitRow.className = 'home-echoes__exit-row';
   exitRow.hidden = true;
 
   const exitBtn = document.createElement('button');
   exitBtn.type = 'button';
-  exitBtn.className = 'home-ancients__exit';
+  exitBtn.className = 'home-echoes__exit';
   exitBtn.textContent = I18nManager.t('demo.exit');
   exitBtn.addEventListener('click', () => {
     void AncientDemoManager.exit().then(() => {
@@ -65,7 +71,7 @@ export function createAncientDemoSection(): AncientDemoSectionHandles {
   });
 
   exitRow.appendChild(exitBtn);
-  root.append(heading, intro, list, exitRow);
+  root.append(title, intro, list, exitRow);
 
   list.addEventListener('click', (event) => {
     const card = (event.target as HTMLElement).closest<HTMLButtonElement>('.home-ancient-card');
@@ -78,12 +84,30 @@ export function createAncientDemoSection(): AncientDemoSectionHandles {
     exitRow.hidden = !activeId;
     list.replaceChildren();
 
-    for (const profile of listAncientProfiles()) {
-      list.appendChild(renderAncientCard(profile, profile.id === activeId));
+    for (const group of listAncientProfilesGrouped()) {
+      const groupEl = document.createElement('div');
+      groupEl.className = 'home-echoes__group';
+
+      const groupTitle = document.createElement('p');
+      groupTitle.className = 'home-echoes__group-title';
+      groupTitle.textContent = I18nManager.t(group.focusKey);
+      groupEl.appendChild(groupTitle);
+
+      const groupList = document.createElement('div');
+      groupList.className = 'home-echoes__group-list';
+      for (const profile of group.profiles) {
+        groupList.appendChild(renderAncientCard(profile, profile.id === activeId));
+      }
+      groupEl.appendChild(groupList);
+      list.appendChild(groupEl);
     }
   };
 
   refresh();
 
-  return { root, refresh };
+  return {
+    root,
+    refresh,
+    destroy: () => root.remove(),
+  };
 }

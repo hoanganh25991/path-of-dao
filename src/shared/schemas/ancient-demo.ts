@@ -4,8 +4,12 @@ export const ancientSaveTemplateSchema = z.object({
   level: z.number().int().min(1),
   realmId: z.string(),
   realmTier: z.enum(['early', 'mid', 'late', 'peak']),
+  /** Override spirit after level curve (e.g. breakthrough-ready demos). */
+  spirit: z.number().min(0).optional(),
   gold: z.number().int().min(0),
   awakenedIntents: z.array(z.string()),
+  /** Max insight XP + uses, not yet awakened — Skills panel shows Awaken. */
+  insightReadyIntents: z.array(z.string()).default([]),
   equippedSkills: z.object({
     primary: z.string(),
     secondary: z.string(),
@@ -28,12 +32,17 @@ export const ancientSaveTemplateSchema = z.object({
   bestiary: z.array(z.string()).default([]),
 });
 
+export const ANCIENT_START_SCENES = ['home', 'combat'] as const;
+
 export const ancientProfileSchema = z.object({
   id: z.string().min(1),
   nameKey: z.string().min(1),
   epithetKey: z.string().min(1),
   loreKey: z.string().min(1),
+  /** i18n key grouping card in Play panel (e.g. demo.focus.breakthrough). */
+  focusKey: z.string().min(1),
   highlightKeys: z.array(z.string()).min(1),
+  startScene: z.enum(ANCIENT_START_SCENES).default('combat'),
   startMapId: z.string().min(1),
   save: ancientSaveTemplateSchema,
 });

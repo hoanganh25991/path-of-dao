@@ -1,7 +1,7 @@
 import { SceneRouter } from '@/app/SceneRouter';
+import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
-import { createAncientDemoSection } from '@/ui/home/panels/AncientDemoSection';
 
 export interface PlayPanelHandles {
   root: HTMLElement;
@@ -29,20 +29,6 @@ export function createPlayPanel(): PlayPanelHandles {
   const devSlot = document.createElement('div');
   devSlot.className = 'home-play__dev-slot';
 
-  const ancientSection = createAncientDemoSection();
-
-  const portalBtn = document.createElement('button');
-  portalBtn.type = 'button';
-  portalBtn.className = 'home-play__portal';
-  portalBtn.textContent = I18nManager.t('home.map_portal');
-  portalBtn.addEventListener('click', () => {
-    showToast(I18nManager.t('home.coming_soon'));
-  });
-
-  const hint = document.createElement('p');
-  hint.className = 'home-play__hint';
-  hint.textContent = I18nManager.t('home.map_portal_hint');
-
   const continueBtn = document.createElement('button');
   continueBtn.type = 'button';
   continueBtn.className = 'home-play__continue';
@@ -54,12 +40,43 @@ export function createPlayPanel(): PlayPanelHandles {
     void SceneRouter.instance.switchTo('combat', { mapId });
   });
 
-  root.append(title, ancientSection.root, devSlot, portalBtn, hint, continueBtn);
+  const echoesBtn = document.createElement('button');
+  echoesBtn.type = 'button';
+  echoesBtn.className = 'home-play__echoes';
+  echoesBtn.textContent = I18nManager.t('home.echoes_travel');
+  echoesBtn.addEventListener('click', () => {
+    EventBus.emit('home:open-tab', { tab: 'echoes' });
+  });
+
+  const echoesHint = document.createElement('p');
+  echoesHint.className = 'home-play__hint';
+  echoesHint.textContent = I18nManager.t('home.echoes_travel_hint');
+
+  const portalBtn = document.createElement('button');
+  portalBtn.type = 'button';
+  portalBtn.className = 'home-play__portal home-play__portal--secondary';
+  portalBtn.textContent = I18nManager.t('home.map_portal');
+  portalBtn.addEventListener('click', () => {
+    showToast(I18nManager.t('home.coming_soon'));
+  });
+
+  const portalHint = document.createElement('p');
+  portalHint.className = 'home-play__hint home-play__hint--muted';
+  portalHint.textContent = I18nManager.t('home.map_portal_hint');
+
+  root.append(
+    title,
+    devSlot,
+    continueBtn,
+    echoesBtn,
+    echoesHint,
+    portalBtn,
+    portalHint,
+  );
 
   const refresh = (): void => {
     const mapId = gameStore.getState().save?.progress.currentMapId;
     continueBtn.hidden = !mapId;
-    ancientSection.refresh();
   };
 
   refresh();

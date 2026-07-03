@@ -19,6 +19,7 @@ export type GameEvents = {
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
+  'home:open-tab': { tab: import('@/ui/home/types').HomeTab };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
 };
 

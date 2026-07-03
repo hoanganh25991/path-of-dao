@@ -15,6 +15,7 @@ Build a cultivation-themed action RPG where the player:
 3. Grows through **levels, cultivation realms, insight awakenings, and fortuitous encounters** — not just stat inflation.
 4. Explores a **non-linear world** of 10 regions / 20 maps; if a map is too hard, they leave, farm elsewhere, and return stronger.
 5. Experiences **story at chapter endings** via narrated scenes, not only loot drops.
+6. Can optionally **walk as legendary ancients** (*Echoes of the Ancients*) to preview realms, skills, breakthrough, and fortune before their own journey deepens.
 
 The player should always feel: *my character has grown, my realm matters, my aura tells my story, every map hides another destiny.*
 
@@ -33,6 +34,7 @@ The player should always feel: *my character has grown, my realm matters, my aur
 | Save | Save anywhere | IndexedDB + export/import JSON |
 | Locales | `en`, `vi` | All UI + story strings externalized |
 | Home | Full feature set | 3D viewer, equipment, skills, bestiary, story archive, map portal |
+| Onboarding | Echoes of the Ancients | Guided demo saves — see [plans/27-ancient-echo-demo.md](./plans/27-ancient-echo-demo.md) |
 | Platforms | Mobile web (PWA) first | iOS Safari, Android Chrome; desktop secondary |
 
 **Out of MVP:** multiplayer, gacha, IAP, procedural infinite maps, voice acting, full pet combat system (pet preview in Home only).
@@ -90,6 +92,7 @@ path-of-dao/
 │   ├── skills/
 │   ├── items/
 │   ├── encounters/
+│   ├── demo/                       # Ancient echo profiles (sub-plan 27)
 │   └── locales/{en,vi}/
 ├── src/
 │   ├── app/                        # bootstrap, SceneRouter, PWA
@@ -139,6 +142,7 @@ flowchart TB
         Realm[CultivationRealm]
         Insight[InsightSystem]
         Encounters[FortuitousEncounters]
+        AncientEcho[AncientEchoDemo]
         CP[CombatPower]
     end
 
@@ -146,6 +150,7 @@ flowchart TB
     Router --> combat
     Save --> progression
     home --> MapPortal
+    AncientEcho --> home
     MapPortal --> MapScene
     MapScene --> Player
     MapScene --> Enemies
@@ -215,6 +220,7 @@ Each file in `plans/` is sized for **1–3 focused implementation sessions** (~4
 | 24 | `plans/24-localization-en-vi.md` | Localization en + vi | 7 |
 | 25 | `plans/25-audio-vfx-polish.md` | Audio, aura VFX, juice | 7 |
 | 26 | `plans/26-pwa-performance-ship.md` | PWA, performance, ship checklist | 7 |
+| 27 | `plans/27-ancient-echo-demo.md` | Echoes of the Ancients (guided demo) | Cross |
 
 ---
 
@@ -260,6 +266,20 @@ Sword, Void, Flame, Lightning, Time, Life — each skill tagged with one intent.
 ### 7.5 Difficulty & Power Fantasy
 
 Maps have recommended CP range. Returning to lower maps: enemies have `-40% HP/DEF` per realm tier above recommendation; player damage capped only by skill CD — should feel like crushing ants.
+
+### 7.6 Ancient Echo Demo (Onboarding)
+
+**Echoes of the Ancients** — shippable guided demo, not a debug mode. See [`plans/27-ancient-echo-demo.md`](./plans/27-ancient-echo-demo.md).
+
+| Concern | Approach |
+|---------|----------|
+| Entry | Home → Play → ancient card → lore modal |
+| Safety | Real save in `sessionStorage` backup; demo skips IndexedDB persist |
+| Content | `content/demo/ancients.json` — profile + save template per ancient |
+| Focus groups | Breakthrough · Awakening · Combat · Fortune · Endgame |
+| Locale | `content/locales/{en,vi}/demo.json` |
+
+Each ancient demonstrates one vertical slice (e.g. breakthrough ceremony, insight awaken, fortuitous encounter archive) so players understand the full game before chapter content lands in Phase 6.
 
 ---
 
@@ -336,6 +356,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 | `05` | `06` (combat) + `10` (home) |
 | `09` | `13`, `14`, `15` (all progression) |
 | `12` + `09` | `17`, `18`, `19` |
+| `13`–`15` | `27` (Ancient Echo demo — parallel onboarding) |
 | `20` | `21`, `22`, `23` (content authoring) |
 
 ---
@@ -356,6 +377,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 - [ ] Full UI in English and Vietnamese
 - [ ] PWA installable; 30 FPS on mid-range Android
 - [ ] No console errors in 10-minute playthrough
+- [x] Echoes of the Ancients — six focused demo walks (sub-plan 27)
 
 ---
 

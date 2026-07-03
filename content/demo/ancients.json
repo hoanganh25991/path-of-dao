@@ -1,51 +1,81 @@
 {
   "ancients": [
     {
-      "id": "ancient.void_walker",
-      "nameKey": "demo.ancient.void_walker.name",
-      "epithetKey": "demo.ancient.void_walker.epithet",
-      "loreKey": "demo.ancient.void_walker.lore",
-      "highlightKeys": [
-        "demo.highlight.void_spirit",
-        "demo.highlight.awakened_void",
-        "demo.highlight.encounters"
-      ],
+      "id": "ancient.breakthrough_sage",
+      "nameKey": "demo.ancient.breakthrough_sage.name",
+      "epithetKey": "demo.ancient.breakthrough_sage.epithet",
+      "loreKey": "demo.ancient.breakthrough_sage.lore",
+      "focusKey": "demo.focus.breakthrough",
+      "highlightKeys": ["demo.highlight.breakthrough", "demo.highlight.qi_condensation", "demo.highlight.cultivate"],
+      "startScene": "home",
       "startMapId": "map.test.grove",
       "save": {
-        "level": 52,
-        "realmId": "void_spirit",
-        "realmTier": "mid",
-        "gold": 12000,
-        "awakenedIntents": ["void", "sword", "time"],
+        "level": 12,
+        "realmId": "qi_condensation",
+        "realmTier": "late",
+        "spirit": 80,
+        "gold": 800,
+        "awakenedIntents": [],
+        "insightReadyIntents": [],
         "equippedSkills": {
-          "primary": "skill.void.slash.awakened",
-          "secondary": "skill.sword.slash.awakened",
-          "ultimate": "skill.time.slow.awakened"
+          "primary": "skill.void.slash",
+          "secondary": "skill.sword.slash",
+          "ultimate": "skill.flame.bolt"
         },
         "equipped": {
-          "weapon": "item.sword.ancient",
+          "weapon": "item.sword.wood",
           "armor": "item.robe.novice",
-          "accessory": "item.ring.speed",
-          "spirit": "item.spirit.jade"
+          "accessory": null,
+          "spirit": null
         },
-        "inventoryItemIds": [
-          "item.sword.ancient",
-          "item.sword.iron",
-          "item.bracelet.copper",
-          "item.spirit.jade"
-        ],
-        "pet": "pet.spirit_fox",
-        "yearsCultivated": 420,
-        "encountersFound": [
-          "encounter.ancient_inheritance",
-          "encounter.spirit_beast",
-          "encounter.hidden_cave@cave.grove"
-        ],
-        "loreUnlocked": ["lore.fallen_village.memory_01"],
+        "inventoryItemIds": ["item.sword.wood", "item.robe.novice"],
+        "pet": null,
+        "yearsCultivated": 12,
+        "encountersFound": [],
+        "loreUnlocked": [],
         "storySeen": ["chapter.01.fallen_village"],
-        "clearedBosses": ["boss.bandit_lord", "boss.swamp_warden"],
-        "clearedMaps": ["map.test.grove"],
-        "bestiary": ["enemy.slime", "enemy.archer", "enemy.totem"]
+        "clearedBosses": [],
+        "clearedMaps": [],
+        "bestiary": ["enemy.slime"]
+      }
+    },
+    {
+      "id": "ancient.insight_seeker",
+      "nameKey": "demo.ancient.insight_seeker.name",
+      "epithetKey": "demo.ancient.insight_seeker.epithet",
+      "loreKey": "demo.ancient.insight_seeker.lore",
+      "focusKey": "demo.focus.awakening",
+      "highlightKeys": ["demo.highlight.insight_meter", "demo.highlight.awaken_button", "demo.highlight.foundation"],
+      "startScene": "home",
+      "startMapId": "map.test.grove",
+      "save": {
+        "level": 14,
+        "realmId": "foundation_establishment",
+        "realmTier": "early",
+        "spirit": 40,
+        "gold": 1200,
+        "awakenedIntents": [],
+        "insightReadyIntents": ["void", "sword"],
+        "equippedSkills": {
+          "primary": "skill.void.slash",
+          "secondary": "skill.sword.slash",
+          "ultimate": "skill.time.slow"
+        },
+        "equipped": {
+          "weapon": "item.sword.iron",
+          "armor": "item.robe.novice",
+          "accessory": null,
+          "spirit": null
+        },
+        "inventoryItemIds": ["item.sword.iron"],
+        "pet": null,
+        "yearsCultivated": 24,
+        "encountersFound": [],
+        "loreUnlocked": [],
+        "storySeen": ["chapter.01.fallen_village"],
+        "clearedBosses": [],
+        "clearedMaps": [],
+        "bestiary": ["enemy.slime", "enemy.archer"]
       }
     },
     {
@@ -53,11 +83,13 @@
       "nameKey": "demo.ancient.sword_ancestor.name",
       "epithetKey": "demo.ancient.sword_ancestor.epithet",
       "loreKey": "demo.ancient.sword_ancestor.lore",
+      "focusKey": "demo.focus.combat",
       "highlightKeys": [
         "demo.highlight.core_formation",
         "demo.highlight.awakened_sword",
         "demo.highlight.combo"
       ],
+      "startScene": "combat",
       "startMapId": "map.test.grove",
       "save": {
         "level": 28,
@@ -65,6 +97,7 @@
         "realmTier": "late",
         "gold": 4500,
         "awakenedIntents": ["sword", "lightning"],
+        "insightReadyIntents": [],
         "equippedSkills": {
           "primary": "skill.sword.slash.awakened",
           "secondary": "skill.lightning.strike.awakened",
@@ -92,11 +125,13 @@
       "nameKey": "demo.ancient.flame_sovereign.name",
       "epithetKey": "demo.ancient.flame_sovereign.epithet",
       "loreKey": "demo.ancient.flame_sovereign.lore",
+      "focusKey": "demo.focus.combat",
       "highlightKeys": [
         "demo.highlight.nascent_soul",
         "demo.highlight.awakened_flame",
         "demo.highlight.breakthrough"
       ],
+      "startScene": "combat",
       "startMapId": "map.test.grove",
       "save": {
         "level": 38,
@@ -104,6 +139,7 @@
         "realmTier": "early",
         "gold": 7200,
         "awakenedIntents": ["flame", "life", "void"],
+        "insightReadyIntents": [],
         "equippedSkills": {
           "primary": "skill.flame.bolt.awakened",
           "secondary": "skill.life.mend.awakened",
@@ -122,6 +158,109 @@
         "loreUnlocked": ["lore.fallen_village.memory_01"],
         "storySeen": ["chapter.01.fallen_village", "chapter.02.whispering_forest"],
         "clearedBosses": ["boss.bandit_lord", "boss.swamp_warden", "boss.iron_patriarch"],
+        "clearedMaps": ["map.test.grove"],
+        "bestiary": ["enemy.slime", "enemy.archer", "enemy.totem"]
+      }
+    },
+    {
+      "id": "ancient.fortune_emissary",
+      "nameKey": "demo.ancient.fortune_emissary.name",
+      "epithetKey": "demo.ancient.fortune_emissary.epithet",
+      "loreKey": "demo.ancient.fortune_emissary.lore",
+      "focusKey": "demo.focus.fortune",
+      "highlightKeys": [
+        "demo.highlight.encounters",
+        "demo.highlight.lore_archive",
+        "demo.highlight.spirit_pet"
+      ],
+      "startScene": "home",
+      "startMapId": "map.test.grove",
+      "save": {
+        "level": 22,
+        "realmId": "core_formation",
+        "realmTier": "early",
+        "gold": 15000,
+        "awakenedIntents": ["void"],
+        "insightReadyIntents": [],
+        "equippedSkills": {
+          "primary": "skill.void.slash.awakened",
+          "secondary": "skill.flame.bolt",
+          "ultimate": "skill.life.mend"
+        },
+        "equipped": {
+          "weapon": "item.sword.ancient",
+          "armor": "item.robe.novice",
+          "accessory": "item.bracelet.copper",
+          "spirit": "item.spirit.jade"
+        },
+        "inventoryItemIds": ["item.sword.ancient", "item.spirit.jade", "item.bracelet.copper"],
+        "pet": "pet.spirit_fox",
+        "yearsCultivated": 90,
+        "encountersFound": [
+          "encounter.ancient_inheritance",
+          "encounter.spirit_beast",
+          "encounter.hidden_cave@cave.grove",
+          "encounter.ancient_sword@sword.grove",
+          "encounter.forgotten_memory",
+          "encounter.secret_manual"
+        ],
+        "loreUnlocked": [
+          "lore.fallen_village.memory_01",
+          "lore.fallen_village.memory_02"
+        ],
+        "storySeen": ["chapter.01.fallen_village", "chapter.02.whispering_forest"],
+        "clearedBosses": ["boss.bandit_lord"],
+        "clearedMaps": ["map.test.grove"],
+        "bestiary": ["enemy.slime", "enemy.archer", "enemy.totem"]
+      }
+    },
+    {
+      "id": "ancient.void_walker",
+      "nameKey": "demo.ancient.void_walker.name",
+      "epithetKey": "demo.ancient.void_walker.epithet",
+      "loreKey": "demo.ancient.void_walker.lore",
+      "focusKey": "demo.focus.endgame",
+      "highlightKeys": [
+        "demo.highlight.void_spirit",
+        "demo.highlight.awakened_void",
+        "demo.highlight.encounters"
+      ],
+      "startScene": "combat",
+      "startMapId": "map.test.grove",
+      "save": {
+        "level": 52,
+        "realmId": "void_spirit",
+        "realmTier": "mid",
+        "gold": 12000,
+        "awakenedIntents": ["void", "sword", "time"],
+        "insightReadyIntents": [],
+        "equippedSkills": {
+          "primary": "skill.void.slash.awakened",
+          "secondary": "skill.sword.slash.awakened",
+          "ultimate": "skill.time.slow.awakened"
+        },
+        "equipped": {
+          "weapon": "item.sword.ancient",
+          "armor": "item.robe.novice",
+          "accessory": "item.ring.speed",
+          "spirit": "item.spirit.jade"
+        },
+        "inventoryItemIds": [
+          "item.sword.ancient",
+          "item.sword.iron",
+          "item.bracelet.copper",
+          "item.spirit.jade"
+        ],
+        "pet": "pet.spirit_fox",
+        "yearsCultivated": 420,
+        "encountersFound": [
+          "encounter.ancient_inheritance",
+          "encounter.spirit_beast",
+          "encounter.hidden_cave@cave.grove"
+        ],
+        "loreUnlocked": ["lore.fallen_village.memory_01"],
+        "storySeen": ["chapter.01.fallen_village"],
+        "clearedBosses": ["boss.bandit_lord", "boss.swamp_warden"],
         "clearedMaps": ["map.test.grove"],
         "bestiary": ["enemy.slime", "enemy.archer", "enemy.totem"]
       }
