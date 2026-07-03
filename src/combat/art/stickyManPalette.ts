@@ -69,7 +69,10 @@ export interface LimbAngles {
 
 export interface StickPose {
   bob?: number;
+  /** Torso tilt — positive shifts weight forward when facing right. */
   lean?: number;
+  /** Whole-body horizontal offset (+ = toward strike when facing right). */
+  shiftX?: number;
   limbs: LimbAngles;
   prop?: 'sword' | 'lance' | 'stick' | 'bow' | 'crown' | 'aura';
 }

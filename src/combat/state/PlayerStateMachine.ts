@@ -11,11 +11,12 @@
 
 export type PlayerStateId = 'idle' | 'move' | 'attack' | 'dodge' | 'hitstun' | 'dead';
 
-/** 8 / 10 / 14 frames at 60fps. */
-export const ATTACK_STEP_DURATIONS_MS = [133, 167, 233] as const;
-export const ATTACK_STEP_MULTIPLIERS = [1.0, 1.1, 1.4] as const;
+/** 8 / 10 / 18 frames at 60fps — step 3 is a held heavy finisher. */
+export const ATTACK_STEP_DURATIONS_MS = [133, 167, 300] as const;
+export const ATTACK_STEP_MULTIPLIERS = [1.0, 1.1, 1.65] as const;
 export const MAX_COMBO_STEP = 3;
 export const COMBO_WINDOW_MS = 600;
+export const HEAVY_FINISHER_VARIANTS = 3;
 
 export const DODGE_DURATION_MS = 350;
 export const DODGE_IFRAMES_MS = 250;
@@ -32,6 +33,9 @@ export class PlayerStateMachine {
   private comboStep = 0;
   private comboWindowMs = 0;
   private dodgeCooldownMs = 0;
+  /** Cycles haymaker → uppercut → body blow on each step-3 finisher. */
+  private heavyFinisherCycle = 0;
+  private activeHeavyVariant = 0;
 
   get state(): PlayerStateId {
     return this.current;
@@ -53,6 +57,11 @@ export class PlayerStateMachine {
 
   get dodgeCooldownRemainingMs(): number {
     return this.dodgeCooldownMs;
+  }
+
+  /** 0..2 heavy punch style used for the current step-3 attack. */
+  get heavyFinisherVariant(): number {
+    return this.activeHeavyVariant;
   }
 
   update(dtMs: number, moving: boolean): void {
@@ -97,6 +106,10 @@ export class PlayerStateMachine {
     const continuing =
       this.comboStep >= 1 && this.comboStep < MAX_COMBO_STEP && this.comboWindowMs > 0;
     this.comboStep = continuing ? this.comboStep + 1 : 1;
+    if (this.comboStep === MAX_COMBO_STEP) {
+      this.activeHeavyVariant = this.heavyFinisherCycle;
+      this.heavyFinisherCycle = (this.heavyFinisherCycle + 1) % HEAVY_FINISHER_VARIANTS;
+    }
     this.comboWindowMs = 0;
     this.setState('attack');
     return this.comboStep;
@@ -124,6 +137,8 @@ export class PlayerStateMachine {
     this.comboStep = 0;
     this.comboWindowMs = 0;
     this.dodgeCooldownMs = 0;
+    this.heavyFinisherCycle = 0;
+    this.activeHeavyVariant = 0;
     this.setState('idle');
   }
 

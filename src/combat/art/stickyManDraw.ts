@@ -552,7 +552,7 @@ export function drawStickyFrame(
   ctx.clearRect(0, 0, w, h);
   ctx.imageSmoothingEnabled = false;
 
-  const cx = w / 2;
+  const cx = w / 2 + (pose.shiftX ?? 0);
   const bob = pose.bob ?? 0;
   const lean = pose.lean ?? 0;
   const footY = h - 1;
