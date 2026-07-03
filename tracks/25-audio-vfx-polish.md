@@ -19,6 +19,9 @@ Game feel through audio, combat juice, and enhanced Home aura — player should 
 - Device remembers unlock; return visits resume audio silently on first tap
 - Scene music restarts immediately after unlock (no wait for scene change)
 - Improved procedural synthesis: soft clipping, filters, impact noise layer, BGM fade-in and pulse
+- **Combat SFX wired:** attack combo (1–3), dodge, skill cast (all intents incl. lightning/life), hit impacts
+- **UI tap sound** on buttons/tabs/action controls via global click bridge
+- Manifest gains boosted ~1.75× for mobile audibility
 
 ### Combat juice
 - Hit-stop on heavy hits
@@ -35,10 +38,11 @@ Game feel through audio, combat juice, and enhanced Home aura — player should 
 - Boss phase sting + screen darken
 - Map ambience loops per region (optional)
 - Performance profile to disable juice on low-end devices (ties to 26)
-- Player attack/dodge/land SFX wired from player actions (partial via combat events)
+- `player.land` SFX (manifest key exists; no jump/land mechanic yet)
+- `ui.panel_open` on modal open (key exists; not wired)
 
 ## Verification
 
 - Audio unlock persistence tested
-- Audio manifest and juice profile unit tests pass
+- Audio manifest, director, UI sound, and juice profile unit tests pass
 - iOS autoplay: overlay once per device; silent resume on return

@@ -4,6 +4,7 @@ import type { ScenePayload } from '@/app/SceneId';
 import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import { completeStory } from '@/progression/ChapterManager';
+import { onPathStepStoryFinished, routePathWalk } from '@/progression/PathWalkManager';
 import { openStoryReader } from '@/ui/story/StoryReader';
 
 /** Full-screen HTML story mode — hides game canvases via GameShell. */
@@ -34,6 +35,11 @@ export class StorySceneHost implements SceneHost {
   }
 
   private finishStory(replay: boolean): void {
+    if (this.payload.pathWalk) {
+      void routePathWalk(onPathStepStoryFinished());
+      return;
+    }
+
     const store = gameStore.getState();
     const save = store.save;
     if (save) {

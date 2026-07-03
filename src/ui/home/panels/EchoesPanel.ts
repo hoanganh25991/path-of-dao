@@ -4,6 +4,7 @@ import {
   getActiveAncientId,
   listAncientProfilesGrouped,
 } from '@/progression/AncientDemoManager';
+import { startPathWalk } from '@/progression/PathWalkManager';
 import { gameStore } from '@/core/store/gameStore';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import {
@@ -27,14 +28,24 @@ async function startAncientWalk(ancientId: string): Promise<void> {
   const needsConfirm =
     !AncientDemoManager.isActive() && AncientDemoManager.hasMeaningfulProgress(save);
 
-  const confirmed = await showAncientDemoModal(uiRoot, { ancientId, needsConfirm });
-  if (!confirmed.confirmed) return;
+  const result = await showAncientDemoModal(uiRoot, { ancientId, needsConfirm });
+  if (result.mode === 'cancel') return;
 
-  // Relive the exact map the player is currently on so they feel the power gap;
-  // fall back to the ancient's default map for a brand-new save.
   const profile = AncientDemoManager.getProfile(ancientId);
-  const mapId = save.progress.currentMapId ?? profile.startMapId;
 
+  if (result.mode === 'follow_path') {
+    const path = AncientDemoManager.getPath(ancientId);
+    const firstMapId = path[0]?.mapId;
+    if (!firstMapId) return;
+
+    startPathWalk(ancientId);
+    await AncientDemoManager.enter(ancientId, { mapId: firstMapId });
+    await SceneRouter.instance.switchTo('combat', { mapId: firstMapId });
+    return;
+  }
+
+  // Single-map god-mode showcase on the player's current map (feel the power gap).
+  const mapId = save.progress.currentMapId ?? profile.startMapId;
   await AncientDemoManager.enter(ancientId, { mapId });
   await SceneRouter.instance.switchTo('combat', { mapId });
 }

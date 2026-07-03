@@ -6,6 +6,7 @@ import { applyMapClearPatch } from '@/progression/ChapterManager';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { applyAncientGodMode, isAncientCombatActive } from '@/progression/AncientCombatMode';
+import { isPathWalkActive, onPathStepMapCleared, routePathWalk } from '@/progression/PathWalkManager';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import { StatSheet } from '@/progression/StatSheet';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
@@ -234,6 +235,10 @@ export class MapScene extends Phaser.Scene {
         AudioDirector.playMapClearSting();
       }
       const save = gameStore.getState().save;
+      if (isPathWalkActive()) {
+        void routePathWalk(onPathStepMapCleared(this.mapId));
+        return;
+      }
       if (save) {
         const { patch, result } = applyMapClearPatch(save, this.mapId, wavesCleared);
         if (Object.keys(patch).length > 0) {

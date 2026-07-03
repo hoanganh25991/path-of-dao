@@ -1,9 +1,10 @@
 import '@/ui/modals/ancient-demo.css';
 import '@/ui/skills/skill-detail.css';
 import { I18nManager } from '@/core/i18n/I18nManager';
-import { getAncientProfile } from '@/progression/AncientDemoManager';
+import { getAncientPath, getAncientProfile } from '@/progression/AncientDemoManager';
 import { normalizeLoadout, SKILL_SLOTS } from '@/progression/SkillLoadout';
 import type { AncientProfile } from '@/shared/schemas/ancient-demo';
+import { describeAncientPathStep } from '@/ui/home/ancientPathView';
 import { createSkillIconStrip } from '@/ui/skills/SkillShowcase';
 import { createSkillDetailPanel, createSkillTabStrip } from '@/ui/skills/SkillDetailPanel';
 
@@ -12,8 +13,52 @@ export interface AncientDemoModalOptions {
   needsConfirm: boolean;
 }
 
+export type AncientDemoMode = 'cancel' | 'follow_path' | 'walk_here';
+
 export interface AncientDemoModalResult {
-  confirmed: boolean;
+  mode: AncientDemoMode;
+}
+
+function renderPathRoad(ancientId: string): HTMLElement {
+  const path = getAncientPath(ancientId);
+  const section = document.createElement('div');
+  section.className = 'ancient-demo-modal__path';
+
+  const title = document.createElement('p');
+  title.className = 'ancient-demo-modal__path-title';
+  title.textContent = I18nManager.t('demo.path.road_title');
+  section.appendChild(title);
+
+  const list = document.createElement('ol');
+  list.className = 'ancient-demo-modal__path-list';
+
+  for (const step of path) {
+    const view = describeAncientPathStep(step);
+    const item = document.createElement('li');
+    item.className = 'ancient-demo-modal__path-step';
+
+    const map = document.createElement('span');
+    map.className = 'ancient-demo-modal__path-map';
+    map.textContent = view.mapLabel;
+
+    const realm = document.createElement('span');
+    realm.className = 'ancient-demo-modal__path-realm';
+    realm.textContent = view.realmLabel;
+
+    item.append(map, realm);
+
+    if (view.storyLabel) {
+      const story = document.createElement('span');
+      story.className = 'ancient-demo-modal__path-story';
+      story.textContent = I18nManager.t('demo.path.story_beat', { title: view.storyLabel });
+      item.appendChild(story);
+    }
+
+    list.appendChild(item);
+  }
+
+  section.appendChild(list);
+  return section;
 }
 
 /** Skill-focused preview — tap each art to read combat stats, lore, and unlock path. */
@@ -23,6 +68,7 @@ export function showAncientDemoModal(
 ): Promise<AncientDemoModalResult> {
   return new Promise((resolve) => {
     const profile = getAncientProfile(options.ancientId);
+    const path = getAncientPath(options.ancientId);
     const loadout = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
     const skillIds = SKILL_SLOTS.map((slot) => loadout[slot]);
     let activeSkillId = skillIds[0] ?? profile.unlockedSkills[0] ?? 'skill.void.slash';
@@ -88,16 +134,27 @@ export function showAncientDemoModal(
     cancel.className = 'ancient-demo-modal__cancel';
     cancel.textContent = I18nManager.t('demo.enter.cancel');
 
-    const confirm = document.createElement('button');
-    confirm.type = 'button';
-    confirm.className = 'ancient-demo-modal__confirm';
-    confirm.textContent = I18nManager.t('demo.enter.confirm');
+    const walkHere = document.createElement('button');
+    walkHere.type = 'button';
+    walkHere.className = 'ancient-demo-modal__walk-here';
+    walkHere.textContent = I18nManager.t('demo.path.walk_here');
+    walkHere.hidden = path.length === 0;
 
-    actions.append(cancel, confirm);
+    const followPath = document.createElement('button');
+    followPath.type = 'button';
+    followPath.className = 'ancient-demo-modal__confirm';
+    followPath.textContent = I18nManager.t('demo.path.follow');
+    followPath.hidden = path.length === 0;
+
+    actions.append(cancel, walkHere, followPath);
 
     const body = document.createElement('div');
     body.className = 'ancient-demo-modal__body';
-    body.append(header, skillsLabel, tabs, detailHost);
+    body.append(header);
+    if (path.length > 0) {
+      body.appendChild(renderPathRoad(options.ancientId));
+    }
+    body.append(skillsLabel, tabs, detailHost);
 
     const footer = document.createElement('footer');
     footer.className = 'ancient-demo-modal__footer';
@@ -116,17 +173,22 @@ export function showAncientDemoModal(
 
     cancel.addEventListener('click', () => {
       cleanup();
-      resolve({ confirmed: false });
+      resolve({ mode: 'cancel' });
     });
 
     backdrop.addEventListener('click', () => {
       cleanup();
-      resolve({ confirmed: false });
+      resolve({ mode: 'cancel' });
     });
 
-    confirm.addEventListener('click', () => {
+    walkHere.addEventListener('click', () => {
       cleanup();
-      resolve({ confirmed: true });
+      resolve({ mode: 'walk_here' });
+    });
+
+    followPath.addEventListener('click', () => {
+      cleanup();
+      resolve({ mode: 'follow_path' });
     });
   });
 }

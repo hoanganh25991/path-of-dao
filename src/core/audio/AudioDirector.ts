@@ -13,9 +13,15 @@ const SKILL_SFX: Record<string, string> = {
   sword: 'skill.sword',
   void: 'skill.void',
   flame: 'skill.flame',
-  thunder: 'skill.thunder',
+  lightning: 'skill.thunder',
   time: 'skill.time',
-  heal: 'skill.heal',
+  life: 'skill.heal',
+};
+
+const ATTACK_SFX: Record<number, string> = {
+  1: 'player.attack1',
+  2: 'player.attack2',
+  3: 'player.attack3',
 };
 
 /** EventBus → AudioManager wiring (sub-plan 25). */
@@ -59,14 +65,24 @@ export class AudioDirector {
       EventBus.on('progression:level-up', () => {
         AudioManager.playSfx('level.up', 'ui');
       }),
-      EventBus.on('combat:hit-landed', ({ attackerTeam, victimTeam, isCrit }) => {
+      EventBus.on('combat:hit-landed', ({ attackerTeam, victimTeam }) => {
         if (attackerTeam === 'player' && victimTeam === 'enemy') {
-          AudioManager.playSfx(isCrit ? 'player.attack3' : 'enemy.hit');
+          AudioManager.playSfx('enemy.hit');
           return;
         }
         if (victimTeam === 'player') {
           AudioManager.playSfx('player.hit');
         }
+      }),
+      EventBus.on('player:attack-started', ({ step }) => {
+        const key = ATTACK_SFX[step];
+        if (key) AudioManager.playSfx(key);
+      }),
+      EventBus.on('player:dodge-started', () => {
+        AudioManager.playSfx('player.dodge');
+      }),
+      EventBus.on('skill:cast', ({ intent }) => {
+        this.playSkillCast(intent);
       }),
       EventBus.on('insight:awakened', () => {
         AudioManager.playSfx('encounter.awaken', 'ui');

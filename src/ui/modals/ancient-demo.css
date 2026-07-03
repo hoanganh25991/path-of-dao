@@ -122,11 +122,13 @@
 
 .ancient-demo-modal__actions {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
 .ancient-demo-modal__cancel,
-.ancient-demo-modal__confirm {
+.ancient-demo-modal__confirm,
+.ancient-demo-modal__walk-here {
   flex: 1;
   min-height: 44px;
   border-radius: 0.65rem;
@@ -134,6 +136,62 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.ancient-demo-modal__walk-here {
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  background: rgba(201, 162, 39, 0.1);
+  color: var(--dao-gold);
+}
+
+.ancient-demo-modal__path {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ancient-demo-modal__path-title {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dao-muted);
+}
+
+.ancient-demo-modal__path-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ancient-demo-modal__path-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--dao-jade);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.ancient-demo-modal__path-map {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dao-text);
+}
+
+.ancient-demo-modal__path-realm {
+  font-size: 0.6875rem;
+  color: var(--dao-gold);
+}
+
+.ancient-demo-modal__path-story {
+  font-size: 0.6875rem;
+  color: var(--dao-muted);
 }
 
 .ancient-demo-modal__cancel {

@@ -5,6 +5,7 @@ import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { INSIGHT_XP_TO_FULL, listInsightIntentIds } from '@/progression/InsightDefinitions';
+import { stopPathWalk } from '@/progression/PathWalkManager';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { normalizeLoadout } from '@/progression/SkillLoadout';
@@ -249,6 +250,7 @@ export async function exitAncientDemo(): Promise<void> {
   activeAncientId = null;
   journeyBackup = null;
   clearBackupSession();
+  stopPathWalk();
 
   if (backup) {
     store.patch(backup);
@@ -267,6 +269,7 @@ export function resetAncientDemoSession(): void {
   activeAncientId = null;
   journeyBackup = null;
   clearBackupSession();
+  stopPathWalk();
 }
 
 export class AncientDemoManager {
