@@ -144,13 +144,14 @@
 .home-bottom-nav__tab {
   flex: 1;
   min-height: 48px;
-  min-width: 48px;
+  min-width: 0;
+  padding: 0 0.15rem;
   border: none;
   border-radius: 0.5rem;
   background: transparent;
   color: var(--dao-muted);
   font: inherit;
-  font-size: 0.7rem;
+  font-size: 0.625rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -159,6 +160,8 @@
   justify-content: center;
   gap: 0.2rem;
   transition: color 150ms ease, background 150ms ease;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .home-bottom-nav__tab:focus-visible {
@@ -218,34 +221,21 @@
   padding: 1.5rem 0.5rem;
 }
 
-/* Play panel */
-.home-ancients {
-  margin-bottom: 0.85rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.home-ancients__heading {
-  margin: 0 0 0.35rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--dao-jade);
-}
-
-.home-ancients__intro {
-  margin: 0 0 0.65rem;
+/* Echoes panel */
+.home-echoes__intro {
+  margin: 0 0 0.75rem;
   font-size: 0.75rem;
   line-height: 1.45;
   color: var(--dao-muted);
 }
 
-.home-ancients__list {
+.home-echoes__list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.home-ancients__group-title {
+.home-echoes__group-title {
   margin: 0 0 0.35rem;
   font-size: 0.6875rem;
   font-weight: 600;
@@ -254,12 +244,59 @@
   color: rgba(201, 162, 39, 0.85);
 }
 
-.home-ancients__group-list {
+.home-echoes__group-list {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
 }
 
+.home-echoes__exit-row {
+  margin-top: 0.75rem;
+}
+
+.home-echoes__exit {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: 0.65rem;
+  background: rgba(201, 162, 39, 0.1);
+  color: var(--dao-gold);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-play__echoes {
+  width: 100%;
+  min-height: 52px;
+  margin-bottom: 0.35rem;
+  border: 1px solid var(--dao-jade);
+  border-radius: 0.65rem;
+  background: linear-gradient(180deg, rgba(45, 212, 168, 0.16), rgba(45, 212, 168, 0.05));
+  color: var(--dao-jade);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-play__echoes:active {
+  background: linear-gradient(180deg, rgba(45, 212, 168, 0.26), rgba(45, 212, 168, 0.1));
+}
+
+.home-play__portal--secondary {
+  margin-top: 0.75rem;
+  opacity: 0.92;
+}
+
+.home-play__hint--muted {
+  opacity: 0.75;
+  margin-top: 0.25rem;
+}
+
+/* Ancient echo cards (Echoes tab) */
 .home-ancient-card {
   display: flex;
   flex-direction: column;
@@ -299,23 +336,6 @@
   font-size: 0.6875rem;
   color: var(--dao-muted);
   line-height: 1.35;
-}
-
-.home-ancients__exit-row {
-  margin-top: 0.55rem;
-}
-
-.home-ancients__exit {
-  width: 100%;
-  min-height: 44px;
-  border: 1px solid rgba(201, 162, 39, 0.45);
-  border-radius: 0.65rem;
-  background: rgba(201, 162, 39, 0.1);
-  color: var(--dao-gold);
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
 }
 
 .home-profile__name-row {

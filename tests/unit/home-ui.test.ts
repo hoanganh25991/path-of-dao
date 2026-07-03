@@ -55,6 +55,10 @@ describe('HomeUI', () => {
     expect(uiRoot.querySelector('[data-panel="inventory"]')).toBeTruthy();
     expect(uiRoot.querySelector('[data-panel="play"]')).toBeNull();
 
+    HomeUI.openTab('echoes');
+    expect(HomeUI.getActiveTab()).toBe('echoes');
+    expect(uiRoot.querySelector('[data-testid="home-echoes"]')).toBeTruthy();
+
     HomeUI.openTab('skills');
     expect(uiRoot.querySelector('[data-panel="skills"]')).toBeTruthy();
 
@@ -82,6 +86,19 @@ describe('HomeUI', () => {
     equipSpy.mockRestore();
   });
 
+  it('play panel travel button opens echoes tab', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    const travelBtn = uiRoot.querySelector<HTMLButtonElement>('.home-play__echoes');
+    expect(travelBtn).toBeTruthy();
+    travelBtn!.click();
+
+    expect(HomeUI.getActiveTab()).toBe('echoes');
+    expect(uiRoot.querySelector('[data-testid="home-echoes"]')).toBeTruthy();
+  });
+
   it('profile header shows combat power from save stats', () => {
     const uiRoot = document.getElementById('ui-root')!;
     HomeUI.init(uiRoot);
@@ -97,6 +114,7 @@ describe('I18nManager', () => {
   it('loads English home strings', async () => {
     await I18nManager.load('en');
     expect(I18nManager.t('home.nav.play')).toBe('Play');
+    expect(I18nManager.t('home.nav.echoes')).toBe('Echoes');
     expect(I18nManager.t('home.map_portal')).toBe('Map Portal');
   });
 

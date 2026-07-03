@@ -273,7 +273,7 @@ Maps have recommended CP range. Returning to lower maps: enemies have `-40% HP/D
 
 | Concern | Approach |
 |---------|----------|
-| Entry | Home → Play → ancient card → lore modal |
+| Entry | Home → **Echoes** tab, or Play → travel button |
 | Safety | Real save in `sessionStorage` backup; demo skips IndexedDB persist |
 | Content | `content/demo/ancients.json` — profile + save template per ancient |
 | Focus groups | Breakthrough · Awakening · Combat · Fortune · Endgame |

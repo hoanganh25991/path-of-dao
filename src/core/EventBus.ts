@@ -1,6 +1,7 @@
 import type { SceneId } from '@/app/SceneId';
 import type { AuraTier } from '@/home/realmAura';
 import type { StatModifier } from '@/progression/StatModifier';
+import type { HomeTab } from '@/ui/home/types';
 
 export type GameEvents = {
   'scene:changed': { id: SceneId; payload?: unknown };
@@ -19,7 +20,7 @@ export type GameEvents = {
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
-  'home:open-tab': { tab: import('@/ui/home/types').HomeTab };
+  'home:open-tab': { tab: HomeTab };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
 };
 
