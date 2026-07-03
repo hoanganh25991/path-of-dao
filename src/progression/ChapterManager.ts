@@ -60,8 +60,6 @@ export function tryClearMap(save: PlayerSaveV1, mapId: string, wavesCleared: boo
   if (!wavesCleared) return { newlyCleared: false };
   if (save.progress.clearedMaps.includes(mapId)) return { newlyCleared: false };
 
-  const clearedMaps = [...save.progress.clearedMaps, mapId];
-
   if (!isChapterFinalMap(mapId)) {
     return { newlyCleared: true };
   }

@@ -1,15 +1,12 @@
+import { SceneRouter } from '@/app/SceneRouter';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
+import { getChapterByStoryScene } from '@/progression/ChapterLoader';
 
 export interface StoryPanelHandles {
   root: HTMLElement;
   refresh(): void;
   destroy(): void;
-}
-
-function chapterTitle(chapterId: string): string {
-  const slug = chapterId.replace(/^chapter\.\d+\./, '').replace(/_/g, ' ');
-  return slug.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 export function createStoryPanel(): StoryPanelHandles {
@@ -54,20 +51,28 @@ export function createStoryPanel(): StoryPanelHandles {
       list.appendChild(row);
     }
 
-    for (const chapterId of seen) {
+    for (const sceneId of seen) {
+      const chapter = getChapterByStoryScene(sceneId);
       const row = document.createElement('div');
       row.className = 'home-story__row';
 
       const chapterTitleEl = document.createElement('p');
       chapterTitleEl.className = 'home-story__title';
-      chapterTitleEl.textContent = chapterTitle(chapterId);
+      chapterTitleEl.textContent = chapter
+        ? I18nManager.t(chapter.titleKey)
+        : sceneId;
 
       const replayBtn = document.createElement('button');
       replayBtn.type = 'button';
       replayBtn.className = 'home-story__replay';
       replayBtn.textContent = I18nManager.t('home.story.replay');
       replayBtn.addEventListener('click', () => {
-        // Sub-plan 18 wires full story replay.
+        if (!chapter) return;
+        void SceneRouter.instance.switchTo('story', {
+          chapterId: chapter.id,
+          sceneId,
+          replay: true,
+        });
       });
 
       row.append(chapterTitleEl, replayBtn);

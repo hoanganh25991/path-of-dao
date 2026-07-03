@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "cp:calc": "node tools/cp-calculator.mjs",
-    "maps:stubs": "node tools/generate-map-stubs.mjs"
+    "maps:stubs": "node tools/generate-map-stubs.mjs",
+    "story:stubs": "node tools/generate-story-stubs.mjs"
   },
   "engines": {
     "node": ">=20"

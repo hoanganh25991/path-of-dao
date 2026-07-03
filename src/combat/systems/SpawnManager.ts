@@ -111,6 +111,19 @@ export class SpawnManager {
     return [...this.pool.aliveEnemies].filter((e) => e.alive);
   }
 
+  /** True when every wave was cleared and no enemies remain. */
+  isEncounterComplete(): boolean {
+    if (this.destroyed) return false;
+    const lastWave = this.encounter.waves.length - 1;
+    if (lastWave < 0) return true;
+    return (
+      this.waveIndex >= lastWave &&
+      !this.waveActive &&
+      this.queue.length === 0 &&
+      this.pool.aliveCount === 0
+    );
+  }
+
   destroy(): void {
     this.destroyed = true;
     this.unsubPlayerDied();

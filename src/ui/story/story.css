@@ -1,0 +1,92 @@
+.story-reader {
+  --dao-bg: #0d1117;
+  --dao-gold: #c9a227;
+  --dao-text: #e8e6e3;
+  --dao-muted: rgba(232, 230, 227, 0.65);
+  --dao-border: rgba(201, 162, 39, 0.25);
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: #05080c;
+  color: var(--dao-text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.story-reader__art {
+  flex: 0 0 45%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #0a1220 0%, #121a28 100%);
+  border-bottom: 1px solid var(--dao-border);
+}
+
+.story-reader__art-placeholder {
+  width: min(80%, 20rem);
+  height: min(70%, 12rem);
+  border-radius: 0.5rem;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(45, 212, 168, 0.15), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(201, 162, 39, 0.12), transparent 50%),
+    rgba(13, 17, 23, 0.8);
+  border: 1px dashed rgba(201, 162, 39, 0.25);
+}
+
+.story-reader__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.story-reader__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem max(1rem, env(safe-area-inset-right, 0px))
+    calc(1rem + env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
+  min-height: 0;
+}
+
+.story-reader__text {
+  flex: 1;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-y: auto;
+}
+
+.story-reader__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.story-reader__progress {
+  font-size: 0.75rem;
+  color: var(--dao-muted);
+}
+
+.story-reader__skip,
+.story-reader__continue {
+  min-height: 40px;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.45rem;
+  border: 1px solid var(--dao-border);
+  background: transparent;
+  color: var(--dao-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.story-reader__continue {
+  margin-left: auto;
+  background: var(--dao-gold);
+  color: var(--dao-bg);
+  border-color: transparent;
+  font-weight: 600;
+}

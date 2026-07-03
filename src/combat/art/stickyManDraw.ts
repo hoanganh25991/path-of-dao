@@ -145,11 +145,20 @@ function drawNarrowTorso(
     px(ctx, x + 1, y, palette.outline);
   }
 
-  // 7px-wide upper chest plate
+  // 7px-wide upper chest plate (front +X lit, back −X shadow)
   for (let y = Math.round(shoulderY); y <= chestBot; y++) {
     for (let dx = -CHEST_WIDTH; dx <= CHEST_WIDTH; dx++) {
       px(ctx, x + dx, y, Math.abs(dx) === CHEST_WIDTH ? palette.outline : dx <= -1 ? palette.shadow : palette.fill);
     }
+  }
+  // Gold collar across the shoulders + a lit robe fold on the front seam.
+  const shoulderRow = Math.round(shoulderY);
+  for (let dx = -CHEST_WIDTH + 1; dx <= CHEST_WIDTH - 1; dx++) {
+    px(ctx, x + dx, shoulderRow, palette.accent);
+  }
+  px(ctx, x + CHEST_WIDTH - 1, shoulderRow + 1, palette.highlight ?? palette.accent);
+  for (let y = shoulderRow + 2; y <= chestBot - 1; y += 2) {
+    px(ctx, x + 1, y, palette.highlight ?? palette.fill);
   }
 
   // Lower robe panel (chest to hip)
@@ -384,16 +393,17 @@ export function drawStickyFrame(
 
   // --- props ---
   if (pose.prop === 'sword') {
-    pixelLine(
-      ctx,
-      frontArm.endX,
-      frontArm.endY,
-      frontArm.endX + 10,
-      frontArm.endY - 8,
-      palette.accent,
-      2,
-    );
-    px(ctx, frontArm.endX + 10, frontArm.endY - 8, palette.highlight ?? palette.accent);
+    const hx = frontArm.endX;
+    const hy = frontArm.endY;
+    const tx = hx + 12;
+    const ty = hy - 11;
+    // gold cross-guard
+    pixelLine(ctx, hx - 2, hy + 1, hx + 3, hy - 2, palette.accent, 2);
+    // blade: dark edge + bright glinting core
+    pixelLine(ctx, hx, hy, tx, ty, palette.outline, 3);
+    pixelLine(ctx, hx, hy, tx, ty, palette.highlight ?? palette.accent, 1);
+    px(ctx, tx, ty, palette.highlight ?? palette.accent);
+    px(ctx, tx - 1, ty + 1, palette.highlight ?? palette.accent);
   }
   if (pose.prop === 'bow') {
     const bx = frontArm.endX + 2;
