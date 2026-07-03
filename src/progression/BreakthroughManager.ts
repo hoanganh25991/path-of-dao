@@ -5,7 +5,6 @@ import { gameStore } from '@/core/store/gameStore';
 import { CultivationRealm } from '@/progression/CultivationRealm';
 import { getRealmDefinition } from '@/progression/RealmStatScaling';
 import { realmToAuraTier } from '@/home/realmAura';
-import type { BaseStats } from '@/progression/types';
 
 export interface StatDelta {
   hpMax: number;

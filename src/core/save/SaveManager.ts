@@ -4,7 +4,7 @@ import { checksumOf } from '@/core/save/checksum';
 import { migrate } from '@/core/save/SaveMigration';
 import { SAVE_VERSION, type PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { DB_NAME, DB_VERSION, DEFAULT_SLOT, STORE_NAME, slotKey } from '@/core/save/SaveSlot';
-import { statsForLevel } from '@/progression/LevelCurve';
+import { buildPlayerStats } from '@/progression/playerStats';
 
 export class SaveCorruptError extends Error {
   constructor(message = 'Save data failed checksum validation') {
@@ -83,7 +83,7 @@ export class SaveManager {
   /** Fresh level-1 save. Caller persists it via save(). */
   static createNew(): PlayerSaveV1 {
     const now = new Date().toISOString();
-    const stats = statsForLevel('hero.wanderer', 1);
+    const stats = buildPlayerStats('hero.wanderer', 1, 'mortal_body');
     const locale =
       typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('vi')
         ? 'vi'

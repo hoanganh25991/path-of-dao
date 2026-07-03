@@ -4,7 +4,10 @@ import { createDefaultSceneHost } from '@/app/createDefaultSceneHost';
 import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
 import { I18nManager } from '@/core/i18n/I18nManager';
+import { OrientationManager } from '@/app/OrientationManager';
 import { connectAutosave, gameStore, startPlayTimeTracking } from '@/core/store/gameStore';
+import { syncRealmProgress } from '@/progression/BreakthroughManager';
+import { buildPlayerStats } from '@/progression/playerStats';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
 import { HomeUI } from '@/ui/home/HomeUI';
 
@@ -35,6 +38,7 @@ export class App {
     App.registerVisibilityHandlers();
 
     const router = SceneRouter.init(elements, createDefaultSceneHost);
+    OrientationManager.init();
     await router.switchTo('home');
 
     App.initialized = true;
@@ -63,6 +67,14 @@ export class App {
     // Debug handles for browser smoke tests / console poking.
     (window as unknown as Record<string, unknown>).__gameStore = gameStore;
     (window as unknown as Record<string, unknown>).__eventBus = EventBus;
+    (window as unknown as Record<string, unknown>).__devPrepareBreakthrough = (): void => {
+      gameStore.getState().patch((current) => {
+        const stats = buildPlayerStats('hero.wanderer', 5, current.realm.id);
+        const interim = { ...current, stats: { ...stats, spirit: 100 } };
+        const { realm } = syncRealmProgress(interim);
+        return { stats: interim.stats, realm };
+      });
+    };
 
     const panel = document.createElement('div');
     panel.className = 'dev-nav';

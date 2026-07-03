@@ -52,10 +52,51 @@
   letter-spacing: 0.02em;
 }
 
+.home-profile__realm-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .home-profile__realm {
   margin: 0;
   font-size: 0.75rem;
   color: var(--dao-jade);
+}
+
+.home-profile__cultivate {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--dao-bg);
+  background: var(--dao-gold);
+  border: none;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  animation: cultivate-pulse 1.6s ease-in-out infinite;
+}
+
+.home-profile__cultivate--ready {
+  box-shadow: 0 0 12px rgba(201, 162, 39, 0.55);
+}
+
+.home-profile__cultivate:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  animation: none;
+}
+
+@keyframes cultivate-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
 }
 
 .home-profile__stats {

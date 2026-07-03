@@ -51,28 +51,32 @@
 
 .breakthrough-modal__particle {
   position: absolute;
-  left: calc(50% + cos(calc(var(--i) * 15deg)) * 40vw);
-  top: calc(50% + sin(calc(var(--i) * 15deg)) * 40vh);
+  left: 50%;
+  top: 50%;
   width: 4px;
   height: 4px;
+  margin: -2px 0 0 -2px;
   border-radius: 50%;
   background: #2dd4a8;
   box-shadow: 0 0 8px #2dd4a8;
   animation: breakthrough-converge 2s ease-in forwards;
-  animation-delay: calc(var(--i) * 30ms);
+  animation-delay: calc(var(--i) * 40ms);
+  --angle: calc(var(--i) * 15deg);
+  --radius: min(42vw, 42vh);
+  transform: rotate(var(--angle)) translateX(var(--radius));
 }
 
 @keyframes breakthrough-converge {
   from {
     opacity: 0;
-    transform: translate(0, 0) scale(1);
+    transform: rotate(var(--angle)) translateX(var(--radius)) scale(1);
   }
   30% {
     opacity: 1;
   }
   to {
     opacity: 0.6;
-    transform: translate(calc(50vw - 50%), calc(40vh - 50%)) scale(0.3);
+    transform: rotate(var(--angle)) translateX(0) scale(0.2);
   }
 }
 

@@ -11,6 +11,8 @@ export interface DamagePayload {
   skillMultiplier: number;
   damageType: DamageType;
   ignoreDefPct?: number;
+  attackerRealmOrder?: number;
+  defenderRecommendedRealmOrder?: number;
 }
 
 export interface HitboxConfig {

@@ -12,6 +12,8 @@ export const mapConfigSchema = z.object({
   spawn: z.object({ x: z.number(), y: z.number() }),
   bounds: z.object({ width: z.number().positive(), height: z.number().positive() }),
   recommendedCp: z.number().min(0),
+  /** Cultivation realm order (1–7) for over-level damage bonus. Defaults to 1. */
+  recommendedRealmOrder: z.number().int().min(1).max(7).default(1),
   connections: z.array(z.string()),
   encounterTable: z.string().nullable(),
   bgm: z.string().nullable(),

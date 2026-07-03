@@ -9,6 +9,7 @@ import { getEncounterConfig, getEnemyConfig } from '@/combat/enemies/EnemyLoader
 import type { EncounterConfig } from '@/combat/enemies/EnemyConfig';
 import { EnemyPool } from '@/combat/systems/EnemyPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
+import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
 export const MAX_ALIVE = 8;
@@ -276,18 +277,38 @@ export class SpawnManager {
 
     const rewards = computeKillRewards(save, enemy.config);
 
-    store.patch((current) => ({
-      xp: rewards.xpTotal,
-      ...(rewards.statsAfterLevelUp ? { stats: rewards.statsAfterLevelUp } : {}),
-      ...(rewards.bestiaryAdd
-        ? {
-            progress: {
-              ...current.progress,
-              bestiary: [...current.progress.bestiary, rewards.bestiaryAdd],
-            },
-          }
-        : {}),
-    }));
+    store.patch((current) => {
+      const bossClearId = enemy.config.bossClearId;
+      const clearedBosses =
+        bossClearId && !current.progress.clearedBosses.includes(bossClearId)
+          ? [...current.progress.clearedBosses, bossClearId]
+          : current.progress.clearedBosses;
+
+      const interim = {
+        ...current,
+        xp: rewards.xpTotal,
+        ...(rewards.statsAfterLevelUp ? { stats: rewards.statsAfterLevelUp } : {}),
+        progress: {
+          ...current.progress,
+          clearedBosses,
+          ...(rewards.bestiaryAdd
+            ? { bestiary: [...current.progress.bestiary, rewards.bestiaryAdd] }
+            : {}),
+        },
+      };
+
+      const { realm, emitReady } = syncRealmProgress(interim);
+      if (emitReady) {
+        EventBus.emit('realm:breakthrough-ready', undefined);
+      }
+
+      return {
+        xp: rewards.xpTotal,
+        ...(rewards.statsAfterLevelUp ? { stats: rewards.statsAfterLevelUp } : {}),
+        realm,
+        progress: interim.progress,
+      };
+    });
 
     if (rewards.statsAfterLevelUp) {
       this.player.stats.setBase(rewards.statsAfterLevelUp);

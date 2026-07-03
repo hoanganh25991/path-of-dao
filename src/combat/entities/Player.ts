@@ -31,6 +31,10 @@ export class Player extends EntityBase implements HurtboxEntity {
   private readonly spawnPoint: { x: number; y: number };
   private respawning = false;
   private knockback: KnockbackState | null = null;
+  /** Cultivation realm order for damage bonus vs lower maps. */
+  attackerRealmOrder = 1;
+  /** Map recommended realm order — applied to enemies hurt by player. */
+  mapRecommendedRealmOrder = 1;
 
   constructor(
     scene: Phaser.Scene,

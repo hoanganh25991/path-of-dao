@@ -1,4 +1,5 @@
 import type { SceneId } from '@/app/SceneId';
+import type { AuraTier } from '@/home/realmAura';
 import type { StatModifier } from '@/progression/StatModifier';
 
 export type GameEvents = {
@@ -9,6 +10,9 @@ export type GameEvents = {
   'player:died': undefined;
   'map:wave-cleared': { encounterId: string; waveIndex: number };
   'equipment:changed': { modifiers: StatModifier[] };
+  'realm:breakthrough-ready': undefined;
+  'realm:breakthrough': { realmId: string; auraTier: AuraTier };
+  'layout:changed': { width: number; height: number; portraitRotate: boolean };
 };
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

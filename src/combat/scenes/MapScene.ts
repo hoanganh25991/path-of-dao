@@ -3,6 +3,7 @@ import { SceneRouter } from '@/app/SceneRouter';
 import { gameStore } from '@/core/store/gameStore';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import { StatSheet } from '@/progression/StatSheet';
+import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { getMapConfig } from '@/combat/map/MapLoader';
 import type { MapConfig } from '@/combat/map/MapConfig';
 import { CollisionLayer } from '@/combat/map/CollisionLayer';
@@ -74,6 +75,9 @@ export class MapScene extends Phaser.Scene {
     const spawn = this.resolveSpawn(map, config);
     this.hitboxManager = new HitboxManager(this);
     this.player = new Player(this, spawn.x, spawn.y, this.buildStatSheet(), this.hitboxManager);
+    const save = gameStore.getState().save;
+    this.player.attackerRealmOrder = save ? getRealmOrder(save.realm.id) : 1;
+    this.player.mapRecommendedRealmOrder = config.recommendedRealmOrder;
     this.physics.add.collider(this.player.sprite, collision);
 
     const camera = this.cameras.main;

@@ -34,6 +34,8 @@ export function resolveHit(
       skillMultiplier: damage.skillMultiplier,
       damageType: damage.damageType,
       ignoreDefPct: damage.ignoreDefPct,
+      attackerRealmOrder: damage.attackerRealmOrder,
+      defenderRecommendedRealmOrder: damage.defenderRecommendedRealmOrder,
     },
     deps.random ?? Math.random,
   );

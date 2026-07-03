@@ -73,6 +73,11 @@ export class HomeScene {
     await this.handles.heroViewer.syncEquipment(equipped);
   }
 
+  updateAura(realmId: string): void {
+    if (!this.handles) return;
+    this.handles.auraController.setTier(realmToAuraTier(realmId));
+  }
+
   dispose(): void {
     if (!this.handles) return;
 

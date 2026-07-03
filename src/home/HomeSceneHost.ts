@@ -17,6 +17,7 @@ export class HomeSceneHost implements SceneHost {
   private running = false;
   private lastTapMs = 0;
   private unsubscribeEquipment: (() => void) | null = null;
+  private unsubscribeRealm: (() => void) | null = null;
 
   private readonly onResize = (): void => {
     if (!this.renderer || !this.homeScene?.cameraRig) return;
@@ -61,6 +62,10 @@ export class HomeSceneHost implements SceneHost {
       void this.homeScene.syncEquipment(current.equipped);
     });
 
+    this.unsubscribeRealm = EventBus.on('realm:breakthrough', ({ realmId }) => {
+      this.homeScene?.updateAura(realmId);
+    });
+
     window.addEventListener('resize', this.onResize);
     canvas.addEventListener('pointerdown', this.onDoubleTap);
 
@@ -78,6 +83,8 @@ export class HomeSceneHost implements SceneHost {
     window.removeEventListener('resize', this.onResize);
     this.unsubscribeEquipment?.();
     this.unsubscribeEquipment = null;
+    this.unsubscribeRealm?.();
+    this.unsubscribeRealm = null;
 
     const canvas = this.renderer?.domElement;
     if (canvas) {

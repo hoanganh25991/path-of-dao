@@ -37,6 +37,10 @@ export interface DamageInput {
   damageType: DamageType;
   /** 0–0.5, boss skills. */
   ignoreDefPct?: number;
+  /** Attacker cultivation realm order (1–7). */
+  attackerRealmOrder?: number;
+  /** Map recommended realm order for over-level bonus (sub-plan 13 §8). */
+  defenderRecommendedRealmOrder?: number;
 }
 
 export interface DamageResult {

@@ -1,0 +1,119 @@
+:root {
+  --layout-w: 100vw;
+  --layout-h: 100vh;
+}
+
+/* Portrait viewport: rotate the whole app 90° to present landscape layout. */
+html.portrait-rotate #app {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: var(--layout-w);
+  height: var(--layout-h);
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+html.portrait-rotate #game-shell,
+html.portrait-rotate #ui-root {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Landscape-first Home UI --- */
+
+html.landscape-layout .home-bottom-nav {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  width: 4.25rem;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  border-top: none;
+  border-right: 1px solid var(--dao-border, rgba(201, 162, 39, 0.25));
+  padding: max(0.5rem, env(safe-area-inset-top, 0px))
+    max(0.35rem, env(safe-area-inset-left, 0px))
+    max(0.5rem, env(safe-area-inset-bottom, 0px))
+    max(0.35rem, env(safe-area-inset-left, 0px));
+}
+
+html.landscape-layout .home-bottom-nav__tab {
+  min-width: 0;
+  width: 100%;
+}
+
+html.landscape-layout .home-profile {
+  left: calc(4.25rem + max(0.75rem, env(safe-area-inset-left, 0px)));
+  right: auto;
+  max-width: min(18rem, 40vw);
+}
+
+html.landscape-layout .home-panel-sheet {
+  left: auto;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: min(36vw, 400px);
+  max-height: none;
+  transform: translateX(100%);
+  border-top: none;
+  border-left: 1px solid var(--dao-border, rgba(201, 162, 39, 0.25));
+}
+
+html.landscape-layout .home-panel-sheet--open {
+  transform: translateX(0);
+}
+
+html.landscape-layout .home-panel-sheet__inner {
+  max-height: 100%;
+}
+
+html.landscape-layout .home-toast {
+  left: auto;
+  right: calc(min(36vw, 400px) / 2);
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  transform: translateX(50%);
+}
+
+html.landscape-layout .home-item-detail {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  align-items: center;
+}
+
+/* --- Landscape-first Combat HUD --- */
+
+html.landscape-layout .joystick-zone {
+  width: 42%;
+}
+
+html.landscape-layout .action-buttons {
+  --btn-size: 52px;
+  --btn-gap: 14px;
+  right: max(1.25rem, env(safe-area-inset-right, 0px));
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+}
+
+html.landscape-layout .player-status {
+  top: max(0.65rem, env(safe-area-inset-top, 0px));
+  left: max(0.65rem, env(safe-area-inset-left, 0px));
+}
+
+html.landscape-layout .status-bar {
+  width: min(28vw, 200px);
+}
+
+html.landscape-layout .status-bar--mana {
+  width: min(22vw, 160px);
+}
+
+html.landscape-layout .dev-nav {
+  top: max(0.65rem, env(safe-area-inset-top, 0px));
+  right: max(0.65rem, env(safe-area-inset-right, 0px));
+}
+
+/* Breakthrough modal stays centered in layout space. */
+html.landscape-layout .breakthrough-modal__content {
+  max-width: min(24rem, 50vw);
+}

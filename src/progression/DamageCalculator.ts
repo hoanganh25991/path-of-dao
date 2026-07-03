@@ -25,7 +25,21 @@ export function resolveDamage(input: DamageInput, random: () => number = Math.ra
 
   const raw = base * (1 - mitigation);
   const isCrit = random() < attacker.crit;
-  const withCrit = isCrit ? raw * attacker.critDmg : raw;
+  let withCrit = isCrit ? raw * attacker.critDmg : raw;
+
+  if (
+    input.attackerRealmOrder != null &&
+    input.defenderRecommendedRealmOrder != null
+  ) {
+    const diff = Math.min(
+      5,
+      Math.max(0, input.attackerRealmOrder - input.defenderRecommendedRealmOrder),
+    );
+    if (diff > 0) {
+      withCrit *= 1 + diff * 0.1;
+    }
+  }
+
   const final = Math.max(1, Math.floor(withCrit));
 
   return {

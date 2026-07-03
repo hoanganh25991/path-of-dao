@@ -114,6 +114,40 @@ describe('resolveDamage', () => {
     );
     expect(result.final).toBe(250);
   });
+
+  it('realm order above map recommendation adds +10% per tier (max +50%)', () => {
+    const base = {
+      attacker: makeStats({ atk: 100 }),
+      defender: makeStats({ def: 0 }),
+      skillMultiplier: 1,
+      damageType: 'physical' as const,
+    };
+    const even = resolveDamage(
+      { ...base, attackerRealmOrder: 2, defenderRecommendedRealmOrder: 2 },
+      neverCrit,
+    );
+    const over = resolveDamage(
+      { ...base, attackerRealmOrder: 4, defenderRecommendedRealmOrder: 1 },
+      neverCrit,
+    );
+    expect(even.final).toBe(100);
+    expect(over.final).toBe(130);
+  });
+
+  it('caps realm over-level bonus at +50%', () => {
+    const result = resolveDamage(
+      {
+        attacker: makeStats({ atk: 100 }),
+        defender: makeStats({ def: 0 }),
+        skillMultiplier: 1,
+        damageType: 'physical',
+        attackerRealmOrder: 7,
+        defenderRecommendedRealmOrder: 1,
+      },
+      neverCrit,
+    );
+    expect(result.final).toBe(150);
+  });
 });
 
 describe('moveSpeedPxPerSec', () => {

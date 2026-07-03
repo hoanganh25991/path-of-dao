@@ -1,4 +1,5 @@
 import type { Vec2 } from '@/core/input/InputState';
+import { OrientationManager } from '@/app/OrientationManager';
 
 export const JOYSTICK_BASE_RADIUS_PX = 48;
 export const JOYSTICK_CLAMP_RADIUS_PX = 60;
@@ -43,12 +44,15 @@ export class VirtualJoystick {
   private readonly onTouchStart = (event: TouchEvent): void => {
     if (!this.enabled || this.activeTouchId !== null) return;
 
+    const { width: layoutW } = OrientationManager.getLayoutSize();
+
     for (const touch of event.changedTouches) {
-      if (touch.clientX > window.innerWidth * 0.5) continue;
+      const { x, y } = OrientationManager.toLayoutCoords(touch.clientX, touch.clientY);
+      if (x > layoutW * 0.5) continue;
 
       this.activeTouchId = touch.identifier;
-      this.showAt(touch.clientX, touch.clientY);
-      this.updateFromTouch(touch.clientX, touch.clientY);
+      this.showAt(x, y);
+      this.updateFromTouch(x, y);
       event.preventDefault();
       return;
     }
@@ -59,7 +63,8 @@ export class VirtualJoystick {
 
     for (const touch of event.changedTouches) {
       if (touch.identifier !== this.activeTouchId) continue;
-      this.updateFromTouch(touch.clientX, touch.clientY);
+      const { x, y } = OrientationManager.toLayoutCoords(touch.clientX, touch.clientY);
+      this.updateFromTouch(x, y);
       event.preventDefault();
       return;
     }
@@ -142,24 +147,24 @@ export class VirtualJoystick {
     this.element.remove();
   }
 
-  private showAt(clientX: number, clientY: number): void {
+  private showAt(layoutX: number, layoutY: number): void {
     if (this.fadeTimer !== null) {
       clearTimeout(this.fadeTimer);
       this.fadeTimer = null;
     }
 
-    this.centerX = clientX;
-    this.centerY = clientY;
-    this.element.style.left = `${clientX}px`;
-    this.element.style.top = `${clientY}px`;
+    this.centerX = layoutX;
+    this.centerY = layoutY;
+    this.element.style.left = `${layoutX}px`;
+    this.element.style.top = `${layoutY}px`;
     this.element.classList.remove('hidden', 'joystick--fading');
     this.element.classList.add('joystick--active');
     this.thumbEl.style.transform = 'translate(-50%, -50%)';
   }
 
-  private updateFromTouch(clientX: number, clientY: number): void {
-    const dx = clientX - this.centerX;
-    const dy = clientY - this.centerY;
+  private updateFromTouch(layoutX: number, layoutY: number): void {
+    const dx = layoutX - this.centerX;
+    const dy = layoutY - this.centerY;
     this.moveVector = normalizeJoystick(dx, dy, JOYSTICK_CLAMP_RADIUS_PX);
 
     const clampedLen = Math.min(Math.hypot(dx, dy), JOYSTICK_CLAMP_RADIUS_PX);

@@ -1,6 +1,7 @@
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import type { BaseStats } from '@/progression/types';
-import { levelFromTotalXp, statsForLevel } from '@/progression/LevelCurve';
+import { levelFromTotalXp } from '@/progression/LevelCurve';
+import { buildPlayerStats } from '@/progression/playerStats';
 import type { EnemyConfig } from '@/combat/enemies/EnemyConfig';
 
 export interface KillRewards {
@@ -32,7 +33,7 @@ export function computeKillRewards(
   return {
     xpTotal,
     level,
-    statsAfterLevelUp: leveledUp ? statsForLevel(save.heroId, level) : null,
+    statsAfterLevelUp: leveledUp ? buildPlayerStats(save.heroId, level, save.realm.id) : null,
     gold,
     bestiaryAdd: save.progress.bestiary.includes(enemy.id) ? null : enemy.id,
   };

@@ -31,6 +31,8 @@ export const enemyConfigSchema = z.object({
   goldReward: z.tuple([z.number().int().min(0), z.number().int().min(0)]),
   lootTable: z.string().nullable(),
   spriteKey: z.string().min(1),
+  /** When set, killing this enemy appends the id to progress.clearedBosses. */
+  bossClearId: z.string().nullable().optional(),
 });
 
 export type EnemyConfig = z.infer<typeof enemyConfigSchema>;
