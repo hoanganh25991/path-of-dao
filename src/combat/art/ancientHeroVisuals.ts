@@ -8,7 +8,6 @@ import {
 import {
   applyStickyManSprite,
   ANIM,
-  configureStickyManBody,
 } from '@/combat/art/stickyManAssets';
 import type { StickPalette } from '@/combat/art/stickyManPalette';
 import { FRAME_H, FRAME_W } from '@/combat/art/stickyManPalette';

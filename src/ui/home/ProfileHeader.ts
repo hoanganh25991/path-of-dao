@@ -8,6 +8,7 @@ import {
 import { computeCombatPowerStub, formatCombatPower } from '@/progression/combatPowerStub';
 import { BreakthroughManager } from '@/progression/BreakthroughManager';
 import { showBreakthroughModal } from '@/ui/modals/BreakthroughModal';
+import { showSettingsModal } from '@/ui/modals/SettingsModal';
 
 export interface ProfileHeaderHandles {
   root: HTMLElement;
@@ -27,6 +28,9 @@ export function createProfileHeader(): ProfileHeaderHandles {
   const root = document.createElement('header');
   root.className = 'home-profile home-ui__interactive';
 
+  const topRow = document.createElement('div');
+  topRow.className = 'home-profile__top-row';
+
   const nameEl = document.createElement('h1');
   nameEl.className = 'home-profile__name';
 
@@ -38,6 +42,19 @@ export function createProfileHeader(): ProfileHeaderHandles {
   const nameRow = document.createElement('div');
   nameRow.className = 'home-profile__name-row';
   nameRow.append(nameEl, demoBadge);
+
+  const settingsBtn = document.createElement('button');
+  settingsBtn.type = 'button';
+  settingsBtn.className = 'home-profile__settings';
+  settingsBtn.setAttribute('aria-label', I18nManager.t('home.settings.title'));
+  settingsBtn.textContent = '⚙';
+  settingsBtn.addEventListener('click', () => {
+    const uiRoot = document.getElementById('ui-root');
+    if (!uiRoot) return;
+    void showSettingsModal(uiRoot);
+  });
+
+  topRow.append(nameRow, settingsBtn);
 
   const realmRow = document.createElement('div');
   realmRow.className = 'home-profile__realm-row';
@@ -75,7 +92,7 @@ export function createProfileHeader(): ProfileHeaderHandles {
   yearsBlock.append(yearsLabel, yearsValue);
 
   statsRow.append(cpBlock, yearsBlock);
-  root.append(nameRow, realmRow, statsRow);
+  root.append(topRow, realmRow, statsRow);
 
   let ceremonyActive = false;
 

@@ -1,0 +1,116 @@
+.settings-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.settings-modal--active {
+  opacity: 1;
+}
+
+.settings-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.settings-modal__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  max-width: 22rem;
+  width: calc(100% - 2rem);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 0.75rem;
+  background: rgba(20, 25, 35, 0.96);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+.settings-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.settings-modal__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e8e6e3;
+}
+
+.settings-modal__close {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: rgba(232, 230, 227, 0.65);
+  font: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.settings-modal__close:focus-visible {
+  outline: 2px solid #2dd4a8;
+  outline-offset: 2px;
+}
+
+.settings-modal__section-title {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(232, 230, 227, 0.65);
+}
+
+.settings-modal__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.settings-modal__option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(201, 162, 39, 0.15);
+  border-radius: 0.5rem;
+  background: rgba(13, 17, 23, 0.6);
+  color: #e8e6e3;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.settings-modal__option:hover {
+  border-color: rgba(201, 162, 39, 0.35);
+}
+
+.settings-modal__option--selected {
+  border-color: rgba(201, 162, 39, 0.55);
+  background: rgba(201, 162, 39, 0.1);
+}
+
+.settings-modal__option:focus-visible {
+  outline: 2px solid #2dd4a8;
+  outline-offset: 2px;
+}
+
+.settings-modal__option input {
+  accent-color: #c9a227;
+}

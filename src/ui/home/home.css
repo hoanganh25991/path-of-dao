@@ -45,6 +45,46 @@
   max-width: 22rem;
 }
 
+.home-profile__top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.home-profile__name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.home-profile__settings {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: 0.45rem;
+  background: rgba(13, 17, 23, 0.5);
+  color: var(--dao-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.home-profile__settings:hover {
+  color: var(--dao-gold);
+  border-color: rgba(201, 162, 39, 0.45);
+}
+
+.home-profile__settings:focus-visible {
+  outline: 2px solid var(--dao-jade);
+  outline-offset: 2px;
+}
+
 .home-profile__name {
   margin: 0;
   font-size: 1rem;

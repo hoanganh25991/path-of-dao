@@ -32,6 +32,7 @@ export class HomeUI {
   private static unsubscribeScene: (() => void) | null = null;
   private static unsubscribeStore: (() => void) | null = null;
   private static unsubscribeOpenTab: (() => void) | null = null;
+  private static unsubscribeLocale: (() => void) | null = null;
 
   static init(uiRoot: HTMLElement): void {
     if (HomeUI.mounted) return;
@@ -122,7 +123,23 @@ export class HomeUI {
       HomeUI.openTab(tab);
     });
 
+    HomeUI.unsubscribeLocale = EventBus.on('settings:locale-changed', () => {
+      HomeUI.reloadForLocale();
+    });
+
     HomeUI.setTab('play');
+  }
+
+  /** Remount home UI so static labels pick up the new locale. */
+  static reloadForLocale(): void {
+    if (!HomeUI.root) return;
+    const uiRoot = HomeUI.root.parentElement;
+    const tab = HomeUI.activeTab;
+    HomeUI.unmount();
+    if (uiRoot instanceof HTMLElement) {
+      HomeUI.mount(uiRoot);
+      if (tab) HomeUI.setTab(tab);
+    }
   }
 
   private static unmount(): void {
@@ -135,6 +152,9 @@ export class HomeUI {
 
     HomeUI.unsubscribeOpenTab?.();
     HomeUI.unsubscribeOpenTab = null;
+
+    HomeUI.unsubscribeLocale?.();
+    HomeUI.unsubscribeLocale = null;
 
     HomeUI.bottomNav?.destroy();
     HomeUI.bottomNav = null;

@@ -55,6 +55,12 @@
   "skill.time.slow.awakened.name": "Lĩnh Thời",
   "skill.life.mend.awakened.name": "Hồi Linh",
   "home.skills.awaken": "Thức Tỉnh",
+  "home.settings.title": "Cài Đặt",
+  "home.settings.close": "Đóng",
+  "home.settings.language": "Ngôn Ngữ",
+  "home.settings.locale.system": "Theo hệ thống",
+  "home.settings.locale.en": "English",
+  "home.settings.locale.vi": "Tiếng Việt",
   "awakening.title": "Ngộ Đạo Thức Tỉnh",
   "awakening.confirm": "Nắm Giữ Đạo"
 }

@@ -108,6 +108,18 @@ describe('HomeUI', () => {
     expect(cpValue?.textContent).toBeTruthy();
     expect(cpValue!.textContent!.length).toBeGreaterThan(0);
   });
+
+  it('opens settings modal from profile header', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    const settingsBtn = uiRoot.querySelector<HTMLButtonElement>('.home-profile__settings');
+    expect(settingsBtn).toBeTruthy();
+    settingsBtn!.click();
+
+    expect(document.querySelector('[data-testid="settings-modal"]')).toBeTruthy();
+  });
 });
 
 describe('I18nManager', () => {

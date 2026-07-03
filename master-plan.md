@@ -150,7 +150,7 @@ flowchart TB
     Router --> combat
     Save --> progression
     home --> MapPortal
-    AncientEcho --> home
+    AncientEcho --> combat
     MapPortal --> MapScene
     MapScene --> Player
     MapScene --> Enemies
@@ -274,12 +274,19 @@ Maps have recommended CP range. Returning to lower maps: enemies have `-40% HP/D
 | Concern | Approach |
 |---------|----------|
 | Entry | Home → **Echoes** tab, or Play → travel button |
-| Safety | Real save in `sessionStorage` backup; demo skips IndexedDB persist |
-| Content | `content/demo/ancients.json` — profile + save template per ancient |
+| Walk | **Always enters combat** on the ancient's `startMapId` — power fantasy first |
+| Safety | Real save in `sessionStorage` backup; demo skips IndexedDB persist; combat runtime not saved |
+| Content | `content/demo/ancients.json` — profile + save template + `visualTheme` per ancient |
 | Focus groups | Breakthrough · Awakening · Combat · Fortune · Endgame |
+| Combat fantasy | God-mode pools (no damage, infinite mana); HUD shows inflated HP/Mana with ∞ suffix |
+| Hero look | Themed sticky-man palette, weapon, clothes, aura, name/epithet tag (`ancientHeroVisuals`) |
+| HUD | `AncientEchoBanner` + gold `PlayerStatusBar` ancient mode during demo combat |
+| Encounters | Fortuitous encounter rolls **skipped** during demo (no interrupting skill showcase) |
 | Locale | `content/locales/{en,vi}/demo.json` |
 
-Each ancient demonstrates one vertical slice (e.g. breakthrough ceremony, insight awaken, fortuitous encounter archive) so players understand the full game before chapter content lands in Phase 6.
+Each ancient demonstrates one vertical slice with their equipped skills live in combat. Players can exit to Home afterward to explore Cultivate, Awaken, Story archive, etc. with the demo save loaded.
+
+**Key files:** `AncientDemoManager`, `AncientCombatMode`, `EchoesPanel`, `MapScene` (god mode + `applyAncientEcho`), `Player`, `StatSheet.enableGodMode`.
 
 ---
 
@@ -377,7 +384,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 - [ ] Full UI in English and Vietnamese
 - [ ] PWA installable; 30 FPS on mid-range Android
 - [ ] No console errors in 10-minute playthrough
-- [x] Echoes of the Ancients — six focused demo walks (sub-plan 27)
+- [x] Echoes of the Ancients — six focused demo walks; combat-first with god-mode power fantasy (sub-plan 27)
 
 ---
 

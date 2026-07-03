@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 import { SceneRouter } from '@/app/SceneRouter';
 import { gameStore } from '@/core/store/gameStore';
+import { I18nManager } from '@/core/i18n/I18nManager';
+import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
+import { applyAncientGodMode, isAncientCombatActive } from '@/progression/AncientCombatMode';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import { StatSheet } from '@/progression/StatSheet';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
@@ -82,6 +85,18 @@ export class MapScene extends Phaser.Scene {
     this.player.mapRecommendedRealmOrder = config.recommendedRealmOrder;
     this.physics.add.collider(this.player.sprite, collision);
 
+    if (isAncientCombatActive()) {
+      const ancientId = getActiveAncientId();
+      if (ancientId && save) {
+        const profile = getAncientProfile(ancientId);
+        this.player.applyAncientEcho(
+          profile,
+          I18nManager.t(profile.nameKey),
+          I18nManager.t(profile.epithetKey),
+        );
+      }
+    }
+
     const camera = this.cameras.main;
     camera.setBounds(0, 0, config.bounds.width, config.bounds.height);
     camera.startFollow(this.player.sprite, true, CAMERA_LERP, CAMERA_LERP);
@@ -134,7 +149,11 @@ export class MapScene extends Phaser.Scene {
 
     const modifiers = EquipmentManager.getModifiers(save.equipped);
     const sheet = new StatSheet(save.stats, modifiers);
-    sheet.setRuntime(save.runtime.hp, save.runtime.mana);
+    if (isAncientCombatActive()) {
+      applyAncientGodMode(sheet);
+    } else {
+      sheet.setRuntime(save.runtime.hp, save.runtime.mana);
+    }
     return sheet;
   }
 
@@ -197,7 +216,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   private persistRuntime(): void {
-    if (this.runtimePersisted) return;
+    if (this.runtimePersisted || isAncientCombatActive()) return;
     const store = gameStore.getState();
     if (!store.save) return;
     this.runtimePersisted = true;

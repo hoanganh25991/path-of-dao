@@ -1,4 +1,5 @@
 import type { SceneId } from '@/app/SceneId';
+import type { Locale, LocalePreference } from '@/core/i18n/I18nManager';
 import type { AuraTier } from '@/home/realmAura';
 import type { StatModifier } from '@/progression/StatModifier';
 import type { HomeTab } from '@/ui/home/types';
@@ -21,6 +22,7 @@ export type GameEvents = {
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
   'home:open-tab': { tab: HomeTab };
+  'settings:locale-changed': { preference: LocalePreference; locale: Locale };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
 };
 

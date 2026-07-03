@@ -75,7 +75,7 @@ export const playerSaveV1Schema = z.object({
     })
     .default({ pet: null }),
   settings: z.object({
-    locale: z.enum(['en', 'vi']),
+    locale: z.enum(['system', 'en', 'vi']),
     sfxVolume: z.number().min(0).max(1),
     musicVolume: z.number().min(0).max(1),
   }),

@@ -32,10 +32,6 @@ async function startAncientWalk(ancientId: string): Promise<void> {
 
   await AncientDemoManager.enter(ancientId);
   const profile = AncientDemoManager.getProfile(ancientId);
-  if (profile.startScene === 'home') {
-    await SceneRouter.instance.switchTo('home');
-    return;
-  }
   await SceneRouter.instance.switchTo('combat', { mapId: profile.startMapId });
 }
 

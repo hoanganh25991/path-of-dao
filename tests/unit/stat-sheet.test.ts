@@ -97,4 +97,16 @@ describe('StatSheet', () => {
     expect(sheet.runtime.hp).toBe(100);
     expect(sheet.runtime.mana).toBe(0);
   });
+
+  it('god mode ignores damage and always spends mana', () => {
+    const sheet = new StatSheet(makeBase());
+    sheet.enableGodMode(50_000, 25_000);
+    expect(sheet.isGodMode).toBe(true);
+    expect(sheet.runtime.hp).toBe(50_000);
+    expect(sheet.applyDamage(9999)).toBe(0);
+    expect(sheet.runtime.hp).toBe(50_000);
+    expect(sheet.spendMana(9999)).toBe(true);
+    expect(sheet.runtime.mana).toBe(25_000);
+    expect(sheet.isDead).toBe(false);
+  });
 });

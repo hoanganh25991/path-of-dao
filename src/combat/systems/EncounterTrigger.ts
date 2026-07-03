@@ -12,6 +12,7 @@ import {
   rollOnWaveClear,
   wasPoiFound,
 } from '@/progression/FortuitousEncounterManager';
+import { isAncientCombatActive } from '@/progression/AncientCombatMode';
 import type { EncounterDefinition } from '@/shared/schemas/fortuitous-encounters';
 import { showEncounterModal } from '@/ui/modals/EncounterModal';
 
@@ -44,6 +45,8 @@ export class EncounterTrigger {
     config: MapConfig,
   ) {
     this.mapId = config.id;
+    if (isAncientCombatActive()) return;
+
     this.createPois(config);
 
     this.unsubscribers.push(

@@ -85,11 +85,6 @@ export class SaveManager {
   static createNew(): PlayerSaveV1 {
     const now = new Date().toISOString();
     const stats = buildPlayerStats('hero.wanderer', 1, 'mortal_body');
-    const locale =
-      typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('vi')
-        ? 'vi'
-        : 'en';
-
     const save: PlayerSaveV1 = {
       version: SAVE_VERSION,
       checksum: '',
@@ -130,7 +125,7 @@ export class SaveManager {
         currentMapId: null,
       },
       cosmetics: { pet: null },
-      settings: { locale, sfxVolume: 1, musicVolume: 1 },
+      settings: { locale: 'system', sfxVolume: 1, musicVolume: 1 },
       meta: { totalPlaySeconds: 0, createdAt: now, updatedAt: now },
     };
 

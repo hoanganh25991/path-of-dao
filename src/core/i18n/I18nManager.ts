@@ -1,4 +1,18 @@
 export type Locale = 'en' | 'vi';
+export type LocalePreference = 'system' | Locale;
+
+/** Map browser language to a supported locale — vi → vi, everything else → en. */
+export function detectSystemLocale(): Locale {
+  if (typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('vi')) {
+    return 'vi';
+  }
+  return 'en';
+}
+
+export function resolveLocale(preference: LocalePreference): Locale {
+  if (preference === 'system') return detectSystemLocale();
+  return preference;
+}
 
 const localeModules = import.meta.glob('../../../content/locales/*/*.json', {
   eager: true,
@@ -23,7 +37,8 @@ export class I18nManager {
   private static activeLocale: Locale = 'en';
   private static strings: Record<string, string> = localeIndex.get('en') ?? {};
 
-  static async load(locale: Locale): Promise<void> {
+  static async load(preference: LocalePreference): Promise<void> {
+    const locale = resolveLocale(preference);
     I18nManager.activeLocale = locale;
     I18nManager.strings = localeIndex.get(locale) ?? localeIndex.get('en') ?? {};
   }

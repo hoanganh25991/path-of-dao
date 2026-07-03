@@ -34,9 +34,12 @@ export class PlayerAnimController {
 
     if (this.player.ancientId) {
       this.label?.setVisible(false);
-    } else if (state !== this.lastState) {
-      this.lastState = state;
-      this.label?.setText(state);
+    } else {
+      this.label?.setVisible(true);
+      if (state !== this.lastState) {
+        this.lastState = state;
+        this.label?.setText(state);
+      }
     }
 
     if (state === 'dead') {
