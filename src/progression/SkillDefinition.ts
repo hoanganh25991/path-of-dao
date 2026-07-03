@@ -10,6 +10,51 @@ export const skillAwakenedOverridesSchema = z.object({
   healPct: z.number().min(0).max(1).optional(),
 });
 
+const skillDamageSchema = z.object({
+  skillMultiplier: z.number().positive(),
+  damageType: z.enum(['physical', 'spirit']).default('physical'),
+});
+
+const skillEffectSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('projectile'),
+    speed: z.number().positive().default(420),
+    rangePx: z.number().positive().default(400),
+    hitRadius: z.number().positive().default(12),
+    pullForce: z.number().positive().optional(),
+    damage: skillDamageSchema,
+  }),
+  z.object({
+    type: z.literal('melee_arc'),
+    reach: z.number().positive().default(52),
+    halfAngleDeg: z.number().positive().default(60),
+    reachBonus: z.number().min(0).default(0),
+    damage: skillDamageSchema,
+  }),
+  z.object({
+    type: z.literal('heal'),
+    healPct: z.number().min(0).max(1).default(0.1),
+  }),
+  z.object({
+    type: z.literal('pull_field'),
+    radius: z.number().positive().default(120),
+    durationMs: z.number().positive().default(400),
+    pullStrength: z.number().positive().default(140),
+  }),
+  z.object({
+    type: z.literal('aoe_circle'),
+    radius: z.number().positive().default(64),
+    ticks: z.number().int().positive().default(1),
+    tickIntervalMs: z.number().positive().default(300),
+    damage: skillDamageSchema,
+  }),
+]);
+
+export const skillVfxSchema = z.object({
+  cast: z.string().optional(),
+  impact: z.string().optional(),
+});
+
 export const skillDefinitionSchema = z.object({
   id: z.string().min(1),
   intent: z.enum(['sword', 'void', 'flame', 'lightning', 'time', 'life']),
@@ -18,9 +63,14 @@ export const skillDefinitionSchema = z.object({
   manaCost: z.number().int().min(0),
   skillMultiplier: z.number().positive(),
   cooldownMs: z.number().int().positive().optional(),
+  castTimeMs: z.number().int().min(0).optional(),
+  effects: z.array(skillEffectSchema).optional(),
+  vfx: skillVfxSchema.optional(),
   awakenedOverrides: skillAwakenedOverridesSchema.optional(),
 });
 
 export type SkillDefinition = z.infer<typeof skillDefinitionSchema>;
 export type SkillKind = z.infer<typeof skillKindSchema>;
 export type InsightIntentId = SkillDefinition['intent'];
+export type SkillEffect = z.infer<typeof skillEffectSchema>;
+export type SkillDamage = z.infer<typeof skillDamageSchema>;

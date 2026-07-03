@@ -46,9 +46,19 @@
 }
 
 .combat-skill-picker__hint {
-  margin: 0 0 0.65rem;
+  margin: 0 0 0.5rem;
   font-size: 0.72rem;
   color: var(--dao-muted);
+}
+
+.combat-skill-picker__panel .skill-loadout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.combat-skill-picker__panel .ancient-demo-modal__slots {
+  margin-bottom: 0;
 }
 
 .combat-skill-picker__grid {

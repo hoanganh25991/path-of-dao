@@ -1,4 +1,16 @@
-import { CapsuleGeometry, Group, Mesh, MeshStandardMaterial, Scene, SphereGeometry } from 'three';
+import {
+  BackSide,
+  CapsuleGeometry,
+  Color,
+  ConeGeometry,
+  CylinderGeometry,
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  Scene,
+  SphereGeometry,
+  TorusGeometry,
+} from 'three';
 import { EquipmentAttachment } from '@/home/EquipmentAttachment';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import type { EquipmentSlot, EquipmentSlots } from '@/progression/ItemDefinition';
@@ -17,6 +29,15 @@ export class HeroViewer {
   private petPhase = 0;
   private petMesh: Mesh | null = null;
   private equipment: EquipmentAttachment;
+
+  // Animated rig parts (procedural cultivator).
+  private torso: Mesh | null = null;
+  private armL: Group | null = null;
+  private armR: Group | null = null;
+  private sash: Mesh | null = null;
+  private cape: Mesh | null = null;
+  private core: Mesh | null = null;
+  private headGroup: Group | null = null;
 
   constructor(scene: Scene) {
     scene.add(this.root);

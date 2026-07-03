@@ -85,15 +85,8 @@ export function skillDifficultyKey(skillId: string): string {
 }
 
 export function skillUnlockText(skillId: string): string {
-  const skill = getSkillDefinition(skillId);
-  const config = getInsightIntentConfig(skill.intent);
-  const req = config.awakenRequirement;
-
   if (skillId.endsWith('.awakened')) {
-    return `skill.detail.unlock_awakened`;
-  }
-  if (skillId === config.baseSkillId) {
-    return 'skill.detail.unlock_base';
+    return 'skill.detail.unlock_awakened';
   }
   return 'skill.detail.unlock_base';
 }

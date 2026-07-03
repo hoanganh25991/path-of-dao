@@ -86,6 +86,19 @@ describe('HomeUI', () => {
     equipSpy.mockRestore();
   });
 
+  it('play panel echoes button opens echoes tab', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    const echoesBtn = uiRoot.querySelector<HTMLButtonElement>('.home-play__echoes');
+    expect(echoesBtn?.textContent).toBe('Echoes of the Ancients');
+    echoesBtn!.click();
+
+    expect(HomeUI.getActiveTab()).toBe('echoes');
+    expect(uiRoot.querySelector('[data-testid="home-echoes"]')).toBeTruthy();
+  });
+
   it('echoes tab opens from bottom nav', () => {
     const uiRoot = document.getElementById('ui-root')!;
     HomeUI.init(uiRoot);
