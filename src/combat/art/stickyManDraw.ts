@@ -800,23 +800,126 @@ export const POSES_ATTACK_3: StickPose[] = [
 ];
 
 export const POSES_PALM_ATTACK_1: StickPose[] = [
-  { lean: 2, limbs: { armBack: seg(-16, -10), armFront: seg(24, 18), legBack: seg(-14, -8), legFront: seg(10, 6) } },
-  { limbs: { armBack: seg(-8, -5), armFront: seg(40, 30), legBack: seg(-12, -7), legFront: seg(12, 8) } },
-  { lean: -2, limbs: { armBack: seg(6, 4), armFront: seg(-20, -14), legBack: seg(-10, -6), legFront: seg(14, 10) } },
+  {
+    lean: -4,
+    shiftX: -3,
+    limbs: { armBack: seg(-20, -14), armFront: seg(18, 12), legBack: seg(-12, -8), legFront: seg(8, 5) },
+  },
+  {
+    lean: 7,
+    shiftX: 5,
+    limbs: { armBack: seg(-10, -6), armFront: seg(-42, -32), legBack: seg(-16, -10), legFront: seg(14, 9) },
+  },
+  {
+    lean: 3,
+    shiftX: 2,
+    limbs: { armBack: seg(-6, -4), armFront: seg(-24, -18), legBack: seg(-12, -7), legFront: seg(12, 8) },
+  },
 ];
 
 export const POSES_PALM_ATTACK_2: StickPose[] = [
-  { limbs: { armBack: seg(18, 12), armFront: seg(32, 24), legBack: seg(-16, -10), legFront: seg(10, 6) } },
-  { lean: -2, limbs: { armBack: seg(-4, -2), armFront: seg(-48, -38), legBack: seg(-8, -5), legFront: seg(16, 10) } },
-  { limbs: { armBack: seg(-14, -9), armFront: seg(-32, -24), legBack: seg(-10, -6), legFront: seg(12, 8) } },
+  {
+    lean: -3,
+    shiftX: -2,
+    limbs: { armBack: seg(22, 16), armFront: seg(28, 20), legBack: seg(-14, -9), legFront: seg(10, 6) },
+  },
+  {
+    lean: 8,
+    shiftX: 6,
+    limbs: { armBack: seg(-6, -3), armFront: seg(-52, -42), legBack: seg(-18, -11), legFront: seg(18, 12) },
+  },
+  {
+    lean: 2,
+    shiftX: 1,
+    limbs: { armBack: seg(-12, -8), armFront: seg(-30, -22), legBack: seg(-10, -6), legFront: seg(12, 8) },
+  },
 ];
 
-export const POSES_PALM_ATTACK_3: StickPose[] = [
-  { lean: 3, limbs: { armBack: seg(-28, -18), armFront: seg(44, 34), legBack: seg(-18, -11), legFront: seg(8, 5) } },
-  { lean: -5, limbs: { armBack: seg(10, 6), armFront: seg(-58, -48), legBack: seg(-4, -2), legFront: seg(22, 14) } },
-  { lean: -6, limbs: { armBack: seg(14, 8), armFront: seg(-62, -52), legBack: seg(-3, -2), legFront: seg(24, 16) } },
-  { limbs: { armBack: seg(-18, -12), armFront: seg(-28, -20), legBack: seg(-12, -8), legFront: seg(14, 10) } },
+/** Wide haymaker — weight loads back then whips forward. */
+export const POSES_HEAVY_HAYMAKER: StickPose[] = [
+  {
+    lean: -8,
+    shiftX: -6,
+    limbs: { armBack: seg(35, 28), armFront: seg(42, 32), legBack: seg(-18, -12), legFront: seg(6, 4) },
+  },
+  {
+    lean: 10,
+    shiftX: 7,
+    limbs: { armBack: seg(-12, -8), armFront: seg(-72, -62), legBack: seg(-22, -14), legFront: seg(22, 14) },
+  },
+  {
+    lean: 9,
+    shiftX: 6,
+    limbs: { armBack: seg(-8, -5), armFront: seg(-78, -68), legBack: seg(-8, -5), legFront: seg(26, 18) },
+  },
+  {
+    lean: 3,
+    shiftX: 2,
+    limbs: { armBack: seg(-16, -11), armFront: seg(-36, -28), legBack: seg(-12, -8), legFront: seg(14, 10) },
+  },
 ];
+
+/** Rising uppercut — dip then launch upward. */
+export const POSES_HEAVY_UPPERCUT: StickPose[] = [
+  {
+    bob: 2,
+    lean: -5,
+    shiftX: -4,
+    limbs: { armBack: seg(-28, -20), armFront: seg(38, 28), legBack: seg(-16, -10), legFront: seg(10, 6) },
+  },
+  {
+    bob: 3,
+    lean: 6,
+    shiftX: 4,
+    limbs: { armBack: seg(-14, -10), armFront: seg(-20, -8), legBack: seg(-20, -14), legFront: seg(16, 10) },
+  },
+  {
+    bob: -2,
+    lean: 9,
+    shiftX: 5,
+    limbs: { armBack: seg(8, 12), armFront: seg(-48, -20), legBack: seg(-6, -4), legFront: seg(22, 14) },
+  },
+  {
+    bob: 0,
+    lean: 4,
+    shiftX: 2,
+    limbs: { armBack: seg(-10, -6), armFront: seg(-32, -18), legBack: seg(-10, -6), legFront: seg(14, 10) },
+  },
+];
+
+/** Low body blow — crouch and drive forward. */
+export const POSES_HEAVY_BODY: StickPose[] = [
+  {
+    bob: 1,
+    lean: -4,
+    shiftX: -3,
+    limbs: { armBack: seg(-18, -12), armFront: seg(30, 22), legBack: seg(-14, -9), legFront: seg(8, 5) },
+  },
+  {
+    bob: 3,
+    lean: 5,
+    shiftX: 4,
+    limbs: { armBack: seg(-6, -4), armFront: seg(10, 6), legBack: seg(-22, -14), legFront: seg(20, 12) },
+  },
+  {
+    bob: 2,
+    lean: 10,
+    shiftX: 7,
+    limbs: { armBack: seg(6, 4), armFront: seg(-55, -35), legBack: seg(-10, -6), legFront: seg(24, 16) },
+  },
+  {
+    bob: 0,
+    lean: 3,
+    shiftX: 2,
+    limbs: { armBack: seg(-12, -8), armFront: seg(-28, -20), legBack: seg(-12, -8), legFront: seg(14, 10) },
+  },
+];
+
+export const HEAVY_PUNCH_POSES = [
+  POSES_HEAVY_HAYMAKER,
+  POSES_HEAVY_UPPERCUT,
+  POSES_HEAVY_BODY,
+] as const;
 
 export const POSES_HIT: StickPose[] = [
   { lean: 6, limbs: { armBack: seg(42, 35), armFront: seg(48, 40), legBack: seg(20, 14), legFront: seg(-12, -8) } },
@@ -957,7 +1060,9 @@ export const HERO_FRAME_COUNT_UNARMED =
   POSES_HIT.length +
   POSES_PALM_ATTACK_1.length +
   POSES_PALM_ATTACK_2.length +
-  POSES_PALM_ATTACK_3.length;
+  HEAVY_PUNCH_POSES[0].length +
+  HEAVY_PUNCH_POSES[1].length +
+  HEAVY_PUNCH_POSES[2].length;
 
 export const HERO_FRAME_COUNT_ARMED =
   POSES_IDLE.length +
@@ -987,7 +1092,9 @@ export function heroFrameOffset(
     | 'hit'
     | 'palm1'
     | 'palm2'
-    | 'palm3',
+    | 'heavyHaymaker'
+    | 'heavyUppercut'
+    | 'heavyBody',
 ): number {
   let o = 0;
   if (group === 'idle') return o;
@@ -1002,6 +1109,10 @@ export function heroFrameOffset(
     o += POSES_PALM_ATTACK_1.length;
     if (group === 'palm2') return o;
     o += POSES_PALM_ATTACK_2.length;
+    if (group === 'heavyHaymaker') return o;
+    o += HEAVY_PUNCH_POSES[0].length;
+    if (group === 'heavyUppercut') return o;
+    o += HEAVY_PUNCH_POSES[1].length;
     return o;
   }
 
@@ -1022,7 +1133,9 @@ export function buildHeroFrames(style: HeroCombatStyle = 'unarmed'): StickPose[]
       ...POSES_HIT,
       ...POSES_PALM_ATTACK_1,
       ...POSES_PALM_ATTACK_2,
-      ...POSES_PALM_ATTACK_3,
+      ...HEAVY_PUNCH_POSES[0],
+      ...HEAVY_PUNCH_POSES[1],
+      ...HEAVY_PUNCH_POSES[2],
     ];
   }
   return [

@@ -8,8 +8,6 @@ export interface EncounterModalOptions {
   poiKey?: string;
 }
 
-const SLOWMO_MS = 1000;
-
 /** Full-screen fortuitous encounter card (sub-plan 15 §6). */
 export function showEncounterModal(
   uiRoot: HTMLElement,
@@ -52,7 +50,6 @@ export function showEncounterModal(
     confirm.type = 'button';
     confirm.className = 'encounter-modal__confirm';
     confirm.textContent = I18nManager.t('encounter.confirm');
-    confirm.hidden = true;
 
     const burst = document.createElement('div');
     burst.className = 'encounter-modal__burst';
@@ -62,17 +59,15 @@ export function showEncounterModal(
     overlay.append(backdrop, card, burst);
     uiRoot.appendChild(overlay);
 
-    requestAnimationFrame(() => overlay.classList.add('encounter-modal--active'));
+    requestAnimationFrame(() => {
+      overlay.classList.add('encounter-modal--active');
+      confirm.classList.add('encounter-modal__confirm--visible');
+    });
 
     const cleanup = (): void => {
       overlay.classList.remove('encounter-modal--active');
       setTimeout(() => overlay.remove(), 400);
     };
-
-    setTimeout(() => {
-      confirm.hidden = false;
-      confirm.classList.add('encounter-modal__confirm--visible');
-    }, SLOWMO_MS);
 
     confirm.addEventListener('click', () => {
       burst.hidden = false;

@@ -160,11 +160,12 @@ export class EncounterTrigger {
     const prevTimeScale = this.scene.time.timeScale;
     this.scene.time.timeScale = SLOWMO_SCALE;
 
+    // Real-time beat — Phaser delayedCall is scaled by timeScale and would stretch ~3s here.
     await new Promise<void>((resolve) => {
-      this.scene.time.delayedCall(SLOWMO_MS, () => {
+      setTimeout(() => {
         this.scene.time.timeScale = 0;
         resolve();
-      });
+      }, SLOWMO_MS);
     });
 
     await showEncounterModal(uiRoot, { encounter, poiKey });

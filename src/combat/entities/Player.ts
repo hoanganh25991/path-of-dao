@@ -110,6 +110,10 @@ export class Player extends EntityBase implements HurtboxEntity {
     this.sm.update(dtMs, moving);
 
     if (this.sm.state !== 'dead' && !this.respawning) {
+      if (Math.abs(move.x) > 0.1) {
+        this.facing = move.x > 0 ? 1 : -1;
+        this.sprite.setFlipX(this.facing < 0);
+      }
       if (input.dodge.pressed) this.dodge.tryStart(move);
       if (input.attack.pressed) this.combat.tryAttack();
       if (input.skillPrimary.held) this.combat.trySkill('primary');

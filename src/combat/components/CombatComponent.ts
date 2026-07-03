@@ -2,6 +2,7 @@ import { gameStore } from '@/core/store/gameStore';
 import { EventBus } from '@/core/EventBus';
 import { ATTACK_STEP_MULTIPLIERS, MAX_COMBO_STEP } from '@/combat/state/PlayerStateMachine';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import { VFX_TEXTURE_KEYS } from '@/combat/art/pixelVfxDraw';
 import type { Player } from '@/combat/entities/Player';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { recordSkillInsight } from '@/progression/InsightSystem';
@@ -20,7 +21,7 @@ export interface SkillCooldownSnapshot {
 const SLASH_VISIBLE_MS = 100;
 const SLASH_OFFSET_PX = 26;
 const SWORD_REACH_PX = [40, 45, 60] as const;
-const PALM_REACH_PX = [28, 32, 38] as const;
+const PALM_REACH_PX = [28, 32, 46] as const;
 const SLASH_TEXTURE_SIZE = 64;
 const SLASH_HIT_MS = 80;
 const SLASH_HALF_ARC = Math.PI / 3;
@@ -48,6 +49,8 @@ export class CombatComponent {
     this.player.body.setVelocity(0, 0);
     if (this.player.attackStyle === 'sword') {
       this.spawnSlash(step);
+    } else if (step === MAX_COMBO_STEP) {
+      this.spawnHeavyPalmImpact(step);
     }
     this.spawnAttackHitbox(step);
     EventBus.emit('player:attack-started', { step: step as 1 | 2 | 3 });
@@ -139,6 +142,28 @@ export class CombatComponent {
       .setDepth(sprite.depth + 1);
 
     scene.time.delayedCall(SLASH_VISIBLE_MS, () => slash.destroy());
+  }
+
+  private spawnHeavyPalmImpact(step: number): void {
+    const { scene, sprite, facing } = this.player;
+    const reach = this.reachForStep(step);
+    const variant = this.player.sm.heavyFinisherVariant;
+    const yOffset =
+      variant === 1 ? -sprite.displayHeight * 0.35 : variant === 2 ? -sprite.displayHeight * 0.2 : -sprite.displayHeight * 0.42;
+
+    const burst = scene.add
+      .image(
+        Math.round(sprite.x + facing * (SLASH_OFFSET_PX + reach * 0.35)),
+        Math.round(sprite.y + yOffset),
+        VFX_TEXTURE_KEYS.impactBurst,
+      )
+      .setFlipX(facing < 0)
+      .setOrigin(0.5)
+      .setScale(variant === 0 ? 1.1 : 0.95)
+      .setAlpha(0.9)
+      .setDepth(sprite.depth + 1);
+
+    scene.time.delayedCall(SLASH_VISIBLE_MS + 40, () => burst.destroy());
   }
 }
 

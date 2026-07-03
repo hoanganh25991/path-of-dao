@@ -33,7 +33,9 @@ export const ANIM = {
   heroAttack3: 'hero_sticky_attack_3',
   heroPalmAttack1: 'hero_sticky_palm_1',
   heroPalmAttack2: 'hero_sticky_palm_2',
-  heroPalmAttack3: 'hero_sticky_palm_3',
+  heroPalmHeavyHaymaker: 'hero_sticky_palm_heavy_haymaker',
+  heroPalmHeavyUppercut: 'hero_sticky_palm_heavy_uppercut',
+  heroPalmHeavyBody: 'hero_sticky_palm_heavy_body',
   heroHit: 'hero_sticky_hit',
   slimeIdle: 'enemy_slime_idle',
   slimeWalk: 'enemy_slime_walk',
@@ -52,7 +54,9 @@ const HERO_ANIM_KEYS = [
   ANIM.heroAttack3,
   ANIM.heroPalmAttack1,
   ANIM.heroPalmAttack2,
-  ANIM.heroPalmAttack3,
+  ANIM.heroPalmHeavyHaymaker,
+  ANIM.heroPalmHeavyUppercut,
+  ANIM.heroPalmHeavyBody,
   ANIM.heroHit,
 ] as const;
 
@@ -136,8 +140,28 @@ export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle
     createAnim(scene, ANIM.heroPalmAttack2, heroKey, heroFrameOffset(combatStyle, 'palm2'), 3, 14, 0, {
       1: 85,
     });
-    createAnim(scene, ANIM.heroPalmAttack3, heroKey, heroFrameOffset(combatStyle, 'palm3'), 4, 14, 0, {
-      2: 120,
+    createAnim(
+      scene,
+      ANIM.heroPalmHeavyHaymaker,
+      heroKey,
+      heroFrameOffset(combatStyle, 'heavyHaymaker'),
+      4,
+      12,
+      0,
+      { 1: 100, 2: 160 },
+    );
+    createAnim(
+      scene,
+      ANIM.heroPalmHeavyUppercut,
+      heroKey,
+      heroFrameOffset(combatStyle, 'heavyUppercut'),
+      4,
+      12,
+      0,
+      { 2: 150 },
+    );
+    createAnim(scene, ANIM.heroPalmHeavyBody, heroKey, heroFrameOffset(combatStyle, 'heavyBody'), 4, 12, 0, {
+      2: 140,
     });
     return;
   }

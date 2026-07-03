@@ -2,14 +2,23 @@ import Phaser from 'phaser';
 import { ANIM } from '@/combat/art/stickyManAssets';
 import { moveSpeedPxPerSec } from '@/progression/DamageCalculator';
 import { isArmedAttackStyle, type AttackStyle } from '@/progression/WeaponProgression';
+import { MAX_COMBO_STEP } from '@/combat/state/PlayerStateMachine';
 import type { PlayerStateId } from '@/combat/state/PlayerStateMachine';
 import type { Player } from '@/combat/entities/Player';
 
-function attackAnimKeys(style: AttackStyle): [string, string, string] {
-  if (!isArmedAttackStyle(style)) {
-    return [ANIM.heroPalmAttack1, ANIM.heroPalmAttack2, ANIM.heroPalmAttack3];
+const HEAVY_PALM_ANIMS = [
+  ANIM.heroPalmHeavyHaymaker,
+  ANIM.heroPalmHeavyUppercut,
+  ANIM.heroPalmHeavyBody,
+] as const;
+
+function attackAnimKey(style: AttackStyle, step: number, heavyVariant: number): string {
+  if (isArmedAttackStyle(style)) {
+    return step === 1 ? ANIM.heroAttack1 : step === 2 ? ANIM.heroAttack2 : ANIM.heroAttack3;
   }
-  return [ANIM.heroAttack1, ANIM.heroAttack2, ANIM.heroAttack3];
+  if (step === 1) return ANIM.heroPalmAttack1;
+  if (step === 2) return ANIM.heroPalmAttack2;
+  return HEAVY_PALM_ANIMS[heavyVariant % HEAVY_PALM_ANIMS.length] ?? ANIM.heroPalmHeavyHaymaker;
 }
 
 /**
@@ -18,6 +27,7 @@ function attackAnimKeys(style: AttackStyle): [string, string, string] {
 export class PlayerAnimController {
   private lastState: PlayerStateId | null = null;
   private lastAttackStep = 0;
+  private lastHeavyVariant = -1;
 
   constructor(private readonly player: Player) {
     this.player.sprite.play(this.player.resolveAnim(ANIM.heroIdle));
@@ -46,14 +56,16 @@ export class PlayerAnimController {
       this.playOnce(this.player.resolveAnim(ANIM.heroHit));
     } else if (state === 'attack') {
       const step = sm.attackStep;
-      if (step !== this.lastAttackStep) {
+      const heavyVariant = sm.heavyFinisherVariant;
+      if (step !== this.lastAttackStep || heavyVariant !== this.lastHeavyVariant) {
         this.lastAttackStep = step;
-        const [a1, a2, a3] = attackAnimKeys(this.player.attackStyle);
-        const base = step === 1 ? a1 : step === 2 ? a2 : a3;
-        sprite.play(this.player.resolveAnim(base));
+        this.lastHeavyVariant = heavyVariant;
+        const key = attackAnimKey(this.player.attackStyle, step, heavyVariant);
+        sprite.play(this.player.resolveAnim(key));
       }
     } else {
       this.lastAttackStep = 0;
+      this.lastHeavyVariant = -1;
       if (state === 'move') {
         this.playLoop(this.player.resolveAnim(ANIM.heroWalk));
         this.syncWalkTimeScale(sprite);
@@ -66,6 +78,11 @@ export class PlayerAnimController {
       }
     }
 
+    if (state === 'attack' && sm.attackStep === MAX_COMBO_STEP && !isArmedAttackStyle(this.player.attackStyle)) {
+      sprite.anims.timeScale = 0.85;
+    } else if (state !== 'move' && state !== 'dodge') {
+      sprite.anims.timeScale = 1;
+    }
   }
 
   destroy(): void {

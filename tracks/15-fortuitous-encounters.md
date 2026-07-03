@@ -34,4 +34,5 @@ None for core encounter flow.
 
 - Rate rolls, unique POI skip, and reward application tested
 - Encounter modal blocks input during display
+- Slow-mo intro uses real-time 1s beat (Phaser `delayedCall` at 0.3× timeScale was ~3s wall clock); confirm button shows with modal
 - Journey log records encounter milestones once per refId
