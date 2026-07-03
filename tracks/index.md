@@ -95,7 +95,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 
 | # | Requirement | Status | Owner tracks |
 |---|-------------|--------|--------------|
-| T1 | New game **unarmed** — palm 3-hit combo, no sword equipped | `[x]` | 07, 11 |
+| T1 | New game **unarmed** — hand/kick 3-hit combo, no sword equipped | `[x]` | 07, 11 |
 | T2 | **Ancient Spirit Sword** from shrine POI in chapters 1–2 | `[x]` | 15, 21 |
 | T3 | Equipping ancient sword **swaps** combo to sword + unlocks Sword Intent | `[x]` | 07, 14, 23 |
 | T4 | Remove **starter wood sword** from default new game loadout | `[x]` | 05, 11 |
@@ -113,7 +113,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 - [x] Echoes of the Ancients — six focused demo walks; combat-first god-mode (sub-plan 27)
 - [x] Path & Journey — My Path scroll + guided ancient walk (sub-plan 28)
 - [x] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
-- [x] **New game starts unarmed** — palm combo only; no sword in weapon slot (T1, T4)
+- [x] **New game starts unarmed** — punch/kick combo (`hero_strike_*`); no sword in weapon slot (T1, T4)
 - [x] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
 - [~] All 10 chapters playable with end-of-chapter story scene (18 flow wired; tone T6)
 - [~] 20 maps traversable from world map with difficulty hints; Continue Journey on Play (17; copy T5)
@@ -263,12 +263,12 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Detail tracks — done (reference)
 
-Sub-plans **01–14**, **16–17**, **27–28** are complete for their acceptance criteria. Several have open Tiên Nghịch gaps (07, 10, 11, 14) tracked under T1–T8 above.
+Sub-plans **01–14**, **16–17**, **27–28** are complete for their acceptance criteria. Remaining Tiên Nghịch gaps tracked under T5–T6 above (story tone, world copy).
 
 | ID | Highlight |
 |----|-----------|
 | 01–06 | Scaffold, router, input, stats, save, Phaser map base |
-| 07 | Player combat loop *(unarmed/sword swap pending T1, T3)* |
+| 07 | Player combat loop — unarmed strikes + weapon-prop combo swap (T1, T3) |
 | 08–09 | Enemy AI, hitboxes & damage math |
 | 10–12 | Three.js Home, equipment preview, Home UI panels *(empty hands T8)* |
 | 13–14 | Realm breakthrough, insight meter *(Sword gate T7)* |

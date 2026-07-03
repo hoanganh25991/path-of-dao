@@ -16,7 +16,7 @@
 
 | Phase | In *Tiên Nghịch* (structure) | Path of Dao — **maps** | Path of Dao — **story** |
 |-------|------------------------------|------------------------|-------------------------|
-| **1 — Mortal outcast** | Ruined homeland; bare survival; ridicule | Ch1 `fallen_village` .01/.02 — palms only, slimes/bandits | Fleeing ruins; jade spirit stirs; **no sword yet** |
+| **1 — Mortal outcast** | Ruined homeland; bare survival; ridicule | Ch1 `fallen_village` .01/.02 — unarmed strikes only, slimes/bandits | Fleeing ruins; jade spirit stirs; **no sword yet** |
 | **2 — Wilderness exile** | Beasts, fog, hidden paths after leaving home | Ch2 `mist_forest` — explore then Mist Stalker | Fox spirit / hidden path; **ancient sword POI** if missed in ch1 |
 | **3 — Fortuitous inheritance** | Power from caves, remnants, risk — not fair rewards | POIs: `hidden_cave`, `ancient_sword`, `secret_manual` (ch1–5) | Blade in stone; only your spirit awakens it — diary entry, not loot fanfare |
 | **4 — Sword destiny** | Legendary blade transforms the cultivator | `item.sword.ancient` → sword combo + Sword Intent (T2–T3, T7) | Major milestone beat; CP jump; empty hands in Home until then (T8) |

@@ -26,7 +26,7 @@ These pillars override generic ARPG defaults when in conflict.
 
 | Pillar | In *Tiên Nghịch* | In Path of Dao |
 |--------|------------------|----------------|
-| **Humble start** | Wang Lin begins mortal — fists, hardship, ridicule | Hero **attacks unarmed** (palm / body strikes) until a real weapon is earned |
+| **Humble start** | Wang Lin begins mortal — fists, hardship, ridicule | Hero **attacks unarmed** (punches, kicks, body strikes) until a real weapon is earned |
 | **Map-by-map road** | Each secret land, ruin, and trial is a chapter of survival | **20 maps** = 10 regions × 2 stages; world map is the cultivation road, not a level select |
 | **Fortuitous inheritance** | Power comes from hidden caves, ancient remnants, and risk | **POIs + encounters** gate major rewards; sword is a *destiny*, not starter gear |
 | **The sword** | Legendary blade tied to ancient will — transforms the cultivator | **`item.sword.ancient`** (Ancient Spirit Sword) is a **major milestone** unlocked mid-journey via map POI + story beat; Sword Intent skills **require** it |
@@ -42,7 +42,7 @@ These pillars override generic ARPG defaults when in conflict.
 | Area | MVP Target | Notes |
 |------|-----------|-------|
 | Heroes | 1 playable hero | Expand post-MVP |
-| **Combat style** | **Unarmed → Ancient Sword** | Default **hand/palm combo**; `item.sword.ancient` earned mid-Act I via map POI (see §7.7) |
+| **Combat style** | **Unarmed → Ancient Sword** | Default **3-hit unarmed combo** (`hero_strike_*` — random light punch/kick + heavy finisher); `item.sword.ancient` earned mid-Act I via map POI (see §7.7) |
 | Chapters | 10 | Each ends with story scene; arc follows cultivation road (§7.8) |
 | Maps | 20 | 1–2 stages per region; `.01` explore, `.02` ordeal + boss |
 | Enemies | 25 types | Shared AI archetypes, unique visuals/stats |
@@ -279,7 +279,7 @@ Breakthrough requires: level threshold + boss clear OR special encounter + spiri
 
 Sword, Void, Flame, Lightning, Time, Life — each skill tagged with one intent. Using tagged skills in combat grants insight XP; at 100%, skill **awakens** (new behavior, not just +damage).
 
-**Tiên Nghịch gating:** Sword Intent skills and sword-flavored attack VFX are **disabled until** the player owns `item.sword.ancient` (Ancient Spirit Sword). Before that, primary attacks use **unarmed palm/strike** animations and physical hitboxes only.
+**Tiên Nghịch gating:** Sword Intent skills and sword-flavored attack VFX are **disabled until** the player owns `item.sword.ancient` (Ancient Spirit Sword). Before that, primary attacks use **unarmed strike** animations (`hero_strike_*`) and punch/kick hitboxes only.
 
 ### 7.4 Story Delivery
 
@@ -318,9 +318,9 @@ The hero's relationship to the sword mirrors the novel's slow inheritance — po
 
 | Stage | When | Combat | Equipment | Story beat |
 |-------|------|--------|-----------|------------|
-| **0 — Mortal body** | Ch1 start (`map.fallen_village.01`) | **3-hit palm combo** — short reach, no blade VFX | No weapon slot filled (or cosmetic wraps only) | Fleeing a ruined homeland; survive with bare hands |
-| **1 — Qi awakening** | Ch1 mid (`map.fallen_village.01` POI optional) | Same palms; **Void / Life** intent skills unlock from cultivation | `item.spirit.jade` from story | Jade spirit stirs — dao path opens |
-| **2 — Ancient Spirit Sword** | Ch1–2 (`ancient_sword` POI on `map.fallen_village.02` or hidden cave ch2) | **Sword combo replaces palms**; Sword Intent skills enabled; CP jump | `item.sword.ancient` equipped — **signature weapon for rest of MVP** | Blade sleeps in stone; only your spirit awakens it — *the* fortuitous encounter |
+| **0 — Mortal body** | Ch1 start (`map.fallen_village.01`) | **3-hit unarmed combo** — random light strikes + heavy finisher; short reach, no blade VFX | No weapon slot filled (or cosmetic wraps only) | Fleeing a ruined homeland; survive with bare hands |
+| **1 — Qi awakening** | Ch1 mid (`map.fallen_village.01` POI optional) | Same unarmed combo; **Void / Life** intent skills unlock from cultivation | `item.spirit.jade` from story | Jade spirit stirs — dao path opens |
+| **2 — Ancient Spirit Sword** | Ch1–2 (`ancient_sword` POI on `map.fallen_village.02` or hidden cave ch2) | **Armed sword combo** replaces unarmed strikes; Sword Intent skills enabled; CP jump | `item.sword.ancient` equipped — **signature weapon for rest of MVP** | Blade sleeps in stone; only your spirit awakens it — *the* fortuitous encounter |
 | **3 — Tempered road** | Ch3–5 maps | Sword + new intents (Flame, Lightning) | `item.sword.iron` optional side upgrade; ancient sword remains BiS until endgame | Bandits, seals, desert — each region hardens will |
 | **4 — Heavenly trials** | Ch6–10 | Full skill roster + awakenings | Endgame spirit accessories; sword awakens visually at Nascent Soul+ | Tribulation, abyss, gate, void throne |
 
@@ -464,7 +464,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 ## 12. Definition of Done (MVP Ship)
 
 - [x] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
-- [x] **New game starts unarmed** — palm combo only; no sword in weapon slot (T4, T1)
+- [x] **New game starts unarmed** — punch/kick strike combo; no sword in weapon slot (T4, T1)
 - [x] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
 - [~] All 10 chapters playable with end-of-chapter story scene — flow wired; *Tiên Nghịch* tone pass on story JSON deferred
 - [~] 20 maps traversable from world map with difficulty hints; **Continue Journey** CTA on Play panel

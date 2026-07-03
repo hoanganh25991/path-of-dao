@@ -3,7 +3,7 @@
 > Canonical visual direction for **2D combat** characters and enemies.  
 > Implementation: `src/combat/art/` (procedural spritesheets at boot).  
 > Linked from [plans/index.md](../plans/index.md) §3.2 Rendering.  
-> Review screenshot: [docs/screenshots/sticky-man-review.png](./screenshots/sticky-man-review.png)
+> Live preview: `sticky-man-review.html` (Vite dev server) · screenshot: [docs/screenshots/sticky-man-review.png](./screenshots/sticky-man-review.png)
 
 ---
 
@@ -11,12 +11,13 @@
 
 | Pillar | Rule |
 |--------|------|
-| **Silhouette first** | Chibi head + two-segment limbs; readable at 32×58 px, 2× display |
-| **Sticky-man anatomy** | 5px chest + spine; arms ±7px, hips ±5px; 2-segment limbs + Y-fork extremities |
+| **Silhouette first** | Chibi head + two-segment limbs; readable at **32×56 px**, **2×** display |
+| **Sticky-man anatomy** | Compact torso block; shoulder/hip spread; upper+lower limbs + **2-segment hand/foot** (wrist→fist, ankle→toe) |
+| **Bottom-up rig** | Feet anchor at frame bottom; **17 px fixed leg chain**; torso sits above — no stretched stilts |
 | **Unified skeleton** | All characters share the same rig; slime = jelly overlay, archer = cape, boss = runes |
 | **Feet anchor** | Origin `(0.5, 1)` — locomotion bobs from ground |
 
-Distinct from generic stick figures: **joint dots**, **torso block**, **gold sash**, and forked extremities.
+Distinct from generic stick figures: **joint dots** (shoulder, elbow, knee), **torso block**, **gold sash**, **neck connector**, and **body lean/shift** on attacks.
 
 ---
 
@@ -25,15 +26,16 @@ Distinct from generic stick figures: **joint dots**, **torso block**, **gold sas
 | Property | Hero / Minion | Boss (totem) |
 |----------|---------------|--------------|
 | Source frame | **32 × 56 px** (all characters — hero, minions, boss) |
-| Display scale | **2× uniform** (64 × 116) — no boss upscale |
-| Limb segments | upper + lower + fork |
-| Upper leg / shin | **12 + 13 px** |
-| Upper arm / forearm | 5 + 6 px |
-| Hand / foot fork | 3–4 px × 2 sticks |
+| Display scale | **2× uniform** (64 × 112) — no boss upscale |
+| Limb segments | upper arm + forearm + hand; upper leg + shin + foot |
+| Upper leg / shin | **6 + 6 px** (+ 2 px ankle + 3 px foot) |
+| Upper arm / forearm | **4 + 5 px** (+ 2 px wrist + 2 px fist) |
+| Hand / foot | **2-segment extremities** — not Y-fork |
 | Head radius | 4 px |
-| Torso height | ~8 px (compact — legs dominate silhouette) |
+| Torso height | **11 px** shoulder→hip (~35% of leg chain) |
+| Shoulder / hip spread | **4 / 3 px** half-width |
 
-Spritesheets are generated in `registerStickyManAssets()` (`BootScene`) — no external PNGs required for MVP.
+Spritesheets are generated in `registerStickyManAssets()` (BootScene) and rebuilt per map via `registerHeroCombatAssets()` — no external PNGs required for MVP.
 
 ---
 
@@ -43,37 +45,38 @@ Spritesheets are generated in `registerStickyManAssets()` (`BootScene`) — no e
 
 | Token | Hex | Use |
 |-------|-----|-----|
-| outline | `#1a1a2e` | Limb stroke |
-| skin | `#f0d4a8` | Head, hands |
-| fill | `#3d6b4f` | Robe / torso |
-| accent | `#c9a227` | Belt, sword |
-| highlight | `#ffffff` | Eye |
+| outline | `#0c0c14` | Limb stroke |
+| skin | `#ffd5a8` | Head, hands |
+| fill | `#2a8a6a` | Robe / torso |
+| shadow | `#1a5a48` | Robe shadow side |
+| accent | `#e8b830` | Belt, sword |
+| highlight | `#fff8e8` | Eye |
 
 ### Slime minion
 
 | Token | Hex |
 |-------|-----|
-| outline | `#1a3320` |
-| skin / fill | `#7ed957` / `#4a9d4a` |
-| accent | `#2d6b2d` |
+| outline | `#0a2010` |
+| skin / fill | `#9ef56a` / `#52c452` |
+| accent | `#c8ff90` |
 
 ### Archer minion
 
 | Token | Hex |
 |-------|-----|
-| outline | `#2a1c3d` |
-| skin | `#d4b8f0` |
-| fill | `#7a5aa8` |
-| accent | `#c9a86a` (bow) |
+| outline | `#18082a` |
+| skin | `#e8c8ff` |
+| fill | `#6a48a0` |
+| accent | `#d4a860` (bow) |
 
 ### Totem boss
 
 | Token | Hex |
 |-------|-----|
-| outline | `#1a1018` |
-| fill | `#5c5c68` |
-| accent | `#d94a3a` (crown, aura) |
-| highlight | `#ff8a4a` |
+| outline | `#080810` |
+| fill | `#686878` |
+| accent | `#ff5038` (crown, aura) |
+| highlight | `#ffb060` |
 
 Boss variants add **crown** + **aura** props on select idle/attack frames.
 
@@ -81,18 +84,42 @@ Boss variants add **crown** + **aura** props on select idle/attack frames.
 
 ## 4. Animation Sets
 
-### Hero (`hero_sticky` texture)
+### Hero — locomotion & hit (`hero_sticky` texture)
 
 | Animation key | Frames | FPS | Notes |
 |---------------|--------|-----|-------|
-| `hero_sticky_idle` | 4 | 6 | Subtle bob, arms relaxed |
+| `hero_sticky_idle` | 4 | 6 | Subtle bob; arms hang relaxed (no T-pose) |
 | `hero_sticky_walk` | 6 | 10 | Full leg/arm swing; contact + passing poses |
-| `hero_sticky_attack_1` | 4 | 16 | Anticipation → chamber → held impact → recovery |
-| `hero_sticky_attack_2` | 3 | 14 | Wide slash |
-| `hero_sticky_attack_3` | 4 | 12 | Finisher lean + knockback hitbox |
-| `hero_sticky_hit` | 2 | 10 | Knockback lean |
+| `hero_sticky_hit` | 2 | 10 | Knockback lean; frame 0 held ~70 ms |
 
-Driven by `PlayerAnimController` from `PlayerStateMachine` states.
+### Hero — unarmed combo (`strikeKind` per step)
+
+Steps 1–2 pick a **random light strike** (jab, cross, front kick, round kick). Step 3 is a **heavy finisher** that cycles haymaker → uppercut → body blow → heavy kick.
+
+| Animation key | Strike | Frames | FPS |
+|---------------|--------|--------|-----|
+| `hero_strike_jab` | jab | 5 (smoothed) | 14 |
+| `hero_strike_cross` | cross | 5 | 14 |
+| `hero_strike_front_kick` | frontKick | 7 | 14 |
+| `hero_strike_round_kick` | roundKick | 7 | 14 |
+| `hero_strike_heavy_haymaker` | heavyHaymaker | 5 | 14 |
+| `hero_strike_heavy_uppercut` | heavyUppercut | 7 | 14 |
+| `hero_strike_heavy_body` | heavyBody | 7 | 14 |
+| `hero_strike_heavy_kick` | heavyKick | 7 | 14 |
+
+Pose keys live in `stickyManStrikes.ts`; `smoothPoseStrip()` inserts eased in-betweens. `PlayerAnimController` plays `STRIKE_ANIM[strikeKind]` when `resolveAttackStyle()` is `unarmed`.
+
+### Hero — armed combo (sword / lance / stick)
+
+When a weapon is equipped, `registerHeroCombatAssets(scene, style)` rebuilds the sheet with the matching prop (`applyWeaponProp`). Same 3-step combo keys:
+
+| Animation key | Frames | FPS | Notes |
+|---------------|--------|-----|-------|
+| `hero_sticky_attack_1` | 7 (smoothed) | 14 | Anticipation → chamber → held impact |
+| `hero_sticky_attack_2` | 7 | 14 | Wide slash / thrust |
+| `hero_sticky_attack_3` | 9 | 13 | Finisher lean + knockback hitbox |
+
+Driven by `PlayerAnimController` from `PlayerStateMachine` states. Attack style follows **equipped weapon** (`WeaponProgression.resolveAttackStyle`); Sword Intent skills remain gated by ancient-sword milestone.
 
 ### Enemies
 
@@ -108,13 +135,15 @@ Enemy locomotion/attack anims play from `Enemy.update()` via `enemyAnimKeys()`.
 
 ## 5. Posing Rules
 
-1. **Walk cycle** — opposite arm/leg swing (±25–35° from vertical).
-2. **Attack anticipation** — back arm raised 40–55° before front arm snaps forward (−55° to −75°).
-3. **Combo finisher (step 3)** — torso lean −6°, front arm full extension; pairs with knockback hitbox.
-4. **Hit react** — +6° lean away from facing, arms flail.
-5. **Boss idle** — alternate crown and aura prop frames for “living statue” feel.
+1. **Bottom-up layout** — `resolveBodyLayout()` pins feet at `frameH - 1`; hip/shoulder/head stack above fixed leg lengths.
+2. **Walk cycle** — opposite arm/leg swing (±25–35° from vertical); head height near-constant.
+3. **Body lean** — `StickPose.lean` + `shiftX` tilt torso toward strike direction; shoulders and hips offset separately.
+4. **Attack anticipation** — back arm/torso load away before front arm snaps forward; eased strips via `smoothPoseStrip()`.
+5. **Combo finisher (step 3)** — heavy strike variant; longer step duration (~320 ms); pairs with knockback hitbox and impact VFX.
+6. **Hit react** — positive lean away from facing, arms flail.
+7. **Boss idle** — alternate crown and aura prop frames for “living statue” feel.
 
-Pose data lives in `stickyManDraw.ts` as `StickPose` arrays (`POSES_WALK`, `POSES_ATTACK_*`, etc.).
+Pose data: `stickyManDraw.ts` (`POSES_WALK`, `POSES_ATTACK_*`, `POSES_HIT`) and `stickyManStrikes.ts` (`STRIKE_POSES`).
 
 ---
 
@@ -123,6 +152,7 @@ Pose data lives in `stickyManDraw.ts` as `StickPose` arrays (`POSES_WALK`, `POSE
 - Art is authored **facing right**.
 - Phaser `sprite.setFlipX(true)` for left.
 - Face dot always on the +X side of the head in source art.
+- During attacks, facing can update from stick input (`Player.ts`).
 
 ---
 
@@ -132,8 +162,9 @@ Pose data lives in `stickyManDraw.ts` as `StickPose` arrays (`POSES_WALK`, `POSE
 |-------|--------|
 | Hit | 50 ms white `HitFlash` + pixel sparks + floating damage number |
 | Crit | Gold number + `!` + extra sparks |
+| Heavy / kick finisher | Extra impact sparks on contact frame |
 | Skill cast | Expanding pixel ring + intent-colored sparks |
-| Melee arc | Pixel slash arc texture + contact sparks |
+| Melee arc | Pixel slash arc texture + contact sparks (armed); punch/kick reach tables when unarmed |
 | Spirit bolt | Pixel bolt sprite (tinted by intent) |
 | Heal | Expanding pixel ring bloom |
 | Flame AOE | Pixel flame burst + sparks |
@@ -148,14 +179,20 @@ Procedural VFX textures: `src/combat/art/pixelVfxDraw.ts` → `registerPixelVfxA
 
 ```
 src/combat/art/
-  stickyManPalette.ts   — colors, frame sizes, pose types
-  stickyManDraw.ts      — canvas draw + pose libraries
-  stickyManAssets.ts    — Phaser spritesheets + anim registration
+  stickyManPalette.ts   — colors, frame sizes, StickPose / SegmentAngles
+  stickyManDraw.ts      — canvas draw, proportions, POSES_* , buildHeroFrames()
+  stickyManPoseMath.ts  — lerpPose(), smoothPoseStrip() (ease-in-out)
+  stickyManStrikes.ts   — STRIKE_ANIM, STRIKE_POSES, pickLight/HeavyStrike
+  stickyManAssets.ts    — registerStickyManAssets(), registerHeroCombatAssets()
+  stickyManReviewPage.ts — sticky-man-review.html preview grid
   pixelVfxDraw.ts       — pixel skill/AOE/spark textures + registration
 src/combat/animations/
   PlayerAnimController.ts
+src/progression/
+  WeaponProgression.ts  — resolveAttackStyle(), canUseSwordIntent()
 src/combat/textures/
-  placeholderTextures.ts — tilemap + VFX only (characters moved to art/)
+  placeholderTextures.ts — tilemap + VFX only (characters in art/)
+sticky-man-review.html    — dev preview (unarmed strikes + armed rows)
 ```
 
 ---
@@ -164,8 +201,8 @@ src/combat/textures/
 
 When moving off procedural canvas art:
 
-1. Export same frame grid from Aseprite at 32×40 / 48×56.
-2. Keep animation keys stable (`hero_sticky_walk`, etc.).
+1. Export same frame grid from Aseprite at **32×56**.
+2. Keep animation keys stable (`hero_sticky_walk`, `hero_strike_jab`, etc.).
 3. Run through `plans/20-content-pipeline.md` validators.
 4. Optional: damaged/elite variants per `pixel-character` skill (alternate palette swaps).
 
@@ -173,9 +210,11 @@ When moving off procedural canvas art:
 
 ## 10. Quality Checklist
 
-- [x] Hero sticky-man with idle / walk / 3 attack steps / hit
+- [x] Hero sticky-man with idle / walk / unarmed strike set / armed 3-step / hit
+- [x] Bottom-up proportions — compact torso, fixed leg chain, connected limbs
 - [x] Slime, archer, totem boss in matching style
-- [x] Limb motion visible during walk and attack
+- [x] Limb motion visible during walk and attack; body lean on strikes
+- [x] Weapon prop swaps (sword, lance, stick) when equipped
 - [x] Skill damages bosses (spirit bolt hitbox)
 - [x] Melee arc hits large boss hurtboxes
 - [ ] Replace procedural sheets with authored Aseprite exports (post-MVP)

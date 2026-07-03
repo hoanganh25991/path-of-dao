@@ -17,7 +17,7 @@ Unified hit detection, damage resolution, feedback VFX, and invulnerability duri
 - Brief white hit flash on victims
 - Dodge i-frames block incoming damage
 - Enemy melee, arrows, and skill bolts all use the same pipeline
-- Procedural sticky-man pixel art for hero and early enemies
+- Procedural sticky-man pixel art for hero (unarmed strikes + weapon props) and early enemies
 
 ## Remaining
 

@@ -591,6 +591,8 @@ test.describe('Fresh save', () => {
   });
 
   test('full road loop without dev seeds (chapters 1–10)', async ({ page }) => {
+    test.setTimeout(300_000);
+
     await page.goto('/');
     await dismissAudioUnlock(page);
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });

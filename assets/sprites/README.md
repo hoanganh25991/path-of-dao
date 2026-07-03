@@ -1,6 +1,18 @@
 # Sprite Placeholders (MVP)
 
-Until final pixel art ships, enemies reuse the sticky-man procedural rig with archetype tint colors.
+Until final pixel art ships, the **hero** and early **enemies** use the procedural sticky-man rig (`src/combat/art/`).
+
+## Hero combat art
+
+| Concern | Implementation |
+|---------|----------------|
+| Frame | 32×56 px, 2× display |
+| Unarmed | 8 strike anims (`hero_strike_jab`, …) — random light + heavy finisher combo |
+| Armed | `hero_sticky_attack_1/2/3` with sword / lance / stick prop when weapon equipped |
+| Preview | Open `sticky-man-review.html` on the Vite dev server |
+| Style spec | [docs/pixel-art-style.md](../docs/pixel-art-style.md) |
+
+Sheet rebuilt per map load via `registerHeroCombatAssets(scene, resolveAttackStyle(save))`.
 
 ## Enemy tint map (chapters 1–5)
 
