@@ -30,7 +30,7 @@ async function startAncientWalk(ancientId: string): Promise<void> {
   const confirmed = await showAncientDemoModal(uiRoot, { ancientId, needsConfirm });
   if (!confirmed.confirmed) return;
 
-  await AncientDemoManager.enter(ancientId, confirmed.equippedSkills);
+  await AncientDemoManager.enter(ancientId);
   const profile = AncientDemoManager.getProfile(ancientId);
   await SceneRouter.instance.switchTo('combat', { mapId: profile.startMapId });
 }

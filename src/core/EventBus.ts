@@ -21,11 +21,17 @@ export type GameEvents = {
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
-  'combat:open-skill-picker': { slot: 'primary' | 'secondary' | 'ultimate' };
+  'combat:open-skill-picker': { slot?: 'primary' | 'secondary' | 'ultimate' };
   'loadout:changed': { equippedSkills: { primary: string; secondary: string; ultimate: string } };
+  'skill:cooldown-state': {
+    primary: { remainingMs: number; totalMs: number };
+    secondary: { remainingMs: number; totalMs: number };
+    ultimate: { remainingMs: number; totalMs: number };
+  };
   'home:open-tab': { tab: HomeTab };
   'settings:locale-changed': { preference: LocalePreference; locale: Locale };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
+  'cp:changed': { cp: number };
 };
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

@@ -1,5 +1,4 @@
 import { SceneRouter } from '@/app/SceneRouter';
-import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
 
@@ -40,18 +39,6 @@ export function createPlayPanel(): PlayPanelHandles {
     void SceneRouter.instance.switchTo('combat', { mapId });
   });
 
-  const echoesBtn = document.createElement('button');
-  echoesBtn.type = 'button';
-  echoesBtn.className = 'home-play__echoes';
-  echoesBtn.textContent = I18nManager.t('home.echoes_travel');
-  echoesBtn.addEventListener('click', () => {
-    EventBus.emit('home:open-tab', { tab: 'echoes' });
-  });
-
-  const echoesHint = document.createElement('p');
-  echoesHint.className = 'home-play__hint';
-  echoesHint.textContent = I18nManager.t('home.echoes_travel_hint');
-
   const portalBtn = document.createElement('button');
   portalBtn.type = 'button';
   portalBtn.className = 'home-play__portal home-play__portal--secondary';
@@ -68,8 +55,6 @@ export function createPlayPanel(): PlayPanelHandles {
     title,
     devSlot,
     continueBtn,
-    echoesBtn,
-    echoesHint,
     portalBtn,
     portalHint,
   );

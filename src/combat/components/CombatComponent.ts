@@ -9,7 +9,18 @@ import { recordSkillInsight } from '@/progression/InsightSystem';
 import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/SkillLoader';
 import type { SkillDefinition } from '@/progression/SkillDefinition';
 import type { SkillSlot } from '@/core/input/InputState';
+import {
+  createEmptyCooldowns,
+  getSkillCooldownMs,
+  tickCooldowns,
+  type SkillSlotCooldowns,
+} from '@/progression/SkillCooldown';
 import { burstAncientSkill, getAncientSkillAmp } from '@/combat/vfx/AncientSkillVfx';
+
+export interface SkillCooldownSnapshot {
+  remainingMs: number;
+  totalMs: number;
+}
 
 const SLASH_VISIBLE_MS = 100;
 const SLASH_OFFSET_PX = 26;
@@ -36,6 +47,8 @@ export class CombatComponent {
   /** Multiplier of the attack in progress — consumed by hit resolution. */
   currentMultiplier = 0;
   private bolts: SkillBolt[] = [];
+  private readonly cooldowns: SkillSlotCooldowns = createEmptyCooldowns();
+  private readonly cooldownTotals: SkillSlotCooldowns = createEmptyCooldowns();
 
   constructor(
     private readonly player: Player,
@@ -56,6 +69,7 @@ export class CombatComponent {
   /** Equipped skill by slot — arc, bolt, or heal depending on skill data. */
   trySkill(slot: SkillSlot): boolean {
     if (!this.player.sm.canAct) return false;
+    if (this.cooldowns[slot] > 0) return false;
 
     const save = gameStore.getState().save;
     if (!save) return false;
@@ -65,6 +79,10 @@ export class CombatComponent {
     const manaCost = skill.manaCost;
 
     if (!this.player.stats.spendMana(manaCost)) return false;
+
+    const cdMs = getSkillCooldownMs(skill, this.player.stats.isGodMode);
+    this.cooldowns[slot] = cdMs;
+    this.cooldownTotals[slot] = cdMs;
 
     this.player.emitStatsChanged();
     this.executeSkill(skill);
@@ -78,7 +96,21 @@ export class CombatComponent {
     return true;
   }
 
+  getCooldownSnapshot(): Record<SkillSlot, SkillCooldownSnapshot> {
+    return {
+      primary: { remainingMs: this.cooldowns.primary, totalMs: this.cooldownTotals.primary },
+      secondary: { remainingMs: this.cooldowns.secondary, totalMs: this.cooldownTotals.secondary },
+      ultimate: { remainingMs: this.cooldowns.ultimate, totalMs: this.cooldownTotals.ultimate },
+    };
+  }
+
+  isSkillOnCooldown(slot: SkillSlot): boolean {
+    return this.cooldowns[slot] > 0;
+  }
+
   update(dtMs: number): void {
+    tickCooldowns(this.cooldowns, dtMs);
+
     const amp = getAncientSkillAmp(this.player.stats.isGodMode);
     const hitRadius = BOLT_HIT_RADIUS * amp;
 

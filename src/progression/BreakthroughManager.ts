@@ -2,6 +2,7 @@ import { EventBus } from '@/core/EventBus';
 import { SaveManager } from '@/core/save/SaveManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
+import { notifyCombatPowerChanged } from '@/progression/CombatPower';
 import { CultivationRealm } from '@/progression/CultivationRealm';
 import { getRealmDefinition } from '@/progression/RealmStatScaling';
 import { realmToAuraTier } from '@/home/realmAura';
@@ -59,6 +60,7 @@ export class BreakthroughManager {
       realmId: next.realm.id,
       auraTier: realmToAuraTier(next.realm.id),
     });
+    notifyCombatPowerChanged(next);
 
     return delta;
   }

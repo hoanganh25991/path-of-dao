@@ -2,6 +2,7 @@ import { EventBus } from '@/core/EventBus';
 import { SaveManager } from '@/core/save/SaveManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
+import { notifyCombatPowerChanged } from '@/progression/CombatPower';
 import {
   type EquipmentSlot,
   type EquipmentSlots,
@@ -131,6 +132,7 @@ export class EquipmentManager {
     });
 
     EventBus.emit('equipment:changed', { modifiers });
+    notifyCombatPowerChanged(gameStore.getState().save!);
     SaveManager.scheduleAutosave();
 
     return { ok: true, modifiers };
@@ -157,6 +159,7 @@ export class EquipmentManager {
     });
 
     EventBus.emit('equipment:changed', { modifiers });
+    notifyCombatPowerChanged(gameStore.getState().save!);
     SaveManager.scheduleAutosave();
 
     return modifiers;

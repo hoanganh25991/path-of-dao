@@ -79,13 +79,10 @@ describe('AncientDemoManager', () => {
     expect(gameStore.getState().save!.stats.level).toBe(4);
   });
 
-  it('enter with custom loadout applies equipped skills', async () => {
-    await enterAncientDemo('ancient.sword_ancestor', {
-      primary: 'skill.lightning.strike.awakened',
-      secondary: 'skill.sword.slash.awakened',
-      ultimate: 'skill.flame.bolt.awakened',
-    });
-    expect(gameStore.getState().save!.equippedSkills.primary).toBe('skill.lightning.strike.awakened');
+  it('enter applies normalized default loadout', async () => {
+    await enterAncientDemo('ancient.sword_ancestor');
+    const skills = gameStore.getState().save!.equippedSkills;
+    expect(new Set(Object.values(skills)).size).toBe(3);
     await exitAncientDemo();
   });
 

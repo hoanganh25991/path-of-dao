@@ -91,6 +91,54 @@
   gap: var(--btn-gap);
 }
 
+.action-buttons__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.action-btn--swap-skills {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-color: rgba(143, 212, 196, 0.35);
+  background: rgba(12, 16, 24, 0.92);
+  font-size: 1.1rem;
+}
+
+.action-btn__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.action-btn__cooldown {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -90deg,
+    transparent 0deg,
+    transparent var(--cd-deg, 360deg),
+    rgba(0, 0, 0, 0.78) var(--cd-deg, 360deg),
+    rgba(0, 0, 0, 0.78) 360deg
+  );
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+}
+
+.action-btn--cooldown {
+  filter: saturate(0.65);
+}
+
+.action-btn--cooldown.action-btn--pressed {
+  transform: none;
+}
+
 .action-btn {
   position: relative;
   width: var(--btn-size);

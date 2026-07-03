@@ -2,6 +2,7 @@ import { EventBus } from '@/core/EventBus';
 import { SaveManager } from '@/core/save/SaveManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
+import { notifyCombatPowerChanged } from '@/progression/CombatPower';
 import {
   getInsightIntentConfig,
   getIntentForSkillId,
@@ -151,6 +152,8 @@ export class InsightSystem {
     SaveManager.autosaveNow();
 
     EventBus.emit('insight:awakened', { intentId, skillId: awakenedSkillId });
+    const updated = gameStore.getState().save;
+    if (updated) notifyCombatPowerChanged(updated);
     return awakenedSkillId;
   }
 }

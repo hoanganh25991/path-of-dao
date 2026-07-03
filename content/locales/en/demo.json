@@ -1,10 +1,9 @@
 {
   "demo.section.title": "Echoes of the Ancients",
-  "demo.section.intro": "Walk in the footsteps of cultivators who conquered the heavens — each echo teaches one path of the dao.",
+  "demo.section.intro": "Legendary cultivators who already walked the path — read their story, see their arts, step into their footsteps.",
   "demo.badge": "Ancient Echo",
   "demo.combat.tag": "Unbound power — walk their path in combat",
-  "demo.skills.loadout_title": "Signature Arts",
-  "demo.skills.loadout_hint": "Defaults are ready — tap a slot, then pick. Hold any skill button in combat to swap anytime.",
+  "demo.skills.signature_title": "Signature Arts",
   "demo.skills.slot.primary": "Primary",
   "demo.skills.slot.secondary": "Secondary",
   "demo.skills.slot.ultimate": "Ultimate",

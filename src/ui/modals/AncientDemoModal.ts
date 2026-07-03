@@ -1,10 +1,10 @@
 import '@/ui/modals/ancient-demo.css';
+import '@/ui/skills/skill-showcase.css';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getAncientProfile } from '@/progression/AncientDemoManager';
 import { normalizeLoadout } from '@/progression/SkillLoadout';
-import type { AncientProfile, AncientSaveTemplate } from '@/shared/schemas/ancient-demo';
-import { renderSkillButtonHtml } from '@/ui/skills/SkillIcon';
-import { createLoadoutPickerElement } from '@/ui/skills/SkillLoadoutPicker';
+import type { AncientProfile } from '@/shared/schemas/ancient-demo';
+import { createSkillShowcaseList } from '@/ui/skills/SkillShowcase';
 
 export interface AncientDemoModalOptions {
   ancientId: string;
@@ -13,18 +13,16 @@ export interface AncientDemoModalOptions {
 
 export interface AncientDemoModalResult {
   confirmed: boolean;
-  equippedSkills?: AncientSaveTemplate['equippedSkills'];
 }
 
-/** Lore card + skill loadout before walking in an ancient cultivator's footsteps. */
+/** Lore + signature arts preview — walk in their footsteps (no loadout editing). */
 export function showAncientDemoModal(
   uiRoot: HTMLElement,
   options: AncientDemoModalOptions,
 ): Promise<AncientDemoModalResult> {
   return new Promise((resolve) => {
     const profile = getAncientProfile(options.ancientId);
-    const defaults = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
-    const loadoutPicker = createLoadoutPickerElement(defaults, profile.unlockedSkills, () => {});
+    const loadout = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
 
     const overlay = document.createElement('div');
     overlay.className = 'ancient-demo-modal';
@@ -48,14 +46,9 @@ export function showAncientDemoModal(
     lore.className = 'ancient-demo-modal__lore';
     lore.textContent = I18nManager.t(profile.loreKey);
 
-    const chips = document.createElement('div');
-    chips.className = 'ancient-demo-modal__chips';
-    for (const key of profile.highlightKeys) {
-      const chip = document.createElement('span');
-      chip.className = 'ancient-demo-modal__chip';
-      chip.textContent = I18nManager.t(key);
-      chips.appendChild(chip);
-    }
+    const skills = createSkillShowcaseList(loadout, {
+      title: I18nManager.t('demo.skills.signature_title'),
+    });
 
     const note = document.createElement('p');
     note.className = 'ancient-demo-modal__note';
@@ -77,7 +70,7 @@ export function showAncientDemoModal(
     confirm.textContent = I18nManager.t('demo.enter.confirm');
 
     actions.append(cancel, confirm);
-    card.append(epithet, name, lore, chips, loadoutPicker.root, note, actions);
+    card.append(epithet, name, lore, skills, note, actions);
     overlay.append(backdrop, card);
     uiRoot.appendChild(overlay);
 
@@ -100,7 +93,7 @@ export function showAncientDemoModal(
 
     confirm.addEventListener('click', () => {
       cleanup();
-      resolve({ confirmed: true, equippedSkills: loadoutPicker.getLoadout() });
+      resolve({ confirmed: true });
     });
   });
 }
@@ -112,7 +105,7 @@ export function renderAncientCard(profile: AncientProfile, active: boolean): HTM
   card.dataset.ancientId = profile.id;
   if (active) card.classList.add('home-ancient-card--active');
 
-  const defaults = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
+  const loadout = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
 
   const epithet = document.createElement('span');
   epithet.className = 'home-ancient-card__epithet';
@@ -122,16 +115,12 @@ export function renderAncientCard(profile: AncientProfile, active: boolean): HTM
   name.className = 'home-ancient-card__name';
   name.textContent = I18nManager.t(profile.nameKey);
 
-  const chips = document.createElement('span');
-  chips.className = 'home-ancient-card__chips';
-  chips.textContent = profile.highlightKeys.map((key) => I18nManager.t(key)).join(' · ');
+  const lore = document.createElement('span');
+  lore.className = 'home-ancient-card__teaser';
+  lore.textContent = I18nManager.t(profile.loreKey);
 
-  const skillPreview = document.createElement('span');
-  skillPreview.className = 'home-ancient-card__skills';
-  skillPreview.innerHTML = (['primary', 'secondary', 'ultimate'] as const)
-    .map((slot) => `<span class="home-ancient-card__skill">${renderSkillButtonHtml(defaults[slot])}</span>`)
-    .join('');
+  const skills = createSkillShowcaseList(loadout, { compact: true });
 
-  card.append(epithet, name, chips, skillPreview);
+  card.append(epithet, name, lore, skills);
   return card;
 }

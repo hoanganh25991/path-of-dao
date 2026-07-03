@@ -86,17 +86,15 @@ describe('HomeUI', () => {
     equipSpy.mockRestore();
   });
 
-  it('play panel travel button opens echoes tab', () => {
+  it('echoes tab opens from bottom nav', () => {
     const uiRoot = document.getElementById('ui-root')!;
     HomeUI.init(uiRoot);
     EventBus.emit('scene:changed', { id: 'home', payload: undefined });
 
-    const travelBtn = uiRoot.querySelector<HTMLButtonElement>('.home-play__echoes');
-    expect(travelBtn).toBeTruthy();
-    travelBtn!.click();
-
+    HomeUI.openTab('echoes');
     expect(HomeUI.getActiveTab()).toBe('echoes');
     expect(uiRoot.querySelector('[data-testid="home-echoes"]')).toBeTruthy();
+    expect(uiRoot.querySelector('.home-play__echoes')).toBeNull();
   });
 
   it('profile header shows combat power from save stats', () => {

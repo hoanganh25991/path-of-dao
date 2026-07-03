@@ -1,20 +1,11 @@
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { I18nManager } from '@/core/i18n/I18nManager';
-import {
-  assignSkillToSlot,
-  listAssignableSkills,
-  listUnlockedSkillIds,
-} from '@/progression/SkillLoadout';
-import { getSkillDefinition } from '@/progression/SkillLoader';
-import {
-  isAwakenedSkillId,
-  renderSkillButtonHtml,
-  type SkillSlotId,
-} from '@/ui/skills/SkillIcon';
+import { listUnlockedSkillIds } from '@/progression/SkillLoadout';
+import { createLoadoutPickerElement } from '@/ui/skills/SkillLoadoutPicker';
 import '@/ui/hud/combat-skill-picker.css';
 
-/** In-combat bottom sheet — long-press a skill button to swap loadout. */
+/** In-combat loadout editor — opened via explicit ⟳ button. */
 export class CombatSkillPicker {
   private static root: HTMLElement | null = null;
   private static panel: HTMLElement | null = null;
@@ -43,8 +34,8 @@ export class CombatSkillPicker {
 
     backdrop.addEventListener('click', () => CombatSkillPicker.close());
 
-    CombatSkillPicker.unsubscribe = EventBus.on('combat:open-skill-picker', ({ slot }) => {
-      CombatSkillPicker.open(slot);
+    CombatSkillPicker.unsubscribe = EventBus.on('combat:open-skill-picker', () => {
+      CombatSkillPicker.open();
     });
   }
 
@@ -56,7 +47,7 @@ export class CombatSkillPicker {
     CombatSkillPicker.panel = null;
   }
 
-  static open(slot: SkillSlotId): void {
+  static open(): void {
     const save = gameStore.getState().save;
     if (!save || !CombatSkillPicker.panel || !CombatSkillPicker.root) return;
 
@@ -64,47 +55,28 @@ export class CombatSkillPicker {
     requestAnimationFrame(() => CombatSkillPicker.root?.classList.add('combat-skill-picker--open'));
 
     const pool = listUnlockedSkillIds(save);
-    const loadout = save.equippedSkills;
-    const assignable = listAssignableSkills(loadout, slot, pool);
+    const picker = createLoadoutPickerElement(save.equippedSkills, pool, (loadout) => {
+      gameStore.getState().patch({ equippedSkills: loadout });
+      EventBus.emit('loadout:changed', { equippedSkills: loadout });
+    });
 
     CombatSkillPicker.panel.replaceChildren();
 
     const title = document.createElement('p');
     title.className = 'combat-skill-picker__title';
-    title.textContent = I18nManager.t('combat.skills.pick_title', {
-      slot: I18nManager.t(`demo.skills.slot.${slot}`),
-    });
+    title.textContent = I18nManager.t('combat.skills.swap_title');
 
     const hint = document.createElement('p');
     hint.className = 'combat-skill-picker__hint';
-    hint.textContent = I18nManager.t('combat.skills.pick_hint');
+    hint.textContent = I18nManager.t('combat.skills.swap_hint');
 
-    const grid = document.createElement('div');
-    grid.className = 'combat-skill-picker__grid';
+    const done = document.createElement('button');
+    done.type = 'button';
+    done.className = 'combat-skill-picker__done';
+    done.textContent = I18nManager.t('combat.skills.done');
+    done.addEventListener('click', () => CombatSkillPicker.close());
 
-    for (const skillId of assignable) {
-      const def = getSkillDefinition(skillId);
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'combat-skill-picker__skill';
-      if (loadout[slot] === skillId) btn.classList.add('combat-skill-picker__skill--active');
-      if (isAwakenedSkillId(skillId)) btn.classList.add('combat-skill-picker__skill--awakened');
-
-      btn.innerHTML = `
-        <span class="combat-skill-picker__icon">${renderSkillButtonHtml(skillId)}</span>
-        <span class="combat-skill-picker__name">${I18nManager.t(def.nameKey)}</span>
-      `;
-
-      btn.addEventListener('click', () => {
-        const equippedSkills = assignSkillToSlot(save.equippedSkills, slot, skillId);
-        gameStore.getState().patch({ equippedSkills });
-        EventBus.emit('loadout:changed', { equippedSkills });
-        CombatSkillPicker.close();
-      });
-      grid.appendChild(btn);
-    }
-
-    CombatSkillPicker.panel.append(title, hint, grid);
+    CombatSkillPicker.panel.append(title, hint, picker.root, done);
   }
 
   static close(): void {

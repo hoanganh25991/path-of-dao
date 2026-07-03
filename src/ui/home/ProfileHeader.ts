@@ -1,3 +1,4 @@
+import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
@@ -5,10 +6,16 @@ import {
   AncientDemoManager,
   getActiveAncientId,
 } from '@/progression/AncientDemoManager';
-import { computeCombatPowerStub, formatCombatPower } from '@/progression/combatPowerStub';
+import {
+  computeCombatPowerFromSave,
+  formatCombatPower,
+  yearsCultivated,
+} from '@/progression/CombatPower';
 import { BreakthroughManager } from '@/progression/BreakthroughManager';
+import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { showBreakthroughModal } from '@/ui/modals/BreakthroughModal';
 import { showSettingsModal } from '@/ui/modals/SettingsModal';
+import { createProfilePanel } from '@/ui/home/ProfilePanel';
 
 export interface ProfileHeaderHandles {
   root: HTMLElement;
@@ -18,10 +25,6 @@ export interface ProfileHeaderHandles {
 
 function realmLabelKey(save: PlayerSaveV1): string {
   return `realm.${save.realm.id}.${save.realm.tier}`;
-}
-
-function yearsCultivated(totalPlaySeconds: number): number {
-  return Math.min(9999, Math.floor(totalPlaySeconds / 3600));
 }
 
 export function createProfileHeader(): ProfileHeaderHandles {
@@ -71,7 +74,10 @@ export function createProfileHeader(): ProfileHeaderHandles {
   realmRow.append(realmEl, cultivateBtn);
 
   const statsRow = document.createElement('div');
-  statsRow.className = 'home-profile__stats';
+  statsRow.className = 'home-profile__stats home-profile__stats--tappable';
+  statsRow.setAttribute('role', 'button');
+  statsRow.setAttribute('tabindex', '0');
+  statsRow.setAttribute('aria-label', I18nManager.t('home.profile.open'));
 
   const cpBlock = document.createElement('div');
   cpBlock.className = 'home-profile__stat';
@@ -95,6 +101,27 @@ export function createProfileHeader(): ProfileHeaderHandles {
   root.append(topRow, realmRow, statsRow);
 
   let ceremonyActive = false;
+  let profilePanel: ReturnType<typeof createProfilePanel> | null = null;
+
+  const closeProfilePanel = (): void => {
+    profilePanel?.destroy();
+    profilePanel = null;
+  };
+
+  const openProfilePanel = (): void => {
+    const uiRoot = document.getElementById('ui-root');
+    if (!uiRoot || profilePanel) return;
+    profilePanel = createProfilePanel(closeProfilePanel);
+    uiRoot.appendChild(profilePanel.root);
+  };
+
+  statsRow.addEventListener('click', openProfilePanel);
+  statsRow.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openProfilePanel();
+    }
+  });
 
   cultivateBtn.addEventListener('click', () => {
     if (ceremonyActive) return;
@@ -132,20 +159,29 @@ export function createProfileHeader(): ProfileHeaderHandles {
     }
 
     realmEl.textContent = I18nManager.t(realmLabelKey(save));
-    cpValue.textContent = formatCombatPower(computeCombatPowerStub(save), I18nManager.locale);
-    yearsValue.textContent = String(yearsCultivated(save.meta.totalPlaySeconds));
+    cpValue.textContent = formatCombatPower(computeCombatPowerFromSave(save), I18nManager.locale);
+    const realmOrder = getRealmOrder(save.realm.id);
+    yearsValue.textContent = String(yearsCultivated(save.meta.totalPlaySeconds, realmOrder));
 
     const ready = save.realm.breakthroughReady && !activeAncientId;
     cultivateBtn.hidden = !ready;
     cultivateBtn.classList.toggle('home-profile__cultivate--ready', ready);
+
+    profilePanel?.refresh();
   };
 
   refresh();
+
+  const unsubscribeCp = EventBus.on('cp:changed', () => {
+    refresh();
+  });
 
   return {
     root,
     refresh,
     destroy() {
+      unsubscribeCp();
+      closeProfilePanel();
       root.remove();
     },
   };

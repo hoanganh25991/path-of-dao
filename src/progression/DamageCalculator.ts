@@ -1,3 +1,4 @@
+import { computeOverlevelDamageMultiplier } from '@/progression/CombatPower';
 import type { DamageInput, DamageResult } from '@/progression/types';
 
 /**
@@ -31,13 +32,10 @@ export function resolveDamage(input: DamageInput, random: () => number = Math.ra
     input.attackerRealmOrder != null &&
     input.defenderRecommendedRealmOrder != null
   ) {
-    const diff = Math.min(
-      5,
-      Math.max(0, input.attackerRealmOrder - input.defenderRecommendedRealmOrder),
+    withCrit *= computeOverlevelDamageMultiplier(
+      input.attackerRealmOrder,
+      input.defenderRecommendedRealmOrder,
     );
-    if (diff > 0) {
-      withCrit *= 1 + diff * 0.1;
-    }
   }
 
   const final = Math.max(1, Math.floor(withCrit));
