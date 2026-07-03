@@ -16,6 +16,10 @@
       "highlightKeys": ["demo.highlight.breakthrough", "demo.highlight.qi_condensation", "demo.highlight.cultivate"],
       "startScene": "home",
       "startMapId": "map.test.grove",
+      "path": [
+        { "mapId": "map.fallen_village.01", "realmId": "mortal_body", "storySceneId": null },
+        { "mapId": "map.fallen_village.02", "realmId": "qi_condensation", "storySceneId": "story.ch01.awakening_jade" }
+      ],
       "save": {
         "level": 12,
         "realmId": "qi_condensation",
@@ -64,6 +68,10 @@
       "highlightKeys": ["demo.highlight.insight_meter", "demo.highlight.awaken_button", "demo.highlight.foundation"],
       "startScene": "home",
       "startMapId": "map.test.grove",
+      "path": [
+        { "mapId": "map.fallen_village.02", "realmId": "qi_condensation", "storySceneId": "story.ch01.awakening_jade" },
+        { "mapId": "map.mist_forest.02", "realmId": "foundation_establishment", "storySceneId": "story.ch02.spirit_fox" }
+      ],
       "save": {
         "level": 14,
         "realmId": "foundation_establishment",
@@ -116,6 +124,11 @@
       ],
       "startScene": "combat",
       "startMapId": "map.test.grove",
+      "path": [
+        { "mapId": "map.fallen_village.02", "realmId": "qi_condensation", "storySceneId": "story.ch01.awakening_jade" },
+        { "mapId": "map.stone_canyon.02", "realmId": "foundation_establishment", "storySceneId": "story.ch03.bandit_end" },
+        { "mapId": "map.moon_lake.02", "realmId": "core_formation", "storySceneId": "story.ch04.ancient_seal" }
+      ],
       "save": {
         "level": 28,
         "realmId": "core_formation",

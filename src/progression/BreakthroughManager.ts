@@ -6,6 +6,7 @@ import { notifyCombatPowerChanged } from '@/progression/CombatPower';
 import { CultivationRealm } from '@/progression/CultivationRealm';
 import { getRealmDefinition } from '@/progression/RealmStatScaling';
 import { realmToAuraTier } from '@/home/realmAura';
+import { recordJourney } from '@/progression/JourneyLog';
 
 export interface StatDelta {
   hpMax: number;
@@ -50,6 +51,14 @@ export class BreakthroughManager {
       atk: next.stats.atk - before.atk,
       def: next.stats.def - before.def,
       spirit: next.stats.spirit - before.spirit,
+    };
+
+    next = {
+      ...next,
+      progress: {
+        ...next.progress,
+        journey: recordJourney(next, 'breakthrough', next.realm.id, null),
+      },
     };
 
     store.patch(next);

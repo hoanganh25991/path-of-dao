@@ -43,6 +43,14 @@ export const ANCIENT_VISUAL_THEMES = [
   'insight',
 ] as const;
 
+/** One stop on an ancient's road — a map they conquered, the realm they held there,
+ *  and the story beat that marks it. Reading these in order = "learn from history". */
+export const ancientPathStepSchema = z.object({
+  mapId: z.string().min(1),
+  realmId: z.string(),
+  storySceneId: z.string().nullable().default(null),
+});
+
 export const ancientProfileSchema = z.object({
   id: z.string().min(1),
   nameKey: z.string().min(1),
@@ -55,6 +63,8 @@ export const ancientProfileSchema = z.object({
   unlockedSkills: z.array(z.string()).min(3),
   startScene: z.enum(ANCIENT_START_SCENES).default('combat'),
   startMapId: z.string().min(1),
+  /** Ordered road the ancient walked to reach their power (My Path parallel). */
+  path: z.array(ancientPathStepSchema).default([]),
   save: ancientSaveTemplateSchema,
 });
 
@@ -64,3 +74,4 @@ export const ancientsFileSchema = z.object({
 
 export type AncientProfile = z.infer<typeof ancientProfileSchema>;
 export type AncientSaveTemplate = z.infer<typeof ancientSaveTemplateSchema>;
+export type AncientPathStep = z.infer<typeof ancientPathStepSchema>;

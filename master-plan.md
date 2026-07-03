@@ -86,7 +86,7 @@ These pillars override generic ARPG defaults when in conflict.
 | Content | JSON/YAML in `content/` — maps, enemies, skills, story |
 | Validation | Zod schemas at load time |
 | Save | IndexedDB (`idb`) + checksum + version migration |
-| Audio | Howler.js |
+| Audio | Web Audio (procedural MVP) + `localStorage` unlock | Howler.js when OGG assets ship; first-visit tap overlay only |
 
 ### 3.4 Testing
 
@@ -101,6 +101,8 @@ These pillars override generic ARPG defaults when in conflict.
 ```
 path-of-dao/
 ├── master-plan.md
+├── TRACK.md                        # Master progress index
+├── track/                          # Per sub-plan implementation notes
 ├── plans/                          # Sub-plans (this document's children)
 ├── content/
 │   ├── chapters/
@@ -460,6 +462,8 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 ## 13. Next Step
 
-Start with **`plans/01-project-scaffold.md`**. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
+**Active thread:** Sub-plan **25** (audio/VFX polish) — unlock overlay once per device, improved procedural SFX/BGM; then **26** PWA & ship. Progress: [TRACK.md](./TRACK.md) · detail in [track/](./track/).
 
-**Active design thread:** Align implementation with **§1.1 Tiên Nghịch pillars** — see [TRACK.md](./TRACK.md) § Tiên Nghịch Alignment for gap list and owning sub-plans.
+Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
+
+**Design alignment:** §1.1 Tiên Nghịch pillars — see [track/tien-nghich-alignment.md](./track/tien-nghich-alignment.md).

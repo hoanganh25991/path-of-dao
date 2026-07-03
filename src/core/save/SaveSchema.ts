@@ -2,6 +2,22 @@ import { z } from 'zod';
 
 export const SAVE_VERSION = 1 as const;
 
+/** One recorded milestone on the player's cultivation road (My Path scroll). */
+export const journeyEntrySchema = z.object({
+  kind: z.enum(['map_clear', 'boss', 'breakthrough', 'encounter', 'story']),
+  /** What was reached: mapId / bossId / realmId / encounterId / storySceneId. */
+  refId: z.string(),
+  /** Where it happened, when known. */
+  mapId: z.string().nullable().default(null),
+  /** Strength snapshot at the moment of this step — "how strong I was here". */
+  realmId: z.string(),
+  level: z.number().int().min(1),
+  cp: z.number().min(0),
+  at: z.string(),
+});
+
+export type JourneyEntry = z.infer<typeof journeyEntrySchema>;
+
 const baseStatsSchema = z.object({
   level: z.number().int().min(1),
   hpMax: z.number().positive(),
@@ -77,6 +93,8 @@ export const playerSaveV1Schema = z.object({
     // default([]) keeps pre-bestiary v1 saves loadable (added in sub-plan 08).
     bestiary: z.array(z.string()).default([]),
     loreUnlocked: z.array(z.string()).default([]),
+    // default([]) keeps pre-journey v1 saves loadable (added in sub-plan 28).
+    journey: z.array(journeyEntrySchema).default([]),
     currentMapId: z.string().nullable(),
   }),
   cosmetics: z

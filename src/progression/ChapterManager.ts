@@ -7,6 +7,7 @@ import {
 import { getStoryScene } from '@/progression/StoryLoader';
 import type { StoryReward } from '@/shared/schemas/story';
 import { unlockSkillsForChapter } from '@/progression/SkillUnlockManager';
+import { recordJourney } from '@/progression/JourneyLog';
 
 export interface MapClearResult {
   newlyCleared: boolean;
@@ -94,6 +95,7 @@ export function applyMapClearPatch(
       progress: {
         ...save.progress,
         clearedMaps: [...save.progress.clearedMaps, mapId],
+        journey: recordJourney(save, 'map_clear', mapId, mapId),
       },
     },
     result,
@@ -133,6 +135,7 @@ export function completeStory(
       ...next.progress,
       storySeen,
       unlockedChapters,
+      journey: recordJourney(next, 'story', sceneId, chapter.finalMapId),
     },
   };
 
