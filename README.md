@@ -2,7 +2,7 @@
 
 Mobile-first cultivation action RPG — 2D combat maps, 3D Home shrine, PWA for mobile.
 
-**Deploy:** [hoanganh25991.github.io/path-of-dao](https://hoanganh25991.github.io/path-of-dao) · Vite base `/path-of-dao/` · manifest `public/manifest.json` (landscape)
+**Deploy:** [hoanganh25991.github.io/path-of-dao](https://hoanganh25991.github.io/path-of-dao) · Vite base `/path-of-dao/` · build output **`docs/`** (GitHub Pages) · project notes in **`handbook/`**
 
 ## Development
 
@@ -26,9 +26,15 @@ pnpm icons:gen
 - [ideas/game-concept.md](ideas/game-concept.md) — high concept, pillars, Home, stats, story regions
 - [ideas/void-ascension.md](ideas/void-ascension.md) — vision, cultivation loop, fortuitous encounters, naming candidates
 
+### Handbook (design & QA notes)
+
+- [handbook/SHIP_CHECKLIST.md](handbook/SHIP_CHECKLIST.md) — manual ship QA
+- [handbook/tien-nghich-reference.md](handbook/tien-nghich-reference.md) — story north star
+- [handbook/pixel-art-style.md](handbook/pixel-art-style.md) — art canon
+
 ### Plans & tracks
 
 - [plans/index.md](plans/index.md) — master implementation plan (what to build)
 - [tracks/index.md](tracks/index.md) — master progress index (what is done)
 
-Ship checklist: [handbook/SHIP_CHECKLIST.md](handbook/SHIP_CHECKLIST.md)
+After `pnpm build`, commit the generated **`docs/`** folder and set **GitHub → Settings → Pages → Deploy from branch → `/docs`**.
