@@ -133,14 +133,14 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Active thread
 
-**Now:** Sub-plan **26** — PWA & ship (foundation landed)  
-- QualityProfile + settings picker — **done**
-- vite-plugin-pwa + service worker + manifest — **done**
-- CI workflow (typecheck, test, validate, build) — **done**
-- Version in settings — **done**
-- **Remaining:** real icons, E2E smoke, SHIP_CHECKLIST, Lighthouse sign-off
+**Now:** Sub-plan **26** — PWA & ship (E2E smoke landed)  
+- QualityProfile + PWA shell + CI — **done**
+- E2E smoke (`boot → home → map → combat → home → vi`) — **done**
+- SHIP_CHECKLIST.md — **done**
+- Home aura respects quality tier — **done**
+- **Remaining:** real icons, manual checklist sign-off, Lighthouse / 30 FPS
 
-**Parallel (deferred):** Tiên Nghịch weapon arc (T4 → T1 → T2 → T3), audio OGG assets (25), content polish (18–24)
+**Deferred:** Tiên Nghịch weapon arc (T4 → T1 → T2 → T3), audio OGG assets (25), content polish (18–24)
 
 ---
 
@@ -243,10 +243,10 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 | Done | Remaining |
 |------|-----------|
-| QualityProfile + settings picker; low tier disables juice | Real app icons |
-| vite-plugin-pwa, manifest, SW precache | E2E smoke (Playwright) |
-| CI workflow; build chunks (phaser/three/vendor) | SHIP_CHECKLIST manual QA |
-| Version in settings; ErrorReporter stub | Lighthouse PWA + 30 FPS sign-off |
+| QualityProfile; low tier disables juice + aura particles | Real app icons |
+| vite-plugin-pwa, manifest, SW; CI unit + e2e jobs | Lighthouse PWA audit |
+| E2E smoke: home → ch1 combat → home → vi locale | Manual SHIP_CHECKLIST sign-off |
+| `docs/SHIP_CHECKLIST.md`; version in settings | 30 FPS throttled Android verification |
 
 → [full track](./26-pwa-performance-ship.md)
 

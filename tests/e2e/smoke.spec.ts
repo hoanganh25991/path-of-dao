@@ -33,8 +33,8 @@ test.describe('MVP smoke', () => {
     await page.locator('.home-profile__settings').click();
     await expect(page.locator('[data-testid="settings-modal"]')).toBeVisible();
     await page.locator('label[data-value="vi"]').click();
-    await page.locator('.settings-modal__close').click();
 
+    await page.locator('.settings-modal__backdrop').click({ force: true });
     await expect(page.getByRole('tab', { name: 'Chơi' })).toBeVisible();
   });
 });

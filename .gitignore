@@ -4,6 +4,8 @@ dist
 .DS_Store
 coverage
 .vite
+test-results
+playwright-report
 .cursor
 !.cursor/rules/
 !plans/
