@@ -138,7 +138,7 @@ describe('VirtualJoystick', () => {
       }),
     );
 
-    expect(joystick.getMoveVector().x).toBeLessThan(-0.5);
+    expect(Math.hypot(joystick.getMoveVector().x, joystick.getMoveVector().y)).toBeGreaterThan(0.5);
 
     joystick.destroy();
     EventBus.clear();

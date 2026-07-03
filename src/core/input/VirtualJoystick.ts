@@ -192,21 +192,9 @@ export class VirtualJoystick {
   }
 
   private updateFromTouch(layoutX: number, layoutY: number): void {
-    let dx = layoutX - this.centerX;
-    let dy = layoutY - this.centerY;
-    let dist = Math.hypot(dx, dy);
-
-    // Shift the base when the finger outruns the clamp — allows continuous drag.
-    if (dist > JOYSTICK_CLAMP_RADIUS_PX) {
-      const overflow = (dist - JOYSTICK_CLAMP_RADIUS_PX) / dist;
-      this.centerX += dx * overflow;
-      this.centerY += dy * overflow;
-      this.element.style.left = `${this.centerX}px`;
-      this.element.style.top = `${this.centerY}px`;
-      dx = layoutX - this.centerX;
-      dy = layoutY - this.centerY;
-      dist = Math.hypot(dx, dy);
-    }
+    const dx = layoutX - this.centerX;
+    const dy = layoutY - this.centerY;
+    const dist = Math.hypot(dx, dy);
 
     this.moveVector = normalizeJoystick(dx, dy, JOYSTICK_CLAMP_RADIUS_PX);
 
