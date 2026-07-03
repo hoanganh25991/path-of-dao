@@ -1,0 +1,79 @@
+{
+  "version": "content-2026-07-03",
+  "generatedAt": "2026-07-03T04:49:07.623Z",
+  "maps": [
+    "map.abyss_rift.01",
+    "map.abyss_rift.02",
+    "map.burning_desert.01",
+    "map.burning_desert.02",
+    "map.fallen_village.01",
+    "map.fallen_village.02",
+    "map.frozen_palace.01",
+    "map.frozen_palace.02",
+    "map.heavenly_gate.01",
+    "map.heavenly_gate.02",
+    "map.mist_forest.01",
+    "map.mist_forest.02",
+    "map.moon_lake.01",
+    "map.moon_lake.02",
+    "map.stone_canyon.01",
+    "map.stone_canyon.02",
+    "map.test.grove",
+    "map.thunder_peaks.01",
+    "map.thunder_peaks.02",
+    "map.void_throne.01",
+    "map.void_throne.02"
+  ],
+  "enemies": [
+    "enemy.archer",
+    "enemy.slime",
+    "enemy.totem"
+  ],
+  "skills": [
+    "skill.flame.bolt",
+    "skill.flame.bolt.awakened",
+    "skill.life.mend",
+    "skill.life.mend.awakened",
+    "skill.lightning.strike",
+    "skill.lightning.strike.awakened",
+    "skill.sword.slash",
+    "skill.sword.slash.awakened",
+    "skill.time.slow",
+    "skill.time.slow.awakened",
+    "skill.void.slash",
+    "skill.void.slash.awakened"
+  ],
+  "items": [
+    "item.bracelet.copper",
+    "item.ring.speed",
+    "item.robe.novice",
+    "item.spirit.jade",
+    "item.sword.ancient",
+    "item.sword.iron",
+    "item.sword.wood"
+  ],
+  "encounters": [
+    "encounters.test"
+  ],
+  "fortuitous": [
+    "encounter.ancient_inheritance",
+    "encounter.ancient_sword",
+    "encounter.forgotten_memory",
+    "encounter.hidden_cave",
+    "encounter.secret_manual",
+    "encounter.spirit_beast"
+  ],
+  "stories": [
+    "story.ch01.awakening_jade",
+    "story.ch02.spirit_fox",
+    "story.ch03.bandit_end",
+    "story.ch04.ancient_seal",
+    "story.ch05.survival",
+    "story.ch06.lightning_step",
+    "story.ch07.forgotten_queen",
+    "story.ch08.corruption",
+    "story.ch09.guardians",
+    "story.ch10.epilogue"
+  ],
+  "checksum": "8b793339b9966f00"
+}

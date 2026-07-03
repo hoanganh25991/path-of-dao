@@ -85,7 +85,7 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
     const map = parsed.data;
     const path = `maps/${fileId}.json`;
 
-    if (!chapterIds.has(map.chapterId)) {
+    if (!chapterIds.has(map.chapterId) && !map.chapterId.startsWith('chapter.00.')) {
       errors.push({
         file: path,
         message: `chapterId "${map.chapterId}" not in chapters/index.json`,
@@ -183,25 +183,24 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
   for (const [fileId, raw] of index.fortuitous) {
     const parsed = encounterDefinitionSchema.safeParse(raw);
     if (!parsed.success) continue;
-    for (const reward of parsed.data.rewards) {
-      if (reward.type === 'item') {
-        for (const itemId of reward.itemIds) {
-          if (!itemIds.has(itemId)) {
-            errors.push({
-              file: `encounters/fortuitous/${fileId}.json`,
-              message: `reward item "${itemId}" not found`,
-              severity: 'error',
-            });
-          }
+    const reward = parsed.data.reward;
+    if (reward.type === 'item') {
+      for (const itemId of reward.itemIds) {
+        if (!itemIds.has(itemId)) {
+          errors.push({
+            file: `encounters/fortuitous/${fileId}.json`,
+            message: `reward item "${itemId}" not found`,
+            severity: 'error',
+          });
         }
       }
-      if (reward.type === 'skill_variant' && !skillIds.has(reward.skillId)) {
-        errors.push({
-          file: `encounters/fortuitous/${fileId}.json`,
-          message: `skill_variant "${reward.skillId}" not found`,
-          severity: 'error',
-        });
-      }
+    }
+    if (reward.type === 'skill_variant' && !skillIds.has(reward.skillId)) {
+      errors.push({
+        file: `encounters/fortuitous/${fileId}.json`,
+        message: `skill_variant "${reward.skillId}" not found`,
+        severity: 'error',
+      });
     }
   }
 

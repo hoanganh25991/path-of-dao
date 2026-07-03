@@ -37,5 +37,6 @@
   "map.heavenly_gate.01.name": "Celestial Steps",
   "map.heavenly_gate.02.name": "Gate of Dawn",
   "map.void_throne.01.name": "Throne Approach",
-  "map.void_throne.02.name": "Seat of the Dao"
+  "map.void_throne.02.name": "Seat of the Dao",
+  "map.test.grove.name": "Test Grove"
 }

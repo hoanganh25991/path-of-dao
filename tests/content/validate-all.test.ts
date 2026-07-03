@@ -4,21 +4,21 @@ import { lintCrossrefs } from '@/shared/content/lintCrossrefs';
 import { buildContentManifest } from '@/shared/content/packManifest';
 import { formatValidationReport } from '@/shared/content/types';
 import { validateAllContent } from '@/shared/content/validateAll';
-import { loadContentIndex } from '@/shared/content/validateSchemas';
+import { loadContentIndex, validateSchemas } from '@/shared/content/validateSchemas';
 
 describe('validateAllContent', () => {
   it('passes on current repo content', () => {
-    const report = validateAllContent();
+    const strictI18n = process.env.CONTENT_STRICT_I18N === '1';
+    const report = validateAllContent({ strictI18n });
     if (report.errors.length > 0) {
       console.error(formatValidationReport(report));
     }
     expect(report.errors).toEqual([]);
   });
 
-  it('reports schema errors for malformed fixture data', () => {
+  it('reports schema errors for malformed skill data', () => {
     const index = loadContentIndex();
     index.skills.set('broken.skill', { id: 'broken.skill', intent: 'fire' });
-    const { validateSchemas } = require('@/shared/content/validateSchemas') as typeof import('@/shared/content/validateSchemas');
     const report = validateSchemas(index);
     expect(report.errors.some((e) => e.file.includes('broken.skill'))).toBe(true);
   });

@@ -192,9 +192,9 @@ export class HeroViewer {
     this.torso = torso;
     this.root.add(torso);
 
-    // Front robe lapel (V collar) + glowing dantian core.
-    const lapel = new Mesh(new ConeGeometry(0.16, 0.34, 3, 1, true), robeDarkMat);
-    lapel.position.set(0, 0.74, 0.11);
+    // Neat V-collar + glowing dantian core.
+    const lapel = new Mesh(new ConeGeometry(0.1, 0.2, 3, 1, true), robeDarkMat);
+    lapel.position.set(0, 0.84, 0.14);
     lapel.rotation.x = Math.PI;
     this.root.add(lapel);
     const core = new Mesh(new SphereGeometry(0.055, 12, 12), coreMat);

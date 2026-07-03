@@ -95,7 +95,7 @@ export function loadContentIndex(): ContentIndex {
   };
 }
 
-function validateMap<K extends string>(
+function validateMap(
   report: ValidationReport,
   label: string,
   entries: Map<string, unknown>,

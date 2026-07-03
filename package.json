@@ -12,7 +12,9 @@
     "test:watch": "vitest",
     "cp:calc": "node tools/cp-calculator.mjs",
     "maps:stubs": "node tools/generate-map-stubs.mjs",
-    "story:stubs": "node tools/generate-story-stubs.mjs"
+    "story:stubs": "node tools/generate-story-stubs.mjs",
+    "content:validate": "node tools/content/validate-all.mjs",
+    "content:pack": "node tools/content/pack-manifest.mjs"
   },
   "engines": {
     "node": ">=20"
