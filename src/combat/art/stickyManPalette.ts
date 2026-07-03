@@ -7,16 +7,23 @@ export interface StickPalette {
   shadow: string;
   accent: string;
   highlight?: string;
+  /** Hero only — compact white crown hair (top of head, not long). */
+  hair?: string;
+  hairShadow?: string;
+  hairHi?: string;
 }
 
-/** Cultivator hero — teal robe, warm skin, gold sash. */
+/** Cultivator hero — slate-grey robe, warm skin, gold sash, white crown hair. */
 export const PALETTE_HERO: StickPalette = {
   outline: '#0c0c14',
   skin: '#ffd5a8',
-  fill: '#2a8a6a',
-  shadow: '#1a5a48',
-  accent: '#e8b830',
+  fill: '#b8c4d4',
+  shadow: '#687888',
+  accent: '#d4a840',
   highlight: '#fff8e8',
+  hair: '#f0f4f8',
+  hairShadow: '#a8b4c4',
+  hairHi: '#ffffff',
 };
 
 /** Slime minion — bright jelly green. */

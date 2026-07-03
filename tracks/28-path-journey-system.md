@@ -33,12 +33,15 @@ My Path = your auto-recorded road; Ancient Paths = authored roads to "learn from
 | Combat hook | `MapScene` exit zone routes path-walk clears through `PathWalkManager` (skips real save patch) |
 | Story hook | `StorySceneHost` with `pathWalk: true` advances walk without polluting player story progress |
 | Locale | `demo.path.*` follow strings (en/vi) |
-| Tests | `tests/unit/path-walk.test.ts` — map-only stops, story interleave, finish → home |
+| Tests | `tests/unit/path-walk.test.ts` — map-only stops, story interleave, finish → home; E2E guided walk in `journey-flow.spec.ts` |
 
 ### Verification (2026-07-03)
 
 - `npm run typecheck` clean
 - `npx vitest run` — **334 tests green** (incl. `path-walk.test.ts`, `journey-log.test.ts`)
+- E2E: Echoes **Follow Their Path** — `ancient.breakthrough_sage` (2 maps → ch1 story → Home); My Path journey length unchanged
+- E2E: Echoes **Walk Here** — god-mode combat, pause home restores Begin Journey
+- E2E: **sword ancestor** path — 3 boss maps with interleaved ch1/ch3/ch4 stories
 - Following a path visits each stop in order; mid-walk exit via `stopPathWalk` / `exitAncientDemo` restores real save
 - Demo walks never persist to IndexedDB or pollute My Path
 

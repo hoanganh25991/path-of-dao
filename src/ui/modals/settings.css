@@ -1,23 +1,27 @@
 .settings-modal {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  padding: max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
   pointer-events: auto;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.settings-modal--active {
-  opacity: 1;
+  isolation: isolate;
 }
 
 .settings-modal__backdrop {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.settings-modal--active .settings-modal__backdrop {
+  opacity: 1;
 }
 
 .settings-modal__card {
@@ -28,11 +32,22 @@
   gap: 1rem;
   padding: 1.25rem;
   max-width: 22rem;
-  width: calc(100% - 2rem);
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid rgba(201, 162, 39, 0.25);
   border-radius: 0.75rem;
-  background: rgba(20, 25, 35, 0.96);
+  background: #141923;
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.settings-modal--active .settings-modal__card {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .settings-modal__header {

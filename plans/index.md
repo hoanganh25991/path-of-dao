@@ -466,8 +466,8 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 - [x] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
 - [x] **New game starts unarmed** — punch/kick strike combo; no sword in weapon slot (T4, T1)
 - [x] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
-- [~] All 10 chapters playable with end-of-chapter story scene — flow wired; *Tiên Nghịch* tone pass on story JSON deferred
-- [~] 20 maps traversable from world map with difficulty hints; **Continue Journey** CTA on Play panel
+- [~] All 10 chapters playable with end-of-chapter story scene — **E2E fresh-save full road green**; *Tiên Nghịch* tone pass deferred
+- [~] 20 maps traversable from world map with difficulty hints; **Continue Journey** CTA + **E2E world map portal** green
 - [ ] 8 boss fights with distinct patterns
 - [~] 40 skills equippable; earned on road — all 10 explore clears + chapter/boss/level hooks wired; Sword Intent **gated** until ancient sword
 - [x] Insight meter visible; one awakening demonstrable per intent — Skills tab + awakening toast on Home
@@ -486,7 +486,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 ## 13. Next Step
 
-**Active thread:** Base flow — **384 unit + 30 E2E tests** (3 seeded ch6–7 cases deferred). Seeded 20-map road loop + **fresh-save full road loop ch1–10** (no dev seeds). Sub-plan **26** deferred (polish). Next: Echoes guided-path E2E; bugs/polish deferred.
+**Active thread:** Base flow **`[x]` signed off** — **384 unit + 37 E2E tests** (3 seeded ch6–7 deferred). Automated: full road, Echoes paths, world map + lock hints, **save reload**, settings version. Next: sub-plan **26** manual ship (Lighthouse, device FPS); bugs/polish deferred.
 
 Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
 

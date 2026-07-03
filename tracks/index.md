@@ -16,7 +16,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | In progress | **9** (incl. 26 — PWA foundation) |
 | Pending | **0** |
 | Cross-cutting | Tiên Nghịch alignment **8 / 8 open or partial** |
-| Active thread | **Base flow** — full road E2E + fresh-save ch1–10 loop (30 E2E) |
+| Active thread | **Base flow `[x]`** — 37 E2E automated sign-off |
 
 ### By phase
 
@@ -133,12 +133,25 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Active thread
 
-**Now:** Base flow — seeded 20-map road E2E + **fresh-save full road ch1–10** (Begin → epilogue → journey complete)  
-- **384 unit tests** · **30 E2E tests** (`npm run test:e2e`); 3 seeded ch6–7 cases known red — deferred
+**Base flow `[x]` signed off** (2026-07-03)
 
-**Next:** Echoes guided-path E2E; then **26** ship sign-off
+| Automated E2E | Coverage |
+|---------------|----------|
+| Fresh-save full road ch1–10 | Begin Journey → all maps/stories/skills → journey complete |
+| Echoes Follow Their Path | breakthrough sage (2 maps → story → Home) |
+| Echoes Walk Here | god-mode combat → pause home → real save restored |
+| Echoes sword ancestor path | 3 boss maps + 3 interleaved story beats |
+| World map portal | fresh save → Fallen Village node unlocked |
+| World map lock | ch2 region shows chapter gate + disabled Enter |
+| Save reload | ch1 explore clear → reload → Void Slash + Continue Journey |
+| Settings version | `0.1.0-mvp` in settings modal |
+| MVP smoke | boot → combat → vi locale |
 
-**Deferred:** story tone (T6), world copy (T5), boss pattern polish (23), audio OGG (25)
+- **384 unit tests** · **37 E2E tests** (`npm run test:e2e`); 3 seeded ch6–7 cases deferred
+
+**Next:** Sub-plan **26** manual ship checklist (Lighthouse, 30 FPS device, 10-min QA)
+
+**Deferred:** story tone (T6), world copy (T5), boss pattern polish (23), audio OGG (25), seeded ch6–7 E2E fixes
 
 ---
 

@@ -141,23 +141,24 @@ export class HeroViewer {
   }
 
   /**
-   * Stylised, "abstract" cultivator built from layered primitives: a flared
-   * robe skirt, tapered torso, flowing back-sash cape, gold trims, glowing
-   * dantian core, top-knot and headband. No textures / GLB required.
+   * Stylised cultivator built from layered primitives: flared robe skirt,
+   * tapered torso, back cape, gold trims, glowing dantian core. Colors match
+   * PALETTE_HERO in src/combat/art/stickyManPalette.ts.
    */
   private buildProceduralHero(): void {
     const robeMat = new MeshStandardMaterial({
-      color: 0x2f7d5a,
+      color: 0xb8c4d4,
       roughness: 0.5,
       metalness: 0.05,
-      emissive: 0x0b2a1e,
-      emissiveIntensity: 0.35,
+      emissive: 0x384858,
+      emissiveIntensity: 0.25,
     });
-    const robeDarkMat = new MeshStandardMaterial({ color: 0x1d5741, roughness: 0.6 });
-    const skinMat = new MeshStandardMaterial({ color: 0xf0d2a4, roughness: 0.55 });
-    const hairMat = new MeshStandardMaterial({ color: 0x23252e, roughness: 0.4 });
+    const robeDarkMat = new MeshStandardMaterial({ color: 0x687888, roughness: 0.6 });
+    const skinMat = new MeshStandardMaterial({ color: 0xffd5a8, roughness: 0.55 });
+    const eyeMat = new MeshStandardMaterial({ color: 0x0c0c14, roughness: 0.4 });
+    const hairMat = new MeshStandardMaterial({ color: 0xf0f4f8, roughness: 0.42 });
     const goldMat = new MeshStandardMaterial({
-      color: 0xd9b24c,
+      color: 0xd4a840,
       metalness: 0.7,
       roughness: 0.28,
       emissive: 0x3a2c08,
@@ -249,7 +250,7 @@ export class HeroViewer {
       else this.armR = arm;
     }
 
-    // Head group (neck, head, hair, top-knot, headband) — subtle nod.
+    // Head group (neck, head, gold band, white crown hair) — subtle nod.
     const headGroup = new Group();
     headGroup.position.y = 1.02;
 
@@ -260,30 +261,25 @@ export class HeroViewer {
     const head = new Mesh(new SphereGeometry(0.155, 16, 16), skinMat);
     headGroup.add(head);
 
-    // Eyes on the front (+Z) face.
     for (const sx of [-0.055, 0.055]) {
-      const eye = new Mesh(new SphereGeometry(0.02, 8, 8), hairMat);
+      const eye = new Mesh(new SphereGeometry(0.02, 8, 8), eyeMat);
       eye.position.set(sx, 0.0, 0.14);
       headGroup.add(eye);
     }
-
-    // Hair shell (back + top), leaving the face open.
-    const hair = new Mesh(new SphereGeometry(0.16, 16, 16), hairMat);
-    hair.scale.set(1, 1, 0.85);
-    hair.position.set(0, 0.02, -0.03);
-    headGroup.add(hair);
 
     const headband = new Mesh(new TorusGeometry(0.155, 0.018, 8, 20), goldMat);
     headband.position.y = 0.03;
     headband.rotation.x = Math.PI / 2;
     headGroup.add(headband);
 
-    const knotBase = new Mesh(new CylinderGeometry(0.04, 0.05, 0.05, 8), goldMat);
-    knotBase.position.y = 0.16;
-    headGroup.add(knotBase);
-    const knot = new Mesh(new SphereGeometry(0.06, 10, 10), hairMat);
-    knot.position.y = 0.22;
-    headGroup.add(knot);
+    const hairCap = new Mesh(new SphereGeometry(0.17, 12, 12), hairMat);
+    hairCap.scale.set(1.08, 0.52, 0.88);
+    hairCap.position.set(0, 0.05, -0.03);
+    headGroup.add(hairCap);
+
+    const hairCrown = new Mesh(new SphereGeometry(0.085, 10, 10), hairMat);
+    hairCrown.position.set(0, 0.17, -0.02);
+    headGroup.add(hairCrown);
 
     this.headGroup = headGroup;
     this.root.add(headGroup);
@@ -292,9 +288,9 @@ export class HeroViewer {
     const glow = new Mesh(
       new SphereGeometry(0.5, 16, 8),
       new MeshStandardMaterial({
-        color: 0x2f7d5a,
-        emissive: 0x1a4a38,
-        emissiveIntensity: 0.5,
+        color: 0xb8c4d4,
+        emissive: 0x687888,
+        emissiveIntensity: 0.35,
         transparent: true,
         opacity: 0.12,
         side: BackSide,

@@ -17,7 +17,7 @@
 | **Unified skeleton** | All characters share the same rig; slime = jelly overlay, archer = cape, boss = runes |
 | **Feet anchor** | Origin `(0.5, 1)` — locomotion bobs from ground |
 
-Distinct from generic stick figures: **joint dots** (shoulder, elbow, knee), **torso block**, **gold sash**, **neck connector**, and **body lean/shift** on attacks.
+Distinct from generic stick figures: **joint dots** (shoulder, elbow, knee), **torso block**, **gold sash**, **white crown hair** (top volume only — not long), and **body lean/shift** on attacks.
 
 ---
 
@@ -47,10 +47,13 @@ Spritesheets are generated in `registerStickyManAssets()` (BootScene) and rebuil
 |-------|-----|-----|
 | outline | `#0c0c14` | Limb stroke |
 | skin | `#ffd5a8` | Head, hands |
-| fill | `#2a8a6a` | Robe / torso |
-| shadow | `#1a5a48` | Robe shadow side |
-| accent | `#e8b830` | Belt, sword |
+| fill | `#b8c4d4` | Robe / torso (slate grey-blue) |
+| shadow | `#687888` | Robe shadow side |
+| accent | `#d4a840` | Belt, sword |
 | highlight | `#fff8e8` | Eye |
+| hair | `#f0f4f8` | Crown / top hair |
+| hairShadow | `#a8b4c4` | Hair fold |
+| hairHi | `#ffffff` | Hair highlight |
 
 ### Slime minion
 

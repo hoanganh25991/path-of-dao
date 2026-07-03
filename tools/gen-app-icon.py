@@ -28,12 +28,15 @@ VOID_MID = rgb('12182a')
 VOID_GLOW = rgb('1a2840')
 OUTLINE = rgb('0c0c14')
 SKIN = rgb('ffd5a8')
-FILL = rgb('2a8a6a')
-SHADOW = rgb('1a5a48')
-GOLD = rgb('e8b830')
+FILL = rgb('b8c4d4')
+SHADOW = rgb('687888')
+GOLD = rgb('d4a840')
 GOLD_HI = rgb('ffe878')
 WHITE = rgb('fff8e8')
 CYAN = rgb('3fd6e0')
+HAIR = rgb('f0f4f8')
+HAIR_SH = rgb('a8b4c4')
+HAIR_HI = rgb('ffffff')
 
 
 class Grid:
@@ -111,7 +114,6 @@ def draw_background(g):
 
     g.ring(cx, cy, 26, GOLD, 1)
     g.ring(cx, cy, 24, SHADOW, 1)
-    # dao compass ticks (N/E/S/W)
     for angle in (0, 90, 180, 270):
         rad = math.radians(angle)
         x0 = cx + math.sin(rad) * 22
@@ -120,10 +122,36 @@ def draw_background(g):
         y1 = cy - math.cos(rad) * 27
         g.line(x0, y0, x1, y1, GOLD_HI, 2)
 
-    # spirit motes
     for sx, sy in ((10, 14), (52, 18), (14, 50), (48, 46), (32, 8), (8, 32)):
         g.px(sx, sy, CYAN)
         g.px(sx + 1, sy, CYAN)
+
+
+def draw_hero_top_hair(g, cx, head_y, head_r):
+    """White crown puff on top of head — short volume, no long trail."""
+    for dy in range(-head_r - 3, -head_r):
+        layer = dy + head_r + 3
+        half_w = head_r + 1 - layer
+        for dx in range(-half_w, half_w + 1):
+            edge = abs(dx) == half_w or dy == -head_r - 3
+            if edge:
+                g.px(cx + dx, head_y + dy, OUTLINE)
+            elif dx <= -1:
+                g.px(cx + dx, head_y + dy, HAIR_SH)
+            elif dx >= 1:
+                g.px(cx + dx, head_y + dy, HAIR_HI)
+            else:
+                g.px(cx + dx, head_y + dy, HAIR)
+    g.px(cx, head_y - head_r - 4, HAIR_HI)
+    for dy in range(-head_r, 1):
+        for dx in range(-head_r, head_r + 1):
+            if dx * dx + dy * dy > head_r * head_r:
+                continue
+            if dx >= 2 and dy >= -2:
+                continue
+            if dy > -1 and abs(dx) > 2:
+                continue
+            g.px(cx + dx, head_y + dy, HAIR if dx >= -1 else HAIR_SH)
 
 
 def sticky_man(g, cx=32, top=14):
@@ -132,9 +160,7 @@ def sticky_man(g, cx=32, top=14):
     head_y = top + head_r
     shoulder_y = head_y + head_r + 2
     hip_y = shoulder_y + 12
-    foot_y = 58
 
-    # legs
     for sign, fill in ((-1, SHADOW), (1, FILL)):
         hx = cx + sign * 3
         knee = limb_end(hx, hip_y, sign * 10, 10)
@@ -144,16 +170,13 @@ def sticky_man(g, cx=32, top=14):
         g.line(knee[0], knee[1], foot[0], foot[1], OUTLINE, 4)
         g.line(knee[0], knee[1], foot[0], foot[1], fill, 2)
 
-    # back arm
     bk = limb_end(cx - 4, shoulder_y, -22, 8)
     g.line(cx - 4, shoulder_y, bk[0], bk[1], OUTLINE, 4)
     g.line(cx - 4, shoulder_y, bk[0], bk[1], SKIN, 2)
 
-    # torso + gold sash
     g.rect(cx - 4, shoulder_y, cx + 4, hip_y, FILL, OUTLINE)
     g.line(cx - 4, hip_y - 2, cx + 4, hip_y - 2, GOLD, 2)
 
-    # front arm + ancient sword
     fr = limb_end(cx + 4, shoulder_y, 35, 10)
     g.line(cx + 4, shoulder_y, fr[0], fr[1], OUTLINE, 4)
     g.line(cx + 4, shoulder_y, fr[0], fr[1], SKIN, 2)
@@ -162,15 +185,17 @@ def sticky_man(g, cx=32, top=14):
     g.line(fr[0], fr[1], tip[0], tip[1], GOLD_HI, 1)
     g.px(tip[0], tip[1], WHITE)
 
-    # sword intent arc
     for i in range(12):
         a = math.radians(20 + i * 4)
         sx = tip[0] + math.cos(a) * (3 + i * 0.4)
         sy = tip[1] - math.sin(a) * (3 + i * 0.4)
         g.px(sx, sy, CYAN if i % 3 else WHITE)
 
-    # head
     g.disc(cx, head_y, head_r, SKIN, OUTLINE)
+    band_y = head_y - 2
+    for dx in range(-3, 4):
+        g.px(cx + dx, band_y, GOLD if dx != 0 else GOLD_HI)
+    draw_hero_top_hair(g, cx, head_y, head_r)
     g.px(cx + 2, head_y - 1, OUTLINE)
     g.px(cx + 1, head_y - 1, WHITE)
 

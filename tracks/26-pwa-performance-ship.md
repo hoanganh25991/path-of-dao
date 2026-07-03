@@ -19,6 +19,7 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 - **Build** — manual chunks (`phaser`, `three`, `vendor`); build + SW generation green
 - **CI** — unit job + **e2e job** (Playwright chromium)
 - **E2E smoke** — `tests/e2e/smoke.spec.ts`: boot → **Continue Journey** → combat → home → Continue again → vi locale
+- **E2E base flow** — `tests/e2e/journey-flow.spec.ts`: fresh-save ch1–10 road, Echoes paths, world map lock/reload/version (**37 E2E total**)
 - **ErrorReporter** — client error ring buffer stub
 - **SHIP_CHECKLIST** — [docs/SHIP_CHECKLIST.md](../docs/SHIP_CHECKLIST.md)
 - **Tests** — **351 unit + 1 e2e green**

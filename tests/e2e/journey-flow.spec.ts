@@ -116,6 +116,55 @@ async function departClearedMap(page: import('@playwright/test').Page, mapId: st
   await dismissEncounters(page);
 }
 
+/** Exit a cleared map during an Echoes guided path (combat → combat/story/home). */
+async function departPathWalkMap(
+  page: import('@playwright/test').Page,
+  expectNext: 'combat' | 'story' | 'home',
+): Promise<void> {
+  await dismissEncounters(page);
+  await requestMapExit(page, true);
+
+  if (expectNext === 'combat') {
+    await waitForCombatCanvas(page);
+    return;
+  }
+
+  await waitForHomeOrStory(page, 20_000);
+
+  if (expectNext === 'story') {
+    await expect(page.getByTestId('story-reader')).toBeVisible({ timeout: 20_000 });
+    return;
+  }
+
+  await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+}
+
+async function getJourneyLength(page: import('@playwright/test').Page): Promise<number> {
+  return page.evaluate(() => {
+    const store = (window as unknown as {
+      __gameStore: { getState: () => { save: { progress: { journey: unknown[] } } | null } };
+    }).__gameStore;
+    return store.getState().save?.progress.journey?.length ?? 0;
+  });
+}
+
+async function returnHomeViaPause(page: import('@playwright/test').Page): Promise<void> {
+  await page.getByTestId('combat-pause-btn').click();
+  await expect(page.getByTestId('combat-pause-menu')).toBeVisible();
+  await page.getByRole('button', { name: 'Return Home' }).click();
+  await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+}
+
+async function openEchoesAncientModal(
+  page: import('@playwright/test').Page,
+  ancientId: string,
+): Promise<void> {
+  await page.getByRole('tab', { name: 'Echoes' }).click();
+  await expect(page.getByTestId('home-echoes')).toBeVisible();
+  await page.locator(`[data-ancient-id="${ancientId}"]`).click();
+  await expect(page.getByTestId('ancient-demo-modal')).toBeVisible({ timeout: 10_000 });
+}
+
 /** Advance through story slides via Continue / tap (Skip is visible-but-disabled on short scenes). */
 async function finishStoryReader(page: import('@playwright/test').Page): Promise<void> {
   await expect(page.getByTestId('story-reader')).toBeVisible({ timeout: 10_000 });
@@ -602,7 +651,7 @@ test.describe('Fresh save', () => {
       const step = FRESH_CHAPTER_STEPS[i]!;
       await runFreshChapter(page, step, i === 0);
 
-      if (step.nextRegionHint) {
+      if ('nextRegionHint' in step && step.nextRegionHint) {
         await openPlayPanel(page);
         await expect(page.getByTestId('continue-journey-hint')).toContainText(step.nextRegionHint);
       }
@@ -619,5 +668,138 @@ test.describe('Fresh save', () => {
     for (const skillId of exploreSkills) {
       await expectSkillUnlocked(page, skillId);
     }
+  });
+});
+
+test.describe('Echoes guided path', () => {
+  test('Follow Their Path walks breakthrough sage road without polluting My Path', async ({ page }) => {
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    const journeyBefore = await getJourneyLength(page);
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Begin Journey');
+
+    await openEchoesAncientModal(page, 'ancient.breakthrough_sage');
+    await page.getByRole('button', { name: 'Follow Their Path' }).click();
+
+    await waitForCombatCanvas(page);
+    await expect(page.getByTestId('ancient-echo-banner')).toBeVisible();
+
+    await departPathWalkMap(page, 'combat');
+    await departPathWalkMap(page, 'story');
+
+    await finishStoryReader(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    expect(await getJourneyLength(page)).toBe(journeyBefore);
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Begin Journey');
+  });
+
+  test('Walk Here enters god-mode combat and exit restores real save', async ({ page }) => {
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    const journeyBefore = await getJourneyLength(page);
+
+    await openEchoesAncientModal(page, 'ancient.breakthrough_sage');
+    await page.getByRole('button', { name: 'Walk Here' }).click();
+
+    await waitForCombatCanvas(page);
+    await expect(page.getByTestId('ancient-echo-banner')).toBeVisible();
+    await returnHomeViaPause(page);
+
+    expect(await getJourneyLength(page)).toBe(journeyBefore);
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Begin Journey');
+  });
+
+  test('sword ancestor path interleaves three story beats across three boss maps', async ({ page }) => {
+    test.setTimeout(180_000);
+
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    const journeyBefore = await getJourneyLength(page);
+
+    await openEchoesAncientModal(page, 'ancient.sword_ancestor');
+    await page.getByRole('button', { name: 'Follow Their Path' }).click();
+
+    await waitForCombatCanvas(page);
+    await expect(page.getByTestId('ancient-echo-banner')).toBeVisible();
+
+    await departPathWalkMap(page, 'story');
+    await finishStoryReader(page);
+    await waitForCombatCanvas(page);
+
+    await departPathWalkMap(page, 'story');
+    await finishStoryReader(page);
+    await waitForCombatCanvas(page);
+
+    await departPathWalkMap(page, 'story');
+    await finishStoryReader(page);
+
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+    expect(await getJourneyLength(page)).toBe(journeyBefore);
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Begin Journey');
+  });
+});
+
+test.describe('Base flow sign-off', () => {
+  test('fresh save opens world map portal with first region unlocked', async ({ page }) => {
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    await page.getByTestId('map-portal-btn').click();
+    await expect(page.getByTestId('world-map')).toBeVisible();
+    await expect(page.getByTestId('world-map-node-map.fallen_village.01')).toBeVisible();
+  });
+
+  test('locked region explains chapter gate on fresh save', async ({ page }) => {
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    await page.getByTestId('map-portal-btn').click();
+    await expect(page.getByTestId('world-map')).toBeVisible();
+    await page.getByTestId('world-map-node-map.mist_forest.01').click();
+
+    await expect(page.getByTestId('world-map-detail')).toBeVisible();
+    await expect(page.getByTestId('world-map-detail')).toContainText('Complete the previous chapter first');
+    await expect(page.getByRole('button', { name: 'Enter' })).toBeDisabled();
+  });
+
+  test('reload restores progress after ch1 explore clear', async ({ page }) => {
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    await page.getByTestId('continue-journey-btn').click();
+    await waitForCombatCanvas(page);
+    await dismissEncounters(page);
+    await departClearedMap(page, 'map.fallen_village.01');
+
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+    await expectSkillUnlocked(page, 'skill.void.slash');
+
+    await page.reload();
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    await expectSkillUnlocked(page, 'skill.void.slash');
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Continue Journey');
+    await expect(page.getByTestId('continue-journey-hint')).toContainText('Ruined Shrine');
+  });
+
+  test('settings shows MVP version string', async ({ page }) => {
+    await page.goto('/');
+    await dismissAudioUnlock(page);
+    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+
+    await page.locator('.home-profile__settings').click();
+    await expect(page.locator('[data-testid="settings-modal"]')).toBeVisible();
+    await expect(page.locator('.settings-modal__version')).toContainText('0.1.0-mvp');
   });
 });

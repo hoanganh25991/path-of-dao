@@ -8,14 +8,14 @@ Manual QA script for [plans/index.md §12](../plans/index.md). Run on a mid-rang
 - [ ] Audio unlock overlay appears once; tap dismisses it
 - [ ] Home 3D shrine renders; profile header shows realm / CP
 - [ ] PWA installable (Add to Home Screen / Install app)
-- [ ] Settings shows version `0.1.0-mvp`
+- [ ] Settings shows version `0.1.0-mvp` *(E2E automated)*
 
 ## Core loop
 
 - [ ] Play → Map Portal → enter ch1 map → combat loads
 - [ ] Move, attack, dodge, cast skills on touch controls
 - [ ] Walk to EXIT zone → returns Home; progress autosaves
-- [ ] World map shows difficulty badge; locked maps explain why
+- [ ] World map shows difficulty badge; locked maps explain why *(E2E chapter gate on ch2)*
 - [ ] Pause / resume app (background tab) without crash
 
 ## Progression
@@ -28,15 +28,15 @@ Manual QA script for [plans/index.md §12](../plans/index.md). Run on a mid-rang
 
 ## Echoes & Path
 
-- [ ] Echoes tab lists six ancients; Walk Here enters god-mode combat
-- [ ] Follow Their Path walks maps in order with story beats
-- [ ] Exit demo restores real save
+- [x] Echoes tab lists six ancients; Walk Here enters god-mode combat *(E2E automated)*
+- [x] Follow Their Path walks maps in order with story beats *(E2E: breakthrough sage + sword ancestor)*
+- [x] Exit demo restores real save *(E2E automated)*
 
 ## Content (spot-check)
 
-- [ ] Chapter 1 story plays after clearing ordeal map
-- [ ] Story replay from My Path works
-- [ ] vi locale: bottom nav, world map, settings readable (no overflow)
+- [x] Chapter 1 story plays after clearing ordeal map *(E2E fresh-save road)*
+- [x] Story replay from My Path works *(E2E journey-flow)*
+- [ ] vi locale: bottom nav, world map, settings readable (no overflow) *(smoke covers nav switch)*
 
 ## Performance & quality
 
@@ -47,8 +47,8 @@ Manual QA script for [plans/index.md §12](../plans/index.md). Run on a mid-rang
 
 ## Save
 
-- [ ] Autosave on map exit
-- [ ] Reload page restores position / stats
+- [ ] Autosave on map exit *(E2E fresh-save road)*
+- [x] Reload page restores position / stats *(E2E ch1 explore → reload)*
 - [ ] Export / import JSON (if exposed in UI) or verify IndexedDB slot
 
 ## Sign-off
