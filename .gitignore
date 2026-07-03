@@ -10,4 +10,4 @@ playwright-report
 !.cursor/rules/
 !plans/
 !tracks/
-dist/
+!dist/

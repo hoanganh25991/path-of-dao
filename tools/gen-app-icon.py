@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generate Path of Dao app icons (PWA + Google Play hi-res).
 
-Pixel-art cultivator + ancient sword on a void background, matching
-sticky-man palettes from src/combat/art/stickyManPalette.ts.
+Pixel-art unarmed cultivator (mortal start — no weapon) on a void background.
+Matches sticky-man palettes from src/combat/art/stickyManPalette.ts.
 
 Run:  python3 tools/gen-app-icon.py
 Writes: public/favicon.ico, public/icons/icon-192.png, public/icons/icon-512.png
@@ -155,7 +155,7 @@ def draw_hero_top_hair(g, cx, head_y, head_r):
 
 
 def sticky_man(g, cx=32, top=14):
-    """Hero cultivator facing right, holding ancient sword."""
+    """Unarmed cultivator facing right — jab pose, empty hands."""
     head_r = 5
     head_y = top + head_r
     shoulder_y = head_y + head_r + 2
@@ -170,26 +170,27 @@ def sticky_man(g, cx=32, top=14):
         g.line(knee[0], knee[1], foot[0], foot[1], OUTLINE, 4)
         g.line(knee[0], knee[1], foot[0], foot[1], fill, 2)
 
-    bk = limb_end(cx - 4, shoulder_y, -22, 8)
-    g.line(cx - 4, shoulder_y, bk[0], bk[1], OUTLINE, 4)
-    g.line(cx - 4, shoulder_y, bk[0], bk[1], SKIN, 2)
+    # Back arm — relaxed guard at side.
+    bk_elbow = limb_end(cx - 4, shoulder_y, -18, 9)
+    bk_fist = limb_end(bk_elbow[0], bk_elbow[1], -8, 7)
+    g.line(cx - 4, shoulder_y, bk_elbow[0], bk_elbow[1], OUTLINE, 4)
+    g.line(cx - 4, shoulder_y, bk_elbow[0], bk_elbow[1], SKIN, 2)
+    g.line(bk_elbow[0], bk_elbow[1], bk_fist[0], bk_fist[1], OUTLINE, 3)
+    g.line(bk_elbow[0], bk_elbow[1], bk_fist[0], bk_fist[1], SKIN, 2)
 
     g.rect(cx - 4, shoulder_y, cx + 4, hip_y, FILL, OUTLINE)
     g.line(cx - 4, hip_y - 2, cx + 4, hip_y - 2, GOLD, 2)
 
-    fr = limb_end(cx + 4, shoulder_y, 35, 10)
-    g.line(cx + 4, shoulder_y, fr[0], fr[1], OUTLINE, 4)
-    g.line(cx + 4, shoulder_y, fr[0], fr[1], SKIN, 2)
-    tip = limb_end(fr[0], fr[1], 28, 18)
-    g.line(fr[0], fr[1], tip[0], tip[1], GOLD, 3)
-    g.line(fr[0], fr[1], tip[0], tip[1], GOLD_HI, 1)
-    g.px(tip[0], tip[1], WHITE)
-
-    for i in range(12):
-        a = math.radians(20 + i * 4)
-        sx = tip[0] + math.cos(a) * (3 + i * 0.4)
-        sy = tip[1] - math.sin(a) * (3 + i * 0.4)
-        g.px(sx, sy, CYAN if i % 3 else WHITE)
+    # Front arm — forward jab (unarmed strike).
+    fr_elbow = limb_end(cx + 4, shoulder_y, 28, 10)
+    fr_fist = limb_end(fr_elbow[0], fr_elbow[1], -42, 9)
+    g.line(cx + 4, shoulder_y, fr_elbow[0], fr_elbow[1], OUTLINE, 4)
+    g.line(cx + 4, shoulder_y, fr_elbow[0], fr_elbow[1], SKIN, 2)
+    g.line(fr_elbow[0], fr_elbow[1], fr_fist[0], fr_fist[1], OUTLINE, 4)
+    g.line(fr_elbow[0], fr_elbow[1], fr_fist[0], fr_fist[1], SKIN, 2)
+    g.px(fr_fist[0], fr_fist[1], OUTLINE)
+    g.px(fr_fist[0] + 1, fr_fist[1], SKIN)
+    g.px(fr_fist[0], fr_fist[1] + 1, SKIN)
 
     g.disc(cx, head_y, head_r, SKIN, OUTLINE)
     band_y = head_y - 2

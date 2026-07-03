@@ -1,0 +1,209 @@
+/**
+ * Copyright 2018 Google Inc. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// If the loader is already loaded, just stop.
+if (!self.define) {
+  let registry = {};
+
+  // Used for `eval` and `importScripts` where we can't get script URL by other means.
+  // In both cases, it's safe to use a global var because those functions are synchronous.
+  let nextDefineUri;
+
+  const singleRequire = (uri, parentUri) => {
+    uri = new URL(uri + ".js", parentUri).href;
+    return registry[uri] || (
+      
+        new Promise(resolve => {
+          if ("document" in self) {
+            const script = document.createElement("script");
+            script.src = uri;
+            script.onload = resolve;
+            document.head.appendChild(script);
+          } else {
+            nextDefineUri = uri;
+            importScripts(uri);
+            resolve();
+          }
+        })
+      
+      .then(() => {
+        let promise = registry[uri];
+        if (!promise) {
+          throw new Error(`Module ${uri} didn’t register its module`);
+        }
+        return promise;
+      })
+    );
+  };
+
+  self.define = (depsNames, factory) => {
+    const uri = nextDefineUri || ("document" in self ? document.currentScript.src : "") || location.href;
+    if (registry[uri]) {
+      // Module is already loading or loaded.
+      return;
+    }
+    let exports = {};
+    const require = depUri => singleRequire(depUri, uri);
+    const specialDeps = {
+      module: { uri },
+      exports,
+      require
+    };
+    registry[uri] = Promise.all(depsNames.map(
+      depName => specialDeps[depName] || require(depName)
+    )).then(deps => {
+      factory(...deps);
+      return exports;
+    });
+  };
+}
+define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
+
+  self.skipWaiting();
+  workbox.clientsClaim();
+  /**
+   * The precacheAndRoute() method efficiently caches and responds to
+   * requests for URLs in the manifest.
+   * See https://goo.gl/S9QRab
+   */
+  workbox.precacheAndRoute([{
+    "url": "manifest.json",
+    "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"
+  }, {
+    "url": "index.html",
+    "revision": "ad19de4d76d52e47ad479fe2cbe26ff1"
+  }, {
+    "url": "favicon.ico",
+    "revision": "6548705067d6029085bc96c7c39295c5"
+  }, {
+    "url": "icons/icon-512.png",
+    "revision": "34483a9661849eb779865cdc85a54f4d"
+  }, {
+    "url": "icons/icon-192.png",
+    "revision": "58aaff806406e196437205978890a7b3"
+  }, {
+    "url": "assets/void_throne-02-DeKc9OKd.json",
+    "revision": null
+  }, {
+    "url": "assets/void_throne-01-BVfMeWSU.json",
+    "revision": null
+  }, {
+    "url": "assets/virtual_pwa-register-CFSLzS4H.js",
+    "revision": null
+  }, {
+    "url": "assets/vendor-BFYH1q1c.js",
+    "revision": null
+  }, {
+    "url": "assets/thunder_peaks-02-9m3ZwlBZ.json",
+    "revision": null
+  }, {
+    "url": "assets/thunder_peaks-01-nEfeGeDs.json",
+    "revision": null
+  }, {
+    "url": "assets/three-CENNe__j.js",
+    "revision": null
+  }, {
+    "url": "assets/test-grove-BmjgbXKt.json",
+    "revision": null
+  }, {
+    "url": "assets/stone_canyon-02-DVtARLaN.json",
+    "revision": null
+  }, {
+    "url": "assets/stone_canyon-01-Dl_t9YFK.json",
+    "revision": null
+  }, {
+    "url": "assets/spirit_beast-DulYBVVe.png",
+    "revision": null
+  }, {
+    "url": "assets/secret_manual-CScs60z0.png",
+    "revision": null
+  }, {
+    "url": "assets/phaser-B0p4fdBD.js",
+    "revision": null
+  }, {
+    "url": "assets/moon_lake-02-CJllduBG.json",
+    "revision": null
+  }, {
+    "url": "assets/moon_lake-01-D_Ba-jjC.json",
+    "revision": null
+  }, {
+    "url": "assets/mist_forest-02-DL9uWz8Q.json",
+    "revision": null
+  }, {
+    "url": "assets/mist_forest-01-DjprCa2T.json",
+    "revision": null
+  }, {
+    "url": "assets/index-D8KUuf-o.css",
+    "revision": null
+  }, {
+    "url": "assets/index-B4YMML9Q.js",
+    "revision": null
+  }, {
+    "url": "assets/hidden_cave-B3gJzmH4.png",
+    "revision": null
+  }, {
+    "url": "assets/heavenly_gate-02-DMLo-IKJ.json",
+    "revision": null
+  }, {
+    "url": "assets/heavenly_gate-01-D5TS1g6a.json",
+    "revision": null
+  }, {
+    "url": "assets/frozen_palace-02-RPlbZsBJ.json",
+    "revision": null
+  }, {
+    "url": "assets/frozen_palace-01-CSpjBb3C.json",
+    "revision": null
+  }, {
+    "url": "assets/forgotten_memory-DIUJcbN9.png",
+    "revision": null
+  }, {
+    "url": "assets/fallen_village-02-C3wNAUc3.json",
+    "revision": null
+  }, {
+    "url": "assets/fallen_village-01-DZ3_n6ln.json",
+    "revision": null
+  }, {
+    "url": "assets/burning_desert-02-DQcmNDwd.json",
+    "revision": null
+  }, {
+    "url": "assets/burning_desert-01-t9QqTnnp.json",
+    "revision": null
+  }, {
+    "url": "assets/ancient_sword-C5uOUtmA.png",
+    "revision": null
+  }, {
+    "url": "assets/ancient_inheritance-CItgCV1O.png",
+    "revision": null
+  }, {
+    "url": "assets/abyss_rift-02-Bej9WbyQ.json",
+    "revision": null
+  }, {
+    "url": "assets/abyss_rift-01-C2RpngPA.json",
+    "revision": null
+  }, {
+    "url": "favicon.ico",
+    "revision": "6548705067d6029085bc96c7c39295c5"
+  }, {
+    "url": "icons/icon-192.png",
+    "revision": "58aaff806406e196437205978890a7b3"
+  }, {
+    "url": "icons/icon-512.png",
+    "revision": "34483a9661849eb779865cdc85a54f4d"
+  }, {
+    "url": "manifest.json",
+    "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"
+  }], {});
+  workbox.cleanupOutdatedCaches();
+  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/path-of-dao/index.html")));
+
+}));
