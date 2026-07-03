@@ -155,7 +155,7 @@ export class CombatComponent {
       .image(
         Math.round(sprite.x + facing * (SLASH_OFFSET_PX + reach * 0.35)),
         Math.round(sprite.y + yOffset),
-        VFX_TEXTURE_KEYS.impactBurst,
+        VFX_TEXTURE_KEYS.spark,
       )
       .setFlipX(facing < 0)
       .setOrigin(0.5)

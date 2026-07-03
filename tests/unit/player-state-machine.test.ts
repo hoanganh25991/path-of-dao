@@ -47,7 +47,23 @@ describe('PlayerStateMachine', () => {
     advance(ATTACK_STEP_DURATIONS_MS[1] + 20);
     expect(sm.tryAttack()).toBe(3);
     advance(ATTACK_STEP_DURATIONS_MS[2] + 20);
-    expect(sm.tryAttack()).toBe(1); // after step 3 the chain restarts
+    expect(sm.tryAttack()).toBe(1);
+  });
+
+  it('cycles heavy finisher variant on each step-3 attack', () => {
+    expect(sm.tryAttack()).toBe(1);
+    advance(ATTACK_STEP_DURATIONS_MS[0] + 20);
+    expect(sm.tryAttack()).toBe(2);
+    advance(ATTACK_STEP_DURATIONS_MS[1] + 20);
+    expect(sm.tryAttack()).toBe(3);
+    expect(sm.heavyFinisherVariant).toBe(0);
+    advance(ATTACK_STEP_DURATIONS_MS[2] + 20);
+    expect(sm.tryAttack()).toBe(1);
+    advance(ATTACK_STEP_DURATIONS_MS[0] + 20);
+    expect(sm.tryAttack()).toBe(2);
+    advance(ATTACK_STEP_DURATIONS_MS[1] + 20);
+    expect(sm.tryAttack()).toBe(3);
+    expect(sm.heavyFinisherVariant).toBe(1);
   });
 
   it('resets the combo after 700ms of no attack', () => {

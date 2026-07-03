@@ -778,12 +778,13 @@ export const POSES_WALK: StickPose[] = [
 
 export const POSES_ATTACK_1: StickPose[] = [
   {
-    lean: 4,
+    lean: -5,
+    shiftX: -4,
     limbs: { armBack: seg(-52, -42), armFront: seg(48, 38), legBack: seg(-16, -10), legFront: seg(10, 6) },
   },
-  { limbs: { armBack: seg(-8, -5), armFront: seg(45, 35), legBack: seg(-14, -8), legFront: seg(12, 8) } },
-  { lean: -5, limbs: { armBack: seg(5, 10), armFront: seg(-58, -48), legBack: seg(-10, -6), legFront: seg(16, 10) } },
-  { limbs: { armBack: seg(-12, -8), armFront: seg(-40, -30), legBack: seg(-12, -8), legFront: seg(10, 6) } },
+  { lean: 6, shiftX: 4, limbs: { armBack: seg(-8, -5), armFront: seg(45, 35), legBack: seg(-14, -8), legFront: seg(12, 8) } },
+  { lean: 8, shiftX: 5, limbs: { armBack: seg(5, 10), armFront: seg(-58, -48), legBack: seg(-10, -6), legFront: seg(16, 10) } },
+  { lean: 2, shiftX: 1, limbs: { armBack: seg(-12, -8), armFront: seg(-40, -30), legBack: seg(-12, -8), legFront: seg(10, 6) } },
 ];
 
 export const POSES_ATTACK_2: StickPose[] = [
