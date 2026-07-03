@@ -18,3 +18,14 @@ export function getDifficultyTier(playerCp: number, mapRecommendedCp: number): D
 export function difficultyTierLabelKey(tier: DifficultyTier): string {
   return `difficulty.${tier}`;
 }
+
+export function createDifficultyBadgeElement(
+  tier: DifficultyTier,
+  label: string,
+): HTMLElement {
+  const el = document.createElement('span');
+  el.className = `difficulty-badge difficulty-badge--${tier}`;
+  el.dataset.tier = tier;
+  el.textContent = label;
+  return el;
+}

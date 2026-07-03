@@ -1,0 +1,27 @@
+{
+  "id": "story.ch05.survival",
+  "chapterId": "chapter.05.burning_desert",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch05.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch05.slide02",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    {
+      "type": "spirit",
+      "amount": 45
+    },
+    {
+      "type": "gold",
+      "amount": 100
+    }
+  ],
+  "unlockChapter": "chapter.06.thunder_peaks"
+}

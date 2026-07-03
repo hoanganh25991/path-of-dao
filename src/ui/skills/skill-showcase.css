@@ -90,3 +90,30 @@
 .skill-showcase--compact .skill-showcase__desc {
   display: none;
 }
+
+.skill-icon-strip {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.skill-icon-strip__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.skill-icon-strip__icon--awakened {
+  border-color: rgba(255, 220, 120, 0.45);
+  box-shadow: 0 0 8px rgba(255, 220, 120, 0.15);
+}
+
+.skill-icon-strip__icon .skill-btn__icon {
+  font-size: 0.95rem;
+}

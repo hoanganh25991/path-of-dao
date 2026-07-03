@@ -1,0 +1,26 @@
+{
+  "id": "story.ch01.awakening_jade",
+  "chapterId": "chapter.01.fallen_village",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch01.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch01.slide02",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch01.slide03",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    { "type": "item", "id": "item.spirit.jade", "qty": 1 },
+    { "type": "spirit", "amount": 30 }
+  ],
+  "unlockChapter": "chapter.02.mist_forest"
+}

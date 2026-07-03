@@ -1,0 +1,27 @@
+{
+  "id": "story.ch06.lightning_step",
+  "chapterId": "chapter.06.thunder_peaks",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch06.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch06.slide02",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    {
+      "type": "spirit",
+      "amount": 50
+    },
+    {
+      "type": "gold",
+      "amount": 110
+    }
+  ],
+  "unlockChapter": "chapter.07.frozen_palace"
+}

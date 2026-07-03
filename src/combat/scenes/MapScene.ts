@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { SceneRouter } from '@/app/SceneRouter';
 import { gameStore } from '@/core/store/gameStore';
+import { applyMapClearPatch } from '@/progression/ChapterManager';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { applyAncientGodMode, isAncientCombatActive } from '@/progression/AncientCombatMode';
@@ -214,6 +215,22 @@ export class MapScene extends Phaser.Scene {
       if (this.exiting) return;
       this.exiting = true;
       this.persistRuntime();
+
+      const wavesCleared =
+        !this.spawnManager || this.spawnManager.isEncounterComplete();
+      const save = gameStore.getState().save;
+      if (save) {
+        const { patch, result } = applyMapClearPatch(save, this.mapId, wavesCleared);
+        if (Object.keys(patch).length > 0) {
+          gameStore.getState().patch(patch);
+          void gameStore.getState().persist();
+        }
+        if (result.pendingStory) {
+          void SceneRouter.instance.switchTo('story', result.pendingStory);
+          return;
+        }
+      }
+
       void SceneRouter.instance.switchTo('home');
     });
   }

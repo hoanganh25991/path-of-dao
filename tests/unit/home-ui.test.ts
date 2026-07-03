@@ -95,6 +95,11 @@ describe('HomeUI', () => {
     expect(HomeUI.getActiveTab()).toBe('echoes');
     expect(uiRoot.querySelector('[data-testid="home-echoes"]')).toBeTruthy();
     expect(uiRoot.querySelector('.home-play__echoes')).toBeNull();
+
+    const card = uiRoot.querySelector('.home-ancient-card');
+    expect(card?.querySelector('.skill-icon-strip')).toBeTruthy();
+    expect(card?.querySelector('.skill-showcase')).toBeNull();
+    expect(card?.querySelector('.home-ancient-card__teaser')).toBeNull();
   });
 
   it('profile header shows combat power from save stats', () => {

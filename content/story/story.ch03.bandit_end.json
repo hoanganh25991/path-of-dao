@@ -1,0 +1,27 @@
+{
+  "id": "story.ch03.bandit_end",
+  "chapterId": "chapter.03.stone_canyon",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch03.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch03.slide02",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    {
+      "type": "spirit",
+      "amount": 35
+    },
+    {
+      "type": "gold",
+      "amount": 80
+    }
+  ],
+  "unlockChapter": "chapter.04.moon_lake"
+}

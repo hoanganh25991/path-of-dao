@@ -211,22 +211,51 @@ function drawHead(
   headY: number,
   headR: number,
   palette: StickPalette,
+  variant: 'hero' | 'slime' | 'archer' | 'boss' = 'hero',
 ): void {
   const r = headR;
+  // Round head. Convention: front (+X) is lit, back (−X) is core shadow, with a
+  // selective outline that softens on the lit top-front edge.
   for (let dy = -r; dy <= r; dy++) {
     for (let dx = -r; dx <= r; dx++) {
       if (dx * dx + dy * dy <= r * r) {
         const dist = Math.hypot(dx, dy);
-        const color =
-          dist >= r - 0.5 ? palette.outline : dx <= -1 ? palette.shadow : palette.skin;
+        let color: string;
+        if (dist >= r - 0.5) {
+          color = dx >= 1 && dy <= 0 ? palette.skin : palette.outline; // sel-out on lit edge
+        } else if (dx >= 1 && dy <= 0) {
+          color = palette.highlight ?? palette.skin; // lit forehead/cheek
+        } else if (dx <= -2) {
+          color = palette.shadow; // back-of-head shadow
+        } else {
+          color = palette.skin;
+        }
         px(ctx, cx + dx, headY + dy, color);
       }
     }
   }
-  // Eyes (2 px, facing +X)
+
+  // Cultivator identity: gold headband + topknot (humanoid variants only).
+  if (variant === 'hero' || variant === 'archer') {
+    const bandY = headY - Math.round(r * 0.4);
+    for (let dx = -r + 1; dx <= r - 1; dx++) {
+      if (dx * dx + (bandY - headY) * (bandY - headY) <= (r - 0.6) * (r - 0.6)) {
+        px(ctx, cx + dx, bandY, dx <= -1 ? palette.accent : palette.accent);
+      }
+    }
+    px(ctx, cx, bandY, palette.highlight ?? palette.accent);
+  }
+  if (variant === 'hero') {
+    px(ctx, cx - 1, headY - r - 1, palette.accent);
+    px(ctx, cx, headY - r - 1, palette.accent);
+    px(ctx, cx, headY - r - 2, palette.highlight ?? palette.accent);
+  }
+
+  // Brow + eye, facing +X (kept below the headband).
+  px(ctx, cx + 1, headY - 1, palette.outline);
   px(ctx, cx + 2, headY - 1, palette.outline);
-  px(ctx, cx + 3, headY - 1, palette.highlight ?? palette.outline);
-  px(ctx, cx + 2, headY, palette.outline);
+  px(ctx, cx + 2, headY + 1, palette.outline);
+  px(ctx, cx + 3, headY, palette.highlight ?? palette.skin);
 }
 
 function drawBossRunes(
@@ -351,7 +380,7 @@ export function drawStickyFrame(
   );
 
   // --- head ---
-  drawHead(ctx, cx + Math.round(lean * 0.15), headY, scale.headR, palette);
+  drawHead(ctx, cx + Math.round(lean * 0.15), headY, scale.headR, palette, variant);
 
   // --- props ---
   if (pose.prop === 'sword') {

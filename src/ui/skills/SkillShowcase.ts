@@ -12,6 +12,24 @@ function skillDescKey(nameKey: string): string {
   return nameKey.endsWith('.name') ? nameKey.replace(/\.name$/, '.desc') : `${nameKey}.desc`;
 }
 
+/** Icon-only strip for compact ancient echo list rows. */
+export function createSkillIconStrip(loadout: EquippedSkills): HTMLElement {
+  const strip = document.createElement('div');
+  strip.className = 'skill-icon-strip';
+
+  for (const slot of SKILL_SLOTS) {
+    const skillId = loadout[slot];
+    const icon = document.createElement('span');
+    icon.className = 'skill-icon-strip__icon';
+    if (isAwakenedSkillId(skillId)) icon.classList.add('skill-icon-strip__icon--awakened');
+    icon.innerHTML = renderSkillButtonHtml(skillId);
+    icon.title = I18nManager.t(getSkillDefinition(skillId).nameKey);
+    strip.appendChild(icon);
+  }
+
+  return strip;
+}
+
 export function createSkillShowcaseList(
   loadout: EquippedSkills,
   options: { compact?: boolean; title?: string } = {},

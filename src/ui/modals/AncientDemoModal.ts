@@ -4,7 +4,7 @@ import { I18nManager } from '@/core/i18n/I18nManager';
 import { getAncientProfile } from '@/progression/AncientDemoManager';
 import { normalizeLoadout } from '@/progression/SkillLoadout';
 import type { AncientProfile } from '@/shared/schemas/ancient-demo';
-import { createSkillShowcaseList } from '@/ui/skills/SkillShowcase';
+import { createSkillIconStrip, createSkillShowcaseList } from '@/ui/skills/SkillShowcase';
 
 export interface AncientDemoModalOptions {
   ancientId: string;
@@ -107,6 +107,9 @@ export function renderAncientCard(profile: AncientProfile, active: boolean): HTM
 
   const loadout = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
 
+  const identity = document.createElement('span');
+  identity.className = 'home-ancient-card__identity';
+
   const epithet = document.createElement('span');
   epithet.className = 'home-ancient-card__epithet';
   epithet.textContent = I18nManager.t(profile.epithetKey);
@@ -115,12 +118,10 @@ export function renderAncientCard(profile: AncientProfile, active: boolean): HTM
   name.className = 'home-ancient-card__name';
   name.textContent = I18nManager.t(profile.nameKey);
 
-  const lore = document.createElement('span');
-  lore.className = 'home-ancient-card__teaser';
-  lore.textContent = I18nManager.t(profile.loreKey);
+  identity.append(epithet, name);
 
-  const skills = createSkillShowcaseList(loadout, { compact: true });
+  const skills = createSkillIconStrip(loadout);
 
-  card.append(epithet, name, lore, skills);
+  card.append(identity, skills);
   return card;
 }

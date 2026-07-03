@@ -1,0 +1,27 @@
+{
+  "id": "story.ch10.epilogue",
+  "chapterId": "chapter.10.void_throne",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch10.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch10.slide02",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    {
+      "type": "spirit",
+      "amount": 70
+    },
+    {
+      "type": "gold",
+      "amount": 150
+    }
+  ],
+  "unlockChapter": null
+}

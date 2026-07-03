@@ -1,6 +1,7 @@
 import { attachDevControlsToPlaySlot, detachDevControlsToRoot } from '@/app/DevControls';
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
+import { closeWorldMapOverlay } from '@/ui/world/WorldMap';
 import { createBottomNav } from '@/ui/home/BottomNav';
 import { createProfileHeader } from '@/ui/home/ProfileHeader';
 import { createInventoryPanel } from '@/ui/home/panels/InventoryPanel';
@@ -145,6 +146,7 @@ export class HomeUI {
   private static unmount(): void {
     if (!HomeUI.root) return;
 
+    closeWorldMapOverlay();
     detachDevControlsToRoot();
 
     HomeUI.unsubscribeStore?.();

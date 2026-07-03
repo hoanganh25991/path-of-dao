@@ -1,0 +1,27 @@
+{
+  "id": "story.ch08.corruption",
+  "chapterId": "chapter.08.abyss_rift",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch08.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch08.slide02",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    {
+      "type": "spirit",
+      "amount": 60
+    },
+    {
+      "type": "gold",
+      "amount": 130
+    }
+  ],
+  "unlockChapter": "chapter.09.heavenly_gate"
+}

@@ -1,19 +1,12 @@
 import { SceneRouter } from '@/app/SceneRouter';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
+import { showWorldMap } from '@/ui/world/WorldMap';
 
 export interface PlayPanelHandles {
   root: HTMLElement;
   refresh(): void;
   destroy(): void;
-}
-
-function showToast(message: string): void {
-  const toast = document.createElement('div');
-  toast.className = 'home-toast home-ui__interactive';
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  toast.addEventListener('animationend', () => toast.remove());
 }
 
 export function createPlayPanel(): PlayPanelHandles {
@@ -44,7 +37,9 @@ export function createPlayPanel(): PlayPanelHandles {
   portalBtn.className = 'home-play__portal home-play__portal--secondary';
   portalBtn.textContent = I18nManager.t('home.map_portal');
   portalBtn.addEventListener('click', () => {
-    showToast(I18nManager.t('home.coming_soon'));
+    const uiRoot = document.getElementById('ui-root');
+    if (!uiRoot) return;
+    showWorldMap(uiRoot);
   });
 
   const portalHint = document.createElement('p');

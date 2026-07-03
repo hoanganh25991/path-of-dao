@@ -1,4 +1,4 @@
-import worldMapJson from '../../../content/world/world-map.json';
+import worldMapJson from '../../content/world/world-map.json';
 import {
   worldMapFileSchema,
   type WorldMapFile,

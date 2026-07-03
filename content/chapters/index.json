@@ -1,0 +1,74 @@
+{
+  "chapters": [
+    {
+      "id": "chapter.01.fallen_village",
+      "titleKey": "chapter.01.title",
+      "finalMapId": "map.fallen_village.02",
+      "storySceneId": "story.ch01.awakening_jade",
+      "unlockChapter": "chapter.02.mist_forest"
+    },
+    {
+      "id": "chapter.02.mist_forest",
+      "titleKey": "chapter.02.title",
+      "finalMapId": "map.mist_forest.02",
+      "storySceneId": "story.ch02.spirit_fox",
+      "unlockChapter": "chapter.03.stone_canyon"
+    },
+    {
+      "id": "chapter.03.stone_canyon",
+      "titleKey": "chapter.03.title",
+      "finalMapId": "map.stone_canyon.02",
+      "storySceneId": "story.ch03.bandit_end",
+      "unlockChapter": "chapter.04.moon_lake"
+    },
+    {
+      "id": "chapter.04.moon_lake",
+      "titleKey": "chapter.04.title",
+      "finalMapId": "map.moon_lake.02",
+      "storySceneId": "story.ch04.ancient_seal",
+      "unlockChapter": "chapter.05.burning_desert"
+    },
+    {
+      "id": "chapter.05.burning_desert",
+      "titleKey": "chapter.05.title",
+      "finalMapId": "map.burning_desert.02",
+      "storySceneId": "story.ch05.survival",
+      "unlockChapter": "chapter.06.thunder_peaks"
+    },
+    {
+      "id": "chapter.06.thunder_peaks",
+      "titleKey": "chapter.06.title",
+      "finalMapId": "map.thunder_peaks.02",
+      "storySceneId": "story.ch06.lightning_step",
+      "unlockChapter": "chapter.07.frozen_palace"
+    },
+    {
+      "id": "chapter.07.frozen_palace",
+      "titleKey": "chapter.07.title",
+      "finalMapId": "map.frozen_palace.02",
+      "storySceneId": "story.ch07.forgotten_queen",
+      "unlockChapter": "chapter.08.abyss_rift"
+    },
+    {
+      "id": "chapter.08.abyss_rift",
+      "titleKey": "chapter.08.title",
+      "finalMapId": "map.abyss_rift.02",
+      "storySceneId": "story.ch08.corruption",
+      "unlockChapter": "chapter.09.heavenly_gate"
+    },
+    {
+      "id": "chapter.09.heavenly_gate",
+      "titleKey": "chapter.09.title",
+      "finalMapId": "map.heavenly_gate.02",
+      "storySceneId": "story.ch09.guardians",
+      "unlockChapter": "chapter.10.void_throne"
+    },
+    {
+      "id": "chapter.10.void_throne",
+      "titleKey": "chapter.10.title",
+      "finalMapId": "map.void_throne.02",
+      "storySceneId": "story.ch10.epilogue",
+      "unlockChapter": null
+    }
+  ]
+}

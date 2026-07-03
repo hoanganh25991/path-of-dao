@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "cp:calc": "node tools/cp-calculator.mjs"
+    "cp:calc": "node tools/cp-calculator.mjs",
+    "maps:stubs": "node tools/generate-map-stubs.mjs"
   },
   "engines": {
     "node": ">=20"

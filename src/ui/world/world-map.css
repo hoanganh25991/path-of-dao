@@ -1,0 +1,287 @@
+.world-map-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: rgba(5, 8, 12, 0.94);
+  color: var(--dao-text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.world-map-overlay__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: max(0.65rem, var(--safe-top)) max(0.85rem, env(safe-area-inset-right, 0px)) 0.5rem
+    max(0.85rem, env(safe-area-inset-left, 0px));
+  border-bottom: 1px solid var(--dao-border);
+  background: var(--dao-panel);
+}
+
+.world-map-overlay__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.world-map-overlay__close {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--dao-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.world-map-viewport {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+}
+
+.world-map-canvas {
+  position: relative;
+  margin: 1rem;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(45, 212, 168, 0.08), transparent 45%),
+    radial-gradient(circle at 70% 80%, rgba(201, 162, 39, 0.1), transparent 50%),
+    linear-gradient(180deg, #0a1018 0%, #121a28 100%);
+  border: 1px solid var(--dao-border);
+  border-radius: 0.75rem;
+}
+
+.world-map__svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.world-map__link {
+  fill: none;
+  stroke: rgba(201, 162, 39, 0.35);
+  stroke-width: 2;
+}
+
+.world-map__link--dashed {
+  stroke-dasharray: 6 6;
+  stroke: rgba(232, 230, 227, 0.2);
+}
+
+.world-map__regions {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.world-region {
+  position: absolute;
+  width: 160px;
+}
+
+.world-region__title {
+  margin: 0 0 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--dao-jade);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.world-region__dots {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.world-region__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: rgba(232, 230, 227, 0.25);
+}
+
+.world-region__dot--cleared {
+  background: var(--dao-jade);
+}
+
+.world-region__maps {
+  position: relative;
+  width: 160px;
+  height: 90px;
+}
+
+.world-map-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--dao-text);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.world-map-node__pin {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: linear-gradient(135deg, var(--dao-gold), #8a6d12);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.world-map-node--unlocked .world-map-node__pin,
+.world-map-node--current .world-map-node__pin {
+  animation: map-pin-pulse 2s ease-in-out infinite;
+}
+
+.world-map-node--current .world-map-node__pin {
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.45), 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.world-map-node--locked {
+  opacity: 0.55;
+  filter: grayscale(0.85);
+  cursor: not-allowed;
+}
+
+.world-map-node--locked .world-map-node__pin {
+  background: #4a4f58;
+  animation: none;
+}
+
+.world-map-node__label {
+  font-size: 0.55rem;
+  max-width: 4.5rem;
+  text-align: center;
+  line-height: 1.2;
+  color: var(--dao-muted);
+}
+
+.world-map-node__lock,
+.world-map-node__check {
+  position: absolute;
+  top: -0.35rem;
+  right: -0.15rem;
+  font-size: 0.65rem;
+}
+
+.world-map-node__check {
+  color: var(--dao-jade);
+}
+
+.world-map-detail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem max(1rem, env(safe-area-inset-right, 0px))
+    calc(1rem + var(--safe-bottom)) max(1rem, env(safe-area-inset-left, 0px));
+  background: var(--dao-panel);
+  border-top: 1px solid var(--dao-border);
+}
+
+.world-map-detail__name {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.world-map-detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.world-map-detail__cp {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--dao-muted);
+}
+
+.world-map-detail__cleared {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--dao-jade);
+}
+
+.world-map-detail__lock {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  color: #f0a060;
+}
+
+.world-map-detail__enter {
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--dao-gold);
+  color: var(--dao-bg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.world-map-detail__enter:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.difficulty-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.difficulty-badge--trivial {
+  background: rgba(45, 212, 168, 0.2);
+  color: var(--dao-jade);
+}
+
+.difficulty-badge--balanced {
+  background: rgba(232, 230, 227, 0.12);
+  color: var(--dao-text);
+}
+
+.difficulty-badge--challenging {
+  background: rgba(240, 200, 80, 0.18);
+  color: #f0c850;
+}
+
+.difficulty-badge--hard {
+  background: rgba(240, 160, 96, 0.2);
+  color: #f0a060;
+}
+
+.difficulty-badge--deadly {
+  background: rgba(220, 80, 80, 0.22);
+  color: #f07070;
+}
+
+@keyframes map-pin-pulse {
+  0%,
+  100% {
+    transform: rotate(-45deg) scale(1);
+  }
+  50% {
+    transform: rotate(-45deg) scale(1.06);
+  }
+}

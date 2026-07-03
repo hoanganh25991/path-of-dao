@@ -393,25 +393,6 @@
   cursor: pointer;
 }
 
-.home-play__echoes {
-  width: 100%;
-  min-height: 52px;
-  margin-bottom: 0.35rem;
-  border: 1px solid var(--dao-jade);
-  border-radius: 0.65rem;
-  background: linear-gradient(180deg, rgba(45, 212, 168, 0.16), rgba(45, 212, 168, 0.05));
-  color: var(--dao-jade);
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.home-play__echoes:active {
-  background: linear-gradient(180deg, rgba(45, 212, 168, 0.26), rgba(45, 212, 168, 0.1));
-}
-
 .home-play__portal--secondary {
   margin-top: 0.75rem;
   opacity: 0.92;
@@ -425,11 +406,12 @@
 /* Ancient echo cards (Echoes tab) */
 .home-ancient-card {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.15rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   width: 100%;
-  padding: 0.65rem 0.75rem;
+  padding: 0.55rem 0.65rem;
   border: 1px solid rgba(45, 212, 168, 0.22);
   border-radius: 0.65rem;
   background: linear-gradient(180deg, rgba(45, 212, 168, 0.08), rgba(0, 0, 0, 0.12));
@@ -445,39 +427,31 @@
   box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.25);
 }
 
+.home-ancient-card__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+  flex: 1;
+}
+
 .home-ancient-card__epithet {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--dao-jade);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .home-ancient-card__name {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--dao-gold);
-}
-
-.home-ancient-card__chips {
-  font-size: 0.6875rem;
-  color: var(--dao-muted);
-  line-height: 1.35;
-}
-
-.home-ancient-card__teaser {
-  font-size: 0.72rem;
-  line-height: 1.4;
-  color: rgba(220, 228, 255, 0.72);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
-  text-align: left;
-}
-
-.home-ancient-card .skill-showcase {
-  width: 100%;
-  margin-top: 0.35rem;
+  text-overflow: ellipsis;
 }
 
 .home-profile__name-row {

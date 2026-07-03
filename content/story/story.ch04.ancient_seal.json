@@ -1,0 +1,27 @@
+{
+  "id": "story.ch04.ancient_seal",
+  "chapterId": "chapter.04.moon_lake",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch04.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch04.slide02",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    {
+      "type": "spirit",
+      "amount": 40
+    },
+    {
+      "type": "gold",
+      "amount": 90
+    }
+  ],
+  "unlockChapter": "chapter.05.burning_desert"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "story.ch02.spirit_fox",
+  "chapterId": "chapter.02.mist_forest",
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "story.ch02.slide01",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "story.ch02.slide02",
+      "durationMs": 0
+    }
+  ],
+  "rewards": [
+    {
+      "type": "spirit",
+      "amount": 30
+    },
+    {
+      "type": "gold",
+      "amount": 70
+    }
+  ],
+  "unlockChapter": "chapter.03.stone_canyon"
+}
