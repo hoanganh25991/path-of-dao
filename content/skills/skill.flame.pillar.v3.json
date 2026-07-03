@@ -1,0 +1,21 @@
+{
+  "id": "skill.flame.pillar.v3",
+  "intent": "flame",
+  "nameKey": "skill.flame.pillar.v3.name",
+  "kind": "bolt",
+  "manaCost": 26,
+  "skillMultiplier": 1,
+  "cooldownMs": 4800,
+  "effects": [
+    {
+      "type": "aoe_circle",
+      "damage": {
+        "skillMultiplier": 1,
+        "damageType": "spirit"
+      },
+      "radius": 64,
+      "ticks": 1,
+      "tickIntervalMs": 300
+    }
+  ]
+}

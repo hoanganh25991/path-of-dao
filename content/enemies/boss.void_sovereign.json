@@ -1,0 +1,50 @@
+{
+  "id": "boss.void_sovereign",
+  "displayNameKey": "boss.void_sovereign.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 8000,
+    "atk": 88,
+    "def": 48,
+    "speed": 68,
+    "crit": 0.16,
+    "critDmg": 2.1
+  },
+  "aggroRange": 360,
+  "attackRange": 56,
+  "attackCooldownMs": 1200,
+  "xpReward": 2500,
+  "goldReward": [
+    200,
+    500
+  ],
+  "lootTable": "loot.boss.final",
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.void_sovereign",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_void_sovereign.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.25,
+      "skills": [],
+      "spawnAdds": [
+        {
+          "id": "enemy.void.shade",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

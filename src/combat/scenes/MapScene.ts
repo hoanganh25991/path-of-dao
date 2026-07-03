@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { SceneRouter } from '@/app/SceneRouter';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { gameStore } from '@/core/store/gameStore';
 import { applyMapClearPatch } from '@/progression/ChapterManager';
 import { I18nManager } from '@/core/i18n/I18nManager';
@@ -17,11 +18,14 @@ import { EncounterTrigger } from '@/combat/systems/EncounterTrigger';
 import { HitboxManager } from '@/combat/combat/HitboxManager';
 import { tilemapKey } from '@/combat/scenes/BootScene';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import { CombatJuiceBridge } from '@/combat/juice/CombatJuiceBridge';
+import { JuiceController } from '@/combat/juice/JuiceController';
 
 const CAMERA_LERP = 0.08;
 const CAMERA_DEADZONE = 100;
-const COMBAT_ZOOM = 0.72;
-const ANCIENT_COMBAT_ZOOM = 0.58;
+/** Zoom tuned for crisp 32×56 sticky-man @ 2× scale — avoid tiny muddy sprites. */
+const COMBAT_ZOOM = 0.88;
+const ANCIENT_COMBAT_ZOOM = 0.72;
 
 const DEPTH = {
   ground: 0,
@@ -41,6 +45,7 @@ export class MapScene extends Phaser.Scene {
   private encounterTrigger: EncounterTrigger | null = null;
   private exiting = false;
   private runtimePersisted = false;
+  private juiceBridge: CombatJuiceBridge | null = null;
 
   constructor() {
     super(MapScene.KEY);
@@ -101,6 +106,7 @@ export class MapScene extends Phaser.Scene {
     }
 
     const camera = this.cameras.main;
+    camera.roundPixels = true;
     camera.setBounds(0, 0, config.bounds.width, config.bounds.height);
     camera.setZoom(isAncientCombatActive() ? ANCIENT_COMBAT_ZOOM : COMBAT_ZOOM);
     camera.startFollow(this.player.sprite, true, CAMERA_LERP, CAMERA_LERP);
@@ -122,6 +128,10 @@ export class MapScene extends Phaser.Scene {
 
     this.encounterTrigger = new EncounterTrigger(this, this.player, config);
 
+    const juice = new JuiceController(this);
+    this.juiceBridge = new CombatJuiceBridge(this, juice);
+    this.juiceBridge.mount();
+
     // Persist on either event: SHUTDOWN fires on scene.stop, but destroying
     // the whole Phaser game (SceneRouter unmount) only fires DESTROY.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.teardown());
@@ -138,6 +148,8 @@ export class MapScene extends Phaser.Scene {
 
   private teardown(): void {
     this.persistRuntime();
+    this.juiceBridge?.destroy();
+    this.juiceBridge = null;
     this.encounterTrigger?.destroy();
     this.encounterTrigger = null;
     this.spawnManager?.destroy();
@@ -218,6 +230,9 @@ export class MapScene extends Phaser.Scene {
 
       const wavesCleared =
         !this.spawnManager || this.spawnManager.isEncounterComplete();
+      if (wavesCleared) {
+        AudioDirector.playMapClearSting();
+      }
       const save = gameStore.getState().save;
       if (save) {
         const { patch, result } = applyMapClearPatch(save, this.mapId, wavesCleared);

@@ -1,0 +1,39 @@
+{
+  "starter": [
+    "skill.void.slash",
+    "skill.sword.slash",
+    "skill.flame.bolt",
+    "skill.lightning.strike",
+    "skill.time.slow",
+    "skill.life.mend"
+  ],
+  "byLevel": {
+    "4": "skill.sword.crescent.v1",
+    "8": "skill.void.rift.v1",
+    "12": "skill.flame.scorch.v1",
+    "16": "skill.lightning.fork.v1",
+    "20": "skill.time.halt.v1",
+    "24": "skill.life.bloom.v1",
+    "28": "skill.sword.cleave.v2",
+    "32": "skill.void.tear.v2",
+    "36": "skill.flame.ember.v2",
+    "40": "skill.lightning.arc.v2"
+  },
+  "byBoss": {
+    "boss.jade_guardian": "skill.sword.rain.v3",
+    "boss.mist_stalker": "skill.void.surge.v3",
+    "boss.bandit_lord": "skill.flame.pillar.v3",
+    "boss.seal_warden": "skill.lightning.storm.v3",
+    "boss.desert_sovereign": "skill.time.loop.v3",
+    "boss.thunder_avatar": "skill.sword.burst.v4",
+    "boss.frost_queen": "skill.life.surge.v3",
+    "boss.void_sovereign": "skill.void.nova.v4"
+  },
+  "byChapter": {
+    "chapter.01.fallen_village": "skill.life.pulse.v2",
+    "chapter.02.mist_forest": "skill.time.drift.v2",
+    "chapter.03.stone_canyon": "skill.sword.heaven.v5",
+    "chapter.04.moon_lake": "skill.flame.lotus.v4",
+    "chapter.05.burning_desert": "skill.lightning.judgment.v4"
+  }
+}

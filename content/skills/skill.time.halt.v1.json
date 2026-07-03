@@ -1,0 +1,21 @@
+{
+  "id": "skill.time.halt.v1",
+  "intent": "time",
+  "nameKey": "skill.time.halt.v1.name",
+  "kind": "bolt",
+  "manaCost": 16,
+  "skillMultiplier": 1.1,
+  "cooldownMs": 4000,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.1,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

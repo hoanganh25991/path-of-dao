@@ -1,0 +1,31 @@
+{
+  "id": "skill.lightning.storm.v3",
+  "intent": "lightning",
+  "nameKey": "skill.lightning.storm.v3.name",
+  "kind": "bolt",
+  "manaCost": 28,
+  "skillMultiplier": 1.1,
+  "cooldownMs": 5000,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.1,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    },
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 0.8800000000000001,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

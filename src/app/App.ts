@@ -14,6 +14,9 @@ import { buildPlayerStats } from '@/progression/playerStats';
 import { initDevControls } from '@/app/DevControls';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
 import { HomeUI } from '@/ui/home/HomeUI';
+import { AudioManager } from '@/core/audio/AudioManager';
+import { AudioDirector } from '@/core/audio/AudioDirector';
+import { AudioUnlock } from '@/core/audio/AudioUnlock';
 
 export class App {
   private static initialized = false;
@@ -33,9 +36,12 @@ export class App {
     const save = gameStore.getState().save;
     if (save) {
       await I18nManager.load(save.settings.locale);
+      AudioManager.init(save);
+      AudioDirector.mount();
     }
 
     const elements = GameShell.mount(root);
+    AudioUnlock.mount(root);
     CombatHUD.init(elements.uiRoot);
     HomeUI.init(elements.uiRoot);
     App.mountDevControls(elements.uiRoot);

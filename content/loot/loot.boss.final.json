@@ -1,0 +1,11 @@
+{
+  "id": "loot.boss.final",
+  "guaranteed": [
+    { "itemId": "item.sword.ancient", "qty": 1 },
+    { "itemId": "item.spirit.jade", "qty": 2 }
+  ],
+  "entries": [
+    { "itemId": "item.ring.speed", "weight": 50, "qty": [1, 1] },
+    { "itemId": "item.sword.ancient", "weight": 50, "qty": [1, 1] }
+  ]
+}

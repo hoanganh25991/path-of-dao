@@ -1,0 +1,20 @@
+{
+  "id": "encounter.frozen_palace.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.ice.golem",
+          "count": 4,
+          "spread": 130
+        },
+        {
+          "id": "enemy.frost.shade",
+          "count": 3,
+          "spread": 150
+        }
+      ]
+    }
+  ]
+}

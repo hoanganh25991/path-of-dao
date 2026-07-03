@@ -1,0 +1,27 @@
+{
+  "id": "enemy.elite.shadow",
+  "displayNameKey": "enemy.elite.shadow.name",
+  "archetype": "melee_chaser",
+  "category": "elite",
+  "stats": {
+    "hpMax": 180,
+    "atk": 22,
+    "def": 8,
+    "speed": 90,
+    "crit": 0.12,
+    "critDmg": 1.7
+  },
+  "aggroRange": 220,
+  "attackRange": 40,
+  "attackCooldownMs": 1000,
+  "xpReward": 55,
+  "goldReward": [
+    5,
+    15
+  ],
+  "lootTable": "loot.tier.uncommon",
+  "spriteKey": "enemy_slime",
+  "bestiaryKey": "bestiary.enemy_elite_shadow.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

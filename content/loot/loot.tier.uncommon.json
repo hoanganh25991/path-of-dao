@@ -1,0 +1,8 @@
+{
+  "id": "loot.tier.uncommon",
+  "entries": [
+    { "itemId": "item.sword.iron", "weight": 45, "qty": [1, 1] },
+    { "itemId": "item.ring.speed", "weight": 35, "qty": [1, 1] },
+    { "itemId": "item.spirit.jade", "weight": 20, "qty": [1, 1] }
+  ]
+}

@@ -6,24 +6,12 @@ import type { Player } from '@/combat/entities/Player';
 
 /**
  * Sticky-man sprite animations driven by the player state machine.
- * Dev-only state label above the player for debugging.
  */
 export class PlayerAnimController {
-  private label: Phaser.GameObjects.Text | null = null;
   private lastState: PlayerStateId | null = null;
   private lastAttackStep = 0;
 
   constructor(private readonly player: Player) {
-    if (import.meta.env.DEV) {
-      this.label = player.scene.add
-        .text(player.x, player.y - 30, 'idle', {
-          fontFamily: 'monospace',
-          fontSize: '10px',
-          color: '#e8e4dc',
-        })
-        .setOrigin(0.5, 1)
-        .setDepth(30);
-    }
     this.player.sprite.play(this.player.resolveAnim(ANIM.heroIdle));
   }
 
@@ -32,20 +20,13 @@ export class PlayerAnimController {
     const sprite = this.player.sprite;
     const state = sm.state;
 
-    if (this.player.ancientId) {
-      this.label?.setVisible(false);
-    } else {
-      this.label?.setVisible(true);
-      if (state !== this.lastState) {
-        this.lastState = state;
-        this.label?.setText(state);
-      }
+    if (state !== this.lastState) {
+      this.lastState = state;
     }
 
     if (state === 'dead') {
       sprite.anims.stop();
       sprite.setTint(0x666666);
-      this.label?.setPosition(this.player.x, this.player.y - 40);
       return;
     }
 
@@ -77,12 +58,9 @@ export class PlayerAnimController {
       }
     }
 
-    this.label?.setPosition(this.player.x, this.player.y - 40);
   }
 
   destroy(): void {
-    this.label?.destroy();
-    this.label = null;
   }
 
   private playLoop(key: string): void {

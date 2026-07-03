@@ -1,0 +1,27 @@
+{
+  "id": "enemy.elite.storm",
+  "displayNameKey": "enemy.elite.storm.name",
+  "stats": {
+    "hpMax": 435,
+    "atk": 62,
+    "def": 20,
+    "speed": 111,
+    "crit": 0.16999999999999998,
+    "critDmg": 1.6
+  },
+  "aggroRange": 350,
+  "attackRange": 70,
+  "attackCooldownMs": 1000,
+  "xpReward": 204,
+  "goldReward": [
+    12,
+    48
+  ],
+  "lootTable": "loot.tier.uncommon",
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser",
+  "category": "elite",
+  "bestiaryKey": "bestiary.enemy_elite_storm.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

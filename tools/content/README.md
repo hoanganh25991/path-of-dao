@@ -7,6 +7,8 @@ Authoring, validation, and packaging for Path of Dao JSON content.
 ```bash
 pnpm content:validate          # schema + cross-ref lint (exit 1 on error)
 pnpm content:validate --strict-i18n   # vi locale gaps become errors
+pnpm i18n:lint                      # en/vi key parity
+pnpm i18n:bestiary                  # stub bestiary entries from enemies
 pnpm content:pack              # write content/manifest.json
 ```
 

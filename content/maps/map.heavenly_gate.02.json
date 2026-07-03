@@ -2,7 +2,7 @@
   "id": "map.heavenly_gate.02",
   "chapterId": "chapter.09.heavenly_gate",
   "displayNameKey": "map.heavenly_gate.02.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/heavenly_gate-02.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,9 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.heavenly_gate.02",
   "bgm": null,
   "pois": [],
-  "recommendedCp": 8400,
+  "recommendedCp": 220000,
   "recommendedRealmOrder": 6
 }

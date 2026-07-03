@@ -16,7 +16,7 @@
 3. **Color / hue** — mood and material, applied on top of solid values.
 4. **Detail** — only after 1–3 read cleanly. Detail cannot rescue a bad silhouette.
 
-At 32×48 (this project's frame), every pixel is ~2% of width — spend them on shape, not noise.
+At 32×56 (this project's frame), every pixel counts — spend them on shape, not noise.
 
 ## 2. Palette & color ramps
 

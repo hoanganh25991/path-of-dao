@@ -6,6 +6,10 @@ vi.mock('@/combat/combat/HitFlash', () => ({
   clearHitFlash: vi.fn(),
 }));
 
+vi.mock('@/combat/skills/VFXLibrary', () => ({
+  playHitSparks: vi.fn(),
+}));
+
 import { resolveHit } from '@/combat/combat/CombatResolver';
 import { Hitbox } from '@/combat/combat/Hitbox';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';

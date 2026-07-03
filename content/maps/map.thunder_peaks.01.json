@@ -2,7 +2,7 @@
   "id": "map.thunder_peaks.01",
   "chapterId": "chapter.06.thunder_peaks",
   "displayNameKey": "map.thunder_peaks.01.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/thunder_peaks-01.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,17 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.thunder_peaks.01",
   "bgm": null,
-  "pois": [],
-  "recommendedCp": 5300,
+  "pois": [
+    {
+      "type": "hidden_cave",
+      "x": 800,
+      "y": 520,
+      "radius": 40,
+      "id": "cave.thunder_peaks"
+    }
+  ],
+  "recommendedCp": 45000,
   "recommendedRealmOrder": 4
 }

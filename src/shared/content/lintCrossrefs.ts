@@ -1,5 +1,5 @@
 import { mapConfigSchema } from '@/combat/map/MapConfig';
-import { encounterConfigSchema } from '@/combat/enemies/EnemyConfig';
+import { encounterConfigSchema, enemyConfigSchema } from '@/combat/enemies/EnemyConfig';
 import { skillDefinitionSchema } from '@/progression/SkillDefinition';
 import { itemDefinitionSchema } from '@/progression/ItemDefinition';
 import { chaptersIndexSchema } from '@/shared/schemas/chapter';
@@ -26,6 +26,7 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
   const enemyIds = new Set(index.enemies.keys());
   const itemIds = new Set(index.items.keys());
   const skillIds = new Set(index.skills.keys());
+  const lootIds = new Set(index.loot.keys());
   const encounterIds = new Set(index.encounters.keys());
   const storyIds = new Set(index.stories.keys());
 
@@ -200,6 +201,26 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
         file: `encounters/fortuitous/${fileId}.json`,
         message: `skill_variant "${reward.skillId}" not found`,
         severity: 'error',
+      });
+    }
+  }
+
+  for (const [fileId, raw] of index.enemies) {
+    const parsed = enemyConfigSchema.safeParse(raw);
+    if (!parsed.success) continue;
+    const enemy = parsed.data;
+    if (enemy.lootTable && !lootIds.has(enemy.lootTable)) {
+      errors.push({
+        file: `enemies/${fileId}.json`,
+        message: `lootTable "${enemy.lootTable}" not found`,
+        severity: 'error',
+      });
+    }
+    if (enemy.bestiaryKey && !localeHasKey(index.locales, enemy.bestiaryKey, 'en')) {
+      warnings.push({
+        file: `enemies/${fileId}.json`,
+        message: `bestiaryKey "${enemy.bestiaryKey}" missing in en locale`,
+        severity: 'warning',
       });
     }
   }

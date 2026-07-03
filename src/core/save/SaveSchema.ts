@@ -48,6 +48,16 @@ export const playerSaveV1Schema = z.object({
       secondary: 'skill.sword.slash',
       ultimate: 'skill.time.slow',
     }),
+  unlockedSkills: z
+    .array(z.string())
+    .default([
+      'skill.void.slash',
+      'skill.sword.slash',
+      'skill.flame.bolt',
+      'skill.lightning.strike',
+      'skill.time.slow',
+      'skill.life.mend',
+    ]),
   inventory: z.object({
     items: z.array(z.object({ id: z.string(), qty: z.number().int().min(0) })),
     gold: z.number().min(0),

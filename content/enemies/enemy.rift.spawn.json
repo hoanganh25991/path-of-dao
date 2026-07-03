@@ -1,0 +1,27 @@
+{
+  "id": "enemy.rift.spawn",
+  "displayNameKey": "enemy.rift.spawn.name",
+  "stats": {
+    "hpMax": 376,
+    "atk": 66,
+    "def": 28,
+    "speed": 123,
+    "crit": 0.2,
+    "critDmg": 1.6
+  },
+  "aggroRange": 400,
+  "attackRange": 80,
+  "attackCooldownMs": 1000,
+  "xpReward": 188,
+  "goldReward": [
+    16,
+    64
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_rift_spawn.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

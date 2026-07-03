@@ -1,0 +1,40 @@
+{
+  "id": "boss.thunder_avatar",
+  "displayNameKey": "boss.thunder_avatar.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 2400,
+    "atk": 52,
+    "def": 24,
+    "speed": 80,
+    "crit": 0.16,
+    "critDmg": 2.1
+  },
+  "aggroRange": 360,
+  "attackRange": 56,
+  "attackCooldownMs": 1200,
+  "xpReward": 800,
+  "goldReward": [
+    80,
+    200
+  ],
+  "lootTable": "loot.boss.standard",
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.thunder_avatar",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_thunder_avatar.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
+}

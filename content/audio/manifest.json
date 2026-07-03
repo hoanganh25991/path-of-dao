@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "bgm": {
+    "bgm.home": { "type": "procedural", "loop": true, "frequencies": [110, 165], "gain": 0.04 },
+    "bgm.combat.generic": { "type": "procedural", "loop": true, "frequencies": [82, 123], "gain": 0.05 },
+    "bgm.combat.boss": { "type": "procedural", "loop": true, "frequencies": [65, 98, 131], "gain": 0.06 },
+    "bgm.story": { "type": "procedural", "loop": true, "frequencies": [98, 147], "gain": 0.035 },
+    "bgm.victory": { "type": "procedural", "loop": false, "frequencies": [262, 330, 392], "gain": 0.08, "durationMs": 3000 }
+  },
+  "sfx": {
+    "ui.tap": { "type": "procedural", "frequency": 880, "durationMs": 40, "wave": "sine", "gain": 0.12 },
+    "ui.panel_open": { "type": "procedural", "frequency": 520, "durationMs": 80, "wave": "triangle", "gain": 0.1 },
+    "ui.breakthrough": { "type": "procedural", "frequency": 440, "durationMs": 320, "wave": "sine", "gain": 0.18, "sweepTo": 880 },
+    "player.attack1": { "type": "procedural", "frequency": 280, "durationMs": 60, "wave": "square", "gain": 0.1 },
+    "player.attack2": { "type": "procedural", "frequency": 320, "durationMs": 60, "wave": "square", "gain": 0.11 },
+    "player.attack3": { "type": "procedural", "frequency": 380, "durationMs": 90, "wave": "square", "gain": 0.14 },
+    "player.dodge": { "type": "procedural", "frequency": 600, "durationMs": 120, "wave": "sine", "gain": 0.08, "sweepTo": 200 },
+    "player.hit": { "type": "procedural", "frequency": 140, "durationMs": 140, "wave": "sawtooth", "gain": 0.15 },
+    "skill.sword": { "type": "procedural", "frequency": 400, "durationMs": 100, "wave": "triangle", "gain": 0.12 },
+    "skill.void": { "type": "procedural", "frequency": 180, "durationMs": 180, "wave": "sine", "gain": 0.14, "sweepTo": 90 },
+    "skill.flame": { "type": "procedural", "frequency": 220, "durationMs": 150, "wave": "sawtooth", "gain": 0.13 },
+    "skill.thunder": { "type": "procedural", "frequency": 90, "durationMs": 200, "wave": "square", "gain": 0.16 },
+    "skill.time": { "type": "procedural", "frequency": 660, "durationMs": 160, "wave": "sine", "gain": 0.1, "sweepTo": 330 },
+    "skill.heal": { "type": "procedural", "frequency": 523, "durationMs": 200, "wave": "sine", "gain": 0.1, "sweepTo": 784 },
+    "enemy.hit": { "type": "procedural", "frequency": 200, "durationMs": 50, "wave": "square", "gain": 0.09 },
+    "enemy.death": { "type": "procedural", "frequency": 160, "durationMs": 180, "wave": "sawtooth", "gain": 0.12, "sweepTo": 60 },
+    "boss.telegraph": { "type": "procedural", "frequency": 70, "durationMs": 280, "wave": "square", "gain": 0.14 },
+    "boss.phase_change": { "type": "procedural", "frequency": 55, "durationMs": 400, "wave": "square", "gain": 0.18, "sweepTo": 110 },
+    "encounter.rare": { "type": "procedural", "frequency": 740, "durationMs": 240, "wave": "sine", "gain": 0.14 },
+    "encounter.awaken": { "type": "procedural", "frequency": 330, "durationMs": 500, "wave": "sine", "gain": 0.16, "sweepTo": 660 },
+    "map.clear": { "type": "procedural", "frequency": 392, "durationMs": 400, "wave": "triangle", "gain": 0.14, "sweepTo": 523 },
+    "level.up": { "type": "procedural", "frequency": 523, "durationMs": 350, "wave": "sine", "gain": 0.15, "sweepTo": 784 },
+    "ui.confirm": { "type": "procedural", "frequency": 660, "durationMs": 60, "wave": "sine", "gain": 0.1 },
+    "player.land": { "type": "procedural", "frequency": 120, "durationMs": 70, "wave": "triangle", "gain": 0.08 }
+  }
+}

@@ -17,7 +17,11 @@
     5,
     15
   ],
-  "lootTable": null,
+  "lootTable": "loot.tier.rare",
   "spriteKey": "enemy_totem",
-  "archetype": "stationary"
+  "archetype": "stationary",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_sand_spirit.desc",
+  "weakness": "lightning",
+  "resistance": "none"
 }

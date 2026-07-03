@@ -19,11 +19,11 @@ export class DamageNumberPool {
     for (let i = 0; i < POOL_SIZE; i++) {
       const text = scene.add
         .text(0, 0, '', {
-          fontFamily: 'system-ui, sans-serif',
-          fontSize: '14px',
+          fontFamily: 'ui-monospace, "Cascadia Mono", "Courier New", monospace',
+          fontSize: '16px',
           color: '#ffffff',
           stroke: '#000000',
-          strokeThickness: 2,
+          strokeThickness: 3,
         })
         .setOrigin(0.5)
         .setDepth(30)
@@ -44,7 +44,7 @@ export class DamageNumberPool {
       .setAlpha(1)
       .setScale(isCrit ? CRIT_SCALE : 1)
       .setColor(isCrit ? '#ffd54a' : '#ffffff')
-      .setFontSize(isCrit ? '20px' : '14px')
+      .setFontSize(isCrit ? '24px' : '16px')
       .setVisible(true);
 
     const duration = isCrit ? CRIT_DURATION_MS : NORMAL_DURATION_MS;

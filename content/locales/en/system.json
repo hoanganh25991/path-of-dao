@@ -1,0 +1,10 @@
+{
+  "system.loading": "Loading…",
+  "system.error.generic": "Something went wrong.",
+  "system.save.success": "Progress saved.",
+  "system.duration.seconds": "{s}s",
+  "system.duration.minutes": "{m}m {s}s",
+  "system.locale.changed": "Language updated.",
+  "system.combat_power": "CP {cp}",
+  "system.audio.unlock": "Tap to enable sound"
+}

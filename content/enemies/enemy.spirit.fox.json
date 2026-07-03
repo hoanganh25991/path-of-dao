@@ -1,0 +1,27 @@
+{
+  "id": "enemy.spirit.fox",
+  "displayNameKey": "enemy.spirit.fox.name",
+  "archetype": "melee_chaser",
+  "category": "grunt",
+  "stats": {
+    "hpMax": 1,
+    "atk": 0,
+    "def": 0,
+    "speed": 0,
+    "crit": 0,
+    "critDmg": 1.5
+  },
+  "aggroRange": 80,
+  "attackRange": 32,
+  "attackCooldownMs": 9999,
+  "xpReward": 0,
+  "goldReward": [
+    0,
+    0
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_slime",
+  "bestiaryKey": "bestiary.enemy_spirit_fox.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

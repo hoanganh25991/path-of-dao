@@ -95,9 +95,9 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
   addSheetFromCanvas(scene, heroKey, heroCanvas, FRAME_W, FRAME_H);
 
   createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset('idle'), 4, 6);
-  createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset('walk'), 4, 12);
-  // Attacks: quick wind-up, held impact frame, snappy recovery.
-  createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset('attack1'), 3, 16, 0, { 1: 110 });
+  createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset('walk'), 6, 10);
+  // Attacks: anticipation → chamber → held impact → recovery.
+  createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset('attack1'), 4, 16, 0, { 2: 120 });
   createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset('attack2'), 3, 16, 0, { 1: 110 });
   createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset('attack3'), 4, 14, 0, { 2: 150 });
   createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset('hit'), 2, 10, 0, { 0: 70 });
@@ -126,6 +126,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
       attack: ANIM.archerAttack,
     },
     'archer',
+    { 2: 100 },
   );
 
   registerBossSheet(scene);
@@ -140,18 +141,19 @@ function registerEnemySheet(
   attack: typeof POSES_ARCHER_ATTACK | null,
   animKeys: { idle: string; walk: string; attack?: string },
   variant: 'slime' | 'archer',
+  attackHolds?: Record<number, number>,
 ): void {
   const frames = attack ? [...idle, ...walk, ...attack] : [...idle, ...walk];
   const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, palette, NORMAL, variant);
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
   let offset = 0;
-  createAnim(scene, animKeys.idle, key, offset, idle.length, 5);
+  createAnim(scene, animKeys.idle, key, offset, idle.length, variant === 'slime' ? 5 : 5);
   offset += idle.length;
-  createAnim(scene, animKeys.walk, key, offset, walk.length, 12);
+  createAnim(scene, animKeys.walk, key, offset, walk.length, 10);
   offset += walk.length;
   if (attack && animKeys.attack) {
-    createAnim(scene, animKeys.attack, key, offset, attack.length, 10, 0);
+    createAnim(scene, animKeys.attack, key, offset, attack.length, 10, 0, attackHolds);
   }
 }
 
@@ -162,7 +164,7 @@ function registerBossSheet(scene: Phaser.Scene): void {
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
   createAnim(scene, ANIM.totemIdle, key, 0, POSES_TOTEM_IDLE.length, 4);
-  createAnim(scene, ANIM.totemAttack, key, POSES_TOTEM_IDLE.length, POSES_TOTEM_ATTACK.length, 8, 0);
+  createAnim(scene, ANIM.totemAttack, key, POSES_TOTEM_IDLE.length, POSES_TOTEM_ATTACK.length, 9, 0, { 2: 130 });
 }
 
 /** Arcade body at the feet — call after origin/scale changes. */

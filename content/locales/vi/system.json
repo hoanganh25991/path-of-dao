@@ -1,0 +1,10 @@
+{
+  "system.loading": "Đang tải…",
+  "system.error.generic": "Đã xảy ra lỗi.",
+  "system.save.success": "Đã lưu tiến trình.",
+  "system.duration.seconds": "{s} giây",
+  "system.duration.minutes": "{m} phút {s} giây",
+  "system.locale.changed": "Đã đổi ngôn ngữ.",
+  "system.combat_power": "Uy lực {cp}",
+  "system.audio.unlock": "Chạm để bật âm thanh"
+}

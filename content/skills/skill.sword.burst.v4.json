@@ -1,0 +1,20 @@
+{
+  "id": "skill.sword.burst.v4",
+  "intent": "sword",
+  "nameKey": "skill.sword.burst.v4.name",
+  "kind": "arc",
+  "manaCost": 35,
+  "skillMultiplier": 2,
+  "cooldownMs": 8000,
+  "effects": [
+    {
+      "type": "melee_arc",
+      "reach": 52,
+      "halfAngleDeg": 90,
+      "damage": {
+        "skillMultiplier": 2,
+        "damageType": "physical"
+      }
+    }
+  ]
+}

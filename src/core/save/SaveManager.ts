@@ -99,6 +99,14 @@ export class SaveManager {
         secondary: 'skill.sword.slash',
         ultimate: 'skill.time.slow',
       },
+      unlockedSkills: [
+        'skill.void.slash',
+        'skill.sword.slash',
+        'skill.flame.bolt',
+        'skill.lightning.strike',
+        'skill.time.slow',
+        'skill.life.mend',
+      ],
       inventory: {
         items: [
           { id: 'item.sword.iron', qty: 1 },

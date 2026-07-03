@@ -1,0 +1,22 @@
+{
+  "id": "skill.void.abyss.v5",
+  "intent": "void",
+  "nameKey": "skill.void.abyss.v5.name",
+  "kind": "bolt",
+  "manaCost": 32,
+  "skillMultiplier": 1.9,
+  "cooldownMs": 5500,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.9,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12,
+      "pullForce": 160
+    }
+  ]
+}

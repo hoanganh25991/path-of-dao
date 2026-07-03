@@ -7,6 +7,7 @@ import type { StatSheet } from '@/progression/StatSheet';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import { applyHitFlash } from '@/combat/combat/HitFlash';
+import { playHitSparks } from '@/combat/skills/VFXLibrary';
 
 function targetIsDead(target: HurtboxEntity): boolean {
   if (!('stats' in target)) return false;
@@ -75,8 +76,19 @@ export function resolveHit(
   hitbox.pierceRemaining--;
 
   applyHitFlash(target.sprite);
+  playHitSparks(target.sprite.scene, target.x, target.y - 16, result.isCrit);
   deps.damageNumbers.spawn(result.final, result.isCrit, target.x, target.y - 12);
   applyInsightHitRewards(hitbox, target, result);
+
+  EventBus.emit('combat:hit-landed', {
+    isCrit: result.isCrit,
+    finalDamage: result.final,
+    skillMultiplier: hitbox.damage.skillMultiplier,
+    x: target.x,
+    y: target.y,
+    attackerTeam: hitbox.team,
+    victimTeam: target.team,
+  });
 
   return result;
 }

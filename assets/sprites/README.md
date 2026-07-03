@@ -18,4 +18,13 @@ Bosses use `enemy_totem` sprite key with larger hitbox (see `Enemy.ts` `isBoss`)
 
 Region maps share the 8-tile `grove` placeholder tileset (`assets/maps/*.json`). Region themes differ by procedural layout seed, not separate PNGs yet.
 
-Regenerate chapter 1–5 maps: `pnpm mvp:ch1-5`
+Regenerate chapter 1–5 maps: `pnpm mvp:ch1-5`  
+Regenerate chapter 6–10 maps: `pnpm mvp:ch6-10`
+
+## Chapters 6–10 enemy tint map
+
+| spriteKey | Used by |
+|-----------|---------|
+| `enemy_slime` | lightning sprite, ice golem, rift spawn, void shade, storm/frost elites |
+| `enemy_archer` | storm hawk, frost shade, corrupted cultist, celestial archer, gate sentinel, rift/celestial elites |
+| `enemy_totem` | void weaver, all ch6–10 bosses |

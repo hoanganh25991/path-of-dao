@@ -16,6 +16,7 @@ import {
   configureStickyManBody,
   enemyAnimKeys,
 } from '@/combat/art/stickyManAssets';
+import { BossPhaseTracker } from '@/combat/ai/BossPhaseTracker';
 import { DISPLAY_SCALE } from '@/combat/art/stickyManPalette';
 
 export const TELEGRAPH_MS = 300;
@@ -33,6 +34,8 @@ export interface EnemyCallbacks {
   onDeath(enemy: Enemy): void;
   /** Death anim finished — owner releases the enemy to the pool. */
   onDeathAnimComplete(enemy: Enemy): void;
+  /** Boss phase crossed — queue add spawns. */
+  onBossPhaseSpawns?(enemy: Enemy, adds: { id: string; count: number }[]): void;
 }
 
 function toBaseStats(config: EnemyConfig): BaseStats {
@@ -69,6 +72,7 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   private animKeys!: ReturnType<typeof enemyAnimKeys>;
   private readonly hpBarBg: Phaser.GameObjects.Rectangle;
   private readonly hpBarFill: Phaser.GameObjects.Rectangle;
+  private bossPhases: BossPhaseTracker | null = null;
 
   constructor(
     scene: Phaser.Scene,
@@ -79,6 +83,7 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.config = config;
     this.animKeys = enemyAnimKeys(config.spriteKey);
     this.brain = createDecider(config.archetype);
+    this.bossPhases = config.phases?.length ? new BossPhaseTracker(config.phases) : null;
     this.sprite.setDepth(9);
     applyStickyManSprite(this.sprite);
 
@@ -119,6 +124,7 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.deathMs = 0;
     this.knockback = null;
     this.brain = createDecider(this.config.archetype);
+    this.bossPhases = this.config.phases?.length ? new BossPhaseTracker(this.config.phases) : null;
     this.stats.refill();
 
     this.sprite.setPosition(x, y);
@@ -155,7 +161,9 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     if (this.dying) {
       this.deathMs += dtMs;
       const t = Math.min(1, this.deathMs / DEATH_ANIM_MS);
-      this.sprite.setAlpha(1 - t).setScale(1 + t * 0.2, 1 - t * 0.6);
+      this.sprite.setAlpha(1 - t);
+      // Uniform scale only — non-uniform scale blurs pixel art.
+      this.sprite.setScale(DISPLAY_SCALE * (1 - t * 0.15));
       if (this.deathMs >= DEATH_ANIM_MS) {
         this.callbacks.onDeathAnimComplete(this);
       }
@@ -223,6 +231,12 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     }
 
     this.updateHpBar();
+
+    if (this.bossPhases) {
+      const ratio = this.stats.runtime.hp / this.stats.resolved.hpMax;
+      const spawns = this.bossPhases.onHpRatio(ratio);
+      if (spawns.length > 0) this.callbacks.onBossPhaseSpawns?.(this, spawns);
+    }
 
     if (this.stats.isDead) {
       this.startDeath();

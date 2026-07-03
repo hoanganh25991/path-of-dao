@@ -1,0 +1,21 @@
+{
+  "id": "skill.lightning.judgment.v4",
+  "intent": "lightning",
+  "nameKey": "skill.lightning.judgment.v4.name",
+  "kind": "bolt",
+  "manaCost": 38,
+  "skillMultiplier": 2,
+  "cooldownMs": 7800,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 2,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

@@ -26,7 +26,7 @@ export const PALETTE_SLIME: StickPalette = {
   fill: '#52c452',
   shadow: '#2e8a32',
   accent: '#c8ff90',
-  highlight: '#1a4018',
+  highlight: '#e8ffb8',
 };
 
 /** Archer — violet cloak, tan bow. */
@@ -50,7 +50,8 @@ export const PALETTE_TOTEM: StickPalette = {
 };
 
 export const FRAME_W = 32;
-export const FRAME_H = 48;
+/** Tall enough for crown/topknot + full leg swing without clipping. */
+export const FRAME_H = 56;
 export const DISPLAY_SCALE = 2;
 
 /** Two-segment limb: upper (shoulder/hip → elbow/knee) + lower (→ hand/foot). */

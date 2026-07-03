@@ -1,0 +1,21 @@
+{
+  "id": "skill.flame.lotus.v4",
+  "intent": "flame",
+  "nameKey": "skill.flame.lotus.v4.name",
+  "kind": "bolt",
+  "manaCost": 34,
+  "skillMultiplier": 1.9,
+  "cooldownMs": 7200,
+  "effects": [
+    {
+      "type": "aoe_circle",
+      "damage": {
+        "skillMultiplier": 1.9,
+        "damageType": "spirit"
+      },
+      "radius": 64,
+      "ticks": 2,
+      "tickIntervalMs": 300
+    }
+  ]
+}

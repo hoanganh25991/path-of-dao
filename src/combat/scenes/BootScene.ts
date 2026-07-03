@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { getMapConfig, resolveTiledUrl } from '@/combat/map/MapLoader';
 import { createPlaceholderTextures } from '@/combat/textures/placeholderTextures';
 import { registerStickyManAssets } from '@/combat/art/stickyManAssets';
+import { registerPixelVfxAssets } from '@/combat/art/pixelVfxDraw';
 import { MapScene } from '@/combat/scenes/MapScene';
 
 export const tilemapKey = (mapId: string): string => `tilemap:${mapId}`;
@@ -30,6 +31,7 @@ export class BootScene extends Phaser.Scene {
 
   create(): void {
     createPlaceholderTextures(this);
+    registerPixelVfxAssets(this);
     registerStickyManAssets(this);
     this.scene.start(MapScene.KEY, { mapId: this.mapId });
   }

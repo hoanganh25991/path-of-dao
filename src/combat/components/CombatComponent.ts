@@ -113,8 +113,13 @@ export class CombatComponent {
     const scale = (SLASH_REACH_PX[step - 1] ?? 40) / SLASH_TEXTURE_SIZE;
 
     const slash = scene.add
-      .image(sprite.x + facing * SLASH_OFFSET_PX, sprite.y - sprite.displayHeight * 0.45, TEXTURE_KEYS.slash)
+      .image(
+        Math.round(sprite.x + facing * SLASH_OFFSET_PX),
+        Math.round(sprite.y - sprite.displayHeight * 0.45),
+        TEXTURE_KEYS.slash,
+      )
       .setFlipX(facing < 0)
+      .setOrigin(0.08, 0.5)
       .setScale(scale)
       .setDepth(sprite.depth + 1);
 

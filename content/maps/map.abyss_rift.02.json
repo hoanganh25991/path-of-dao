@@ -2,7 +2,7 @@
   "id": "map.abyss_rift.02",
   "chapterId": "chapter.08.abyss_rift",
   "displayNameKey": "map.abyss_rift.02.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/abyss_rift-02.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,9 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.abyss_rift.02",
   "bgm": null,
   "pois": [],
-  "recommendedCp": 7500,
+  "recommendedCp": 150000,
   "recommendedRealmOrder": 5
 }

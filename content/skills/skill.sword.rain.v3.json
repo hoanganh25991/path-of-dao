@@ -1,0 +1,20 @@
+{
+  "id": "skill.sword.rain.v3",
+  "intent": "sword",
+  "nameKey": "skill.sword.rain.v3.name",
+  "kind": "arc",
+  "manaCost": 25,
+  "skillMultiplier": 1.1,
+  "cooldownMs": 5000,
+  "effects": [
+    {
+      "type": "melee_arc",
+      "reach": 52,
+      "halfAngleDeg": 70,
+      "damage": {
+        "skillMultiplier": 1.1,
+        "damageType": "physical"
+      }
+    }
+  ]
+}

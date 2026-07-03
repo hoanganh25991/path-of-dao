@@ -1,0 +1,21 @@
+{
+  "id": "skill.lightning.fork.v1",
+  "intent": "lightning",
+  "nameKey": "skill.lightning.fork.v1.name",
+  "kind": "bolt",
+  "manaCost": 20,
+  "skillMultiplier": 1.25,
+  "cooldownMs": 3000,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.25,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

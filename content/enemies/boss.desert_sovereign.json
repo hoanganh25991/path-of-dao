@@ -18,7 +18,23 @@
     50,
     120
   ],
-  "lootTable": null,
+  "lootTable": "loot.boss.standard",
   "spriteKey": "enemy_totem",
-  "bossClearId": "boss.desert_sovereign"
+  "bossClearId": "boss.desert_sovereign",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_desert_sovereign.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
 }

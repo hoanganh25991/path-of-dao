@@ -10,11 +10,22 @@ export const ENEMY_ARCHETYPES = [
 
 export type EnemyArchetype = (typeof ENEMY_ARCHETYPES)[number];
 
+const bossPhaseSchema = z.object({
+  hpThreshold: z.number().min(0).max(1),
+  skills: z.array(z.string()).optional(),
+  spawnAdds: z
+    .array(z.object({ id: z.string().min(1), count: z.number().int().positive() }))
+    .optional(),
+});
+
+export type BossPhaseConfig = z.infer<typeof bossPhaseSchema>;
+
 /** Validates content/enemies/{enemyId}.json at load (sub-plan 08 §4). */
 export const enemyConfigSchema = z.object({
   id: z.string().min(1),
   displayNameKey: z.string().min(1),
   archetype: z.enum(ENEMY_ARCHETYPES),
+  category: z.enum(['grunt', 'elite', 'boss']).optional(),
   stats: z.object({
     hpMax: z.number().positive(),
     atk: z.number().min(0),
@@ -33,6 +44,10 @@ export const enemyConfigSchema = z.object({
   spriteKey: z.string().min(1),
   /** When set, killing this enemy appends the id to progress.clearedBosses. */
   bossClearId: z.string().nullable().optional(),
+  phases: z.array(bossPhaseSchema).optional(),
+  bestiaryKey: z.string().optional(),
+  weakness: z.string().optional(),
+  resistance: z.string().optional(),
 });
 
 export type EnemyConfig = z.infer<typeof enemyConfigSchema>;

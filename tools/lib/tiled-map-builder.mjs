@@ -24,7 +24,7 @@ const grid = (w, h) => new Array(w * h).fill(0);
  * @param {number} [opts.width=50]
  * @param {number} [opts.height=38]
  * @param {number} opts.seed
- * @param {'village'|'forest'|'canyon'|'lake'|'desert'} opts.theme
+ * @param {'village'|'forest'|'canyon'|'lake'|'desert'|'thunder'|'frozen'|'abyss'|'celestial'|'void'} opts.theme
  * @param {boolean} [opts.bossArena=false]
  */
 export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena = false }) {
@@ -34,8 +34,14 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
   const collision = grid(width, height);
   const foreground = grid(width, height);
 
-  const grassVarChance = { village: 0.15, forest: 0.35, canyon: 0.1, lake: 0.25, desert: 0.08 }[theme];
-  const dirtBias = { village: 0.25, forest: 0.08, canyon: 0.12, lake: 0.1, desert: 0.45 }[theme];
+  const grassVarChance = {
+    village: 0.15, forest: 0.35, canyon: 0.1, lake: 0.25, desert: 0.08,
+    thunder: 0.1, frozen: 0.2, abyss: 0.42, celestial: 0.12, void: 0.05,
+  }[theme] ?? 0.15;
+  const dirtBias = {
+    village: 0.25, forest: 0.08, canyon: 0.12, lake: 0.1, desert: 0.45,
+    thunder: 0.22, frozen: 0.08, abyss: 0.18, celestial: 0.16, void: 0.38,
+  }[theme] ?? 0.15;
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
@@ -63,9 +69,9 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
   }
 
   // Theme features
-  if (theme === 'lake' || theme === 'forest') {
-    const cx = theme === 'lake' ? 12 : 28;
-    const cy = theme === 'lake' ? 28 : 22;
+  if (theme === 'lake' || theme === 'forest' || theme === 'frozen') {
+    const cx = theme === 'lake' ? 12 : theme === 'frozen' ? 20 : 28;
+    const cy = theme === 'lake' ? 28 : theme === 'frozen' ? 24 : 22;
     for (let y = cy - 4; y <= cy + 4; y++) {
       for (let x = cx - 5; x <= cx + 5; x++) {
         if (x < 1 || y < 1 || x >= width - 1 || y >= height - 1) continue;
@@ -78,15 +84,26 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     }
   }
 
-  if (theme === 'canyon' || theme === 'desert') {
-    for (let i = 0; i < (theme === 'canyon' ? 8 : 4); i++) {
+  const rockThemes = { canyon: 8, desert: 4, thunder: 12, abyss: 6, void: 10, celestial: 2, frozen: 2 };
+  const rockCount = rockThemes[theme] ?? 0;
+  if (rockCount > 0) {
+    for (let i = 0; i < rockCount; i++) {
       const rx = 8 + Math.floor(rand() * (width - 16));
       const ry = 4 + Math.floor(rand() * (height - 12));
+      const span = theme === 'void' ? 5 : 4;
       for (let dy = 0; dy < 3; dy++) {
-        for (let dx = 0; dx < 4; dx++) {
+        for (let dx = 0; dx < span; dx++) {
           collision[idx(width, rx + dx, ry + dy)] = G.ROCK;
         }
       }
+    }
+  }
+
+  if (theme === 'abyss' || theme === 'void') {
+    for (let i = 0; i < 6; i++) {
+      const x = 10 + Math.floor(rand() * (width - 20));
+      const y = 6 + Math.floor(rand() * (height - 14));
+      ground[idx(width, x, y)] = G.GRASS_VAR;
     }
   }
 
@@ -103,7 +120,10 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     }
   }
 
-  const treeCount = { village: 8, forest: 14, canyon: 6, lake: 10, desert: 4 }[theme];
+  const treeCount = {
+    village: 8, forest: 14, canyon: 6, lake: 10, desert: 4,
+    thunder: 3, frozen: 6, abyss: 12, celestial: 7, void: 2,
+  }[theme] ?? 8;
   for (let i = 0; i < treeCount; i++) {
     const tx = 3 + Math.floor(rand() * (width - 6));
     const ty = 3 + Math.floor(rand() * (height - 6));

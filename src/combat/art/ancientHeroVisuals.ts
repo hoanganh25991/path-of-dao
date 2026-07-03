@@ -4,6 +4,12 @@ import {
   buildSheetCanvas,
   heroFrameOffset,
   NORMAL,
+  POSES_ATTACK_1,
+  POSES_ATTACK_2,
+  POSES_ATTACK_3,
+  POSES_HIT,
+  POSES_IDLE,
+  POSES_WALK,
 } from '@/combat/art/stickyManDraw';
 import {
   applyStickyManSprite,
@@ -11,6 +17,7 @@ import {
 } from '@/combat/art/stickyManAssets';
 import type { StickPalette } from '@/combat/art/stickyManPalette';
 import { FRAME_H, FRAME_W } from '@/combat/art/stickyManPalette';
+import { VFX_TEXTURE_KEYS } from '@/combat/art/pixelVfxDraw';
 import type { AncientProfile } from '@/shared/schemas/ancient-demo';
 
 const ANCIENT_PALETTES: Record<string, StickPalette> = {
@@ -65,7 +72,7 @@ const ANCIENT_PALETTES: Record<string, StickPalette> = {
 };
 
 export interface AncientCombatFx {
-  aura: Phaser.GameObjects.Arc;
+  aura: Phaser.GameObjects.Image;
   nameTag: Phaser.GameObjects.Text;
   titleTag: Phaser.GameObjects.Text;
 }
@@ -104,7 +111,7 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
       key: `${heroKey}_idle`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
         start: heroFrameOffset('idle'),
-        end: heroFrameOffset('idle') + 3,
+        end: heroFrameOffset('idle') + POSES_IDLE.length - 1,
       }),
       frameRate: 6,
       repeat: -1,
@@ -113,43 +120,43 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
       key: `${heroKey}_walk`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
         start: heroFrameOffset('walk'),
-        end: heroFrameOffset('walk') + 3,
+        end: heroFrameOffset('walk') + POSES_WALK.length - 1,
       }),
-      frameRate: 12,
+      frameRate: 10,
       repeat: -1,
     });
     scene.anims.create({
       key: `${heroKey}_attack_1`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
         start: heroFrameOffset('attack1'),
-        end: heroFrameOffset('attack1') + 2,
+        end: heroFrameOffset('attack1') + POSES_ATTACK_1.length - 1,
       }),
-      frameRate: 14,
+      frameRate: 16,
       repeat: 0,
     });
     scene.anims.create({
       key: `${heroKey}_attack_2`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
         start: heroFrameOffset('attack2'),
-        end: heroFrameOffset('attack2') + 2,
+        end: heroFrameOffset('attack2') + POSES_ATTACK_2.length - 1,
       }),
-      frameRate: 14,
+      frameRate: 16,
       repeat: 0,
     });
     scene.anims.create({
       key: `${heroKey}_attack_3`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
         start: heroFrameOffset('attack3'),
-        end: heroFrameOffset('attack3') + 3,
+        end: heroFrameOffset('attack3') + POSES_ATTACK_3.length - 1,
       }),
-      frameRate: 12,
+      frameRate: 14,
       repeat: 0,
     });
     scene.anims.create({
       key: `${heroKey}_hit`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
         start: heroFrameOffset('hit'),
-        end: heroFrameOffset('hit') + 1,
+        end: heroFrameOffset('hit') + POSES_HIT.length - 1,
       }),
       frameRate: 10,
       repeat: 0,
@@ -193,12 +200,18 @@ export function applyAncientHeroVisual(
 
   const accent = parseInt(paletteForProfile(profile).accent.replace('#', ''), 16);
 
-  const aura = scene.add.circle(sprite.x, sprite.y, 28, accent, 0.22);
-  aura.setDepth(sprite.depth - 1);
+  const aura = scene.add
+    .image(sprite.x, sprite.y - 24, VFX_TEXTURE_KEYS.auraRing)
+    .setOrigin(0.5)
+    .setScale(1)
+    .setTint(accent)
+    .setAlpha(0.35)
+    .setDepth(sprite.depth - 1);
   scene.tweens.add({
     targets: aura,
-    scale: { from: 0.92, to: 1.12 },
-    alpha: { from: 0.14, to: 0.32 },
+    scaleX: { from: 0.92, to: 1.08 },
+    scaleY: { from: 0.92, to: 1.08 },
+    alpha: { from: 0.2, to: 0.4 },
     duration: 1400,
     yoyo: true,
     repeat: -1,

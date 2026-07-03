@@ -1,0 +1,27 @@
+{
+  "id": "enemy.lightning.sprite",
+  "displayNameKey": "enemy.lightning.sprite.name",
+  "stats": {
+    "hpMax": 240,
+    "atk": 42,
+    "def": 18,
+    "speed": 111,
+    "crit": 0.16999999999999998,
+    "critDmg": 1.6
+  },
+  "aggroRange": 350,
+  "attackRange": 70,
+  "attackCooldownMs": 1000,
+  "xpReward": 120,
+  "goldReward": [
+    12,
+    48
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_lightning_sprite.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

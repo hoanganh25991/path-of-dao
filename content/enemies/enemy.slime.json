@@ -14,7 +14,14 @@
   "attackRange": 36,
   "attackCooldownMs": 1200,
   "xpReward": 15,
-  "goldReward": [1, 5],
-  "lootTable": null,
-  "spriteKey": "enemy_slime"
+  "goldReward": [
+    1,
+    5
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_slime",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_slime.desc",
+  "weakness": "spirit",
+  "resistance": "none"
 }

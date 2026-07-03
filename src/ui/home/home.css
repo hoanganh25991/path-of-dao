@@ -16,7 +16,7 @@
   z-index: 1;
   pointer-events: none;
   color: var(--dao-text);
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Noto Sans', sans-serif;
 }
 
 .home-ui[hidden] {

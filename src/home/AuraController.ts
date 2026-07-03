@@ -6,6 +6,7 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
+  PointLight,
   Points,
   PointsMaterial,
   Scene,
@@ -21,6 +22,8 @@ export class AuraController {
   private points: Points | null = null;
   private ring: Mesh | null = null;
   private voidRing: Mesh | null = null;
+  private coreLight: PointLight | null = null;
+  private coreLightBase = 0;
   private phase = 0;
 
   constructor(scene: Scene) {
@@ -38,18 +41,22 @@ export class AuraController {
         break;
       case 'faint':
         this.points = this.createRisingPoints(18, 0x88ccff, 0.35, 0.8, 1.4);
+        this.addCoreLight(0x88ccff, 0.35);
         break;
       case 'swirling':
         this.points = this.createOrbitingPoints(30, 0xaaddff, 0.55, 0.9);
         this.ring = this.createRing(0.55, 0x88bbee, 0.25);
+        this.addCoreLight(0xaaddff, 0.5);
         break;
       case 'void':
         this.points = this.createOrbitingPoints(24, 0xbb66ff, 0.65, 1.1);
         this.voidRing = this.createVoidRing();
+        this.addCoreLight(0xbb66ff, 0.55);
         break;
       case 'true_dao':
         this.points = this.createOrbitingPoints(36, 0xffd966, 0.75, 1.2);
         this.ring = this.createRing(0.65, 0xffcc44, 0.45);
+        this.addCoreLight(0xffd966, 0.65);
         break;
     }
   }
@@ -88,6 +95,9 @@ export class AuraController {
       this.voidRing.rotation.z -= delta * 0.9;
       this.voidRing.rotation.y = Math.sin(this.phase) * 0.2;
     }
+    if (this.coreLight) {
+      this.coreLight.intensity = this.coreLightBase * (0.85 + Math.sin(this.phase * 2.2) * 0.15);
+    }
   }
 
   dispose(): void {
@@ -111,6 +121,16 @@ export class AuraController {
     this.points = null;
     this.ring = null;
     this.voidRing = null;
+    this.coreLight = null;
+    this.coreLightBase = 0;
+  }
+
+  private addCoreLight(color: number, intensity: number): void {
+    const light = new PointLight(color, intensity, 2.2);
+    light.position.set(0, 0.45, 0);
+    this.root.add(light);
+    this.coreLight = light;
+    this.coreLightBase = intensity;
   }
 
   private createRisingPoints(

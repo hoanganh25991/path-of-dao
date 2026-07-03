@@ -1,0 +1,20 @@
+{
+  "id": "skill.sword.heaven.v5",
+  "intent": "sword",
+  "nameKey": "skill.sword.heaven.v5.name",
+  "kind": "arc",
+  "manaCost": 30,
+  "skillMultiplier": 1.8,
+  "cooldownMs": 6000,
+  "effects": [
+    {
+      "type": "melee_arc",
+      "reach": 52,
+      "halfAngleDeg": 70,
+      "damage": {
+        "skillMultiplier": 1.8,
+        "damageType": "physical"
+      }
+    }
+  ]
+}

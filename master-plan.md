@@ -2,7 +2,8 @@
 
 > **Working title:** Path of Dao (candidate names: Void Ascension, Echoes of the Void)  
 > **Genre:** Mobile-first 2D Action RPG with 3D Home shrine  
-> **Design sources:** `echoes-of-the-void-game-design.md`, `void-ascension-game-concept.md`
+> **Design sources:** `echoes-of-the-void-game-design.md`, `void-ascension-game-concept.md`  
+> **Narrative north star:** *Tiên Nghịch* (Renegade Immortal) — mortal beginnings, map-by-map hardship, fortuitous inheritance, and a legendary sword earned late, not given at birth.
 
 ---
 
@@ -13,11 +14,26 @@ Build a cultivation-themed action RPG where the player:
 1. Controls a hero with **one-thumb inputs** (move joystick, attack, skill, dodge) in **2D combat maps**.
 2. Returns to a **3D Home** (floating mountain village) to admire their character, manage equipment, review lore, and choose the next map.
 3. Grows through **levels, cultivation realms, insight awakenings, and fortuitous encounters** — not just stat inflation.
-4. Explores a **non-linear world** of 10 regions / 20 maps; if a map is too hard, they leave, farm elsewhere, and return stronger.
-5. Experiences **story at chapter endings** via narrated scenes, not only loot drops.
+4. Explores a **non-linear world** of 10 regions / 20 maps; if a map is too hard, they leave, farm elsewhere, and return stronger — the core *Tiên Nghịch* loop of retreat, endure, and seize destiny on the next attempt.
+5. Experiences **story at chapter endings** via narrated scenes that read like cultivation diary entries: each region marks a turning point on the road, not a loot checklist.
 6. Can optionally **walk as legendary ancients** (*Echoes of the Ancients*) to preview realms, skills, breakthrough, and fortune before their own journey deepens.
 
 The player should always feel: *my character has grown, my realm matters, my aura tells my story, every map hides another destiny.*
+
+### 1.1 Tiên Nghịch Design Pillars (Canonical)
+
+These pillars override generic ARPG defaults when in conflict.
+
+| Pillar | In *Tiên Nghịch* | In Path of Dao |
+|--------|------------------|----------------|
+| **Humble start** | Wang Lin begins mortal — fists, hardship, ridicule | Hero **attacks unarmed** (palm / body strikes) until a real weapon is earned |
+| **Map-by-map road** | Each secret land, ruin, and trial is a chapter of survival | **20 maps** = 10 regions × 2 stages; world map is the cultivation road, not a level select |
+| **Fortuitous inheritance** | Power comes from hidden caves, ancient remnants, and risk | **POIs + encounters** gate major rewards; sword is a *destiny*, not starter gear |
+| **The sword** | Legendary blade tied to ancient will — transforms the cultivator | **`item.sword.ancient`** (Ancient Spirit Sword) is a **major milestone** unlocked mid-journey via map POI + story beat; Sword Intent skills **require** it |
+| **Retreat & return** | Flee, cultivate elsewhere, come back overwhelming | CP badges + rematch scaling on lower maps (§7.5) |
+| **Story tone** | Cold perseverance, loss, obsession with dao | Chapter-end scenes: sparse prose, consequence, no power-fantasy quips in early acts |
+
+**Legal note:** We take *structure and feeling* from *Tiên Nghịch* — mortal rise, fortuitous sword, map odyssey — not plot, names, or verbatim text. Original characters, regions, and dialogue only.
 
 ---
 
@@ -26,11 +42,12 @@ The player should always feel: *my character has grown, my realm matters, my aur
 | Area | MVP Target | Notes |
 |------|-----------|-------|
 | Heroes | 1 playable hero | Expand post-MVP |
-| Chapters | 10 | Each ends with story scene |
-| Maps | 20 | 1–2 stages per region |
+| **Combat style** | **Unarmed → Ancient Sword** | Default **hand/palm combo**; `item.sword.ancient` earned mid-Act I via map POI (see §7.7) |
+| Chapters | 10 | Each ends with story scene; arc follows cultivation road (§7.8) |
+| Maps | 20 | 1–2 stages per region; `.01` explore, `.02` ordeal + boss |
 | Enemies | 25 types | Shared AI archetypes, unique visuals/stats |
 | Bosses | 8 | Gate chapter progression or realm breakthrough |
-| Skills | 40 total | 6 signature + variants via Insight awakenings |
+| Skills | 40 total | 6 signature + variants; **Sword Intent locked** until Ancient Sword acquired |
 | Save | Save anywhere | IndexedDB + export/import JSON |
 | Locales | `en`, `vi` | All UI + story strings externalized |
 | Home | Full feature set | 3D viewer, equipment, skills, bestiary, story archive, map portal |
@@ -257,15 +274,17 @@ Breakthrough requires: level threshold + boss clear OR special encounter + spiri
 
 Sword, Void, Flame, Lightning, Time, Life — each skill tagged with one intent. Using tagged skills in combat grants insight XP; at 100%, skill **awakens** (new behavior, not just +damage).
 
+**Tiên Nghịch gating:** Sword Intent skills and sword-flavored attack VFX are **disabled until** the player owns `item.sword.ancient` (Ancient Spirit Sword). Before that, primary attacks use **unarmed palm/strike** animations and physical hitboxes only.
+
 ### 7.4 Story Delivery
 
-- **In-map:** minimal — environmental text, NPC barks (optional MVP).
-- **Chapter end:** full-screen story scene (text + illustration + Continue).
+- **In-map:** minimal — environmental text, NPC barks (optional MVP); POI whispers foreshadow the ancient sword.
+- **Chapter end:** full-screen story scene (text + illustration + Continue) — tone: perseverance, cost, quiet resolve (*Tiên Nghịch* diary style).
 - **Story Archive:** replay unlocked chapters from Home.
 
 ### 7.5 Difficulty & Power Fantasy
 
-Maps have recommended CP range. Returning to lower maps: enemies have `-40% HP/DEF` per realm tier above recommendation; player damage capped only by skill CD — should feel like crushing ants.
+Maps have recommended CP range. Returning to lower maps: enemies have `-40% HP/DEF` per realm tier above recommendation; player damage capped only by skill CD — should feel like crushing ants once the dao road is behind you.
 
 ### 7.6 Ancient Echo Demo (Onboarding)
 
@@ -288,6 +307,53 @@ Each ancient demonstrates one vertical slice with their equipped skills live in 
 
 **Key files:** `AncientDemoManager`, `AncientCombatMode`, `EchoesPanel`, `MapScene` (god mode + `applyAncientEcho`), `Player`, `StatSheet.enableGodMode`.
 
+### 7.7 Weapon & Combat Progression (*Tiên Nghịch* Arc)
+
+The hero's relationship to the sword mirrors the novel's slow inheritance — power is **found on the road**, not in the tutorial chest.
+
+| Stage | When | Combat | Equipment | Story beat |
+|-------|------|--------|-----------|------------|
+| **0 — Mortal body** | Ch1 start (`map.fallen_village.01`) | **3-hit palm combo** — short reach, no blade VFX | No weapon slot filled (or cosmetic wraps only) | Fleeing a ruined homeland; survive with bare hands |
+| **1 — Qi awakening** | Ch1 mid (`map.fallen_village.01` POI optional) | Same palms; **Void / Life** intent skills unlock from cultivation | `item.spirit.jade` from story | Jade spirit stirs — dao path opens |
+| **2 — Ancient Spirit Sword** | Ch1–2 (`ancient_sword` POI on `map.fallen_village.02` or hidden cave ch2) | **Sword combo replaces palms**; Sword Intent skills enabled; CP jump | `item.sword.ancient` equipped — **signature weapon for rest of MVP** | Blade sleeps in stone; only your spirit awakens it — *the* fortuitous encounter |
+| **3 — Tempered road** | Ch3–5 maps | Sword + new intents (Flame, Lightning) | `item.sword.iron` optional side upgrade; ancient sword remains BiS until endgame | Bandits, seals, desert — each region hardens will |
+| **4 — Heavenly trials** | Ch6–10 | Full skill roster + awakenings | Endgame spirit accessories; sword awakens visually at Nascent Soul+ | Tribulation, abyss, gate, void throne |
+
+**Implementation rules:**
+
+1. **New game:** `equipped.weapon = null`; starter loadout has **no** `item.sword.wood` in weapon slot (training blade may exist in inventory as junk later).
+2. **`PlayerAnimController`:** `attackStyle: 'unarmed' | 'sword'` driven by save flag `progress.weaponMilestone` or equipped ancient sword.
+3. **`ancient_sword` POI** (`encounter.ancient_sword`): grants `item.sword.ancient`, sets milestone, plays sting + story shard, unlocks Sword Intent on skill picker.
+4. **Echoes demo** ancients may still show sword — they preview endgame fantasy, not the player's start.
+
+**Content IDs:** `item.sword.ancient`, POI type `ancient_sword`, encounter `encounter.ancient_sword`, flag `progress.weaponMilestone: 'none' | 'ancient_sword'`.
+
+### 7.8 World Road — Map & Chapter Arc (*Tiên Nghịch* Style)
+
+Each chapter is a **stop on the cultivation road**. Player picks the next destination from the world map (free travel); difficulty pushes them to farm earlier regions first.
+
+| Ch | Region | *Tiên Nghịch* parallel (structure only) | Map .01 — Explore | Map .02 — Ordeal | Story theme |
+|----|--------|-------------------------------------------|-------------------|------------------|-------------|
+| 1 | Fallen Village | Mortal homeland destroyed | Ruins, slimes — learn dodge | Bandits + Jade Guardian | Awakening — jade spirit, **sword destiny teased** |
+| 2 | Mist Forest | Wilderness after exile | Spirit beasts, fog | Mist Stalker boss | Fox spirit / hidden path — **ancient sword POI** (if not taken ch1) |
+| 3 | Stone Canyon | Trials among mortals & bandits | Patrol routes | Bandit Lord | Ruthless choices; dao or death |
+| 4 | Moon Lake | Ancient seal / forbidden ruin | Water sprites | Seal Warden | Ancient seal cracks — corruption foreshadowed |
+| 5 | Burning Desert | Endurance, near breaking | Scorpions, heat | Desert Sovereign | Survival — will tempered by sand |
+| 6 | Thunder Peaks | Heavenly tribulation | Storm hawks | Thunder Avatar | Lightning intent — heaven tests the stubborn |
+| 7 | Frozen Palace | Memory of power / loss | Ice shades | Frost Queen | Past life echoes; cold dao |
+| 8 | Abyss Rift | Inner demon / rift walk | Void shades | Rift Horror | Corruption of heart; void deepens |
+| 9 | Heavenly Gate | Ascension trial | Gate sentinels | Gate Keeper | Guardians of the threshold |
+| 10 | Void Throne | Ultimate dao confrontation | Celestial path | Void Emperor | Epilogue — what remains after obsession |
+
+**Map flow (every chapter):**
+
+```
+World Map → pick region → Map .01 (explore, POIs, farm) → Map .02 (boss) → Chapter story → unlock next region
+                ↑___________________________________________|  (retreat anytime if CP too low)
+```
+
+**POI distribution (minimum):** 1× `hidden_cave` + 1× `ancient_sword` across ch1–2; 1× `secret_manual` by ch5; fortuitous tables per region in `content/encounters/fortuitous/`.
+
 ---
 
 ## 8. Data Model Overview
@@ -309,6 +375,7 @@ interface PlayerSave {
     unlockedChapters: string[];
     storySeen: string[];
     encountersFound: string[];
+    weaponMilestone: 'none' | 'ancient_sword';  // Tiên Nghịch sword gate
   };
   meta: {
     totalPlaySeconds: number;
@@ -350,6 +417,7 @@ Every sub-plan must satisfy before marking done:
 | Save corruption | Player rage-quit | Checksum, autosave rotation, export backup |
 | i18n string overflow (Vietnamese) | UI breaks | Flexible layouts, max-width tokens, test both locales early |
 | Insight system complexity | Over-engineering | MVP: 6 base skills + 6 awakenings; expand to 40 via variants in Phase 6 data |
+| **Tiên Nghịch alignment rework** | Player expects sword from minute one; undermines story | §7.7 weapon arc; TRACK T1–T8; unarmed animations before ancient sword POI |
 | Art consistency | Characters feel disconnected | Locked sticky-man style guide: [docs/pixel-art-style.md](./docs/pixel-art-style.md) |
 
 ---
@@ -371,12 +439,14 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 ## 12. Definition of Done (MVP Ship)
 
 - [ ] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
-- [ ] All 10 chapters playable with end-of-chapter story scene
-- [ ] 20 maps traversable from world map with difficulty hints
+- [ ] **New game starts unarmed** — palm combo only; no sword in weapon slot
+- [ ] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent
+- [ ] All 10 chapters playable with end-of-chapter story scene (*Tiên Nghịch* tone pass on all story JSON)
+- [ ] 20 maps traversable from world map with difficulty hints; map-to-map road readable in UI
 - [ ] 8 boss fights with distinct patterns
-- [ ] 40 skills equippable; at least 6 with full awakening VFX
+- [ ] 40 skills equippable; Sword Intent **gated** until ancient sword; at least 6 with full awakening VFX
 - [ ] Insight meter visible; one awakening demonstrable per intent
-- [ ] At least 3 fortuitous encounter types functional
+- [ ] At least 3 fortuitous encounter types functional (including ancient sword)
 - [ ] Realm breakthrough flow works once
 - [ ] Combat power displayed in Home profile
 - [ ] Aura visible in 3D Home per realm tier
@@ -391,3 +461,5 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 ## 13. Next Step
 
 Start with **`plans/01-project-scaffold.md`**. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
+
+**Active design thread:** Align implementation with **§1.1 Tiên Nghịch pillars** — see [TRACK.md](./TRACK.md) § Tiên Nghịch Alignment for gap list and owning sub-plans.

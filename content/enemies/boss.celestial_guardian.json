@@ -1,0 +1,40 @@
+{
+  "id": "boss.celestial_guardian",
+  "displayNameKey": "boss.celestial_guardian.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 5400,
+    "atk": 72,
+    "def": 38,
+    "speed": 75,
+    "crit": 0.16,
+    "critDmg": 2.1
+  },
+  "aggroRange": 360,
+  "attackRange": 200,
+  "attackCooldownMs": 1200,
+  "xpReward": 1800,
+  "goldReward": [
+    150,
+    400
+  ],
+  "lootTable": "loot.boss.standard",
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.celestial_guardian",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_celestial_guardian.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
+}

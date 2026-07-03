@@ -1,0 +1,25 @@
+{
+  "id": "encounter.abyss_rift.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.elite.rift",
+          "count": 2,
+          "spread": 100
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.rift_horror",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

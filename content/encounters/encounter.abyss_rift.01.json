@@ -1,0 +1,20 @@
+{
+  "id": "encounter.abyss_rift.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.rift.spawn",
+          "count": 5,
+          "spread": 140
+        },
+        {
+          "id": "enemy.corrupted.cultist",
+          "count": 3,
+          "spread": 160
+        }
+      ]
+    }
+  ]
+}

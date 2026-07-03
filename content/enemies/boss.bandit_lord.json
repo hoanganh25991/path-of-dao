@@ -18,7 +18,23 @@
     30,
     80
   ],
-  "lootTable": null,
+  "lootTable": "loot.boss.standard",
   "spriteKey": "enemy_totem",
-  "bossClearId": "boss.bandit_lord"
+  "bossClearId": "boss.bandit_lord",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_bandit_lord.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
 }

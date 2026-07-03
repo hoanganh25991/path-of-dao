@@ -1,0 +1,45 @@
+{
+  "id": "boss.rift_horror",
+  "displayNameKey": "boss.rift_horror.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 4200,
+    "atk": 64,
+    "def": 32,
+    "speed": 70,
+    "crit": 0.16,
+    "critDmg": 2.1
+  },
+  "aggroRange": 360,
+  "attackRange": 56,
+  "attackCooldownMs": 1200,
+  "xpReward": 1400,
+  "goldReward": [
+    120,
+    320
+  ],
+  "lootTable": "loot.boss.standard",
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.rift_horror",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_rift_horror.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": [
+        {
+          "id": "enemy.rift.spawn",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

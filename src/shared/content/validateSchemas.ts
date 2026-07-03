@@ -9,6 +9,7 @@ import { chaptersIndexSchema } from '@/shared/schemas/chapter';
 import { storySceneSchema } from '@/shared/schemas/story';
 import { worldMapFileSchema } from '@/shared/schemas/world-map';
 import { encounterDefinitionSchema } from '@/shared/schemas/fortuitous-encounters';
+import { lootTableSchema } from '@/shared/schemas/loot';
 import { realmsFileSchema } from '@/shared/schemas/realms';
 import type { ValidationReport } from '@/shared/content/types';
 import { createReport } from '@/shared/content/types';
@@ -22,6 +23,7 @@ export interface ContentIndex {
   fortuitous: Map<string, unknown>;
   stories: Map<string, unknown>;
   locales: { en: Record<string, string>; vi: Record<string, string> };
+  loot: Map<string, unknown>;
   chapters: unknown;
   world: unknown;
   realms: unknown;
@@ -82,6 +84,7 @@ export function loadContentIndex(): ContentIndex {
     encounters: loadDir('encounters', { skipUnderscore: true }),
     fortuitous: loadDir('encounters/fortuitous', { skipUnderscore: true }),
     stories: loadDir('story'),
+    loot: loadDir('loot', { skipUnderscore: true }),
     locales: loadLocales(),
     chapters: existsSync(join(CONTENT, 'chapters/index.json'))
       ? readJson(join(CONTENT, 'chapters/index.json'))
@@ -129,6 +132,7 @@ export function validateSchemas(index: ContentIndex): ValidationReport {
   validateMap(report, 'skills', index.skills, skillDefinitionSchema);
   validateMap(report, 'items', index.items, itemDefinitionSchema);
   validateMap(report, 'story', index.stories, storySceneSchema);
+  validateMap(report, 'loot', index.loot, lootTableSchema);
 
   for (const [fileId, raw] of index.encounters) {
     const path = `encounters/${fileId}.json`;

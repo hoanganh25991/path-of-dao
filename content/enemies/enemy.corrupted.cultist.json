@@ -1,0 +1,27 @@
+{
+  "id": "enemy.corrupted.cultist",
+  "displayNameKey": "enemy.corrupted.cultist.name",
+  "stats": {
+    "hpMax": 376,
+    "atk": 66,
+    "def": 28,
+    "speed": 117,
+    "crit": 0.2,
+    "critDmg": 1.6
+  },
+  "aggroRange": 400,
+  "attackRange": 276,
+  "attackCooldownMs": 1400,
+  "xpReward": 188,
+  "goldReward": [
+    16,
+    64
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_corrupted_cultist.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

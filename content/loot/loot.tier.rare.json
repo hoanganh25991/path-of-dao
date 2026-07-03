@@ -1,0 +1,7 @@
+{
+  "id": "loot.tier.rare",
+  "entries": [
+    { "itemId": "item.sword.ancient", "weight": 60, "qty": [1, 1] },
+    { "itemId": "item.spirit.jade", "weight": 40, "qty": [1, 2] }
+  ]
+}

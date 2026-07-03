@@ -1,0 +1,25 @@
+{
+  "id": "encounter.thunder_peaks.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.elite.storm",
+          "count": 2,
+          "spread": 100
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.thunder_avatar",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

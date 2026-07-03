@@ -44,6 +44,11 @@ export class CombatSceneHost implements SceneHost {
           default: 'arcade',
           arcade: { gravity: { x: 0, y: 0 }, debug: false },
         },
+        render: {
+          pixelArt: true,
+          antialias: false,
+          roundPixels: true,
+        },
         callbacks: {
           preBoot: (game) => {
             game.registry.set('mapId', mapId);

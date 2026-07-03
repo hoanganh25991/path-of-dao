@@ -1,0 +1,20 @@
+{
+  "id": "skill.sword.crescent.v1",
+  "intent": "sword",
+  "nameKey": "skill.sword.crescent.v1.name",
+  "kind": "arc",
+  "manaCost": 18,
+  "skillMultiplier": 1.2,
+  "cooldownMs": 3000,
+  "effects": [
+    {
+      "type": "melee_arc",
+      "reach": 52,
+      "halfAngleDeg": 45,
+      "damage": {
+        "skillMultiplier": 1.2,
+        "damageType": "physical"
+      }
+    }
+  ]
+}

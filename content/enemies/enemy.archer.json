@@ -14,7 +14,14 @@
   "attackRange": 180,
   "attackCooldownMs": 1800,
   "xpReward": 22,
-  "goldReward": [2, 7],
-  "lootTable": null,
-  "spriteKey": "enemy_archer"
+  "goldReward": [
+    2,
+    7
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_archer",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_archer.desc",
+  "weakness": "spirit",
+  "resistance": "none"
 }

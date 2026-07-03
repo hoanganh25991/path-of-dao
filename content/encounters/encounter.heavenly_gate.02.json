@@ -1,0 +1,25 @@
+{
+  "id": "encounter.heavenly_gate.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.elite.celestial",
+          "count": 2,
+          "spread": 100
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.celestial_guardian",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

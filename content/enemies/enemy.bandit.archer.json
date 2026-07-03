@@ -17,7 +17,11 @@
     3,
     9
   ],
-  "lootTable": null,
+  "lootTable": "loot.tier.common",
   "spriteKey": "enemy_archer",
-  "archetype": "ranged_kiter"
+  "archetype": "ranged_kiter",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_bandit_archer.desc",
+  "weakness": "spirit",
+  "resistance": "none"
 }

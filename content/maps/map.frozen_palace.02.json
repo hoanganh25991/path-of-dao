@@ -2,7 +2,7 @@
   "id": "map.frozen_palace.02",
   "chapterId": "chapter.07.frozen_palace",
   "displayNameKey": "map.frozen_palace.02.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/frozen_palace-02.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,9 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.frozen_palace.02",
   "bgm": null,
   "pois": [],
-  "recommendedCp": 6600,
+  "recommendedCp": 95000,
   "recommendedRealmOrder": 5
 }

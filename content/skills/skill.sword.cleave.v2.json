@@ -1,0 +1,20 @@
+{
+  "id": "skill.sword.cleave.v2",
+  "intent": "sword",
+  "nameKey": "skill.sword.cleave.v2.name",
+  "kind": "arc",
+  "manaCost": 22,
+  "skillMultiplier": 1.4,
+  "cooldownMs": 3500,
+  "effects": [
+    {
+      "type": "melee_arc",
+      "reach": 52,
+      "halfAngleDeg": 75,
+      "damage": {
+        "skillMultiplier": 1.4,
+        "damageType": "physical"
+      }
+    }
+  ]
+}

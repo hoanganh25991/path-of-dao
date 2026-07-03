@@ -1,0 +1,20 @@
+{
+  "id": "encounter.thunder_peaks.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.storm.hawk",
+          "count": 4,
+          "spread": 140
+        },
+        {
+          "id": "enemy.lightning.sprite",
+          "count": 3,
+          "spread": 120
+        }
+      ]
+    }
+  ]
+}

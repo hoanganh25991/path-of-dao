@@ -1,0 +1,25 @@
+{
+  "id": "encounter.frozen_palace.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.elite.frost",
+          "count": 2,
+          "spread": 110
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.frost_queen",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "enemy.gate.sentinel",
+  "displayNameKey": "enemy.gate.sentinel.name",
+  "stats": {
+    "hpMax": 444,
+    "atk": 78,
+    "def": 33,
+    "speed": 129,
+    "crit": 0.21500000000000002,
+    "critDmg": 1.6
+  },
+  "aggroRange": 425,
+  "attackRange": 85,
+  "attackCooldownMs": 1000,
+  "xpReward": 222,
+  "goldReward": [
+    18,
+    72
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_archer",
+  "archetype": "patrol",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_gate_sentinel.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

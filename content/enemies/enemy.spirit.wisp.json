@@ -17,7 +17,11 @@
     2,
     6
   ],
-  "lootTable": null,
+  "lootTable": "loot.tier.common",
   "spriteKey": "enemy_slime",
-  "archetype": "melee_chaser"
+  "archetype": "melee_chaser",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_spirit_wisp.desc",
+  "weakness": "spirit",
+  "resistance": "none"
 }

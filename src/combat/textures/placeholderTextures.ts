@@ -1,17 +1,18 @@
 import type Phaser from 'phaser';
+import { VFX_TEXTURE_KEYS } from '@/combat/art/pixelVfxDraw';
 
 /**
- * Runtime-generated placeholder art (sub-plan 06 §5: colored squares OK).
- * Replaced by real sprite sheets in the asset pipeline later.
+ * Runtime-generated placeholder art for tilemaps.
+ * Combat VFX textures live in `registerPixelVfxAssets()` (pixelVfxDraw.ts).
  */
 
 export const TEXTURE_KEYS = {
   tileset: 'tiles-grove',
   player: 'hero_sticky',
-  slash: 'slash-placeholder',
-  bolt: 'bolt-placeholder',
-  arrow: 'arrow-placeholder',
-  coin: 'coin-placeholder',
+  slash: VFX_TEXTURE_KEYS.slash,
+  bolt: VFX_TEXTURE_KEYS.bolt,
+  arrow: VFX_TEXTURE_KEYS.arrow,
+  coin: VFX_TEXTURE_KEYS.coin,
 } as const;
 
 /** Keys here must match `spriteKey` values in content/enemies/*.json. */
@@ -72,58 +73,6 @@ export function createPlaceholderTextures(scene: Phaser.Scene): void {
     }
   }
 
-  if (!textures.exists(TEXTURE_KEYS.slash)) {
-    const size = 64;
-    const canvas = textures.createCanvas(TEXTURE_KEYS.slash, size, size);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-      ctx.lineWidth = 6;
-      ctx.beginPath();
-      ctx.arc(0, size / 2, size / 2 - 6, -Math.PI / 3, Math.PI / 3);
-      ctx.stroke();
-      canvas.refresh();
-    }
-  }
-
-  if (!textures.exists(TEXTURE_KEYS.bolt)) {
-    const canvas = textures.createCanvas(TEXTURE_KEYS.bolt, 16, 8);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.fillStyle = '#7fd4ff';
-      ctx.fillRect(0, 0, 16, 8);
-      ctx.fillStyle = '#d8f2ff';
-      ctx.fillRect(10, 2, 6, 4);
-      canvas.refresh();
-    }
-  }
-
-  if (!textures.exists(TEXTURE_KEYS.arrow)) {
-    const canvas = textures.createCanvas(TEXTURE_KEYS.arrow, 14, 4);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.fillStyle = '#c9a86a';
-      ctx.fillRect(0, 1, 10, 2);
-      ctx.fillStyle = '#e8e4dc';
-      ctx.fillRect(10, 0, 4, 4);
-      canvas.refresh();
-    }
-  }
-
-  if (!textures.exists(TEXTURE_KEYS.coin)) {
-    const size = 10;
-    const canvas = textures.createCanvas(TEXTURE_KEYS.coin, size, size);
-    if (canvas) {
-      const ctx = canvas.getContext();
-      ctx.fillStyle = '#e8c48f';
-      ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#8f6b2f';
-      ctx.stroke();
-      canvas.refresh();
-    }
-  }
-
+  // Slash, bolt, arrow, coin, and skill VFX registered in registerPixelVfxAssets (BootScene).
   // Enemy sticky-man sheets registered in registerStickyManAssets (BootScene).
 }

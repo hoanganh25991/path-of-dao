@@ -15,7 +15,12 @@
     "story:stubs": "node tools/generate-story-stubs.mjs",
     "content:validate": "node tools/content/validate-all.mjs",
     "content:pack": "node tools/content/pack-manifest.mjs",
-    "mvp:ch1-5": "node tools/generate-mvp-chapters-1-5.mjs"
+    "i18n:lint": "node tools/content/lint-i18n.mjs",
+    "i18n:bestiary": "node tools/content/generate-bestiary-locales.mjs",
+    "mvp:ch1-5": "node tools/generate-mvp-chapters-1-5.mjs",
+    "mvp:ch6-10": "node tools/generate-mvp-chapters-6-10.mjs",
+    "mvp:skills": "node tools/generate-skill-variants.mjs",
+    "mvp:patch-enemies": "node tools/patch-enemy-metadata.mjs"
   },
   "engines": {
     "node": ">=20"

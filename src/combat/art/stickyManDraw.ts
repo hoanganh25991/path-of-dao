@@ -52,6 +52,39 @@ function px(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, 
   ctx.fillRect(Math.round(x), Math.round(y), size, size);
 }
 
+function drawGroundShadow(ctx: CanvasRenderingContext2D, cx: number, footY: number): void {
+  for (let dx = -5; dx <= 5; dx++) {
+    const edge = Math.abs(dx) >= 4;
+    px(ctx, cx + dx, footY, edge ? '#0a0c10' : '#12141a');
+  }
+  px(ctx, cx, footY - 1, '#0e1014');
+}
+
+/** Hard-edged arc for bows / props — no canvas anti-aliasing. */
+function pixelArc(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  startRad: number,
+  endRad: number,
+  color: string,
+  thickness = 2,
+): void {
+  const steps = Math.max(10, Math.ceil(Math.abs(endRad - startRad) * r * 1.4));
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const a = startRad + (endRad - startRad) * t;
+    const x = cx + Math.cos(a) * r;
+    const y = cy + Math.sin(a) * r;
+    for (let ox = 0; ox < thickness; ox++) {
+      for (let oy = 0; oy < thickness; oy++) {
+        px(ctx, x + ox - Math.floor(thickness / 2), y + oy - Math.floor(thickness / 2), color);
+      }
+    }
+  }
+}
+
 function pixelLine(
   ctx: CanvasRenderingContext2D,
   x1: number,
@@ -463,6 +496,8 @@ export function drawStickyFrame(
   const lean = pose.lean ?? 0;
   const footY = h - 1;
 
+  drawGroundShadow(ctx, cx + Math.round(lean * 0.15), footY);
+
   // Top-down layout: head → torso (fixed) → legs fill the rest to the feet.
   const headY = HEAD_TOP + scale.headR;
   const shoulderY = headY + scale.headR + NECK_GAP - bob + lean * 0.08;
@@ -573,18 +608,9 @@ export function drawStickyFrame(
   if (pose.prop === 'bow') {
     const bx = frontArm.endX + 2;
     const by = frontArm.endY;
-    ctx.strokeStyle = palette.outline;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(bx, by, 7, -1.15, 1.15);
-    ctx.stroke();
-    ctx.strokeStyle = palette.accent;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(bx, by, 6, -1.1, 1.1);
-    ctx.stroke();
+    pixelArc(ctx, bx, by, 7, -1.15, 1.15, palette.outline, 2);
+    pixelArc(ctx, bx, by, 6, -1.1, 1.1, palette.accent, 1);
     pixelLine(ctx, bx, by - 6, bx, by + 6, palette.highlight ?? palette.accent, 1);
-    // Arrow on drawn frames (front arm pulled back).
     if (pose.limbs.armFront.upper < -20) {
       pixelLine(ctx, bx - 8, by, bx + 2, by, palette.accent, 1);
       px(ctx, bx + 2, by, palette.highlight ?? palette.accent);
@@ -654,11 +680,12 @@ export const POSES_WALK: StickPose[] = [
     },
   },
   {
+    bob: -1,
     limbs: {
-      armBack: seg(-34, -24),
-      armFront: seg(34, 24),
-      legBack: seg(-6, -4),
-      legFront: seg(6, 4),
+      armBack: seg(-33, -23),
+      armFront: seg(30, 20),
+      legBack: seg(4, 2),
+      legFront: seg(-12, -8),
     },
   },
   {
@@ -678,11 +705,34 @@ export const POSES_WALK: StickPose[] = [
       legFront: seg(-6, -4),
     },
   },
+  {
+    bob: 1,
+    lean: -0.5,
+    limbs: {
+      armBack: seg(12, 8),
+      armFront: seg(-28, -18),
+      legBack: seg(-10, -6),
+      legFront: seg(10, 6),
+    },
+  },
+  {
+    limbs: {
+      armBack: seg(-20, -14),
+      armFront: seg(20, 14),
+      legBack: seg(-2, -1),
+      legFront: seg(2, 1),
+    },
+  },
 ];
 
 export const POSES_ATTACK_1: StickPose[] = [
+  {
+    lean: 4,
+    limbs: { armBack: seg(-52, -42), armFront: seg(48, 38), legBack: seg(-16, -10), legFront: seg(10, 6) },
+    prop: 'sword',
+  },
   { limbs: { armBack: seg(-8, -5), armFront: seg(45, 35), legBack: seg(-14, -8), legFront: seg(12, 8) }, prop: 'sword' },
-  { lean: -4, limbs: { armBack: seg(5, 10), armFront: seg(-55, -45), legBack: seg(-10, -6), legFront: seg(16, 10) }, prop: 'sword' },
+  { lean: -5, limbs: { armBack: seg(5, 10), armFront: seg(-58, -48), legBack: seg(-10, -6), legFront: seg(16, 10) }, prop: 'sword' },
   { limbs: { armBack: seg(-12, -8), armFront: seg(-40, -30), legBack: seg(-12, -8), legFront: seg(10, 6) }, prop: 'sword' },
 ];
 
@@ -706,42 +756,63 @@ export const POSES_HIT: StickPose[] = [
 
 export const POSES_SLIME_IDLE: StickPose[] = [
   { bob: 0, limbs: { armBack: seg(-38, -28), armFront: seg(38, 28), legBack: seg(-16, -12), legFront: seg(16, 12) } },
-  { bob: 2, limbs: { armBack: seg(-40, -30), armFront: seg(40, 30), legBack: seg(-18, -14), legFront: seg(18, 14) } },
+  { bob: 2, limbs: { armBack: seg(-42, -32), armFront: seg(42, 32), legBack: seg(-20, -16), legFront: seg(20, 16) } },
+  { bob: 1, limbs: { armBack: seg(-36, -26), armFront: seg(36, 26), legBack: seg(-14, -10), legFront: seg(14, 10) } },
+  { bob: 0, limbs: { armBack: seg(-40, -30), armFront: seg(40, 30), legBack: seg(-18, -14), legFront: seg(18, 14) } },
 ];
 
 export const POSES_SLIME_WALK: StickPose[] = [
   {
     lean: -1,
     limbs: {
-      armBack: seg(-32, -22),
-      armFront: seg(28, 18),
-      legBack: seg(12, 8),
-      legFront: seg(-18, -12),
+      armBack: seg(-30, -20),
+      armFront: seg(26, 16),
+      legBack: seg(14, 10),
+      legFront: seg(-20, -14),
     },
   },
   {
+    bob: 1,
     limbs: {
-      armBack: seg(-34, -24),
-      armFront: seg(34, 24),
-      legBack: seg(-6, -4),
-      legFront: seg(6, 4),
+      armBack: seg(-32, -22),
+      armFront: seg(28, 18),
+      legBack: seg(2, 1),
+      legFront: seg(-14, -10),
     },
   },
   {
     lean: -1,
     limbs: {
-      armBack: seg(-18, -12),
-      armFront: seg(32, 22),
-      legBack: seg(-18, -12),
+      armBack: seg(-16, -10),
+      armFront: seg(30, 20),
+      legBack: seg(-20, -14),
+      legFront: seg(14, 10),
+    },
+  },
+  {
+    bob: -1,
+    limbs: {
+      armBack: seg(32, 22),
+      armFront: seg(-32, -22),
+      legBack: seg(8, 5),
+      legFront: seg(-8, -5),
+    },
+  },
+  {
+    lean: -0.5,
+    limbs: {
+      armBack: seg(14, 10),
+      armFront: seg(-26, -16),
+      legBack: seg(-12, -8),
       legFront: seg(12, 8),
     },
   },
   {
     limbs: {
-      armBack: seg(34, 24),
-      armFront: seg(-34, -24),
-      legBack: seg(6, 4),
-      legFront: seg(-6, -4),
+      armBack: seg(-22, -16),
+      armFront: seg(22, 16),
+      legBack: seg(-2, -1),
+      legFront: seg(2, 1),
     },
   },
 ];
@@ -793,8 +864,9 @@ export const POSES_ARCHER_WALK: StickPose[] = [
 ];
 
 export const POSES_ARCHER_ATTACK: StickPose[] = [
+  { limbs: { armBack: seg(-28, -18), armFront: seg(28, 18), legBack: seg(-12, -8), legFront: seg(12, 8) }, prop: 'bow' },
   { limbs: { armBack: seg(-5, -3), armFront: seg(5, 3), legBack: seg(-12, -8), legFront: seg(12, 8) }, prop: 'bow' },
-  { lean: -4, limbs: { armBack: seg(10, 6), armFront: seg(-48, -38), legBack: seg(-10, -6), legFront: seg(16, 10) }, prop: 'bow' },
+  { lean: -5, limbs: { armBack: seg(12, 8), armFront: seg(-52, -42), legBack: seg(-10, -6), legFront: seg(16, 10) }, prop: 'bow' },
 ];
 
 export const POSES_TOTEM_IDLE: StickPose[] = [
@@ -805,8 +877,9 @@ export const POSES_TOTEM_IDLE: StickPose[] = [
 ];
 
 export const POSES_TOTEM_ATTACK: StickPose[] = [
+  { limbs: { armBack: seg(-22, -16), armFront: seg(-22, -16), legBack: seg(-14, -10), legFront: seg(14, 10) }, prop: 'aura' },
   { limbs: { armBack: seg(-28, -20), armFront: seg(-28, -20), legBack: seg(-14, -10), legFront: seg(14, 10) }, prop: 'aura' },
-  { lean: -2, limbs: { armBack: seg(-52, -42), armFront: seg(-52, -42), legBack: seg(-10, -6), legFront: seg(12, 8) }, prop: 'aura' },
+  { lean: -3, limbs: { armBack: seg(-58, -48), armFront: seg(-58, -48), legBack: seg(-10, -6), legFront: seg(12, 8) }, prop: 'aura' },
 ];
 
 export const HERO_FRAME_COUNT =

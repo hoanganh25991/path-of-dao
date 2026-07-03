@@ -10,6 +10,7 @@ import type { EncounterConfig } from '@/combat/enemies/EnemyConfig';
 import { EnemyPool } from '@/combat/systems/EnemyPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
+import { unlockSkillForBoss, unlockSkillsForLevel } from '@/progression/SkillUnlockManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
 export const MAX_ALIVE = 18;
@@ -74,6 +75,7 @@ export class SpawnManager {
         onStrike: (e) => this.resolveStrike(e),
         onDeath: (e) => this.grantKillRewards(e),
         onDeathAnimComplete: (e) => this.releaseAndRefill(e),
+        onBossPhaseSpawns: (e, adds) => this.queueBossAdds(e, adds),
       });
       scene.physics.add.collider(enemy.sprite, walls);
       return enemy;
@@ -283,6 +285,21 @@ export class SpawnManager {
 
   // --- rewards ---
 
+  private queueBossAdds(enemy: Enemy, adds: { id: string; count: number }[]): void {
+    for (const group of adds) {
+      for (let i = 0; i < group.count; i++) {
+        const angle = (Math.PI * 2 * i) / Math.max(1, group.count);
+        const dist = 48 + Math.random() * 24;
+        this.queue.push({
+          enemyId: group.id,
+          x: enemy.x + Math.cos(angle) * dist,
+          y: enemy.y + Math.sin(angle) * dist,
+        });
+      }
+    }
+    this.fillFromQueue();
+  }
+
   private grantKillRewards(enemy: Enemy): void {
     const store = gameStore.getState();
     const save = store.save;
@@ -316,7 +333,15 @@ export class SpawnManager {
         },
       };
 
-      const { realm, emitReady } = syncRealmProgress(interim);
+      let withUnlocks = interim;
+      if (rewards.statsAfterLevelUp) {
+        withUnlocks = unlockSkillsForLevel(withUnlocks, rewards.statsAfterLevelUp.level);
+      }
+      if (bossClearId && !wasRematch) {
+        withUnlocks = unlockSkillForBoss(withUnlocks, bossClearId);
+      }
+
+      const { realm, emitReady } = syncRealmProgress(withUnlocks);
       if (emitReady) {
         EventBus.emit('realm:breakthrough-ready', undefined);
       }
@@ -324,8 +349,9 @@ export class SpawnManager {
       return {
         xp: rewards.xpTotal,
         ...(rewards.statsAfterLevelUp ? { stats: rewards.statsAfterLevelUp } : {}),
+        unlockedSkills: withUnlocks.unlockedSkills,
         realm,
-        progress: interim.progress,
+        progress: withUnlocks.progress,
       };
     });
 
@@ -333,6 +359,7 @@ export class SpawnManager {
       this.player.stats.setBase(rewards.statsAfterLevelUp);
       this.player.stats.refill();
       this.player.emitStatsChanged();
+      EventBus.emit('progression:level-up', { level: rewards.statsAfterLevelUp.level });
     }
 
     if (rewards.gold > 0) {

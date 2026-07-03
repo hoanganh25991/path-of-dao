@@ -1,0 +1,25 @@
+{
+  "id": "encounter.void_throne.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.void.shade",
+          "count": 3,
+          "spread": 100
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.void_sovereign",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

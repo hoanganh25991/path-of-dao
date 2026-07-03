@@ -1,0 +1,21 @@
+{
+  "id": "skill.void.nova.v4",
+  "intent": "void",
+  "nameKey": "skill.void.nova.v4.name",
+  "kind": "bolt",
+  "manaCost": 36,
+  "skillMultiplier": 2.1,
+  "cooldownMs": 7500,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 2.1,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

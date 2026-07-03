@@ -1,0 +1,15 @@
+{
+  "id": "skill.life.surge.v3",
+  "intent": "life",
+  "nameKey": "skill.life.surge.v3.name",
+  "kind": "heal",
+  "manaCost": 24,
+  "skillMultiplier": 1,
+  "cooldownMs": 6000,
+  "effects": [
+    {
+      "type": "heal",
+      "healPct": 0.14
+    }
+  ]
+}

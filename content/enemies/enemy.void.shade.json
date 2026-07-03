@@ -1,0 +1,27 @@
+{
+  "id": "enemy.void.shade",
+  "displayNameKey": "enemy.void.shade.name",
+  "stats": {
+    "hpMax": 512,
+    "atk": 90,
+    "def": 38,
+    "speed": 135,
+    "crit": 0.22999999999999998,
+    "critDmg": 1.6
+  },
+  "aggroRange": 450,
+  "attackRange": 90,
+  "attackCooldownMs": 1000,
+  "xpReward": 256,
+  "goldReward": [
+    20,
+    80
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_void_shade.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

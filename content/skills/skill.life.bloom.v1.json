@@ -1,0 +1,15 @@
+{
+  "id": "skill.life.bloom.v1",
+  "intent": "life",
+  "nameKey": "skill.life.bloom.v1.name",
+  "kind": "heal",
+  "manaCost": 16,
+  "skillMultiplier": 1,
+  "cooldownMs": 4000,
+  "effects": [
+    {
+      "type": "heal",
+      "healPct": 0.08
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "boss.frost_queen",
+  "displayNameKey": "boss.frost_queen.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 3200,
+    "atk": 58,
+    "def": 28,
+    "speed": 65,
+    "crit": 0.16,
+    "critDmg": 2.1
+  },
+  "aggroRange": 360,
+  "attackRange": 56,
+  "attackCooldownMs": 1200,
+  "xpReward": 1100,
+  "goldReward": [
+    100,
+    260
+  ],
+  "lootTable": "loot.boss.standard",
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.frost_queen",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_frost_queen.desc",
+  "weakness": "spirit",
+  "resistance": "physical",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
+}

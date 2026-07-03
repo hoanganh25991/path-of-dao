@@ -1,0 +1,27 @@
+{
+  "id": "enemy.elite.rift",
+  "displayNameKey": "enemy.elite.rift.name",
+  "stats": {
+    "hpMax": 653,
+    "atk": 92,
+    "def": 31,
+    "speed": 117,
+    "crit": 0.2,
+    "critDmg": 1.6
+  },
+  "aggroRange": 400,
+  "attackRange": 276,
+  "attackCooldownMs": 1400,
+  "xpReward": 306,
+  "goldReward": [
+    16,
+    64
+  ],
+  "lootTable": "loot.tier.uncommon",
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter",
+  "category": "elite",
+  "bestiaryKey": "bestiary.enemy_elite_rift.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

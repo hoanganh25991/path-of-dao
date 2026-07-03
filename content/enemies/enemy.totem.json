@@ -14,7 +14,14 @@
   "attackRange": 90,
   "attackCooldownMs": 2500,
   "xpReward": 30,
-  "goldReward": [3, 9],
-  "lootTable": null,
-  "spriteKey": "enemy_totem"
+  "goldReward": [
+    3,
+    9
+  ],
+  "lootTable": "loot.tier.rare",
+  "spriteKey": "enemy_totem",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_totem.desc",
+  "weakness": "lightning",
+  "resistance": "none"
 }

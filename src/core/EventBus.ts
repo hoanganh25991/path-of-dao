@@ -19,6 +19,16 @@ export type GameEvents = {
   'insight:awakened': { intentId: string; skillId: string };
   'encounter:completed': { encounterId: string; poiKey?: string };
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
+  'combat:hit-landed': {
+    isCrit: boolean;
+    finalDamage: number;
+    skillMultiplier: number;
+    x: number;
+    y: number;
+    attackerTeam: 'player' | 'enemy';
+    victimTeam: 'player' | 'enemy';
+  };
+  'progression:level-up': { level: number };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
   'combat:open-skill-picker': { slot?: 'primary' | 'secondary' | 'ultimate' };

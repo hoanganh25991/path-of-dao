@@ -1,0 +1,27 @@
+{
+  "id": "enemy.void.weaver",
+  "displayNameKey": "enemy.void.weaver.name",
+  "stats": {
+    "hpMax": 512,
+    "atk": 90,
+    "def": 38,
+    "speed": 0,
+    "crit": 0.22999999999999998,
+    "critDmg": 1.6
+  },
+  "aggroRange": 450,
+  "attackRange": 100,
+  "attackCooldownMs": 2000,
+  "xpReward": 256,
+  "goldReward": [
+    20,
+    80
+  ],
+  "lootTable": "loot.tier.rare",
+  "spriteKey": "enemy_totem",
+  "archetype": "stationary",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_void_weaver.desc",
+  "weakness": "lightning",
+  "resistance": "none"
+}

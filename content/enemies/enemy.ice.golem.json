@@ -1,0 +1,27 @@
+{
+  "id": "enemy.ice.golem",
+  "displayNameKey": "enemy.ice.golem.name",
+  "stats": {
+    "hpMax": 308,
+    "atk": 54,
+    "def": 23,
+    "speed": 117,
+    "crit": 0.185,
+    "critDmg": 1.6
+  },
+  "aggroRange": 375,
+  "attackRange": 75,
+  "attackCooldownMs": 1000,
+  "xpReward": 154,
+  "goldReward": [
+    14,
+    56
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_ice_golem.desc",
+  "weakness": "spirit",
+  "resistance": "physical"
+}

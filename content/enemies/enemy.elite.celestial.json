@@ -1,0 +1,27 @@
+{
+  "id": "enemy.elite.celestial",
+  "displayNameKey": "enemy.elite.celestial.name",
+  "stats": {
+    "hpMax": 762,
+    "atk": 108,
+    "def": 36,
+    "speed": 129,
+    "crit": 0.21500000000000002,
+    "critDmg": 1.6
+  },
+  "aggroRange": 425,
+  "attackRange": 85,
+  "attackCooldownMs": 1000,
+  "xpReward": 357,
+  "goldReward": [
+    18,
+    72
+  ],
+  "lootTable": "loot.tier.uncommon",
+  "spriteKey": "enemy_archer",
+  "archetype": "patrol",
+  "category": "elite",
+  "bestiaryKey": "bestiary.enemy_elite_celestial.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

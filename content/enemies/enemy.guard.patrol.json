@@ -17,7 +17,11 @@
     3,
     9
   ],
-  "lootTable": null,
+  "lootTable": "loot.tier.common",
   "spriteKey": "enemy_archer",
-  "archetype": "patrol"
+  "archetype": "patrol",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_guard_patrol.desc",
+  "weakness": "spirit",
+  "resistance": "none"
 }

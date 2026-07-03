@@ -18,7 +18,23 @@
     15,
     40
   ],
-  "lootTable": null,
+  "lootTable": "loot.boss.standard",
   "spriteKey": "enemy_totem",
-  "bossClearId": "boss.jade_guardian"
+  "bossClearId": "boss.jade_guardian",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_jade_guardian.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
 }

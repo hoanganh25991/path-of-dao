@@ -1,0 +1,27 @@
+{
+  "id": "enemy.frost.shade",
+  "displayNameKey": "enemy.frost.shade.name",
+  "stats": {
+    "hpMax": 308,
+    "atk": 54,
+    "def": 23,
+    "speed": 113,
+    "crit": 0.185,
+    "critDmg": 1.6
+  },
+  "aggroRange": 375,
+  "attackRange": 264,
+  "attackCooldownMs": 1400,
+  "xpReward": 154,
+  "goldReward": [
+    14,
+    56
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_frost_shade.desc",
+  "weakness": "spirit",
+  "resistance": "physical"
+}

@@ -18,7 +18,23 @@
     20,
     55
   ],
-  "lootTable": null,
+  "lootTable": "loot.boss.standard",
   "spriteKey": "enemy_totem",
-  "bossClearId": "boss.mist_stalker"
+  "bossClearId": "boss.mist_stalker",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_mist_stalker.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
 }

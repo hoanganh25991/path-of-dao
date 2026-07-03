@@ -1,0 +1,20 @@
+{
+  "id": "encounter.heavenly_gate.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.celestial.archer",
+          "count": 4,
+          "spread": 150
+        },
+        {
+          "id": "enemy.gate.sentinel",
+          "count": 3,
+          "spread": 130
+        }
+      ]
+    }
+  ]
+}

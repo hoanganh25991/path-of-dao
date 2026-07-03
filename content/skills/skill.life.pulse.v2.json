@@ -1,0 +1,15 @@
+{
+  "id": "skill.life.pulse.v2",
+  "intent": "life",
+  "nameKey": "skill.life.pulse.v2.name",
+  "kind": "heal",
+  "manaCost": 18,
+  "skillMultiplier": 1,
+  "cooldownMs": 4500,
+  "effects": [
+    {
+      "type": "heal",
+      "healPct": 0.1
+    }
+  ]
+}

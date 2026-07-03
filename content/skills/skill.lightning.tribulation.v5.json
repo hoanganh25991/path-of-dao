@@ -1,0 +1,21 @@
+{
+  "id": "skill.lightning.tribulation.v5",
+  "intent": "lightning",
+  "nameKey": "skill.lightning.tribulation.v5.name",
+  "kind": "bolt",
+  "manaCost": 32,
+  "skillMultiplier": 1.85,
+  "cooldownMs": 5800,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.85,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

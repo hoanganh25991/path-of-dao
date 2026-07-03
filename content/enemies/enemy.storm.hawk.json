@@ -1,0 +1,27 @@
+{
+  "id": "enemy.storm.hawk",
+  "displayNameKey": "enemy.storm.hawk.name",
+  "stats": {
+    "hpMax": 240,
+    "atk": 42,
+    "def": 18,
+    "speed": 109,
+    "crit": 0.16999999999999998,
+    "critDmg": 1.6
+  },
+  "aggroRange": 350,
+  "attackRange": 252,
+  "attackCooldownMs": 1400,
+  "xpReward": 120,
+  "goldReward": [
+    12,
+    48
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_storm_hawk.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

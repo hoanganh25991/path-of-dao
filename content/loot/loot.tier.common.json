@@ -1,0 +1,8 @@
+{
+  "id": "loot.tier.common",
+  "entries": [
+    { "itemId": "item.sword.wood", "weight": 50, "qty": [1, 1] },
+    { "itemId": "item.bracelet.copper", "weight": 30, "qty": [1, 1] },
+    { "itemId": "item.robe.novice", "weight": 20, "qty": [1, 1] }
+  ]
+}

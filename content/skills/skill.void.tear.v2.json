@@ -1,0 +1,22 @@
+{
+  "id": "skill.void.tear.v2",
+  "intent": "void",
+  "nameKey": "skill.void.tear.v2.name",
+  "kind": "bolt",
+  "manaCost": 22,
+  "skillMultiplier": 1.5,
+  "cooldownMs": 3200,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.5,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12,
+      "pullForce": 100
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import {
 } from '@/progression/ChapterLoader';
 import { getStoryScene } from '@/progression/StoryLoader';
 import type { StoryReward } from '@/shared/schemas/story';
+import { unlockSkillsForChapter } from '@/progression/SkillUnlockManager';
 
 export interface MapClearResult {
   newlyCleared: boolean;
@@ -134,6 +135,10 @@ export function completeStory(
       unlockedChapters,
     },
   };
+
+  if (grantRewards) {
+    next = unlockSkillsForChapter(next, scene.chapterId);
+  }
 
   return { save: next, rewardsGranted };
 }

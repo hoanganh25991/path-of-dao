@@ -1,0 +1,21 @@
+{
+  "id": "skill.time.drift.v2",
+  "intent": "time",
+  "nameKey": "skill.time.drift.v2.name",
+  "kind": "bolt",
+  "manaCost": 18,
+  "skillMultiplier": 1.3,
+  "cooldownMs": 4200,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.3,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { getInsightIntentConfig, listInsightIntentIds } from '@/progression/InsightDefinitions';
+import { STARTER_SKILL_IDS } from '@/progression/SkillUnlockManager';
 import type { SkillSlotId } from '@/ui/skills/SkillIcon';
 
 export type EquippedSkills = PlayerSaveV1['equippedSkills'];
@@ -14,11 +15,11 @@ export function listUnlockedSkillIds(save: PlayerSaveV1): string[] {
     return [...getAncientProfile(ancientId).unlockedSkills];
   }
 
-  const ids = new Set<string>(Object.values(save.equippedSkills));
+  const ids = new Set<string>(save.unlockedSkills.length ? save.unlockedSkills : STARTER_SKILL_IDS);
   for (const intentId of listInsightIntentIds()) {
     const config = getInsightIntentConfig(intentId);
     const state = save.insights[intentId];
-    ids.add(config.baseSkillId);
+    if (ids.has(config.baseSkillId) || state) ids.add(config.baseSkillId);
     if (state?.awakened) ids.add(config.awakenedSkillId);
   }
   return [...ids].sort();

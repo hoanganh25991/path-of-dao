@@ -18,7 +18,23 @@
     40,
     100
   ],
-  "lootTable": null,
+  "lootTable": "loot.boss.standard",
   "spriteKey": "enemy_totem",
-  "bossClearId": "boss.seal_warden"
+  "bossClearId": "boss.seal_warden",
+  "category": "boss",
+  "bestiaryKey": "bestiary.boss_seal_warden.desc",
+  "weakness": "spirit",
+  "resistance": "none",
+  "phases": [
+    {
+      "hpThreshold": 1,
+      "skills": [],
+      "spawnAdds": []
+    },
+    {
+      "hpThreshold": 0.5,
+      "skills": [],
+      "spawnAdds": []
+    }
+  ]
 }

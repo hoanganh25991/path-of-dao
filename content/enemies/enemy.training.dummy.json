@@ -1,0 +1,27 @@
+{
+  "id": "enemy.training.dummy",
+  "displayNameKey": "enemy.training.dummy.name",
+  "archetype": "stationary",
+  "category": "grunt",
+  "stats": {
+    "hpMax": 9999,
+    "atk": 0,
+    "def": 0,
+    "speed": 0,
+    "crit": 0,
+    "critDmg": 1.5
+  },
+  "aggroRange": 120,
+  "attackRange": 40,
+  "attackCooldownMs": 5000,
+  "xpReward": 0,
+  "goldReward": [
+    0,
+    0
+  ],
+  "lootTable": "loot.tier.rare",
+  "spriteKey": "enemy_totem",
+  "bestiaryKey": "bestiary.enemy_training_dummy.desc",
+  "weakness": "lightning",
+  "resistance": "none"
+}

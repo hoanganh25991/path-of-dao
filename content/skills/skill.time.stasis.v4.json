@@ -1,0 +1,21 @@
+{
+  "id": "skill.time.stasis.v4",
+  "intent": "time",
+  "nameKey": "skill.time.stasis.v4.name",
+  "kind": "bolt",
+  "manaCost": 30,
+  "skillMultiplier": 1.7,
+  "cooldownMs": 8000,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.7,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}

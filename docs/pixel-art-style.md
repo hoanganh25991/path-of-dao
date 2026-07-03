@@ -24,7 +24,7 @@ Distinct from generic stick figures: **joint dots**, **torso block**, **gold sas
 
 | Property | Hero / Minion | Boss (totem) |
 |----------|---------------|--------------|
-| Source frame | **32 × 58 px** (all characters — hero, minions, boss) |
+| Source frame | **32 × 56 px** (all characters — hero, minions, boss) |
 | Display scale | **2× uniform** (64 × 116) — no boss upscale |
 | Limb segments | upper + lower + fork |
 | Upper leg / shin | **12 + 13 px** |
@@ -86,8 +86,8 @@ Boss variants add **crown** + **aura** props on select idle/attack frames.
 | Animation key | Frames | FPS | Notes |
 |---------------|--------|-----|-------|
 | `hero_sticky_idle` | 4 | 6 | Subtle bob, arms relaxed |
-| `hero_sticky_walk` | 6 | 10 | Full leg/arm swing |
-| `hero_sticky_attack_1` | 3 | 14 | Quick jab + sword prop |
+| `hero_sticky_walk` | 6 | 10 | Full leg/arm swing; contact + passing poses |
+| `hero_sticky_attack_1` | 4 | 16 | Anticipation → chamber → held impact → recovery |
 | `hero_sticky_attack_2` | 3 | 14 | Wide slash |
 | `hero_sticky_attack_3` | 4 | 12 | Finisher lean + knockback hitbox |
 | `hero_sticky_hit` | 2 | 10 | Knockback lean |
@@ -98,9 +98,9 @@ Driven by `PlayerAnimController` from `PlayerStateMachine` states.
 
 | Entity | Idle | Walk | Attack |
 |--------|------|------|--------|
-| Slime | 2 | 4 | — (melee chaser) |
-| Archer | 2 | 4 | 2 (draw bow) |
-| Totem boss | 4 | uses idle | 2 (aura pulse) |
+| Slime | 4 | 4 | — (melee chaser) |
+| Archer | 2 | 4 | 3 (draw + release) |
+| Totem boss | 4 | uses idle | 3 (aura pulse) |
 
 Enemy locomotion/attack anims play from `Enemy.update()` via `enemyAnimKeys()`.
 
@@ -130,14 +130,17 @@ Pose data lives in `stickyManDraw.ts` as `StickPose` arrays (`POSES_WALK`, `POSE
 
 | Event | Visual |
 |-------|--------|
-| Hit | 50 ms white `HitFlash` + floating damage number |
-| Crit | Gold number + `!` suffix |
-| Skill bolt | Spirit damage hitbox (cyan bolt texture) |
+| Hit | 50 ms white `HitFlash` + pixel sparks + floating damage number |
+| Crit | Gold number + `!` + extra sparks |
+| Skill cast | Expanding pixel ring + intent-colored sparks |
+| Melee arc | Pixel slash arc texture + contact sparks |
+| Spirit bolt | Pixel bolt sprite (tinted by intent) |
+| Heal | Expanding pixel ring bloom |
+| Flame AOE | Pixel flame burst + sparks |
+| Void pull | Jagged void-crack texture + purple sparks |
 | Telegraph | Enemy red tint (unchanged; works over anims) |
 
-Skill (**K** / skill button) now spawns a **moving circle hitbox** — pierces minions and damages the totem boss.
-
-Melee arc hitboxes use **circumference sampling** (`arcOverlapsCircle`) so large boss hurtboxes register reliably.
+Procedural VFX textures: `src/combat/art/pixelVfxDraw.ts` → `registerPixelVfxAssets()` in BootScene.
 
 ---
 
@@ -148,6 +151,7 @@ src/combat/art/
   stickyManPalette.ts   — colors, frame sizes, pose types
   stickyManDraw.ts      — canvas draw + pose libraries
   stickyManAssets.ts    — Phaser spritesheets + anim registration
+  pixelVfxDraw.ts       — pixel skill/AOE/spark textures + registration
 src/combat/animations/
   PlayerAnimController.ts
 src/combat/textures/

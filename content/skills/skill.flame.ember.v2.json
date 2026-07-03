@@ -1,0 +1,21 @@
+{
+  "id": "skill.flame.ember.v2",
+  "intent": "flame",
+  "nameKey": "skill.flame.ember.v2.name",
+  "kind": "bolt",
+  "manaCost": 20,
+  "skillMultiplier": 1.4,
+  "cooldownMs": 3400,
+  "effects": [
+    {
+      "type": "projectile",
+      "damage": {
+        "skillMultiplier": 1.4,
+        "damageType": "spirit"
+      },
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12
+    }
+  ]
+}
