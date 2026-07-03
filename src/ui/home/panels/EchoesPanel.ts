@@ -30,9 +30,13 @@ async function startAncientWalk(ancientId: string): Promise<void> {
   const confirmed = await showAncientDemoModal(uiRoot, { ancientId, needsConfirm });
   if (!confirmed.confirmed) return;
 
-  await AncientDemoManager.enter(ancientId);
+  // Relive the exact map the player is currently on so they feel the power gap;
+  // fall back to the ancient's default map for a brand-new save.
   const profile = AncientDemoManager.getProfile(ancientId);
-  await SceneRouter.instance.switchTo('combat', { mapId: profile.startMapId });
+  const mapId = save.progress.currentMapId ?? profile.startMapId;
+
+  await AncientDemoManager.enter(ancientId, { mapId });
+  await SceneRouter.instance.switchTo('combat', { mapId });
 }
 
 export function createEchoesPanel(): EchoesPanelHandles {

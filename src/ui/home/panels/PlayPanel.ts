@@ -1,7 +1,5 @@
-import { SceneRouter } from '@/app/SceneRouter';
 import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
-import { gameStore } from '@/core/store/gameStore';
 import { showWorldMap } from '@/ui/world/WorldMap';
 
 export interface PlayPanelHandles {
@@ -21,17 +19,6 @@ export function createPlayPanel(): PlayPanelHandles {
 
   const devSlot = document.createElement('div');
   devSlot.className = 'home-play__dev-slot';
-
-  const continueBtn = document.createElement('button');
-  continueBtn.type = 'button';
-  continueBtn.className = 'home-play__continue';
-  continueBtn.hidden = true;
-  continueBtn.textContent = I18nManager.t('home.continue');
-  continueBtn.addEventListener('click', () => {
-    const mapId = gameStore.getState().save?.progress.currentMapId;
-    if (!mapId) return;
-    void SceneRouter.instance.switchTo('combat', { mapId });
-  });
 
   const echoesBtn = document.createElement('button');
   echoesBtn.type = 'button';
@@ -59,20 +46,9 @@ export function createPlayPanel(): PlayPanelHandles {
   portalHint.className = 'home-play__hint home-play__hint--muted';
   portalHint.textContent = I18nManager.t('home.map_portal_hint');
 
-  root.append(
-    title,
-    devSlot,
-    continueBtn,
-    echoesBtn,
-    echoesHint,
-    portalBtn,
-    portalHint,
-  );
+  root.append(title, devSlot, echoesBtn, echoesHint, portalBtn, portalHint);
 
-  const refresh = (): void => {
-    const mapId = gameStore.getState().save?.progress.currentMapId;
-    continueBtn.hidden = !mapId;
-  };
+  const refresh = (): void => {};
 
   refresh();
 

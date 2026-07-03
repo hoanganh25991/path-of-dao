@@ -192,11 +192,19 @@ export function hasMeaningfulProgress(save: PlayerSaveV1): boolean {
   return false;
 }
 
+export interface EnterAncientDemoOptions {
+  equippedSkills?: AncientSaveTemplate['equippedSkills'];
+  /** Run the echo on this map instead of the profile's default — lets the player
+   *  relive the exact map they are currently on, feeling the power gap. */
+  mapId?: string;
+}
+
 /** Enter ancient demo — pauses real journey in session backup, does not write demo to IDB. */
 export async function enterAncientDemo(
   ancientId: string,
-  equippedSkills?: AncientSaveTemplate['equippedSkills'],
+  options: EnterAncientDemoOptions = {},
 ): Promise<void> {
+  const { equippedSkills, mapId } = options;
   const store = gameStore.getState();
   const current = store.save;
   if (!current) throw new Error('AncientDemoManager: no save loaded');
@@ -208,8 +216,16 @@ export async function enterAncientDemo(
 
   activeAncientId = ancientId;
   const demoSave = buildAncientSave(ancientId);
+  let mutated = false;
+  if (mapId) {
+    demoSave.progress = { ...demoSave.progress, currentMapId: mapId };
+    mutated = true;
+  }
   if (equippedSkills) {
     demoSave.equippedSkills = normalizeLoadout(equippedSkills, profileById(ancientId).unlockedSkills);
+    mutated = true;
+  }
+  if (mutated) {
     demoSave.checksum = checksumOf(demoSave);
   }
   store.patch(demoSave);

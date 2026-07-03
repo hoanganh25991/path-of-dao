@@ -551,23 +551,6 @@
   text-align: center;
 }
 
-.home-play__continue {
-  width: 100%;
-  min-height: 48px;
-  border: 1px solid var(--dao-border);
-  border-radius: 0.5rem;
-  background: rgba(45, 212, 168, 0.08);
-  color: var(--dao-jade);
-  font: inherit;
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-
-.home-play__continue:focus-visible {
-  outline: 2px solid var(--dao-jade);
-  outline-offset: 2px;
-}
-
 /* Inventory */
 .home-inventory__slots {
   display: grid;
