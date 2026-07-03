@@ -1,0 +1,13 @@
+{
+  "id": "encounter.ancient_sword",
+  "displayNameKey": "encounter.ancient_sword.title",
+  "flavorKey": "encounter.ancient_sword.flavor",
+  "theme": "sword",
+  "trigger": "poiAncientSword",
+  "unique": true,
+  "rate": 1,
+  "reward": {
+    "type": "item",
+    "itemIds": ["item.sword.ancient"]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "spiritRateBonusPerPoint": 0.0002,
+  "discoveryRateBonusPerMap": 0.001,
+  "pityMinutes": 25,
+  "pityEnabled": false,
+  "devRateMultiplier": 1
+}

@@ -8,7 +8,10 @@ import { OrientationManager } from '@/app/OrientationManager';
 import { connectAutosave, gameStore, startPlayTimeTracking } from '@/core/store/gameStore';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { devPrepareAwakening } from '@/combat/components/CombatComponent';
+import { getEncounterDefinition } from '@/progression/EncounterLoader';
+import { FortuitousEncounterManager } from '@/progression/FortuitousEncounterManager';
 import { buildPlayerStats } from '@/progression/playerStats';
+import { initDevControls } from '@/app/DevControls';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
 import { HomeUI } from '@/ui/home/HomeUI';
 
@@ -81,42 +84,12 @@ export class App {
     ): void => {
       devPrepareAwakening(intentId);
     };
+    (window as unknown as Record<string, unknown>).__devTriggerEncounter = (
+      encounterId: string,
+    ): void => {
+      FortuitousEncounterManager.apply(getEncounterDefinition(encounterId));
+    };
 
-    const panel = document.createElement('div');
-    panel.className = 'dev-nav';
-    panel.innerHTML = `
-      <button type="button" data-scene="home" aria-label="Home">🏠</button>
-      <button type="button" data-scene="combat" aria-label="Combat">⚔️</button>
-    `;
-
-    panel.addEventListener('click', (event) => {
-      const target = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-scene]');
-      if (!target) return;
-      void App.switchDevScene(target.dataset.scene);
-    });
-
-    uiRoot.appendChild(panel);
-
-    window.addEventListener('keydown', (event) => {
-      if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
-      if (event.code === 'KeyH') {
-        event.preventDefault();
-        void SceneRouter.instance.switchTo('home');
-      }
-      if (event.code === 'KeyC') {
-        event.preventDefault();
-        void SceneRouter.instance.switchTo('combat', { mapId: 'map.test.grove' });
-      }
-    });
-  }
-
-  private static async switchDevScene(scene: string | undefined): Promise<void> {
-    if (scene === 'home') {
-      await SceneRouter.instance.switchTo('home');
-      return;
-    }
-    if (scene === 'combat') {
-      await SceneRouter.instance.switchTo('combat', { mapId: 'map.test.grove' });
-    }
+    initDevControls(uiRoot);
   }
 }

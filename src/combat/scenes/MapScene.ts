@@ -9,6 +9,7 @@ import type { MapConfig } from '@/combat/map/MapConfig';
 import { CollisionLayer } from '@/combat/map/CollisionLayer';
 import { Player } from '@/combat/entities/Player';
 import { SpawnManager } from '@/combat/systems/SpawnManager';
+import { EncounterTrigger } from '@/combat/systems/EncounterTrigger';
 import { HitboxManager } from '@/combat/combat/HitboxManager';
 import { tilemapKey } from '@/combat/scenes/BootScene';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
@@ -31,6 +32,7 @@ export class MapScene extends Phaser.Scene {
   private player!: Player;
   private hitboxManager!: HitboxManager;
   private spawnManager: SpawnManager | null = null;
+  private encounterTrigger: EncounterTrigger | null = null;
   private exiting = false;
   private runtimePersisted = false;
 
@@ -99,6 +101,8 @@ export class MapScene extends Phaser.Scene {
       this.spawnManager.start();
     }
 
+    this.encounterTrigger = new EncounterTrigger(this, this.player, config);
+
     // Persist on either event: SHUTDOWN fires on scene.stop, but destroying
     // the whole Phaser game (SceneRouter unmount) only fires DESTROY.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.teardown());
@@ -115,6 +119,8 @@ export class MapScene extends Phaser.Scene {
 
   private teardown(): void {
     this.persistRuntime();
+    this.encounterTrigger?.destroy();
+    this.encounterTrigger = null;
     this.spawnManager?.destroy();
     this.spawnManager = null;
     this.hitboxManager?.destroy();

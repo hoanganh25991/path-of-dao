@@ -126,8 +126,10 @@ export class SaveManager {
         storySeen: [],
         encountersFound: [],
         bestiary: [],
+        loreUnlocked: [],
         currentMapId: null,
       },
+      cosmetics: { pet: null },
       settings: { locale, sfxVolume: 1, musicVolume: 1 },
       meta: { totalPlaySeconds: 0, createdAt: now, updatedAt: now },
     };

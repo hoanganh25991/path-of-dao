@@ -1,0 +1,17 @@
+{
+  "encounter.confirm": "Nắm Bắt Đạo",
+  "encounter.ancient_inheritance.title": "Di Sản Cổ Xưa",
+  "encounter.ancient_inheritance.flavor": "Một ý chí cổ xưa thức tỉnh trong bạn. Sức mạnh từ thời đã quên chảy vào kinh mạch.",
+  "encounter.hidden_cave.title": "Hang Ẩn",
+  "encounter.hidden_cave.flavor": "Mạch tinh thể lấp lánh trong bóng tối. Bạn hấp thụ tinh hoa — vàng và ngộ tính.",
+  "encounter.spirit_beast.title": "Linh Thú",
+  "encounter.spirit_beast.flavor": "Một hồ ly tinh linh nhìn từ bóng tối… rồi chọn đi bên cạnh bạn.",
+  "encounter.forgotten_memory.title": "Ký Ức Quên Lãng",
+  "encounter.forgotten_memory.flavor": "Một mảnh quá khứ nổi lên — làng chìm trong hư không, lời hứa chưa trọn.",
+  "encounter.ancient_sword.title": "Kiếm Cổ",
+  "encounter.ancient_sword.flavor": "Lưỡi kiếm ngủ trong đá. Chạm vào, ấn phong vỡ; nó đáp lại linh khí của bạn.",
+  "encounter.secret_manual.title": "Bí Kíp",
+  "encounter.secret_manual.flavor": "Trang sách rơi từ kẻ địch — một chiêu hỏa bạn chưa từng học.",
+  "item.sword.ancient.name": "Kiếm Linh Cổ",
+  "item.sword.ancient.desc": "Rèn từ thời trước cảnh giới. Lưỡi kiếm ngân nga đạo ngủ say."
+}

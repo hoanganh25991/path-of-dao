@@ -1,0 +1,128 @@
+.encounter-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.encounter-modal--active {
+  opacity: 1;
+}
+
+.encounter-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 35%, rgba(120, 180, 255, 0.12), rgba(0, 0, 0, 0.88));
+}
+
+.encounter-modal__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  max-width: 22rem;
+  width: calc(100% - 2rem);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background: rgba(12, 16, 24, 0.92);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+.encounter-modal__art {
+  width: 100%;
+  height: 7rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, rgba(45, 212, 168, 0.35), rgba(80, 120, 255, 0.25));
+}
+
+.encounter-modal--inheritance .encounter-modal__art {
+  background: linear-gradient(135deg, rgba(255, 200, 80, 0.45), rgba(180, 90, 40, 0.35));
+}
+
+.encounter-modal--cave .encounter-modal__art {
+  background: linear-gradient(135deg, rgba(60, 90, 140, 0.5), rgba(20, 30, 50, 0.6));
+}
+
+.encounter-modal--beast .encounter-modal__art {
+  background: linear-gradient(135deg, rgba(255, 140, 60, 0.45), rgba(180, 60, 120, 0.3));
+}
+
+.encounter-modal--memory .encounter-modal__art {
+  background: linear-gradient(135deg, rgba(160, 120, 255, 0.4), rgba(40, 30, 80, 0.5));
+}
+
+.encounter-modal--sword .encounter-modal__art {
+  background: linear-gradient(135deg, rgba(200, 220, 255, 0.5), rgba(80, 100, 160, 0.4));
+}
+
+.encounter-modal--manual .encounter-modal__art {
+  background: linear-gradient(135deg, rgba(255, 90, 60, 0.4), rgba(120, 40, 20, 0.45));
+}
+
+.encounter-modal__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f0f4ff;
+}
+
+.encounter-modal__flavor {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(220, 228, 255, 0.82);
+}
+
+.encounter-modal__confirm {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2dd4a8, #1a9e7a);
+  color: #041410;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.encounter-modal__confirm--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.encounter-modal__burst {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(45, 212, 168, 0.35), transparent 60%);
+  opacity: 0;
+  animation: encounter-burst 0.5s ease forwards;
+}
+
+.encounter-modal__burst--active {
+  opacity: 1;
+}
+
+@keyframes encounter-burst {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}

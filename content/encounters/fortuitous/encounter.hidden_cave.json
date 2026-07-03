@@ -1,0 +1,15 @@
+{
+  "id": "encounter.hidden_cave",
+  "displayNameKey": "encounter.hidden_cave.title",
+  "flavorKey": "encounter.hidden_cave.flavor",
+  "theme": "cave",
+  "trigger": "poiHiddenCave",
+  "unique": false,
+  "rate": 1,
+  "reward": {
+    "type": "gold_insight",
+    "gold": 120,
+    "intentId": "void",
+    "xpGain": 15
+  }
+}

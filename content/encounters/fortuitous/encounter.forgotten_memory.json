@@ -1,0 +1,14 @@
+{
+  "id": "encounter.forgotten_memory",
+  "displayNameKey": "encounter.forgotten_memory.title",
+  "flavorKey": "encounter.forgotten_memory.flavor",
+  "theme": "memory",
+  "trigger": "killStreak",
+  "unique": false,
+  "rate": 0.01,
+  "killStreakThreshold": 10,
+  "reward": {
+    "type": "lore",
+    "loreId": "lore.fallen_village.memory_01"
+  }
+}

@@ -51,9 +51,12 @@
   pointer-events: auto;
 }
 
-.dev-nav {
+/* DEV scene switcher — compact pill (combat / non-play home tabs). */
+.dev-nav--compact {
   position: absolute;
   z-index: 5;
+  top: max(0.65rem, env(safe-area-inset-top));
+  right: max(0.65rem, env(safe-area-inset-right));
   display: flex;
   gap: 0.25rem;
   pointer-events: auto;
@@ -64,41 +67,9 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-  /* Default — combat / story: top-right clears HUD controls. */
-  top: max(0.65rem, env(safe-area-inset-top));
-  right: max(0.65rem, env(safe-area-inset-right));
-  left: auto;
-  bottom: auto;
-  flex-direction: row;
 }
 
-/* Home: float over the shrine viewport — clears left nav tabs and right play panel. */
-html[data-scene='home'] .dev-nav {
-  top: auto;
-  right: auto;
-  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
-  left: 50%;
-  transform: translateX(-50%);
-  flex-direction: row;
-  border-color: rgba(201, 162, 39, 0.28);
-  background: rgba(20, 25, 35, 0.88);
-}
-
-html.landscape-layout[data-scene='home'] .dev-nav {
-  /* Center in the middle column between left rail and play panel. */
-  left: calc(4.25rem + (100% - 4.25rem - min(36vw, 400px)) / 2);
-}
-
-html[data-scene='home'] .dev-nav button {
-  border-color: rgba(201, 162, 39, 0.35);
-  background: rgba(13, 17, 23, 0.92);
-}
-
-html[data-scene='home'] .dev-nav button:active {
-  background: rgba(201, 162, 39, 0.18);
-}
-
-.dev-nav button {
+.dev-nav--compact .dev-nav__scene-btn {
   display: grid;
   place-items: center;
   width: 2.35rem;
@@ -117,6 +88,10 @@ html[data-scene='home'] .dev-nav button:active {
   -webkit-tap-highlight-color: transparent;
 }
 
-.dev-nav button:active {
+.dev-nav--compact .dev-nav__label {
+  display: none;
+}
+
+.dev-nav--compact .dev-nav__scene-btn:active {
   background: rgba(143, 212, 196, 0.15);
 }

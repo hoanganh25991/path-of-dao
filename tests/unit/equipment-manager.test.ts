@@ -27,12 +27,13 @@ afterEach(async () => {
 });
 
 describe('ItemLoader', () => {
-  it('loads all six starter items', () => {
+  it('loads all item configs', () => {
     expect(listItemIds()).toEqual([
       'item.bracelet.copper',
       'item.ring.speed',
       'item.robe.novice',
       'item.spirit.jade',
+      'item.sword.ancient',
       'item.sword.iron',
       'item.sword.wood',
     ]);

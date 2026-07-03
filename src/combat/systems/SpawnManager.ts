@@ -275,6 +275,12 @@ export class SpawnManager {
     const save = store.save;
     if (!save) return;
 
+    const bossClearId = enemy.config.bossClearId;
+    const wasRematch = Boolean(
+      bossClearId && save.progress.clearedBosses.includes(bossClearId),
+    );
+    const isBoss = Boolean(bossClearId);
+
     const rewards = computeKillRewards(save, enemy.config);
 
     store.patch((current) => {
@@ -319,6 +325,12 @@ export class SpawnManager {
     if (rewards.gold > 0) {
       this.spawnGoldPickup(enemy.x, enemy.y, rewards.gold);
     }
+
+    EventBus.emit('map:enemy-killed', {
+      enemyId: enemy.config.id,
+      isBoss,
+      wasRematch,
+    });
   }
 
   private spawnGoldPickup(x: number, y: number, value: number): void {

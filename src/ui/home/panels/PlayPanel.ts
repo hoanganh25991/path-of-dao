@@ -25,6 +25,9 @@ export function createPlayPanel(): PlayPanelHandles {
   title.className = 'home-panel__title';
   title.textContent = I18nManager.t('home.nav.play');
 
+  const devSlot = document.createElement('div');
+  devSlot.className = 'home-play__dev-slot';
+
   const portalBtn = document.createElement('button');
   portalBtn.type = 'button';
   portalBtn.className = 'home-play__portal';
@@ -48,7 +51,7 @@ export function createPlayPanel(): PlayPanelHandles {
     void SceneRouter.instance.switchTo('combat', { mapId });
   });
 
-  root.append(title, portalBtn, hint, continueBtn);
+  root.append(title, devSlot, portalBtn, hint, continueBtn);
 
   const refresh = (): void => {
     const mapId = gameStore.getState().save?.progress.currentMapId;

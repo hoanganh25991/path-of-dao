@@ -32,6 +32,7 @@ export class HomeScene {
     const heroViewer = new HeroViewer(scene);
     await heroViewer.load(save.heroId);
     await heroViewer.syncEquipment(save.equipped);
+    heroViewer.syncPet(save.cosmetics.pet);
     heroViewer.playIdle();
 
     const auraController = new AuraController(scene);

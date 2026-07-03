@@ -1,0 +1,13 @@
+{
+  "id": "encounter.spirit_beast",
+  "displayNameKey": "encounter.spirit_beast.title",
+  "flavorKey": "encounter.spirit_beast.flavor",
+  "theme": "beast",
+  "trigger": "waveClear",
+  "unique": true,
+  "rate": 0.02,
+  "reward": {
+    "type": "pet",
+    "petId": "pet.spirit_fox"
+  }
+}

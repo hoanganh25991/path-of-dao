@@ -9,5 +9,9 @@
   "recommendedCp": 1000,
   "connections": [],
   "encounterTable": "encounters.test",
-  "bgm": null
+  "bgm": null,
+  "pois": [
+    { "type": "hidden_cave", "x": 720, "y": 560, "radius": 40, "id": "cave.grove" },
+    { "type": "ancient_sword", "x": 1120, "y": 720, "radius": 36, "id": "sword.grove" }
+  ]
 }

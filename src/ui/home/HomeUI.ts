@@ -1,3 +1,4 @@
+import { attachDevControlsToPlaySlot, detachDevControlsToRoot } from '@/app/DevControls';
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { createBottomNav } from '@/ui/home/BottomNav';
@@ -120,6 +121,8 @@ export class HomeUI {
   private static unmount(): void {
     if (!HomeUI.root) return;
 
+    detachDevControlsToRoot();
+
     HomeUI.unsubscribeStore?.();
     HomeUI.unsubscribeStore = null;
 
@@ -156,7 +159,14 @@ export class HomeUI {
       HomeUI.panelInner.appendChild(HomeUI.panels[tab].root);
       HomeUI.bottomNav.setActive(tab);
       HomeUI.panels[tab].refresh();
+      if (tab === 'play') {
+        const slot = HomeUI.panels.play.root.querySelector('.home-play__dev-slot');
+        if (slot instanceof HTMLElement) attachDevControlsToPlaySlot(slot);
+      } else {
+        detachDevControlsToRoot();
+      }
     } else {
+      detachDevControlsToRoot();
       HomeUI.panelSheet.classList.remove('home-panel-sheet--open');
       HomeUI.bottomNav.setActive(null);
     }

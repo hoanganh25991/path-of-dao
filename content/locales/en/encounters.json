@@ -1,0 +1,17 @@
+{
+  "encounter.confirm": "Embrace the Dao",
+  "encounter.ancient_inheritance.title": "Ancient Inheritance",
+  "encounter.ancient_inheritance.flavor": "An ancient will awakens within you. Power from forgotten ages flows into your meridians.",
+  "encounter.hidden_cave.title": "Hidden Cave",
+  "encounter.hidden_cave.flavor": "Crystal veins glitter in the dark. You absorb their essence — gold and insight alike.",
+  "encounter.spirit_beast.title": "Spirit Beast",
+  "encounter.spirit_beast.flavor": "A spirit fox watches from the shadows… then chooses to walk beside you.",
+  "encounter.forgotten_memory.title": "Forgotten Memory",
+  "encounter.forgotten_memory.flavor": "A fragment of the past surfaces — a village consumed by void, a promise unkept.",
+  "encounter.ancient_sword.title": "Ancient Sword",
+  "encounter.ancient_sword.flavor": "A blade sleeps in stone. Your touch breaks the seal; it answers to your qi.",
+  "encounter.secret_manual.title": "Secret Manual",
+  "encounter.secret_manual.flavor": "Hidden pages flutter from the fallen foe — a flame technique you were never taught.",
+  "item.sword.ancient.name": "Ancient Spirit Blade",
+  "item.sword.ancient.desc": "Forged in an age before realms. Its edge hums with dormant dao."
+}

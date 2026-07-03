@@ -66,8 +66,14 @@ export const playerSaveV1Schema = z.object({
     encountersFound: z.array(z.string()),
     // default([]) keeps pre-bestiary v1 saves loadable (added in sub-plan 08).
     bestiary: z.array(z.string()).default([]),
+    loreUnlocked: z.array(z.string()).default([]),
     currentMapId: z.string().nullable(),
   }),
+  cosmetics: z
+    .object({
+      pet: z.string().nullable(),
+    })
+    .default({ pet: null }),
   settings: z.object({
     locale: z.enum(['en', 'vi']),
     sfxVolume: z.number().min(0).max(1),

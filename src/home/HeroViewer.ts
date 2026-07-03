@@ -1,4 +1,4 @@
-import { CapsuleGeometry, Group, Mesh, MeshStandardMaterial, Scene } from 'three';
+import { CapsuleGeometry, Group, Mesh, MeshStandardMaterial, Scene, SphereGeometry } from 'three';
 import { EquipmentAttachment } from '@/home/EquipmentAttachment';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import type { EquipmentSlot, EquipmentSlots } from '@/progression/ItemDefinition';
@@ -14,6 +14,8 @@ const HERO_STAND_Y = 0.74;
 export class HeroViewer {
   readonly root = new Group();
   private idlePhase = 0;
+  private petPhase = 0;
+  private petMesh: Mesh | null = null;
   private equipment: EquipmentAttachment;
 
   constructor(scene: Scene) {
@@ -49,17 +51,43 @@ export class HeroViewer {
     }
   }
 
+  /** Spirit beast cosmetic — full mesh polish in sub-plan 25. */
+  syncPet(petId: string | null): void {
+    if (this.petMesh) {
+      this.root.remove(this.petMesh);
+      this.petMesh.geometry.dispose();
+      (this.petMesh.material as MeshStandardMaterial).dispose();
+      this.petMesh = null;
+    }
+    if (!petId) return;
+
+    const mat = new MeshStandardMaterial({
+      color: petId.includes('fox') ? 0xff9a4a : 0xaaddff,
+      emissive: 0x331800,
+      emissiveIntensity: 0.35,
+    });
+    this.petMesh = new Mesh(new SphereGeometry(0.1, 8, 8), mat);
+    this.petMesh.position.set(0.55, 0.9, 0.2);
+    this.root.add(this.petMesh);
+  }
+
   playIdle(): void {
     this.idlePhase = 0;
   }
 
   update(delta: number): void {
     this.idlePhase += delta;
+    this.petPhase += delta;
     const bob = Math.sin(this.idlePhase * 1.8) * 0.025;
     const sway = Math.sin(this.idlePhase * 0.9) * 0.04;
     this.root.position.y = HERO_STAND_Y + bob;
     this.root.rotation.y = sway;
     this.equipment.update(delta);
+
+    if (this.petMesh) {
+      const orbit = this.petPhase * 1.4;
+      this.petMesh.position.set(Math.cos(orbit) * 0.55, 0.85 + Math.sin(orbit * 2) * 0.06, Math.sin(orbit) * 0.35);
+    }
   }
 
   dispose(): void {

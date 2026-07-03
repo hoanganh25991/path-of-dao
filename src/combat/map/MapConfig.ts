@@ -17,6 +17,17 @@ export const mapConfigSchema = z.object({
   connections: z.array(z.string()),
   encounterTable: z.string().nullable(),
   bgm: z.string().nullable(),
+  pois: z
+    .array(
+      z.object({
+        type: z.enum(['hidden_cave', 'ancient_sword']),
+        x: z.number(),
+        y: z.number(),
+        radius: z.number().positive().default(32),
+        id: z.string().optional(),
+      }),
+    )
+    .default([]),
 });
 
 export type MapConfig = z.infer<typeof mapConfigSchema>;

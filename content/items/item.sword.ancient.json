@@ -1,0 +1,13 @@
+{
+  "id": "item.sword.ancient",
+  "displayNameKey": "item.sword.ancient.name",
+  "descriptionKey": "item.sword.ancient.desc",
+  "slot": "weapon",
+  "rarity": "epic",
+  "modelId": "weapon.ancient_sword",
+  "modifiers": [
+    { "stat": "atk", "kind": "flat", "value": 18 },
+    { "stat": "spirit", "kind": "flat", "value": 8 }
+  ],
+  "requiredLevel": 1
+}

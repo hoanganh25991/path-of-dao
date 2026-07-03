@@ -15,6 +15,8 @@ export type GameEvents = {
   'insight:xp-changed': { intentId: string; xp: number; displayPct: number };
   'insight:ready-to-awaken': { intentId: string };
   'insight:awakened': { intentId: string; skillId: string };
+  'encounter:completed': { encounterId: string; poiKey?: string };
+  'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
 };
 
