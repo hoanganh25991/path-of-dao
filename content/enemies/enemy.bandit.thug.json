@@ -1,0 +1,23 @@
+{
+  "id": "enemy.bandit.thug",
+  "displayNameKey": "enemy.bandit.thug.name",
+  "stats": {
+    "hpMax": 55,
+    "atk": 12,
+    "def": 3,
+    "speed": 80,
+    "crit": 0.08,
+    "critDmg": 1.5
+  },
+  "aggroRange": 200,
+  "attackRange": 40,
+  "attackCooldownMs": 1100,
+  "xpReward": 15,
+  "goldReward": [
+    1,
+    3
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser"
+}

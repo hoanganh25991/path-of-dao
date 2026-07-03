@@ -1,0 +1,25 @@
+{
+  "id": "encounter.burning_desert.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.sand.spirit",
+          "count": 3,
+          "spread": 100
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.desert_sovereign",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

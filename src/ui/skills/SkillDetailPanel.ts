@@ -42,7 +42,15 @@ function unlockLine(skillId: string): string {
   return I18nManager.t(key, resolved);
 }
 
-export function createSkillDetailPanel(skillId: string): HTMLElement {
+export interface SkillDetailPanelOptions {
+  /** Hide lore/unlock blocks — for compact loadout picker. */
+  compact?: boolean;
+}
+
+export function createSkillDetailPanel(
+  skillId: string,
+  options: SkillDetailPanelOptions = {},
+): HTMLElement {
   const def = getSkillDefinition(skillId);
   const stats = buildSkillDisplayStats(skillId);
   const awakened = isAwakenedSkillId(skillId);
@@ -94,11 +102,21 @@ export function createSkillDetailPanel(skillId: string): HTMLElement {
   ];
 
   for (const [labelKey, value] of statEntries) {
+    const item = document.createElement('div');
+    item.className = 'skill-detail__stat';
+
     const dt = document.createElement('dt');
     dt.textContent = I18nManager.t(labelKey);
     const dd = document.createElement('dd');
     dd.textContent = value;
-    statGrid.append(dt, dd);
+
+    item.append(dt, dd);
+    statGrid.appendChild(item);
+  }
+
+  if (options.compact) {
+    root.append(hero, desc, statGrid);
+    return root;
   }
 
   const loreBlock = document.createElement('section');

@@ -1,0 +1,23 @@
+{
+  "id": "enemy.sand.wisp",
+  "displayNameKey": "enemy.sand.wisp.name",
+  "stats": {
+    "hpMax": 128,
+    "atk": 26,
+    "def": 6,
+    "speed": 100,
+    "crit": 0.15000000000000002,
+    "critDmg": 1.5
+  },
+  "aggroRange": 280,
+  "attackRange": 235,
+  "attackCooldownMs": 1600,
+  "xpReward": 38,
+  "goldReward": [
+    5,
+    15
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter"
+}

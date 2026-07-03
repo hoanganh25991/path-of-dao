@@ -1,0 +1,15 @@
+{
+  "id": "encounter.moon_lake.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.water.sprite",
+          "count": 5,
+          "spread": 140
+        }
+      ]
+    }
+  ]
+}

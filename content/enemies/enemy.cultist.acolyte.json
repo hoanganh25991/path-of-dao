@@ -1,0 +1,23 @@
+{
+  "id": "enemy.cultist.acolyte",
+  "displayNameKey": "enemy.cultist.acolyte.name",
+  "stats": {
+    "hpMax": 116,
+    "atk": 23,
+    "def": 6,
+    "speed": 97,
+    "crit": 0.13,
+    "critDmg": 1.5
+  },
+  "aggroRange": 260,
+  "attackRange": 52,
+  "attackCooldownMs": 1100,
+  "xpReward": 35,
+  "goldReward": [
+    4,
+    12
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser"
+}

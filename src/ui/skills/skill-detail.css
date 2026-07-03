@@ -68,6 +68,13 @@
   margin: 0;
 }
 
+.skill-detail__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
 .skill-detail__stats dt {
   margin: 0;
   font-size: 0.6rem;
@@ -77,7 +84,7 @@
 }
 
 .skill-detail__stats dd {
-  margin: 0.1rem 0 0;
+  margin: 0;
   font-size: 0.85rem;
   font-weight: 600;
   color: #f0ece4;
@@ -159,6 +166,27 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+}
+
+.skill-loadout__active-slot {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--dao-gold);
+}
+
+.skill-loadout__assign {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.skill-loadout__pool-label {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dao-muted);
 }
 
 .skill-loadout__pool-icon {

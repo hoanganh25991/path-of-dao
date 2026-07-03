@@ -1,0 +1,24 @@
+{
+  "id": "boss.seal_warden",
+  "displayNameKey": "boss.seal_warden.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 980,
+    "atk": 32,
+    "def": 18,
+    "speed": 60,
+    "crit": 0.12,
+    "critDmg": 1.9
+  },
+  "aggroRange": 320,
+  "attackRange": 180,
+  "attackCooldownMs": 1500,
+  "xpReward": 340,
+  "goldReward": [
+    40,
+    100
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.seal_warden"
+}

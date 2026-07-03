@@ -1,0 +1,24 @@
+{
+  "id": "boss.bandit_lord",
+  "displayNameKey": "boss.bandit_lord.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 720,
+    "atk": 28,
+    "def": 14,
+    "speed": 70,
+    "crit": 0.15,
+    "critDmg": 2
+  },
+  "aggroRange": 300,
+  "attackRange": 52,
+  "attackCooldownMs": 1100,
+  "xpReward": 260,
+  "goldReward": [
+    30,
+    80
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.bandit_lord"
+}

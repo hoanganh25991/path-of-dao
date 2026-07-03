@@ -145,6 +145,7 @@
   "awakening.confirm": "Embrace the Dao",
   "combat.skills.pick_title": "Assign {slot}",
   "combat.skills.pick_hint": "Only skills not on other buttons — no duplicates.",
+  "combat.skills.pool_label": "Choose skill",
   "combat.skills.swap": "Change skills",
   "combat.skills.swap_title": "Change Skills",
   "combat.skills.swap_hint": "Tap a slot, then pick a skill. Hold skill buttons in combat to channel repeatedly.",

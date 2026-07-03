@@ -1,0 +1,24 @@
+{
+  "id": "boss.jade_guardian",
+  "displayNameKey": "boss.jade_guardian.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 320,
+    "atk": 18,
+    "def": 8,
+    "speed": 55,
+    "crit": 0.1,
+    "critDmg": 1.8
+  },
+  "aggroRange": 280,
+  "attackRange": 48,
+  "attackCooldownMs": 1400,
+  "xpReward": 120,
+  "goldReward": [
+    15,
+    40
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.jade_guardian"
+}

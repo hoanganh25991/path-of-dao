@@ -1,0 +1,23 @@
+{
+  "id": "enemy.spirit.wisp",
+  "displayNameKey": "enemy.spirit.wisp.name",
+  "stats": {
+    "hpMax": 62,
+    "atk": 12,
+    "def": 3,
+    "speed": 81,
+    "crit": 0.09,
+    "critDmg": 1.5
+  },
+  "aggroRange": 220,
+  "attackRange": 44,
+  "attackCooldownMs": 1100,
+  "xpReward": 19,
+  "goldReward": [
+    2,
+    6
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser"
+}

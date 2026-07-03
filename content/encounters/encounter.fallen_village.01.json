@@ -1,0 +1,20 @@
+{
+  "id": "encounter.fallen_village.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.slime",
+          "count": 3,
+          "spread": 100
+        },
+        {
+          "id": "enemy.wolf",
+          "count": 2,
+          "spread": 120
+        }
+      ]
+    }
+  ]
+}

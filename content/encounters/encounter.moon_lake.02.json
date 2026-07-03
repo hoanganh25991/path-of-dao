@@ -1,0 +1,25 @@
+{
+  "id": "encounter.moon_lake.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.cultist.acolyte",
+          "count": 4,
+          "spread": 130
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.seal_warden",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

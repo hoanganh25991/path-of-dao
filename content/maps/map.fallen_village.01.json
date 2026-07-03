@@ -2,7 +2,7 @@
   "id": "map.fallen_village.01",
   "chapterId": "chapter.01.fallen_village",
   "displayNameKey": "map.fallen_village.01.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/fallen_village-01.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,7 +13,7 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.fallen_village.01",
   "bgm": null,
   "pois": [],
   "recommendedCp": 800,

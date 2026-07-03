@@ -70,13 +70,21 @@ export class CombatSkillPicker {
     hint.className = 'combat-skill-picker__hint';
     hint.textContent = I18nManager.t('combat.skills.swap_hint');
 
+    const body = document.createElement('div');
+    body.className = 'combat-skill-picker__body';
+    body.append(picker.root);
+
+    const footer = document.createElement('div');
+    footer.className = 'combat-skill-picker__footer';
+
     const done = document.createElement('button');
     done.type = 'button';
     done.className = 'combat-skill-picker__done';
     done.textContent = I18nManager.t('combat.skills.done');
     done.addEventListener('click', () => CombatSkillPicker.close());
 
-    CombatSkillPicker.panel.append(title, hint, picker.root, done);
+    footer.appendChild(done);
+    CombatSkillPicker.panel.append(title, hint, body, footer);
   }
 
   static close(): void {

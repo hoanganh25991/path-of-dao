@@ -2,7 +2,7 @@
   "id": "map.mist_forest.01",
   "chapterId": "chapter.02.mist_forest",
   "displayNameKey": "map.mist_forest.01.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/mist_forest-01.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,9 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.mist_forest.01",
   "bgm": null,
   "pois": [],
-  "recommendedCp": 1700,
+  "recommendedCp": 2500,
   "recommendedRealmOrder": 1
 }

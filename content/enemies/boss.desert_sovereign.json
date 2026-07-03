@@ -1,0 +1,24 @@
+{
+  "id": "boss.desert_sovereign",
+  "displayNameKey": "boss.desert_sovereign.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 1280,
+    "atk": 38,
+    "def": 22,
+    "speed": 65,
+    "crit": 0.14,
+    "critDmg": 2
+  },
+  "aggroRange": 340,
+  "attackRange": 56,
+  "attackCooldownMs": 1300,
+  "xpReward": 420,
+  "goldReward": [
+    50,
+    120
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.desert_sovereign"
+}

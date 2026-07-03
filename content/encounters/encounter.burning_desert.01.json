@@ -1,0 +1,20 @@
+{
+  "id": "encounter.burning_desert.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.scorpion",
+          "count": 4,
+          "spread": 120
+        },
+        {
+          "id": "enemy.sand.wisp",
+          "count": 3,
+          "spread": 150
+        }
+      ]
+    }
+  ]
+}

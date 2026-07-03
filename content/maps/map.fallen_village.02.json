@@ -2,7 +2,7 @@
   "id": "map.fallen_village.02",
   "chapterId": "chapter.01.fallen_village",
   "displayNameKey": "map.fallen_village.02.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/fallen_village-02.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,17 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.fallen_village.02",
   "bgm": null,
-  "pois": [],
-  "recommendedCp": 1200,
+  "pois": [
+    {
+      "type": "ancient_sword",
+      "x": 720,
+      "y": 560,
+      "radius": 36,
+      "id": "sword.fallen_village"
+    }
+  ],
+  "recommendedCp": 1500,
   "recommendedRealmOrder": 1
 }

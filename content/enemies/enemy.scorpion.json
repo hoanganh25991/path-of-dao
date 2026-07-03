@@ -1,0 +1,23 @@
+{
+  "id": "enemy.scorpion",
+  "displayNameKey": "enemy.scorpion.name",
+  "stats": {
+    "hpMax": 128,
+    "atk": 26,
+    "def": 6,
+    "speed": 105,
+    "crit": 0.15000000000000002,
+    "critDmg": 1.5
+  },
+  "aggroRange": 280,
+  "attackRange": 56,
+  "attackCooldownMs": 1100,
+  "xpReward": 38,
+  "goldReward": [
+    5,
+    15
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_slime",
+  "archetype": "melee_chaser"
+}

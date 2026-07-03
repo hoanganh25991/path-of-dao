@@ -28,18 +28,33 @@ export function createLoadoutPickerElement(
   const root = document.createElement('div');
   root.className = 'skill-loadout';
 
+  const assignSection = document.createElement('div');
+  assignSection.className = 'skill-loadout__assign';
+
   const slotsRow = document.createElement('div');
   slotsRow.className = 'ancient-demo-modal__slots';
   const slotButtons = new Map<SkillSlotId, HTMLButtonElement>();
 
-  const detailHost = document.createElement('div');
-  detailHost.className = 'skill-loadout__detail';
+  const activeSlotLabel = document.createElement('p');
+  activeSlotLabel.className = 'skill-loadout__active-slot';
+
+  const poolLabel = document.createElement('p');
+  poolLabel.className = 'skill-loadout__pool-label';
+  poolLabel.textContent = I18nManager.t('combat.skills.pool_label');
 
   const poolEl = document.createElement('div');
   poolEl.className = 'skill-loadout__pool-icons';
 
+  const detailHost = document.createElement('div');
+  detailHost.className = 'skill-loadout__detail';
+
+  const renderActiveSlotLabel = (): void => {
+    const slotName = I18nManager.t(`demo.skills.slot.${activeSlot}`);
+    activeSlotLabel.textContent = I18nManager.t('combat.skills.pick_title', { slot: slotName });
+  };
+
   const renderDetail = (): void => {
-    detailHost.replaceChildren(createSkillDetailPanel(previewSkillId));
+    detailHost.replaceChildren(createSkillDetailPanel(previewSkillId, { compact: true }));
   };
 
   const renderSlots = (): void => {
@@ -54,6 +69,7 @@ export function createLoadoutPickerElement(
           activeSlot = slot;
           previewSkillId = loadout[slot];
           renderSlots();
+          renderActiveSlotLabel();
           renderPool();
           renderDetail();
         });
@@ -62,9 +78,11 @@ export function createLoadoutPickerElement(
       }
 
       const skillId = loadout[slot];
+      const skillName = I18nManager.t(getSkillDefinition(skillId).nameKey);
       btn.innerHTML = `
         <span class="ancient-demo-modal__slot-label">${I18nManager.t(`demo.skills.slot.${slot}`)}</span>
         <span class="ancient-demo-modal__slot-icon">${renderSkillButtonHtml(skillId)}</span>
+        <span class="ancient-demo-modal__slot-skill">${skillName}</span>
       `;
       btn.classList.toggle('ancient-demo-modal__slot--active', slot === activeSlot);
       btn.classList.toggle('ancient-demo-modal__slot--awakened', isAwakenedSkillId(skillId));
@@ -104,9 +122,11 @@ export function createLoadoutPickerElement(
   };
 
   renderSlots();
+  renderActiveSlotLabel();
   renderPool();
   renderDetail();
-  root.append(slotsRow, detailHost, poolEl);
+  assignSection.append(slotsRow, activeSlotLabel, poolLabel, poolEl);
+  root.append(assignSection, detailHost);
 
   return {
     root,

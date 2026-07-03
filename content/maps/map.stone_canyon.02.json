@@ -2,7 +2,7 @@
   "id": "map.stone_canyon.02",
   "chapterId": "chapter.03.stone_canyon",
   "displayNameKey": "map.stone_canyon.02.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/stone_canyon-02.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,9 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.stone_canyon.02",
   "bgm": null,
   "pois": [],
-  "recommendedCp": 3000,
+  "recommendedCp": 9000,
   "recommendedRealmOrder": 2
 }

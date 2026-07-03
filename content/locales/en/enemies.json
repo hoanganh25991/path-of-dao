@@ -1,0 +1,21 @@
+{
+  "enemy.slime.name": "Spirit Slime",
+  "enemy.archer.name": "Bandit Archer",
+  "enemy.totem.name": "Stone Totem",
+  "enemy.wolf.name": "Forest Wolf",
+  "enemy.bandit.thug.name": "Bandit Thug",
+  "enemy.spirit.moth.name": "Spirit Moth",
+  "enemy.spirit.wisp.name": "Mist Wisp",
+  "enemy.guard.patrol.name": "Canyon Guard",
+  "enemy.bandit.archer.name": "Bandit Marksman",
+  "enemy.water.sprite.name": "Water Sprite",
+  "enemy.cultist.acolyte.name": "Seal Cultist",
+  "enemy.scorpion.name": "Sand Scorpion",
+  "enemy.sand.wisp.name": "Sand Wisp",
+  "enemy.sand.spirit.name": "Sand Spirit",
+  "boss.jade_guardian.name": "Jade Guardian",
+  "boss.mist_stalker.name": "Mist Stalker",
+  "boss.bandit_lord.name": "Bandit Lord",
+  "boss.seal_warden.name": "Seal Warden",
+  "boss.desert_sovereign.name": "Desert Sovereign"
+}

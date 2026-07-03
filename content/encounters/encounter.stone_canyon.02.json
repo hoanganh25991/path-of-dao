@@ -1,0 +1,30 @@
+{
+  "id": "encounter.stone_canyon.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.bandit.thug",
+          "count": 3,
+          "spread": 120
+        },
+        {
+          "id": "enemy.bandit.archer",
+          "count": 2,
+          "spread": 160
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.bandit_lord",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

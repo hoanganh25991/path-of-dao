@@ -1,0 +1,23 @@
+{
+  "id": "enemy.water.sprite",
+  "displayNameKey": "enemy.water.sprite.name",
+  "stats": {
+    "hpMax": 106,
+    "atk": 21,
+    "def": 5,
+    "speed": 95,
+    "crit": 0.13,
+    "critDmg": 1.5
+  },
+  "aggroRange": 260,
+  "attackRange": 220,
+  "attackCooldownMs": 1600,
+  "xpReward": 32,
+  "goldReward": [
+    4,
+    12
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter"
+}

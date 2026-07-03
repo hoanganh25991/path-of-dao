@@ -1,0 +1,23 @@
+{
+  "id": "enemy.spirit.moth",
+  "displayNameKey": "enemy.spirit.moth.name",
+  "stats": {
+    "hpMax": 62,
+    "atk": 12,
+    "def": 3,
+    "speed": 85,
+    "crit": 0.09,
+    "critDmg": 1.5
+  },
+  "aggroRange": 220,
+  "attackRange": 190,
+  "attackCooldownMs": 1600,
+  "xpReward": 19,
+  "goldReward": [
+    2,
+    6
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "encounter.mist_forest.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.spirit.wisp",
+          "count": 3,
+          "spread": 120
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.mist_stalker",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "boss.mist_stalker",
+  "displayNameKey": "boss.mist_stalker.name",
+  "archetype": "boss",
+  "stats": {
+    "hpMax": 480,
+    "atk": 22,
+    "def": 10,
+    "speed": 95,
+    "crit": 0.12,
+    "critDmg": 1.8
+  },
+  "aggroRange": 300,
+  "attackRange": 44,
+  "attackCooldownMs": 1200,
+  "xpReward": 180,
+  "goldReward": [
+    20,
+    55
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_totem",
+  "bossClearId": "boss.mist_stalker"
+}

@@ -2,7 +2,7 @@
   "id": "map.moon_lake.01",
   "chapterId": "chapter.04.moon_lake",
   "displayNameKey": "map.moon_lake.01.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/moon_lake-01.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,17 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.moon_lake.01",
   "bgm": null,
-  "pois": [],
-  "recommendedCp": 3500,
+  "pois": [
+    {
+      "type": "hidden_cave",
+      "x": 480,
+      "y": 720,
+      "radius": 40,
+      "id": "cave.moon_lake"
+    }
+  ],
+  "recommendedCp": 12000,
   "recommendedRealmOrder": 3
 }

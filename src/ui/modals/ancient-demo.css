@@ -163,9 +163,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  min-height: 72px;
-  padding: 0.35rem;
+  gap: 0.2rem;
+  min-height: 84px;
+  padding: 0.35rem 0.25rem;
   border-radius: 0.55rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(12, 14, 20, 0.85);
@@ -186,6 +186,17 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--dao-muted);
+}
+
+.ancient-demo-modal__slot-skill {
+  max-width: 100%;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  text-align: center;
+  color: rgba(230, 236, 255, 0.75);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ancient-demo-modal__pool {

@@ -1,0 +1,23 @@
+{
+  "id": "enemy.guard.patrol",
+  "displayNameKey": "enemy.guard.patrol.name",
+  "stats": {
+    "hpMax": 84,
+    "atk": 17,
+    "def": 4,
+    "speed": 89,
+    "crit": 0.11,
+    "critDmg": 1.5
+  },
+  "aggroRange": 240,
+  "attackRange": 48,
+  "attackCooldownMs": 1100,
+  "xpReward": 25,
+  "goldReward": [
+    3,
+    9
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_archer",
+  "archetype": "patrol"
+}

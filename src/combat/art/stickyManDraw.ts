@@ -188,17 +188,32 @@ function drawSlimeBlob(
   chestY: number,
   palette: StickPalette,
 ): void {
-  // Jelly overlay on upper chest — does not cover legs
-  for (let dy = -4; dy <= 4; dy++) {
-    for (let dx = -5; dx <= 5; dx++) {
-      if ((dx * dx) / 28 + (dy * dy) / 16 <= 1) {
-        const edge = Math.abs(dx) + Math.abs(dy) > 7;
-        px(ctx, cx + dx, chestY + dy, edge ? palette.outline : dx < -1 ? palette.shadow : palette.fill);
+  // Jelly belly — wider lower blob with specular highlights (hue-shifted rim).
+  for (let dy = -5; dy <= 5; dy++) {
+    for (let dx = -6; dx <= 6; dx++) {
+      const norm = (dx * dx) / 34 + (dy * dy) / 22;
+      if (norm <= 1) {
+        const edge = norm > 0.72;
+        const lit = dx >= 2 && dy <= 0;
+        const shade = dx <= -2 && dy >= 1;
+        const color = edge
+          ? palette.outline
+          : lit
+            ? palette.accent
+            : shade
+              ? palette.shadow
+              : palette.fill;
+        px(ctx, cx + dx, chestY + dy, color);
       }
     }
   }
-  px(ctx, cx - 2, chestY - 1, palette.highlight ?? palette.accent);
-  px(ctx, cx + 2, chestY - 1, palette.highlight ?? palette.accent);
+  // Specular streak (upper-left lit convention on +X front).
+  px(ctx, cx + 3, chestY - 2, palette.highlight ?? palette.accent);
+  px(ctx, cx + 2, chestY - 1, palette.accent);
+  px(ctx, cx + 4, chestY - 1, palette.accent);
+  // Subtle dither at the belly base.
+  px(ctx, cx - 1, chestY + 4, palette.shadow);
+  px(ctx, cx + 2, chestY + 5, palette.fill);
 }
 
 function drawArcherCape(
@@ -208,10 +223,46 @@ function drawArcherCape(
   hipY: number,
   palette: StickPalette,
 ): void {
-  pixelLine(ctx, cx - 3, shoulderY, cx - 9, hipY + 1, palette.outline, 2);
-  pixelLine(ctx, cx - 3, shoulderY, cx - 9, hipY + 1, palette.shadow, 1);
-  pixelLine(ctx, cx - 3, shoulderY, cx - 1, hipY + 1, palette.outline, 2);
-  pixelLine(ctx, cx - 3, shoulderY, cx - 1, hipY + 1, palette.shadow, 1);
+  const top = Math.round(shoulderY);
+  const bot = Math.round(hipY + 2);
+  // Filled cape panel (back-left) — reads as cloth, not just outline sticks.
+  for (let y = top; y <= bot; y++) {
+    const t = (y - top) / Math.max(1, bot - top);
+    const left = cx - 3 - Math.round(t * 6);
+    const right = cx - 1;
+    for (let x = left; x <= right; x++) {
+      const edge = x === left || x === right;
+      px(ctx, x, y, edge ? palette.outline : x <= left + 1 ? palette.shadow : palette.fill);
+    }
+  }
+  // Trailing edge highlight on the outer fold.
+  pixelLine(ctx, cx - 3, top, cx - 9, bot, palette.outline, 2);
+  pixelLine(ctx, cx - 3, top, cx - 9, bot, palette.shadow, 1);
+  pixelLine(ctx, cx - 2, top + 1, cx - 8, bot - 1, palette.highlight ?? palette.fill, 1);
+}
+
+function drawBossStonePlate(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  shoulderY: number,
+  hipY: number,
+  palette: StickPalette,
+): void {
+  const top = Math.round(shoulderY + 2);
+  const bot = Math.round(hipY - 3);
+  for (let y = top; y <= bot; y++) {
+    for (let dx = -3; dx <= 3; dx++) {
+      const edge = Math.abs(dx) === 3;
+      const shade = dx <= -1;
+      px(ctx, cx + dx, y, edge ? palette.outline : shade ? palette.shadow : palette.fill);
+    }
+  }
+  // Horizontal stone bands.
+  for (const y of [top + 2, top + 6, top + 10]) {
+    if (y <= bot) {
+      for (let dx = -2; dx <= 2; dx++) px(ctx, cx + dx, y, palette.shadow);
+    }
+  }
 }
 
 function drawHead(

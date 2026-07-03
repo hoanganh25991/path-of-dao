@@ -2,7 +2,7 @@
   "id": "map.burning_desert.02",
   "chapterId": "chapter.05.burning_desert",
   "displayNameKey": "map.burning_desert.02.name",
-  "tiledPath": "assets/maps/test-grove.json",
+  "tiledPath": "assets/maps/burning_desert-02.json",
   "tilesetName": "grove",
   "spawn": {
     "x": 320,
@@ -13,9 +13,9 @@
     "height": 1216
   },
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": "encounter.burning_desert.02",
   "bgm": null,
   "pois": [],
-  "recommendedCp": 4800,
+  "recommendedCp": 35000,
   "recommendedRealmOrder": 3
 }

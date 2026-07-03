@@ -1,0 +1,15 @@
+{
+  "id": "encounter.stone_canyon.01",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.guard.patrol",
+          "count": 5,
+          "spread": 150
+        }
+      ]
+    }
+  ]
+}

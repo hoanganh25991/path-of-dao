@@ -1,0 +1,23 @@
+{
+  "id": "enemy.sand.spirit",
+  "displayNameKey": "enemy.sand.spirit.name",
+  "stats": {
+    "hpMax": 138,
+    "atk": 28,
+    "def": 7,
+    "speed": 0,
+    "crit": 0.15000000000000002,
+    "critDmg": 1.5
+  },
+  "aggroRange": 280,
+  "attackRange": 90,
+  "attackCooldownMs": 2200,
+  "xpReward": 41,
+  "goldReward": [
+    5,
+    15
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_totem",
+  "archetype": "stationary"
+}

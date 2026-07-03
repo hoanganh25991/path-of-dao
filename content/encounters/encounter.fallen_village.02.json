@@ -1,0 +1,25 @@
+{
+  "id": "encounter.fallen_village.02",
+  "waves": [
+    {
+      "trigger": "onEnter",
+      "enemies": [
+        {
+          "id": "enemy.bandit.thug",
+          "count": 4,
+          "spread": 140
+        }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        {
+          "id": "boss.jade_guardian",
+          "count": 1,
+          "spread": 0
+        }
+      ]
+    }
+  ]
+}

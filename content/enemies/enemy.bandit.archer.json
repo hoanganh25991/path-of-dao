@@ -1,0 +1,23 @@
+{
+  "id": "enemy.bandit.archer",
+  "displayNameKey": "enemy.bandit.archer.name",
+  "stats": {
+    "hpMax": 94,
+    "atk": 19,
+    "def": 5,
+    "speed": 90,
+    "crit": 0.11,
+    "critDmg": 1.5
+  },
+  "aggroRange": 240,
+  "attackRange": 205,
+  "attackCooldownMs": 1600,
+  "xpReward": 28,
+  "goldReward": [
+    3,
+    9
+  ],
+  "lootTable": null,
+  "spriteKey": "enemy_archer",
+  "archetype": "ranged_kiter"
+}
