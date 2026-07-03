@@ -3,64 +3,75 @@ export interface StickPalette {
   outline: string;
   skin: string;
   fill: string;
+  /** Shadow side of robe / body */
+  shadow: string;
   accent: string;
-  /** Optional glow / eyes */
   highlight?: string;
 }
 
+/** Cultivator hero — teal robe, warm skin, gold sash. */
 export const PALETTE_HERO: StickPalette = {
-  outline: '#1a1a2e',
-  skin: '#f0d4a8',
-  fill: '#3d6b4f',
-  accent: '#c9a227',
-  highlight: '#ffffff',
+  outline: '#0c0c14',
+  skin: '#ffd5a8',
+  fill: '#2a8a6a',
+  shadow: '#1a5a48',
+  accent: '#e8b830',
+  highlight: '#fff8e8',
 };
 
+/** Slime minion — bright jelly green. */
 export const PALETTE_SLIME: StickPalette = {
-  outline: '#1a3320',
-  skin: '#7ed957',
-  fill: '#4a9d4a',
-  accent: '#2d6b2d',
-  highlight: '#1c331c',
+  outline: '#0a2010',
+  skin: '#9ef56a',
+  fill: '#52c452',
+  shadow: '#2e8a32',
+  accent: '#c8ff90',
+  highlight: '#1a4018',
 };
 
+/** Archer — violet cloak, tan bow. */
 export const PALETTE_ARCHER: StickPalette = {
-  outline: '#2a1c3d',
-  skin: '#d4b8f0',
-  fill: '#7a5aa8',
-  accent: '#c9a86a',
+  outline: '#18082a',
+  skin: '#e8c8ff',
+  fill: '#6a48a0',
+  shadow: '#402868',
+  accent: '#d4a860',
   highlight: '#ffffff',
 };
 
+/** Totem boss — stone grey + ember glow. */
 export const PALETTE_TOTEM: StickPalette = {
-  outline: '#1a1018',
-  skin: '#8a8a98',
-  fill: '#5c5c68',
-  accent: '#d94a3a',
-  highlight: '#ff8a4a',
+  outline: '#080810',
+  skin: '#9898a8',
+  fill: '#686878',
+  shadow: '#404050',
+  accent: '#ff5038',
+  highlight: '#ffb060',
 };
 
 export const FRAME_W = 32;
-export const FRAME_H = 40;
+export const FRAME_H = 44;
 export const BOSS_FRAME_W = 48;
-export const BOSS_FRAME_H = 56;
+export const BOSS_FRAME_H = 60;
 export const DISPLAY_SCALE = 2;
 
+/** Two-segment limb: upper (shoulder/hip → elbow/knee) + lower (→ hand/foot). */
+export interface SegmentAngles {
+  upper: number;
+  lower: number;
+}
+
 export interface LimbAngles {
-  /** Degrees from vertical down; negative = forward (right-facing). */
-  armBack: number;
-  armFront: number;
-  legBack: number;
-  legFront: number;
+  armBack: SegmentAngles;
+  armFront: SegmentAngles;
+  legBack: SegmentAngles;
+  legFront: SegmentAngles;
 }
 
 export interface StickPose {
-  /** Vertical bob in px */
   bob?: number;
-  /** Torso lean degrees */
   lean?: number;
   limbs: LimbAngles;
-  /** Draw weapon / boss crown */
   prop?: 'sword' | 'bow' | 'crown' | 'aura';
 }
 
@@ -75,4 +86,9 @@ export function limbEnd(
     x: ox + Math.sin(rad) * length,
     y: oy + Math.cos(rad) * length,
   };
+}
+
+/** Shorthand for symmetric idle limbs. */
+export function seg(upper: number, lower: number): SegmentAngles {
+  return { upper, lower };
 }

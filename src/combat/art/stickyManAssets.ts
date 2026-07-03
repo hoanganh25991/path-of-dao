@@ -11,9 +11,11 @@ import {
   PALETTE_TOTEM,
 } from '@/combat/art/stickyManPalette';
 import {
+  BOSS,
   buildHeroFrames,
   buildSheetCanvas,
   heroFrameOffset,
+  NORMAL,
   POSES_ARCHER_ATTACK,
   POSES_ARCHER_IDLE,
   POSES_ARCHER_WALK,
@@ -77,7 +79,14 @@ function createAnim(
 /** Register sticky-man spritesheets + Phaser animations (BootScene). */
 export function registerStickyManAssets(scene: Phaser.Scene): void {
   const heroKey = TEXTURE_KEYS.player;
-  const heroCanvas = buildSheetCanvas(buildHeroFrames(), FRAME_W, FRAME_H, PALETTE_HERO);
+  const heroCanvas = buildSheetCanvas(
+    buildHeroFrames(),
+    FRAME_W,
+    FRAME_H,
+    PALETTE_HERO,
+    NORMAL,
+    'hero',
+  );
   addSheetFromCanvas(scene, heroKey, heroCanvas, FRAME_W, FRAME_H);
 
   createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset('idle'), 4, 6);
@@ -87,10 +96,16 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
   createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset('attack3'), 4, 12, 0);
   createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset('hit'), 2, 10, 0);
 
-  registerEnemySheet(scene, 'enemy_slime', PALETTE_SLIME, POSES_SLIME_IDLE, POSES_SLIME_WALK, null, {
-    idle: ANIM.slimeIdle,
-    walk: ANIM.slimeWalk,
-  });
+  registerEnemySheet(
+    scene,
+    'enemy_slime',
+    PALETTE_SLIME,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    null,
+    { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk },
+    'slime',
+  );
 
   registerEnemySheet(
     scene,
@@ -104,6 +119,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
       walk: ANIM.archerWalk,
       attack: ANIM.archerAttack,
     },
+    'archer',
   );
 
   registerBossSheet(scene);
@@ -117,9 +133,10 @@ function registerEnemySheet(
   walk: typeof POSES_SLIME_WALK,
   attack: typeof POSES_ARCHER_ATTACK | null,
   animKeys: { idle: string; walk: string; attack?: string },
+  variant: 'slime' | 'archer',
 ): void {
   const frames = attack ? [...idle, ...walk, ...attack] : [...idle, ...walk];
-  const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, palette);
+  const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, palette, NORMAL, variant);
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
   let offset = 0;
@@ -135,7 +152,14 @@ function registerEnemySheet(
 function registerBossSheet(scene: Phaser.Scene): void {
   const key = 'enemy_totem';
   const frames = [...POSES_TOTEM_IDLE, ...POSES_TOTEM_ATTACK];
-  const canvas = buildSheetCanvas(frames, BOSS_FRAME_W, BOSS_FRAME_H, PALETTE_TOTEM);
+  const canvas = buildSheetCanvas(
+    frames,
+    BOSS_FRAME_W,
+    BOSS_FRAME_H,
+    PALETTE_TOTEM,
+    BOSS,
+    'boss',
+  );
   addSheetFromCanvas(scene, key, canvas, BOSS_FRAME_W, BOSS_FRAME_H);
 
   createAnim(scene, ANIM.totemIdle, key, 0, POSES_TOTEM_IDLE.length, 4);

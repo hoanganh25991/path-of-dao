@@ -19,7 +19,6 @@ import { startKnockback, tickKnockback, type KnockbackState } from '@/combat/com
 import { clearHitFlash } from '@/combat/combat/HitFlash';
 
 const RESPAWN_FADE_MS = 1000;
-const RESPAWN_HP_PCT = 0.5;
 
 /** Player entity: consumes InputManager, drives state machine + components. */
 export class Player extends EntityBase implements HurtboxEntity {
@@ -129,7 +128,7 @@ export class Player extends EntityBase implements HurtboxEntity {
     super.destroy();
   }
 
-  /** MVP death: fade out, respawn at spawn point with 50% HP (07 §10). */
+  /** MVP death: fade out, respawn at spawn point with full HP/mana. */
   private die(): void {
     this.sm.kill();
     this.knockback = null;
@@ -141,7 +140,7 @@ export class Player extends EntityBase implements HurtboxEntity {
     camera.fadeOut(RESPAWN_FADE_MS, 0, 0, 0);
     camera.once('camerafadeoutcomplete', () => {
       this.sprite.setPosition(this.spawnPoint.x, this.spawnPoint.y);
-      this.stats.heal(this.stats.resolved.hpMax * RESPAWN_HP_PCT);
+      this.stats.refill();
       this.sm.revive();
       this.respawning = false;
       this.emitStatsChanged();

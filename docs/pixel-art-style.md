@@ -10,14 +10,14 @@
 
 | Pillar | Rule |
 |--------|------|
-| **Silhouette first** | Round head + stick limbs; readable at 32×40 px source, 2× display |
-| **Sticky-man anatomy** | 3 px limbs, round 8 px head, accent belt, 1 px face dot on facing side |
-| **Limited palette** | ≤6 colors per character: outline, skin, fill, accent, highlight |
-| **Upper-left light** | Highlights on head/shoulders; outlines always darkest |
-| **No pillow shading** | Flat fills + outline; motion sells form, not gradients |
-| **Feet anchor** | Origin `(0.5, 1)` — all locomotion bobs from the ground |
+| **Silhouette first** | Chibi head + **two-segment limbs** (upper + lower stick); readable at 32×44 px, 2× display |
+| **Sticky-man anatomy** | Separate shoulder/hip joints; **2 sticks per arm** (upper+forearm) and **2 per leg** (thigh+shin); Y-fork hands/feet |
+| **Pixel crisp** | Integer coords, no anti-aliasing; 2–3 px limb thickness |
+| **Limited palette** | outline + skin + fill + shadow + accent + highlight |
+| **Character variants** | Hero robe, slime jelly blob, archer cape, boss runes |
+| **Feet anchor** | Origin `(0.5, 1)` — locomotion bobs from ground |
 
-The look references classic **stick-figure / sticky-man** flash-game clarity, tuned for mobile ARPG readability.
+Distinct from generic stick figures: **joint dots**, **torso block**, **gold sash**, and forked extremities.
 
 ---
 
@@ -25,12 +25,13 @@ The look references classic **stick-figure / sticky-man** flash-game clarity, tu
 
 | Property | Hero / Minion | Boss (totem) |
 |----------|---------------|--------------|
-| Source frame | 32 × 40 px | 48 × 56 px |
-| Display scale | 2× (64 × 80) | 2.3× (~110 × 129) |
-| Limb width | 3 px stroke | 3 px stroke |
-| Arm length | 10 px | 12 px |
-| Leg length | 11 px | 13 px |
-| Head radius | 4 px | 5 px |
+| Source frame | 32 × 44 px | 48 × 60 px |
+| Display scale | 2× (64 × 88) | 2.3× (~110 × 138) |
+| Limb segments | upper + lower + fork | same, scaled up |
+| Upper arm / forearm | 5 + 6 px | 7 + 8 px |
+| Upper leg / shin | 6 + 7 px | 8 + 9 px |
+| Hand / foot fork | 3 px × 2 sticks | 4 px × 2 sticks |
+| Head radius | 5 px | 6 px |
 
 Spritesheets are generated in `registerStickyManAssets()` (`BootScene`) — no external PNGs required for MVP.
 
