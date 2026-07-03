@@ -52,6 +52,10 @@ export class App {
   private static mountDevControls(uiRoot: HTMLElement): void {
     if (!import.meta.env.DEV) return;
 
+    // Debug handles for browser smoke tests / console poking.
+    (window as unknown as Record<string, unknown>).__gameStore = gameStore;
+    (window as unknown as Record<string, unknown>).__eventBus = EventBus;
+
     const panel = document.createElement('div');
     panel.className = 'dev-nav';
     panel.innerHTML = `

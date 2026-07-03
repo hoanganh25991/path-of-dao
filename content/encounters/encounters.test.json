@@ -11,7 +11,7 @@
     {
       "trigger": "onWaveCleared",
       "enemies": [
-        { "id": "enemy.slime", "count": 5, "spread": 100 },
+        { "id": "enemy.slime", "count": 3, "spread": 120 },
         { "id": "enemy.totem", "count": 1, "spread": 0 }
       ]
     }

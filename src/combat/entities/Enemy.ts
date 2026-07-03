@@ -111,8 +111,13 @@ export class Enemy extends EntityBase {
     this.alive = false;
     this.dying = false;
     this.sprite.setActive(false).setVisible(false);
-    this.body.enable = false;
-    this.body.stop();
+    // During game destroy the physics world tears down before scene DESTROY
+    // listeners run, so the body may already be gone.
+    const body = this.sprite.body as Phaser.Physics.Arcade.Body | null;
+    if (body) {
+      body.enable = false;
+      body.stop();
+    }
     this.hpBarBg.setVisible(false);
     this.hpBarFill.setVisible(false);
   }
