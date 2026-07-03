@@ -51,6 +51,8 @@ export const ancientProfileSchema = z.object({
   focusKey: z.string().min(1),
   highlightKeys: z.array(z.string()).min(1),
   visualTheme: z.enum(ANCIENT_VISUAL_THEMES).default('jade'),
+  /** Skills the player may assign before walking this echo. */
+  unlockedSkills: z.array(z.string()).min(3),
   startScene: z.enum(ANCIENT_START_SCENES).default('combat'),
   startMapId: z.string().min(1),
   save: ancientSaveTemplateSchema,

@@ -13,7 +13,6 @@
   touch-action: none;
 }
 
-/* Touch capture area — left half; stick itself is also a direct target. */
 .joystick-zone {
   position: absolute;
   top: 0;
@@ -22,8 +21,6 @@
   width: 50%;
   z-index: 1;
 }
-
-/* --- Virtual joystick --- */
 
 .joystick {
   position: absolute;
@@ -69,62 +66,135 @@
   box-shadow: 0 0 12px rgba(143, 212, 196, 0.35);
 }
 
-/* --- Action buttons --- */
+/* --- Combat action bar (mobile-first icons) --- */
 
 .action-buttons {
-  --btn-size: 56px;
-  --btn-gap: 16px;
+  --btn-size: 52px;
+  --btn-lg: 64px;
+  --btn-gap: 10px;
 
   position: absolute;
   right: max(1rem, env(safe-area-inset-right));
   bottom: max(1.25rem, env(safe-area-inset-bottom));
-  display: grid;
-  grid-template-columns: var(--btn-size) var(--btn-size);
-  grid-template-rows: var(--btn-size) var(--btn-size);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   gap: var(--btn-gap);
   z-index: 1;
 }
 
+.action-buttons__skills,
+.action-buttons__combat {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--btn-gap);
+}
+
 .action-btn {
+  position: relative;
   width: var(--btn-size);
   height: var(--btn-size);
   min-width: 44px;
   min-height: 44px;
+  padding: 0;
   border-radius: 50%;
   border: 2px solid rgba(143, 212, 196, 0.45);
-  background: rgba(10, 10, 18, 0.82);
+  background: rgba(10, 10, 18, 0.88);
   color: #e8e4dc;
-  font: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
   cursor: pointer;
-  transition: transform 150ms ease, background 150ms ease;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-}
-
-.action-btn--skill {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.action-btn--dodge {
-  grid-column: 1;
-  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
 }
 
 .action-btn--attack {
-  grid-column: 2;
-  grid-row: 2;
-  border-color: rgba(232, 196, 143, 0.55);
-  background: rgba(40, 28, 18, 0.88);
+  width: var(--btn-lg);
+  height: var(--btn-lg);
+  border-color: rgba(232, 196, 143, 0.65);
+  background: radial-gradient(circle at 35% 30%, rgba(80, 56, 32, 0.95), rgba(24, 16, 10, 0.95));
+  box-shadow: 0 4px 16px rgba(232, 196, 143, 0.2);
+}
+
+.action-btn--dodge {
+  border-color: rgba(160, 200, 220, 0.45);
+  background: rgba(16, 24, 32, 0.9);
+}
+
+.action-btn--skill-primary {
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 14px rgba(201, 162, 39, 0.15);
+}
+
+.action-btn--awakened {
+  border-color: rgba(255, 220, 120, 0.75);
+  box-shadow:
+    0 0 18px rgba(255, 200, 80, 0.35),
+    inset 0 0 12px rgba(255, 220, 120, 0.12);
+}
+
+.action-btn--awakened::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 230, 160, 0.35);
+  pointer-events: none;
+  animation: skill-awakened-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes skill-awakened-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
 }
 
 .action-btn--pressed {
-  transform: scale(0.92);
-  background: rgba(143, 212, 196, 0.22);
+  transform: scale(0.9);
 }
 
 .action-btn--attack.action-btn--pressed {
-  background: rgba(232, 196, 143, 0.28);
+  box-shadow: 0 2px 8px rgba(232, 196, 143, 0.35);
+}
+
+.skill-btn__icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px var(--skill-glow, rgba(143, 212, 196, 0.5)));
+}
+
+.action-btn--attack .skill-btn__icon--attack {
+  font-size: 1.65rem;
+}
+
+.skill-btn__icon--dodge {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.skill-btn__awakened {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe880, #c9a227);
+  box-shadow: 0 0 8px rgba(255, 220, 100, 0.8);
+}
+
+.action-buttons--ancient .action-btn--skill-primary,
+.action-buttons--ancient .action-btn--skill-secondary,
+.action-buttons--ancient .action-btn--skill-ultimate {
+  border-color: rgba(201, 162, 39, 0.6);
 }

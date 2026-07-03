@@ -12,12 +12,16 @@ export interface ButtonState {
   released: boolean;
 }
 
+export type SkillSlot = 'primary' | 'secondary' | 'ultimate';
+
 export interface InputState {
   /** Normalized -1..1 move vector; deadzone applied. Up = negative y. */
   move: Vec2;
   attack: ButtonState;
-  skill: ButtonState;
   dodge: ButtonState;
+  skillPrimary: ButtonState;
+  skillSecondary: ButtonState;
+  skillUltimate: ButtonState;
 }
 
 export interface InputFrame {
@@ -33,8 +37,10 @@ export function createEmptyInputState(): InputState {
   return {
     move: { x: 0, y: 0 },
     attack: createEmptyButtonState(),
-    skill: createEmptyButtonState(),
     dodge: createEmptyButtonState(),
+    skillPrimary: createEmptyButtonState(),
+    skillSecondary: createEmptyButtonState(),
+    skillUltimate: createEmptyButtonState(),
   };
 }
 
@@ -42,7 +48,9 @@ export function cloneInputState(state: InputState): InputState {
   return {
     move: { x: state.move.x, y: state.move.y },
     attack: { ...state.attack },
-    skill: { ...state.skill },
     dodge: { ...state.dodge },
+    skillPrimary: { ...state.skillPrimary },
+    skillSecondary: { ...state.skillSecondary },
+    skillUltimate: { ...state.skillUltimate },
   };
 }

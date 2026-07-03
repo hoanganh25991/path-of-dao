@@ -4,6 +4,7 @@ import {
   createEmptyInputState,
   type InputFrame,
   type InputState,
+  type SkillSlot,
 } from '@/core/input/InputState';
 import { VirtualJoystick } from '@/core/input/VirtualJoystick';
 
@@ -14,6 +15,8 @@ function isKeyboardInputEnabled(): boolean {
   return true;
 }
 
+type CombatAction = 'attack' | 'dodge' | 'skillPrimary' | 'skillSecondary' | 'skillUltimate';
+
 /** Singleton input hub — engine-agnostic; consumed by Phaser in sub-plan 07. */
 export class InputManager {
   private static enabled = false;
@@ -22,20 +25,26 @@ export class InputManager {
   private static rafId: number | null = null;
   private static currentState = createEmptyInputState();
   private static keyboardMove = { x: 0, y: 0 };
-  private static keyboardHeld = {
+  private static keyboardHeld: Record<CombatAction, boolean> = {
     attack: false,
-    skill: false,
     dodge: false,
+    skillPrimary: false,
+    skillSecondary: false,
+    skillUltimate: false,
   };
-  private static keyboardPressed = {
+  private static keyboardPressed: Record<CombatAction, boolean> = {
     attack: false,
-    skill: false,
     dodge: false,
+    skillPrimary: false,
+    skillSecondary: false,
+    skillUltimate: false,
   };
-  private static keyboardReleased = {
+  private static keyboardReleased: Record<CombatAction, boolean> = {
     attack: false,
-    skill: false,
     dodge: false,
+    skillPrimary: false,
+    skillSecondary: false,
+    skillUltimate: false,
   };
   private static keyboardBound = false;
 
@@ -76,15 +85,13 @@ export class InputManager {
       ? InputManager.readMoveVector()
       : { x: 0, y: 0 };
 
-    const attack = InputManager.readButtonState('attack');
-    const skill = InputManager.readButtonState('skill');
-    const dodge = InputManager.readButtonState('dodge');
-
     InputManager.currentState = {
       move,
-      attack,
-      skill,
-      dodge,
+      attack: InputManager.readButtonState('attack'),
+      dodge: InputManager.readButtonState('dodge'),
+      skillPrimary: InputManager.readButtonState('skillPrimary'),
+      skillSecondary: InputManager.readButtonState('skillSecondary'),
+      skillUltimate: InputManager.readButtonState('skillUltimate'),
     };
 
     return {
@@ -94,9 +101,6 @@ export class InputManager {
   }
 
   static consume(): InputState {
-    // Re-poll before snapshotting: the rAF poll loop and the game loop run in
-    // the same frame with unspecified order, so relying on the loop alone can
-    // clear pressed/released edges before they were ever observed.
     InputManager.poll();
 
     const snapshot = cloneInputState(InputManager.currentState);
@@ -104,12 +108,16 @@ export class InputManager {
     InputManager.buttons?.clearEdgeFlags();
     InputManager.clearKeyboardEdgeFlags();
 
-    InputManager.currentState.attack.pressed = false;
-    InputManager.currentState.attack.released = false;
-    InputManager.currentState.skill.pressed = false;
-    InputManager.currentState.skill.released = false;
-    InputManager.currentState.dodge.pressed = false;
-    InputManager.currentState.dodge.released = false;
+    for (const key of [
+      'attack',
+      'dodge',
+      'skillPrimary',
+      'skillSecondary',
+      'skillUltimate',
+    ] as const) {
+      InputManager.currentState[key].pressed = false;
+      InputManager.currentState[key].released = false;
+    }
 
     return snapshot;
   }
@@ -128,7 +136,7 @@ export class InputManager {
     return { ...InputManager.keyboardMove };
   }
 
-  private static readButtonState(action: 'attack' | 'skill' | 'dodge') {
+  private static readButtonState(action: CombatAction) {
     const fromButtons = InputManager.buttons?.getSnapshot(action);
     const held = (fromButtons?.held ?? false) || InputManager.keyboardHeld[action];
     const pressed = (fromButtons?.pressed ?? false) || InputManager.keyboardPressed[action];
@@ -198,7 +206,15 @@ export class InputManager {
         break;
       case 'KeyK':
       case 'KeyX':
-        InputManager.pressKeyboardAction('skill');
+        InputManager.pressKeyboardAction('skillPrimary');
+        break;
+      case 'KeyE':
+      case 'Digit2':
+        InputManager.pressKeyboardAction('skillSecondary');
+        break;
+      case 'KeyR':
+      case 'Digit3':
+        InputManager.pressKeyboardAction('skillUltimate');
         break;
       case 'KeyL':
       case 'KeyC':
@@ -237,7 +253,15 @@ export class InputManager {
         break;
       case 'KeyK':
       case 'KeyX':
-        InputManager.releaseKeyboardAction('skill');
+        InputManager.releaseKeyboardAction('skillPrimary');
+        break;
+      case 'KeyE':
+      case 'Digit2':
+        InputManager.releaseKeyboardAction('skillSecondary');
+        break;
+      case 'KeyR':
+      case 'Digit3':
+        InputManager.releaseKeyboardAction('skillUltimate');
         break;
       case 'KeyL':
       case 'KeyC':
@@ -254,31 +278,45 @@ export class InputManager {
     InputManager.resetKeyboardState();
   };
 
-  private static pressKeyboardAction(action: 'attack' | 'skill' | 'dodge'): void {
+  private static pressKeyboardAction(action: CombatAction): void {
     if (InputManager.keyboardHeld[action]) return;
     InputManager.keyboardHeld[action] = true;
     InputManager.keyboardPressed[action] = true;
     InputManager.keyboardReleased[action] = false;
   }
 
-  private static releaseKeyboardAction(action: 'attack' | 'skill' | 'dodge'): void {
+  private static releaseKeyboardAction(action: CombatAction): void {
     if (!InputManager.keyboardHeld[action]) return;
     InputManager.keyboardHeld[action] = false;
     InputManager.keyboardReleased[action] = true;
   }
 
   private static clearKeyboardEdgeFlags(): void {
-    InputManager.keyboardPressed.attack = false;
-    InputManager.keyboardPressed.skill = false;
-    InputManager.keyboardPressed.dodge = false;
-    InputManager.keyboardReleased.attack = false;
-    InputManager.keyboardReleased.skill = false;
-    InputManager.keyboardReleased.dodge = false;
+    for (const key of Object.keys(InputManager.keyboardPressed) as CombatAction[]) {
+      InputManager.keyboardPressed[key] = false;
+      InputManager.keyboardReleased[key] = false;
+    }
   }
 
   private static resetKeyboardState(): void {
     InputManager.keyboardMove = { x: 0, y: 0 };
-    InputManager.keyboardHeld = { attack: false, skill: false, dodge: false };
+    for (const key of Object.keys(InputManager.keyboardHeld) as CombatAction[]) {
+      InputManager.keyboardHeld[key] = false;
+    }
     InputManager.clearKeyboardEdgeFlags();
+  }
+}
+
+/** Map input skill buttons to equipped save slots. */
+export function inputSkillSlotFromButton(
+  button: 'skillPrimary' | 'skillSecondary' | 'skillUltimate',
+): SkillSlot {
+  switch (button) {
+    case 'skillPrimary':
+      return 'primary';
+    case 'skillSecondary':
+      return 'secondary';
+    case 'skillUltimate':
+      return 'ultimate';
   }
 }

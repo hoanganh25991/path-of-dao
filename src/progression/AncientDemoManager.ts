@@ -191,7 +191,10 @@ export function hasMeaningfulProgress(save: PlayerSaveV1): boolean {
 }
 
 /** Enter ancient demo — pauses real journey in session backup, does not write demo to IDB. */
-export async function enterAncientDemo(ancientId: string): Promise<void> {
+export async function enterAncientDemo(
+  ancientId: string,
+  equippedSkills?: AncientSaveTemplate['equippedSkills'],
+): Promise<void> {
   const store = gameStore.getState();
   const current = store.save;
   if (!current) throw new Error('AncientDemoManager: no save loaded');
@@ -203,6 +206,10 @@ export async function enterAncientDemo(ancientId: string): Promise<void> {
 
   activeAncientId = ancientId;
   const demoSave = buildAncientSave(ancientId);
+  if (equippedSkills) {
+    demoSave.equippedSkills = { ...equippedSkills };
+    demoSave.checksum = checksumOf(demoSave);
+  }
   store.patch(demoSave);
 
   EventBus.emit('demo:entered', { ancientId });
