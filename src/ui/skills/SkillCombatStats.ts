@@ -52,8 +52,8 @@ export function buildSkillDisplayStats(skillId: string): SkillDisplayStats {
     const pullField = effects.some((e) => e.type === 'pull_field');
     const pull =
       pullField ||
-      projectile?.type === 'projectile' && projectile.pullForce != null ||
-      overrides?.pullForce;
+      (projectile?.type === 'projectile' && projectile.pullForce != null) ||
+      Boolean(overrides?.pullForce);
     const aoe = effects.find((e) => e.type === 'aoe_circle');
     if (aoe?.type === 'aoe_circle') {
       return {
