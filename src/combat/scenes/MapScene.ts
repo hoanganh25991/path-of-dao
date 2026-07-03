@@ -55,7 +55,7 @@ export class MapScene extends Phaser.Scene {
   private unsubscribeCombatEvents: (() => void) | null = null;
   private exitPortalRevealed = false;
   private exitZone: Phaser.GameObjects.Zone | null = null;
-  private exitVisuals: Phaser.GameObjects.GameObject[] = [];
+  private exitVisuals: (Phaser.GameObjects.Rectangle | Phaser.GameObjects.Text)[] = [];
 
   constructor() {
     super(MapScene.KEY);

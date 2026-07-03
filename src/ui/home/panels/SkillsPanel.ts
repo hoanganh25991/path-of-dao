@@ -1,4 +1,3 @@
-import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
 import { getInsightIntentConfig } from '@/progression/InsightDefinitions';

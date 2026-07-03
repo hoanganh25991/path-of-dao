@@ -74,7 +74,7 @@ export class App {
     });
   }
 
-  private static mountDevControls(uiRoot: HTMLElement): void {
+  private static mountDevControls(_uiRoot: HTMLElement): void {
     if (!import.meta.env.DEV) return;
 
     // Debug handles for browser smoke tests / console poking.

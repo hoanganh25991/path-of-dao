@@ -68,7 +68,11 @@ export default defineConfig({
       manifestFilename: 'manifest.json',
       includeAssets: ['favicon.ico', 'icons/icon-192.png', 'icons/icon-512.png'],
       manifest: pwaManifest,
+      devOptions: {
+        enabled: true,
+      },
       workbox: {
+        sourcemap: false,
         globPatterns: ['**/*.{js,css,html,ico,png,json,woff2}'],
         navigateFallback: `${BASE_PATH}index.html`,
       },
