@@ -1,3 +1,5 @@
+import { SceneRouter } from '@/app/SceneRouter';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { AudioManager } from '@/core/audio/AudioManager';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import '@/core/audio/audio.css';
@@ -7,10 +9,28 @@ const OVERLAY_ID = 'audio-unlock-overlay';
 /** iOS / autoplay policy — first tap resumes AudioContext (sub-plan 25). */
 export class AudioUnlock {
   private static mounted = false;
+  private static pointerHandler: ((event: PointerEvent) => void) | null = null;
 
   static mount(root: HTMLElement): void {
     if (AudioManager.isUnlocked() || AudioUnlock.mounted) return;
     AudioUnlock.mounted = true;
+
+    const finishUnlock = async (): Promise<void> => {
+      await AudioManager.unlock();
+      AudioUnlock.teardown();
+      AudioUnlock.resumeSceneAudio();
+    };
+
+    const onPointer = (): void => {
+      void finishUnlock();
+    };
+
+    AudioUnlock.pointerHandler = onPointer;
+
+    if (AudioManager.hasPersistedUnlock()) {
+      document.addEventListener('pointerdown', onPointer, true);
+      return;
+    }
 
     const overlay = document.createElement('button');
     overlay.id = OVERLAY_ID;
@@ -20,29 +40,32 @@ export class AudioUnlock {
     overlay.setAttribute('aria-label', I18nManager.t('system.audio.unlock'));
     overlay.textContent = I18nManager.t('system.audio.unlock');
 
-    const dismiss = async (): Promise<void> => {
-      await AudioManager.unlock();
-      overlay.remove();
-      document.removeEventListener('pointerdown', onPointer, true);
-    };
-
-    const onPointer = (event: PointerEvent): void => {
-      if (event.target === overlay || overlay.contains(event.target as Node)) {
-        void dismiss();
-        return;
-      }
-      void dismiss();
-    };
-
     overlay.addEventListener('click', () => {
-      void dismiss();
+      void finishUnlock();
     });
     root.append(overlay);
     document.addEventListener('pointerdown', onPointer, true);
   }
 
-  static resetForTests(): void {
+  private static resumeSceneAudio(): void {
+    try {
+      const sceneId = SceneRouter.instance.current;
+      if (sceneId) AudioDirector.playSceneBgm(sceneId);
+    } catch {
+      /* router not ready yet — scene:changed will pick up BGM */
+    }
+  }
+
+  private static teardown(): void {
     document.getElementById(OVERLAY_ID)?.remove();
+    if (AudioUnlock.pointerHandler) {
+      document.removeEventListener('pointerdown', AudioUnlock.pointerHandler, true);
+      AudioUnlock.pointerHandler = null;
+    }
     AudioUnlock.mounted = false;
+  }
+
+  static resetForTests(): void {
+    AudioUnlock.teardown();
   }
 }

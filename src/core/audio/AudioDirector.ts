@@ -23,13 +23,17 @@ export class AudioDirector {
   private static unsubs: Array<() => void> = [];
   private static bossBgmActive = false;
 
+  static playSceneBgm(id: SceneId): void {
+    this.bossBgmActive = false;
+    AudioManager.playBgm(SCENE_BGM[id]);
+  }
+
   static mount(): void {
     this.unmount();
 
     this.unsubs.push(
       EventBus.on('scene:changed', ({ id }) => {
-        this.bossBgmActive = false;
-        AudioManager.playBgm(SCENE_BGM[id]);
+        this.playSceneBgm(id);
       }),
       EventBus.on('app:pause', () => AudioManager.pause()),
       EventBus.on('app:resume', () => AudioManager.resume()),

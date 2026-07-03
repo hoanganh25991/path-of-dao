@@ -5,6 +5,7 @@ import type { AudioBusId, AudioManifest, BgmEntry, ProceduralBgm, ProceduralTone
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 
 const MAX_SIMULTANEOUS_SFX = 8;
+const UNLOCK_STORAGE_KEY = 'pod.audio.unlocked';
 const manifest = manifestJson as AudioManifest;
 
 type ActiveVoice = { stop: () => void };
@@ -28,6 +29,15 @@ export class AudioManager {
     return this.unlocked;
   }
 
+  /** Device remembered unlock — overlay only on first visit. */
+  static hasPersistedUnlock(): boolean {
+    try {
+      return localStorage.getItem(UNLOCK_STORAGE_KEY) === '1';
+    } catch {
+      return false;
+    }
+  }
+
   static init(save: PlayerSaveV1): void {
     this.saveVolumes = {
       music: save.settings.musicVolume,
@@ -43,6 +53,11 @@ export class AudioManager {
       await ctx.resume();
     }
     this.unlocked = true;
+    try {
+      localStorage.setItem(UNLOCK_STORAGE_KEY, '1');
+    } catch {
+      /* private browsing — unlock still works this session */
+    }
   }
 
   static setVolume(bus: AudioBusId, v: number): void {
@@ -121,6 +136,11 @@ export class AudioManager {
     this.unlocked = false;
     this.currentBgmKey = null;
     this.saveVolumes = { music: 1, sfx: 1 };
+    try {
+      localStorage.removeItem(UNLOCK_STORAGE_KEY);
+    } catch {
+      /* noop */
+    }
   }
 
   private static ensureContext(): AudioContext {

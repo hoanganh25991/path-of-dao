@@ -42,4 +42,4 @@ Keys and volumes live in `content/audio/manifest.json`. When adding files, switc
 
 - `AudioManager` — Web Audio buses (music / sfx / ui)
 - `AudioDirector` — EventBus wiring
-- `AudioUnlock` — first-tap overlay for iOS autoplay policy
+- `AudioUnlock` — first-tap overlay on **first visit only**; `localStorage` remembers unlock; returning sessions resume audio silently on first interaction
