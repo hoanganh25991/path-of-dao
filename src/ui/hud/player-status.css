@@ -9,9 +9,33 @@
   pointer-events: none;
 }
 
+.status-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: min(42vw, 220px);
+}
+
+.status-bar__icon {
+  flex: 0 0 14px;
+  width: 14px;
+  font-size: 11px;
+  line-height: 1;
+  text-align: center;
+  opacity: 0.92;
+}
+
+.status-bar__icon--hp {
+  color: #e05c4a;
+}
+
+.status-bar__icon--mana {
+  color: #4a9de0;
+}
+
 .status-bar {
   position: relative;
-  width: min(42vw, 220px);
+  flex: 1;
   height: 16px;
   border-radius: 8px;
   border: 1px solid rgba(232, 228, 220, 0.25);
@@ -19,15 +43,10 @@
   overflow: hidden;
 }
 
-.status-bar--mana {
-  width: min(34vw, 180px);
-  height: 12px;
-}
-
 .status-bar__fill {
   position: absolute;
   inset: 0;
-  width: 100%;
+  width: 0;
   border-radius: inherit;
   transition: width 160ms ease-out;
 }
@@ -38,6 +57,10 @@
 
 .status-bar--mana .status-bar__fill {
   background: linear-gradient(90deg, #2b5aa8, #4a9de0);
+}
+
+.status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #6b4fa8, #b89cff);
 }
 
 .status-bar__text {
@@ -51,4 +74,48 @@
   font-weight: 600;
   color: rgba(232, 228, 220, 0.92);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.status-bar-row--ready .status-bar--exp {
+  border-color: rgba(255, 210, 96, 0.85);
+  box-shadow: 0 0 8px rgba(255, 210, 96, 0.35);
+  animation: insight-pulse 1.2s ease-in-out infinite;
+}
+
+.status-bar-row--awakened .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #c9a227, #ffe08a);
+}
+
+.status-bar-row--exp[data-intent='sword'] .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #8a8f98, #d8dce6);
+}
+
+.status-bar-row--exp[data-intent='void'] .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #3a2f6a, #8b6fd4);
+}
+
+.status-bar-row--exp[data-intent='flame'] .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #a83232, #e07a4a);
+}
+
+.status-bar-row--exp[data-intent='lightning'] .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #2b5aa8, #7ec8ff);
+}
+
+.status-bar-row--exp[data-intent='time'] .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #4a6a5a, #9fd4b0);
+}
+
+.status-bar-row--exp[data-intent='life'] .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #2a7a52, #6fd4a0);
+}
+
+@keyframes insight-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 6px rgba(255, 210, 96, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(255, 210, 96, 0.55);
+  }
 }

@@ -17,6 +17,7 @@ export const skillDefinitionSchema = z.object({
   kind: skillKindSchema,
   manaCost: z.number().int().min(0),
   skillMultiplier: z.number().positive(),
+  cooldownMs: z.number().int().positive().optional(),
   awakenedOverrides: skillAwakenedOverridesSchema.optional(),
 });
 

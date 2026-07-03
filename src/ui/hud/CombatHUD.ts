@@ -4,7 +4,6 @@ import { InputManager } from '@/core/input/InputManager';
 import { isAncientCombatActive } from '@/progression/AncientCombatMode';
 import { AncientEchoBanner } from '@/ui/hud/AncientEchoBanner';
 import { PlayerStatusBar } from '@/ui/hud/PlayerStatusBar';
-import { InsightMeter } from '@/ui/hud/InsightMeter';
 import { CombatSkillPicker } from '@/ui/hud/CombatSkillPicker';
 import '@/ui/hud/combat-hud.css';
 import '@/ui/hud/combat-skill-picker.css';
@@ -26,7 +25,6 @@ export class CombatHUD {
     InputManager.mount(CombatHUD.root);
     PlayerStatusBar.init(CombatHUD.root);
     AncientEchoBanner.init(CombatHUD.root);
-    InsightMeter.init(CombatHUD.root);
     CombatSkillPicker.init(CombatHUD.root);
 
     CombatHUD.unsubscribe = EventBus.on('scene:changed', ({ id }) => {
@@ -41,7 +39,6 @@ export class CombatHUD {
     CombatHUD.unsubscribe = null;
     PlayerStatusBar.destroy();
     AncientEchoBanner.destroy();
-    InsightMeter.destroy();
     CombatSkillPicker.destroy();
     InputManager.destroy();
     CombatHUD.root?.remove();

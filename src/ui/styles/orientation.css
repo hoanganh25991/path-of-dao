@@ -100,12 +100,8 @@ html.landscape-layout .player-status {
   left: max(0.65rem, env(safe-area-inset-left, 0px));
 }
 
-html.landscape-layout .status-bar {
+html.landscape-layout .status-bar-row {
   width: min(28vw, 200px);
-}
-
-html.landscape-layout .status-bar--mana {
-  width: min(22vw, 160px);
 }
 
 /* Breakthrough modal stays centered in layout space. */

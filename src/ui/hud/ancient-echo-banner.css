@@ -47,6 +47,10 @@
   background: linear-gradient(90deg, #1a4898, #80d0ff);
 }
 
+.player-status--ancient .status-bar--exp .status-bar__fill {
+  background: linear-gradient(90deg, #6a4a18, #ffd878);
+}
+
 .player-status--ancient .status-bar__text {
   font-size: 0.85rem;
   font-weight: 700;

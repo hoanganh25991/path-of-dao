@@ -32,6 +32,14 @@ CYAN     = rgb('3fd6e0')
 GREEN    = rgb('52c452')
 GREY     = rgb('9898a8')
 PANEL    = rgb('22202e')
+BLUE     = rgb('3a7bd5')   # mana
+WATER    = rgb('2a4d8a')
+BROWN    = rgb('8a5a2a')   # dirt / path
+PARCH    = rgb('e8d8a8')   # parchment
+GEM      = rgb('b060e0')   # loot gem
+SILVER   = rgb('c4c4d4')   # sword / metal
+STONE    = rgb('686878')   # totem boss
+EMBER    = rgb('ffb060')
 
 
 class Grid:
@@ -211,16 +219,373 @@ def icon_review():
     return g
 
 
+def chibi_head(g, cx, cy, r, skin, eye=True):
+    g.disc(cx, cy, r, skin, OUTLINE)
+    if eye:
+        g.px(cx + r - 1, cy - 1, OUTLINE)
+        g.px(cx + r - 2, cy - 1, WHITE)
+
+
+def icon_character_designer():
+    g = Grid()
+    # two heads = the cast/roster (hero + enemy)
+    chibi_head(g, 12, 14, 5, SKIN)
+    chibi_head(g, 21, 18, 5, GREEN)
+    # tiny shoulders under each
+    g.rect(9, 20, 15, 24, FILL, OUTLINE)
+    g.rect(18, 24, 24, 27, SHADOW, OUTLINE)
+    return g
+
+
+def icon_vfx_artist():
+    g = Grid()
+    cx, cy = 16, 16
+    for k in range(8):
+        a = math.radians(k * 45)
+        x2 = cx + math.cos(a) * 12
+        y2 = cy + math.sin(a) * 12
+        col = GOLD if k % 2 else RED
+        g.line(cx, cy, x2, y2, col, 2)
+    g.disc(cx, cy, 4, GOLD, RED)
+    g.disc(cx, cy, 2, WHITE)
+    for (sx, sy) in [(6, 6), (26, 7), (7, 25), (25, 26)]:
+        g.px(sx, sy, WHITE); g.px(sx + 1, sy, GOLD)
+    return g
+
+
+def icon_hud_ui():
+    g = Grid()
+    g.rect(3, 5, 28, 26, PANEL, OUTLINE)
+    # HP bar (full red) + MP bar (~60% blue)
+    g.rect(6, 8, 25, 11, OUTLINE)
+    g.rect(7, 9, 24, 10, RED)
+    g.rect(6, 13, 25, 16, OUTLINE)
+    g.rect(7, 14, 17, 15, BLUE)
+    # round action button
+    g.disc(11, 22, 4, FILL, OUTLINE); g.px(11, 22, WHITE)
+    g.disc(22, 22, 4, GOLD, OUTLINE)
+    return g
+
+
+def icon_asset_pipeline():
+    g = Grid()
+    # crate
+    g.rect(3, 11, 13, 22, BROWN, OUTLINE)
+    g.line(3, 11, 13, 22, OUTLINE, 1); g.line(13, 11, 3, 22, OUTLINE, 1)
+    # arrow
+    g.rect(14, 15, 22, 17, GOLD)
+    for dy in range(-3, 4):
+        w = 3 - abs(dy)
+        for dx in range(w + 1):
+            g.px(22 + dx, 16 + dy, GOLD)
+    # output layer stack
+    for i, c in enumerate((SHADOW, FILL, WHITE)):
+        g.rect(25, 10 + i * 4, 30, 12 + i * 4, c, OUTLINE)
+    return g
+
+
+def icon_audio_director():
+    g = Grid()
+    # eighth note
+    g.disc(11, 23, 4, PANEL, OUTLINE)
+    g.rect(14, 8, 15, 23, OUTLINE)
+    g.rect(15, 8, 16, 9, OUTLINE)
+    g.line(16, 8, 21, 12, OUTLINE, 2)  # flag
+    # sound waves
+    for r in (5, 8, 11):
+        for k in range(-3, 4):
+            a = math.radians(k * 12)
+            g.px(21 + math.cos(a) * r, 16 + math.sin(a) * r, CYAN if r < 9 else GREY)
+    return g
+
+
+def icon_boss_designer():
+    g = Grid()
+    # totem head (stone) + crown + ember eyes
+    g.rect(8, 12, 23, 27, STONE, OUTLINE)
+    g.rect(8, 24, 23, 27, SHADOW)
+    # eyes
+    g.rect(11, 16, 13, 18, RED); g.rect(18, 16, 20, 18, RED)
+    g.px(11, 16, EMBER); g.px(18, 16, EMBER)
+    # mouth
+    g.line(12, 22, 19, 22, OUTLINE, 1)
+    # crown
+    for cxp in (9, 15, 22):
+        for dy in range(4):
+            w = 3 - dy
+            for dx in range(-w // 1, 1):
+                g.px(cxp + dx, 11 - dy, GOLD)
+            g.px(cxp, 11 - dy, GOLD)
+    g.rect(8, 10, 23, 11, GOLD)
+    return g
+
+
+def icon_camera_director():
+    g = Grid()
+    # viewfinder corner brackets
+    for (cxp, cyp, sx, sy) in [(5, 5, 1, 1), (26, 5, -1, 1), (5, 26, 1, -1), (26, 26, -1, -1)]:
+        g.line(cxp, cyp, cxp + sx * 6, cyp, WHITE, 2)
+        g.line(cxp, cyp, cxp, cyp + sy * 6, WHITE, 2)
+    # reticle
+    g.disc(16, 16, 4, T, GOLD)
+    g.line(16, 9, 16, 23, GOLD, 1); g.line(9, 16, 23, 16, GOLD, 1)
+    g.px(16, 16, RED)
+    return g
+
+
+def icon_combat_designer():
+    g = Grid()
+    # crossed swords
+    for (x0, y0, x1, y1) in [(6, 26, 24, 6), (26, 26, 8, 6)]:
+        g.line(x0, y0, x1, y1, OUTLINE, 3)
+        g.line(x0, y0, x1, y1, SILVER, 1)
+        g.px(x1, y1, WHITE)
+    # guards + hilts
+    g.line(4, 24, 9, 28, GOLD, 2)
+    g.line(28, 24, 23, 28, GOLD, 2)
+    return g
+
+
+def icon_ecs():
+    g = Grid()
+    nodes = [(8, 9), (24, 12), (15, 25)]
+    cols = [FILL, GOLD, CYAN]
+    for (a, b) in [(0, 1), (1, 2), (0, 2)]:
+        g.line(nodes[a][0], nodes[a][1], nodes[b][0], nodes[b][1], GREY, 1)
+    for (n, c) in zip(nodes, cols):
+        g.rect(n[0] - 3, n[1] - 3, n[0] + 3, n[1] + 3, c, OUTLINE)
+    return g
+
+
+def icon_enemy_designer():
+    g = Grid()
+    # slime blob
+    for dy in range(-8, 9):
+        for dx in range(-11, 12):
+            if (dx * dx) / 130 + (dy * dy) / 70 <= 1:
+                edge = (dx * dx) / 150 + (dy * dy) / 82 > 0.8
+                g.px(16 + dx, 20 + dy, OUTLINE if edge else (SHADOW if dx < -2 else GREEN))
+    g.disc(12, 18, 2, WHITE, OUTLINE); g.px(12, 18, OUTLINE)
+    g.disc(20, 18, 2, WHITE, OUTLINE); g.px(20, 18, OUTLINE)
+    g.px(14, 13, rgb('c8ff90'))
+    return g
+
+
+def icon_game_balance():
+    g = Grid()
+    g.rect(15, 6, 17, 26, BROWN, OUTLINE)      # post
+    g.rect(9, 25, 23, 28, BROWN, OUTLINE)      # base
+    g.line(6, 10, 26, 10, GOLD, 2)             # beam
+    g.px(16, 8, GOLD)
+    for px_ in (6, 26):                          # pans
+        g.line(px_, 10, px_ - 3, 16, GREY, 1)
+        g.line(px_, 10, px_ + 3, 16, GREY, 1)
+        g.rect(px_ - 4, 16, px_ + 4, 18, SILVER, OUTLINE)
+    return g
+
+
+def icon_game_designer():
+    g = Grid()
+    # gamepad
+    g.rect(4, 12, 27, 24, PANEL, OUTLINE)
+    g.disc(6, 24, 3, PANEL, OUTLINE)
+    g.disc(25, 24, 3, PANEL, OUTLINE)
+    # dpad
+    g.rect(8, 17, 13, 19, GREY); g.rect(9, 15, 11, 21, GREY)
+    # buttons
+    g.disc(21, 16, 1, RED); g.disc(24, 19, 1, GOLD)
+    g.disc(21, 19, 1, GREEN); g.disc(18, 19, 1, CYAN)
+    return g
+
+
+def icon_level_designer():
+    g = Grid()
+    tiles = [
+        "gggg",
+        "gbbg",
+        "ggbg",
+        "gggg",
+    ]
+    cmap = {'g': FILL, 'b': BROWN}
+    for ty, row in enumerate(tiles):
+        for tx, ch in enumerate(row):
+            x0, y0 = 4 + tx * 6, 4 + ty * 6
+            g.rect(x0, y0, x0 + 5, y0 + 5, cmap[ch], SHADOW)
+    return g
+
+
+def icon_loot_economy():
+    g = Grid()
+    # coin
+    g.disc(11, 20, 6, GOLD, rgb('a87a10'))
+    g.disc(11, 20, 3, EMBER)
+    g.px(11, 17, WHITE)
+    # gem
+    for dy in range(-4, 5):
+        w = 4 - abs(dy)
+        for dx in range(-w, w + 1):
+            g.px(22 + dx, 13 + dy, GEM)
+    g.line(18, 13, 22, 9, OUTLINE, 1); g.line(26, 13, 22, 9, OUTLINE, 1)
+    g.px(21, 11, WHITE)
+    return g
+
+
+def icon_npc_dialogue():
+    g = Grid()
+    g.rect(4, 6, 27, 20, PARCH, OUTLINE)
+    # tail
+    g.line(9, 20, 7, 26, OUTLINE, 1); g.line(14, 20, 9, 26, OUTLINE, 1)
+    g.rect(9, 21, 13, 24, PARCH)
+    # text dots
+    for dx in (0, 6, 12):
+        g.rect(9 + dx, 12, 12 + dx, 14, FILL)
+    return g
+
+
+def icon_procedural_world():
+    g = Grid()
+    g.rect(2, 2, 29, 29, WATER)                # sky/water bg
+    g.disc(25, 8, 3, GOLD)                      # sun
+    for y in range(18, 30):                     # ground
+        for x in range(2, 30):
+            g.px(x, y, FILL if (x + y) % 5 else SHADOW)
+    # tree
+    g.rect(9, 20, 10, 26, BROWN)
+    for dy in range(-4, 2):
+        w = 4 + dy // 2
+        for dx in range(-4, 5):
+            if abs(dx) <= 4 - abs(dy):
+                g.px(10 + dx, 18 + dy, GREEN)
+    g.px(11, 15, rgb('c8ff90'))
+    return g
+
+
+def icon_quest_writer():
+    g = Grid()
+    g.rect(7, 5, 24, 27, PARCH, rgb('b89a5a'))
+    # rolled ends
+    g.rect(5, 5, 8, 27, BROWN, OUTLINE)
+    g.rect(23, 5, 26, 27, BROWN, OUTLINE)
+    # gold "!" quest marker
+    g.rect(14, 9, 16, 18, GOLD)
+    g.rect(14, 20, 16, 22, GOLD)
+    return g
+
+
+def icon_shader_expert():
+    g = Grid()
+    bands = [rgb('6a48a0'), rgb('3a7bd5'), CYAN, GREEN, GOLD, RED]
+    bh = 32 // len(bands)
+    for i, c in enumerate(bands):
+        g.rect(2, 2 + i * bh, 29, 2 + i * bh + bh - 1, c)
+    # sine wave overlay
+    for x in range(2, 30):
+        y = 16 + math.sin((x - 2) / 4) * 7
+        g.px(x, y, WHITE); g.px(x, y + 1, OUTLINE)
+    return g
+
+
+def icon_threejs_game():
+    g = Grid()
+    # isometric cube
+    top = [(16, 5), (27, 11), (16, 17), (5, 11)]
+    # fill faces
+    for y in range(5, 28):
+        for x in range(2, 30):
+            pass
+    # top face (light)
+    _fill_quad(g, [(16, 5), (27, 11), (16, 17), (5, 11)], FILL)
+    # left face (shadow)
+    _fill_quad(g, [(5, 11), (16, 17), (16, 28), (5, 22)], SHADOW)
+    # right face (mid)
+    _fill_quad(g, [(16, 17), (27, 11), (27, 22), (16, 28)], rgb('228066'))
+    # edges
+    for a, b in [((16, 5), (27, 11)), ((27, 11), (16, 17)), ((16, 17), (5, 11)), ((5, 11), (16, 5)),
+                 ((5, 11), (5, 22)), ((5, 22), (16, 28)), ((16, 28), (27, 22)), ((27, 22), (27, 11)),
+                 ((16, 17), (16, 28))]:
+        g.line(a[0], a[1], b[0], b[1], OUTLINE, 1)
+    return g
+
+
+def _fill_quad(g, pts, color):
+    ys = [p[1] for p in pts]
+    for y in range(min(ys), max(ys) + 1):
+        xs = []
+        for i in range(len(pts)):
+            x0, y0 = pts[i]
+            x1, y1 = pts[(i + 1) % len(pts)]
+            if (y0 <= y < y1) or (y1 <= y < y0):
+                xs.append(x0 + (x1 - x0) * (y - y0) / (y1 - y0))
+        if len(xs) >= 2:
+            xs.sort()
+            for x in range(int(round(xs[0])), int(round(xs[-1])) + 1):
+                g.px(x, y, color)
+
+
+def icon_threejs_performance():
+    g = icon_threejs_game()
+    # lightning bolt overlay (gold) = speed/perf
+    bolt = [(20, 3), (13, 16), (18, 16), (11, 29)]
+    for i in range(len(bolt) - 1):
+        g.line(bolt[i][0], bolt[i][1], bolt[i + 1][0], bolt[i + 1][1], OUTLINE, 3)
+    for i in range(len(bolt) - 1):
+        g.line(bolt[i][0], bolt[i][1], bolt[i + 1][0], bolt[i + 1][1], GOLD, 1)
+    return g
+
+
 ICONS = {
     'pixel-character': icon_character,
     'sprite-animation': icon_animation,
     'vfx-particles': icon_vfx,
     'pixel-art-director': icon_director,
     'pixel-art-review': icon_review,
+    'character-designer': icon_character_designer,
+    'vfx-artist': icon_vfx_artist,
+    'hud-ui': icon_hud_ui,
+    'asset-pipeline': icon_asset_pipeline,
+    'audio-director': icon_audio_director,
+    'boss-designer': icon_boss_designer,
+    'camera-director': icon_camera_director,
+    'combat-designer': icon_combat_designer,
+    'ecs-architecture': icon_ecs,
+    'enemy-designer': icon_enemy_designer,
+    'game-balance': icon_game_balance,
+    'game-designer': icon_game_designer,
+    'level-designer': icon_level_designer,
+    'loot-economy': icon_loot_economy,
+    'npc-dialogue': icon_npc_dialogue,
+    'procedural-world': icon_procedural_world,
+    'quest-writer': icon_quest_writer,
+    'shader-expert': icon_shader_expert,
+    'threejs-game': icon_threejs_game,
+    'threejs-performance': icon_threejs_performance,
 }
 
 
+def contact_sheet(path):
+    cols = 5
+    cell = N * 4
+    pad = 6
+    rows = (len(ICONS) + cols - 1) // cols
+    W = cols * cell + (cols + 1) * pad
+    H = rows * cell + (rows + 1) * pad
+    sheet = Image.new('RGBA', (W, H), (40, 40, 52, 255))
+    for i, (name, fn) in enumerate(ICONS.items()):
+        img = Image.new('RGBA', (N, N), T)
+        gd = fn()
+        for y in range(N):
+            for x in range(N):
+                img.putpixel((x, y), gd.d[y][x])
+        img = img.resize((cell, cell), Image.NEAREST)
+        cx = pad + (i % cols) * (cell + pad)
+        cy = pad + (i // cols) * (cell + pad)
+        sheet.alpha_composite(img, (cx, cy))
+    sheet.save(path)
+    print('wrote contact sheet', path)
+
+
 def main():
+    import sys
     here = os.path.dirname(os.path.abspath(__file__))
     root = os.path.dirname(here)
     skills = os.path.join(root, '.cursor', 'skills')
@@ -228,6 +593,8 @@ def main():
         out = os.path.join(skills, name, 'icon.png')
         fn().save(out)
         print('wrote', os.path.relpath(out, root))
+    if '--sheet' in sys.argv:
+        contact_sheet(os.path.join(root, 'docs', 'screenshots', 'skill-icons-sheet.png'))
 
 
 if __name__ == '__main__':
