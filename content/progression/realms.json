@@ -1,0 +1,104 @@
+{
+  "realms": [
+    {
+      "id": "mortal_body",
+      "order": 1,
+      "levelMin": 1,
+      "levelMax": 4,
+      "displayKey": "realm.mortal_body",
+      "statMultiplier": { "hpMax": 1, "manaMax": 1, "atk": 1, "def": 1, "crit": 1, "critDmg": 1, "speed": 1, "spirit": 1 },
+      "auraTier": "none",
+      "breakthrough": {
+        "nextRealm": "qi_condensation",
+        "spiritCost": 0,
+        "requiredBoss": null,
+        "requiredMap": null
+      }
+    },
+    {
+      "id": "qi_condensation",
+      "order": 2,
+      "levelMin": 5,
+      "levelMax": 11,
+      "displayKey": "realm.qi_condensation",
+      "statMultiplier": { "hpMax": 1.08, "manaMax": 1.06, "atk": 1.1, "def": 1.06, "crit": 1, "critDmg": 1, "speed": 1, "spirit": 1 },
+      "auraTier": "none",
+      "breakthrough": {
+        "nextRealm": "foundation_establishment",
+        "spiritCost": 50,
+        "requiredBoss": null,
+        "requiredMap": null
+      }
+    },
+    {
+      "id": "foundation_establishment",
+      "order": 3,
+      "levelMin": 12,
+      "levelMax": 21,
+      "displayKey": "realm.foundation_establishment",
+      "statMultiplier": { "hpMax": 1.15, "manaMax": 1.1, "atk": 1.12, "def": 1.1, "crit": 1, "critDmg": 1, "speed": 1, "spirit": 1 },
+      "auraTier": "faint",
+      "breakthrough": {
+        "nextRealm": "core_formation",
+        "spiritCost": 120,
+        "requiredBoss": "boss.bandit_lord",
+        "requiredMap": null
+      }
+    },
+    {
+      "id": "core_formation",
+      "order": 4,
+      "levelMin": 22,
+      "levelMax": 34,
+      "displayKey": "realm.core_formation",
+      "statMultiplier": { "hpMax": 1.18, "manaMax": 1.12, "atk": 1.15, "def": 1.12, "crit": 1, "critDmg": 1, "speed": 1, "spirit": 1 },
+      "auraTier": "faint",
+      "breakthrough": {
+        "nextRealm": "nascent_soul",
+        "spiritCost": 250,
+        "requiredBoss": "boss.swamp_warden",
+        "requiredMap": null
+      }
+    },
+    {
+      "id": "nascent_soul",
+      "order": 5,
+      "levelMin": 35,
+      "levelMax": 49,
+      "displayKey": "realm.nascent_soul",
+      "statMultiplier": { "hpMax": 1.22, "manaMax": 1.15, "atk": 1.18, "def": 1.15, "crit": 1, "critDmg": 1, "speed": 1, "spirit": 1 },
+      "auraTier": "swirling",
+      "breakthrough": {
+        "nextRealm": "void_spirit",
+        "spiritCost": 500,
+        "requiredBoss": "boss.iron_patriarch",
+        "requiredMap": null
+      }
+    },
+    {
+      "id": "void_spirit",
+      "order": 6,
+      "levelMin": 50,
+      "levelMax": 69,
+      "displayKey": "realm.void_spirit",
+      "statMultiplier": { "hpMax": 1.28, "manaMax": 1.2, "atk": 1.22, "def": 1.18, "crit": 1, "critDmg": 1, "speed": 1, "spirit": 1 },
+      "auraTier": "void",
+      "breakthrough": {
+        "nextRealm": "true_dao",
+        "spiritCost": 900,
+        "requiredBoss": "boss.void_sovereign",
+        "requiredMap": null
+      }
+    },
+    {
+      "id": "true_dao",
+      "order": 7,
+      "levelMin": 70,
+      "levelMax": 999,
+      "displayKey": "realm.true_dao",
+      "statMultiplier": { "hpMax": 1.35, "manaMax": 1.25, "atk": 1.3, "def": 1.22, "crit": 1, "critDmg": 1, "speed": 1, "spirit": 1 },
+      "auraTier": "true_dao",
+      "breakthrough": null
+    }
+  ]
+}
