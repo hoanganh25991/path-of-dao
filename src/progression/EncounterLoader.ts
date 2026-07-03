@@ -12,6 +12,19 @@ const encounterModules = import.meta.glob('../../content/encounters/fortuitous/*
   import: 'default',
 }) as Record<string, unknown>;
 
+const encounterArtUrls = import.meta.glob('../../assets/encounters/*.{png,webp,jpg}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+
+function resolveEncounterIllustration(illustration?: string): string | undefined {
+  if (!illustration) return undefined;
+  const fileName = illustration.replace(/^.*\//, '');
+  const entry = Object.entries(encounterArtUrls).find(([path]) => path.endsWith(`/${fileName}`));
+  return entry?.[1];
+}
+
 const tablesData = encounterTablesSchema.parse(tablesJson);
 const encounterCache = new Map<string, EncounterDefinition>();
 const byTrigger = new Map<EncounterTriggerKind, EncounterDefinition[]>();
@@ -45,7 +58,11 @@ for (const [fileName, raw] of rawEncounters.entries()) {
       `EncounterLoader: "${fileName}" declares mismatched id "${result.data.id}"`,
     );
   }
-  cacheEncounter(result.data);
+  const resolved = resolveEncounterIllustration(result.data.illustration);
+  cacheEncounter({
+    ...result.data,
+    illustration: resolved ?? result.data.illustration,
+  });
 }
 
 export function getEncounterTables(): EncounterTables {

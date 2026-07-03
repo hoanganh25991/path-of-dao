@@ -81,6 +81,15 @@ describe('FortuitousEncounterManager', () => {
     );
   });
 
+  it('secret manual unlocks and equips a skill variant', () => {
+    const save = makeSave();
+    const encounter = getEncounterDefinition('encounter.secret_manual');
+    const next = { ...save, ...applyEncounterReward(encounter, save) };
+
+    expect(next.unlockedSkills).toContain('skill.flame.bolt');
+    expect(Object.values(next.equippedSkills ?? {})).toContain('skill.flame.bolt');
+  });
+
   it('spirit beast unlocks pet cosmetic', () => {
     const save = makeSave();
     const encounter = getEncounterDefinition('encounter.spirit_beast');

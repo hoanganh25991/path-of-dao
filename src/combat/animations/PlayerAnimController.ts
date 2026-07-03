@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
 import { ANIM } from '@/combat/art/stickyManAssets';
 import { moveSpeedPxPerSec } from '@/progression/DamageCalculator';
-import type { AttackStyle } from '@/progression/WeaponProgression';
+import { isArmedAttackStyle, type AttackStyle } from '@/progression/WeaponProgression';
 import type { PlayerStateId } from '@/combat/state/PlayerStateMachine';
 import type { Player } from '@/combat/entities/Player';
 
 function attackAnimKeys(style: AttackStyle): [string, string, string] {
-  if (style === 'unarmed') {
+  if (!isArmedAttackStyle(style)) {
     return [ANIM.heroPalmAttack1, ANIM.heroPalmAttack2, ANIM.heroPalmAttack3];
   }
   return [ANIM.heroAttack1, ANIM.heroAttack2, ANIM.heroAttack3];

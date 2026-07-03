@@ -71,7 +71,7 @@ export interface StickPose {
   bob?: number;
   lean?: number;
   limbs: LimbAngles;
-  prop?: 'sword' | 'bow' | 'crown' | 'aura';
+  prop?: 'sword' | 'lance' | 'stick' | 'bow' | 'crown' | 'aura';
 }
 
 export function limbEnd(

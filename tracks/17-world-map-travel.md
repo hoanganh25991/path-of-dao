@@ -28,3 +28,4 @@ Non-linear world map with 20 destinations, unlock rules, and difficulty hints.
 
 - Enter sets current map and switches to combat scene
 - Unlock rules and travel states unit tested
+- E2E: Map Portal → Mist Forest node after ch1 complete

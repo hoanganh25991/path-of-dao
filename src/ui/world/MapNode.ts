@@ -16,6 +16,7 @@ export function createMapNode(options: MapNodeOptions): HTMLElement {
   btn.type = 'button';
   btn.className = `world-map-node world-map-node--${state}`;
   btn.dataset.mapId = mapId;
+  btn.dataset.testid = `world-map-node-${mapId}`;
   btn.dataset.state = state;
   btn.style.left = `${x}px`;
   btn.style.top = `${y}px`;

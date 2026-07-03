@@ -1,11 +1,27 @@
 import { describe, expect, it } from 'vitest';
+import { SaveManager } from '@/core/save/SaveManager';
 import {
   assignSkillToSlot,
   listAssignableSkills,
+  listDiscoveredIntentIds,
+  listUnlockedSkillIds,
   normalizeLoadout,
 } from '@/progression/SkillLoadout';
+import { unlockSkillIds } from '@/progression/SkillUnlockManager';
 
 describe('SkillLoadout', () => {
+  it('starts with no unlocked skills on a fresh save', () => {
+    const save = SaveManager.createNew();
+    expect(listUnlockedSkillIds(save)).toEqual([]);
+    expect(listDiscoveredIntentIds(save)).toEqual([]);
+  });
+
+  it('discovers intents after earning a skill', () => {
+    const save = unlockSkillIds(SaveManager.createNew(), ['skill.flame.bolt']);
+    expect(listDiscoveredIntentIds(save)).toContain('flame');
+    expect(listUnlockedSkillIds(save)).toContain('skill.flame.bolt');
+  });
+
   const pool = [
     'skill.void.slash',
     'skill.sword.slash',

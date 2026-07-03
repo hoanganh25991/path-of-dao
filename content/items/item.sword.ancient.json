@@ -5,6 +5,7 @@
   "slot": "weapon",
   "rarity": "epic",
   "modelId": "weapon.ancient_sword",
+  "weaponType": "sword",
   "modifiers": [
     { "stat": "atk", "kind": "flat", "value": 18 },
     { "stat": "spirit", "kind": "flat", "value": 8 }

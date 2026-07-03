@@ -1,4 +1,5 @@
 import {
+  applyWeaponProp,
   drawStickyFrame,
   NORMAL,
   POSES_ARCHER_ATTACK,
@@ -6,6 +7,7 @@ import {
   POSES_ATTACK_1,
   POSES_ATTACK_3,
   POSES_IDLE,
+  POSES_PALM_ATTACK_1,
   POSES_SLIME_IDLE,
   POSES_TOTEM_IDLE,
   POSES_WALK,
@@ -35,8 +37,11 @@ interface ReviewRow {
 const ROWS: ReviewRow[] = [
   { label: 'Hero idle', frames: POSES_IDLE, palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Hero walk', frames: POSES_WALK, palette: PALETTE_HERO, variant: 'hero' },
-  { label: 'Hero attack', frames: POSES_ATTACK_1, palette: PALETTE_HERO, variant: 'hero' },
-  { label: 'Hero finisher', frames: POSES_ATTACK_3, palette: PALETTE_HERO, variant: 'hero' },
+  { label: 'Hero palm attack (default)', frames: POSES_PALM_ATTACK_1, palette: PALETTE_HERO, variant: 'hero' },
+  { label: 'Hero sword attack', frames: applyWeaponProp(POSES_ATTACK_1, 'sword'), palette: PALETTE_HERO, variant: 'hero' },
+  { label: 'Hero lance attack', frames: applyWeaponProp(POSES_ATTACK_1, 'lance'), palette: PALETTE_HERO, variant: 'hero' },
+  { label: 'Hero stick attack', frames: applyWeaponProp(POSES_ATTACK_1, 'stick'), palette: PALETTE_HERO, variant: 'hero' },
+  { label: 'Hero finisher (sword)', frames: applyWeaponProp(POSES_ATTACK_3, 'sword'), palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Slime idle', frames: POSES_SLIME_IDLE, palette: PALETTE_SLIME, variant: 'slime' },
   { label: 'Archer idle', frames: POSES_ARCHER_IDLE, palette: PALETTE_ARCHER, variant: 'archer' },
   { label: 'Archer attack', frames: POSES_ARCHER_ATTACK, palette: PALETTE_ARCHER, variant: 'archer' },

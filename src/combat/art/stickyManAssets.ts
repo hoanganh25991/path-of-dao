@@ -20,7 +20,9 @@ import {
   POSES_SLIME_WALK,
   POSES_TOTEM_ATTACK,
   POSES_TOTEM_IDLE,
+  type HeroCombatStyle,
 } from '@/combat/art/stickyManDraw';
+import type { AttackStyle } from '@/progression/WeaponProgression';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
 export const ANIM = {
@@ -41,6 +43,22 @@ export const ANIM = {
   totemIdle: 'enemy_totem_idle',
   totemAttack: 'enemy_totem_attack',
 } as const;
+
+const HERO_ANIM_KEYS = [
+  ANIM.heroIdle,
+  ANIM.heroWalk,
+  ANIM.heroAttack1,
+  ANIM.heroAttack2,
+  ANIM.heroAttack3,
+  ANIM.heroPalmAttack1,
+  ANIM.heroPalmAttack2,
+  ANIM.heroPalmAttack3,
+  ANIM.heroHit,
+] as const;
+
+function toHeroCombatStyle(style: AttackStyle): HeroCombatStyle {
+  return style;
+}
 
 function addSheetFromCanvas(
   scene: Phaser.Scene,
@@ -84,11 +102,20 @@ function createAnim(
   scene.anims.create({ key, frames, frameRate, repeat });
 }
 
-/** Register sticky-man spritesheets + Phaser animations (BootScene). */
-export function registerStickyManAssets(scene: Phaser.Scene): void {
+function removeHeroAnims(scene: Phaser.Scene): void {
+  for (const key of HERO_ANIM_KEYS) {
+    if (scene.anims.exists(key)) {
+      scene.anims.remove(key);
+    }
+  }
+}
+
+/** Rebuild hero spritesheet + anims for hand strikes (unarmed) or equipped weapon type. */
+export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle = 'unarmed'): void {
+  const combatStyle = toHeroCombatStyle(style);
   const heroKey = TEXTURE_KEYS.player;
   const heroCanvas = buildSheetCanvas(
-    buildHeroFrames(),
+    buildHeroFrames(combatStyle),
     FRAME_W,
     FRAME_H,
     PALETTE_HERO,
@@ -96,17 +123,39 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     'hero',
   );
   addSheetFromCanvas(scene, heroKey, heroCanvas, FRAME_W, FRAME_H);
+  removeHeroAnims(scene);
 
-  createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset('idle'), 4, 6);
-  createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset('walk'), 6, 10);
-  // Attacks: anticipation → chamber → held impact → recovery.
-  createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset('attack1'), 4, 16, 0, { 2: 120 });
-  createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset('attack2'), 3, 16, 0, { 1: 110 });
-  createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset('attack3'), 4, 14, 0, { 2: 150 });
-  createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset('hit'), 2, 10, 0, { 0: 70 });
-  createAnim(scene, ANIM.heroPalmAttack1, heroKey, heroFrameOffset('palm1'), 3, 14, 0, { 1: 90 });
-  createAnim(scene, ANIM.heroPalmAttack2, heroKey, heroFrameOffset('palm2'), 3, 14, 0, { 1: 85 });
-  createAnim(scene, ANIM.heroPalmAttack3, heroKey, heroFrameOffset('palm3'), 4, 14, 0, { 2: 120 });
+  createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset(combatStyle, 'idle'), 4, 6);
+  createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset(combatStyle, 'walk'), 6, 10);
+  createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset(combatStyle, 'hit'), 2, 10, 0, { 0: 70 });
+
+  if (combatStyle === 'unarmed') {
+    createAnim(scene, ANIM.heroPalmAttack1, heroKey, heroFrameOffset(combatStyle, 'palm1'), 3, 14, 0, {
+      1: 90,
+    });
+    createAnim(scene, ANIM.heroPalmAttack2, heroKey, heroFrameOffset(combatStyle, 'palm2'), 3, 14, 0, {
+      1: 85,
+    });
+    createAnim(scene, ANIM.heroPalmAttack3, heroKey, heroFrameOffset(combatStyle, 'palm3'), 4, 14, 0, {
+      2: 120,
+    });
+    return;
+  }
+
+  createAnim(scene, ANIM.heroAttack1, heroKey, heroFrameOffset(combatStyle, 'attack1'), 4, 16, 0, {
+    2: 120,
+  });
+  createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset(combatStyle, 'attack2'), 3, 16, 0, {
+    1: 110,
+  });
+  createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset(combatStyle, 'attack3'), 4, 14, 0, {
+    2: 150,
+  });
+}
+
+/** Register sticky-man spritesheets + Phaser animations (BootScene). */
+export function registerStickyManAssets(scene: Phaser.Scene): void {
+  registerHeroCombatAssets(scene, 'unarmed');
 
   registerEnemySheet(
     scene,
@@ -170,7 +219,9 @@ function registerBossSheet(scene: Phaser.Scene): void {
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
   createAnim(scene, ANIM.totemIdle, key, 0, POSES_TOTEM_IDLE.length, 4);
-  createAnim(scene, ANIM.totemAttack, key, POSES_TOTEM_IDLE.length, POSES_TOTEM_ATTACK.length, 9, 0, { 2: 130 });
+  createAnim(scene, ANIM.totemAttack, key, POSES_TOTEM_IDLE.length, POSES_TOTEM_ATTACK.length, 9, 0, {
+    2: 130,
+  });
 }
 
 /** Arcade body at the feet — call after origin/scale changes. */

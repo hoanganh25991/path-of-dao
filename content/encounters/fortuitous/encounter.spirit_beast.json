@@ -3,6 +3,7 @@
   "displayNameKey": "encounter.spirit_beast.title",
   "flavorKey": "encounter.spirit_beast.flavor",
   "theme": "beast",
+  "illustration": "assets/encounters/spirit_beast.png",
   "trigger": "waveClear",
   "unique": true,
   "rate": 0.02,

@@ -3,6 +3,7 @@
   "displayNameKey": "encounter.hidden_cave.title",
   "flavorKey": "encounter.hidden_cave.flavor",
   "theme": "cave",
+  "illustration": "assets/encounters/hidden_cave.png",
   "trigger": "poiHiddenCave",
   "unique": false,
   "rate": 1,

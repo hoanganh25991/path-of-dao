@@ -16,7 +16,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | In progress | **9** (incl. 26 — PWA foundation) |
 | Pending | **0** |
 | Cross-cutting | Tiên Nghịch alignment **8 / 8 open or partial** |
-| Active thread | **26** PWA & ship (foundation landed) |
+| Active thread | **Base flow** — full road E2E + fresh-save ch1 loop (29 E2E) |
 
 ### By phase
 
@@ -118,7 +118,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 - [~] All 10 chapters playable with end-of-chapter story scene (18 flow wired; tone T6)
 - [~] 20 maps traversable from world map with difficulty hints; Continue Journey on Play (17; copy T5)
 - [ ] 8 boss fights with distinct patterns (23)
-- [ ] 40 skills equippable; Sword Intent **gated** until ancient sword; ≥6 with full awakening VFX (23, T7)
+- [~] 40 skills equippable; earned on road — all 10 explore clears + chapter/boss/level hooks wired; Sword Intent **gated** until ancient sword
 - [x] Insight meter visible; awakening toast + Skills ceremony (14)
 - [x] ≥3 fortuitous encounter types functional including ancient sword (15)
 - [x] Realm breakthrough flow works once — Cultivate + ready toast (13)
@@ -133,12 +133,12 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Active thread
 
-**Now:** E2E smoke — **Continue Journey** round-trip (primary road, no dev nav / map portal)  
-- **351 unit + 1 e2e green**
+**Now:** Base flow — seeded 20-map road E2E + fresh-save ch1 loop (Begin → explore → boss → story → ch2)  
+- **384 unit tests** · **29 E2E tests green** (`npm run test:e2e` shows live progress)
 
-**Next:** Sub-plan **26** — manual SHIP_CHECKLIST sign-off + real icons
+**Next:** Fresh-save ch2 loop or Echoes guided-path E2E; then **26** ship sign-off
 
-**Deferred:** story tone (T6), world copy (T5), audio OGG assets (25)
+**Deferred:** story tone (T6), world copy (T5), boss pattern polish (23), audio OGG (25)
 
 ---
 

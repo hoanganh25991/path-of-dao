@@ -114,6 +114,67 @@ function drawJoint(ctx: CanvasRenderingContext2D, x: number, y: number, palette:
   px(ctx, x, y, palette.accent, 1);
 }
 
+const WOOD_SHAFT = '#8b6914';
+const WOOD_HIGHLIGHT = '#c8a050';
+const STEEL_EDGE = '#c8d8e8';
+
+/** Melee weapon held at the front hand — distinct silhouettes per type. */
+function drawMeleeWeapon(
+  ctx: CanvasRenderingContext2D,
+  hx: number,
+  hy: number,
+  lowerAngleDeg: number,
+  kind: 'sword' | 'lance' | 'stick',
+  palette: StickPalette,
+): void {
+  const aim = lowerAngleDeg - 38;
+  const rad = (aim * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+
+  if (kind === 'sword') {
+    const len = 13;
+    const tx = hx + cos * len;
+    const ty = hy + sin * len;
+    // cross-guard perpendicular to blade
+    const gx = -sin;
+    const gy = cos;
+    pixelLine(ctx, hx + gx * 3, hy + gy * 3, hx - gx * 3, hy - gy * 3, palette.accent, 2);
+    pixelLine(ctx, hx, hy, tx, ty, palette.outline, 3);
+    pixelLine(ctx, hx + cos, hy + sin, tx - cos, ty - sin, STEEL_EDGE, 1);
+    px(ctx, tx, ty, palette.highlight ?? STEEL_EDGE);
+    px(ctx, tx - cos, ty - sin, palette.highlight ?? palette.accent);
+    px(ctx, hx - cos * 0.5, hy - sin * 0.5, palette.shadow);
+    return;
+  }
+
+  if (kind === 'lance') {
+    const len = 20;
+    const tx = hx + cos * len;
+    const ty = hy + sin * len;
+    // long shaft — wood with steel tip
+    pixelLine(ctx, hx, hy, tx, ty, palette.outline, 3);
+    pixelLine(ctx, hx + cos, hy + sin, tx - cos * 2, ty - sin * 2, WOOD_SHAFT, 2);
+    pixelLine(ctx, hx + cos, hy + sin, tx - cos * 3, ty - sin * 3, WOOD_HIGHLIGHT, 1);
+    // spearhead wedge
+    const tipX = tx + cos * 2;
+    const tipY = ty + sin * 2;
+    pixelLine(ctx, tx - sin * 2, ty + cos * 2, tipX, tipY, palette.outline, 2);
+    pixelLine(ctx, tx + sin * 2, ty - cos * 2, tipX, tipY, palette.outline, 2);
+    px(ctx, tipX, tipY, palette.highlight ?? STEEL_EDGE);
+    return;
+  }
+
+  // stick / staff — short, thick club
+  const len = 10;
+  const tx = hx + cos * len;
+  const ty = hy + sin * len;
+  pixelLine(ctx, hx, hy, tx, ty, palette.outline, 4);
+  pixelLine(ctx, hx + cos, hy + sin, tx - cos, ty - sin, WOOD_SHAFT, 2);
+  px(ctx, tx, ty, WOOD_HIGHLIGHT);
+  px(ctx, tx - cos, ty - sin, WOOD_SHAFT);
+}
+
 /** Y-fork at limb tip — two small sticks (hand / foot). */
 function drawFork(
   ctx: CanvasRenderingContext2D,
@@ -591,19 +652,9 @@ export function drawStickyFrame(
   // --- head ---
   drawHead(ctx, cx + Math.round(lean * 0.15), headY, scale.headR, palette, variant);
 
-  // --- props ---
-  if (pose.prop === 'sword') {
-    const hx = frontArm.endX;
-    const hy = frontArm.endY;
-    const tx = hx + 12;
-    const ty = hy - 11;
-    // gold cross-guard
-    pixelLine(ctx, hx - 2, hy + 1, hx + 3, hy - 2, palette.accent, 2);
-    // blade: dark edge + bright glinting core
-    pixelLine(ctx, hx, hy, tx, ty, palette.outline, 3);
-    pixelLine(ctx, hx, hy, tx, ty, palette.highlight ?? palette.accent, 1);
-    px(ctx, tx, ty, palette.highlight ?? palette.accent);
-    px(ctx, tx - 1, ty + 1, palette.highlight ?? palette.accent);
+  // --- props (weapon types read clearly in silhouette) ---
+  if (pose.prop === 'sword' || pose.prop === 'lance' || pose.prop === 'stick') {
+    drawMeleeWeapon(ctx, frontArm.endX, frontArm.endY, frontArm.lowerAngle, pose.prop, palette);
   }
   if (pose.prop === 'bow') {
     const bx = frontArm.endX + 2;
@@ -729,24 +780,23 @@ export const POSES_ATTACK_1: StickPose[] = [
   {
     lean: 4,
     limbs: { armBack: seg(-52, -42), armFront: seg(48, 38), legBack: seg(-16, -10), legFront: seg(10, 6) },
-    prop: 'sword',
   },
-  { limbs: { armBack: seg(-8, -5), armFront: seg(45, 35), legBack: seg(-14, -8), legFront: seg(12, 8) }, prop: 'sword' },
-  { lean: -5, limbs: { armBack: seg(5, 10), armFront: seg(-58, -48), legBack: seg(-10, -6), legFront: seg(16, 10) }, prop: 'sword' },
-  { limbs: { armBack: seg(-12, -8), armFront: seg(-40, -30), legBack: seg(-12, -8), legFront: seg(10, 6) }, prop: 'sword' },
+  { limbs: { armBack: seg(-8, -5), armFront: seg(45, 35), legBack: seg(-14, -8), legFront: seg(12, 8) } },
+  { lean: -5, limbs: { armBack: seg(5, 10), armFront: seg(-58, -48), legBack: seg(-10, -6), legFront: seg(16, 10) } },
+  { limbs: { armBack: seg(-12, -8), armFront: seg(-40, -30), legBack: seg(-12, -8), legFront: seg(10, 6) } },
 ];
 
 export const POSES_ATTACK_2: StickPose[] = [
-  { limbs: { armBack: seg(25, 18), armFront: seg(40, 30), legBack: seg(-16, -10), legFront: seg(10, 6) }, prop: 'sword' },
-  { lean: -3, limbs: { armBack: seg(-5, 0), armFront: seg(-58, -48), legBack: seg(-8, -5), legFront: seg(18, 12) }, prop: 'sword' },
-  { limbs: { armBack: seg(-18, -12), armFront: seg(-38, -28), legBack: seg(-10, -6), legFront: seg(12, 8) }, prop: 'sword' },
+  { limbs: { armBack: seg(25, 18), armFront: seg(40, 30), legBack: seg(-16, -10), legFront: seg(10, 6) } },
+  { lean: -3, limbs: { armBack: seg(-5, 0), armFront: seg(-58, -48), legBack: seg(-8, -5), legFront: seg(18, 12) } },
+  { limbs: { armBack: seg(-18, -12), armFront: seg(-38, -28), legBack: seg(-10, -6), legFront: seg(12, 8) } },
 ];
 
 export const POSES_ATTACK_3: StickPose[] = [
-  { limbs: { armBack: seg(-35, -25), armFront: seg(50, 40), legBack: seg(-20, -12), legFront: seg(8, 5) }, prop: 'sword' },
-  { lean: -6, limbs: { armBack: seg(12, 8), armFront: seg(-68, -58), legBack: seg(-5, -3), legFront: seg(24, 16) }, prop: 'sword' },
-  { lean: -8, limbs: { armBack: seg(18, 12), armFront: seg(-72, -62), legBack: seg(-3, -2), legFront: seg(26, 18) }, prop: 'sword' },
-  { limbs: { armBack: seg(-22, -15), armFront: seg(-32, -22), legBack: seg(-12, -8), legFront: seg(14, 10) }, prop: 'sword' },
+  { limbs: { armBack: seg(-35, -25), armFront: seg(50, 40), legBack: seg(-20, -12), legFront: seg(8, 5) } },
+  { lean: -6, limbs: { armBack: seg(12, 8), armFront: seg(-68, -58), legBack: seg(-5, -3), legFront: seg(24, 16) } },
+  { lean: -8, limbs: { armBack: seg(18, 12), armFront: seg(-72, -62), legBack: seg(-3, -2), legFront: seg(26, 18) } },
+  { limbs: { armBack: seg(-22, -15), armFront: seg(-32, -22), legBack: seg(-12, -8), legFront: seg(14, 10) } },
 ];
 
 export const POSES_PALM_ATTACK_1: StickPose[] = [
@@ -901,18 +951,33 @@ export const POSES_TOTEM_ATTACK: StickPose[] = [
   { lean: -3, limbs: { armBack: seg(-58, -48), armFront: seg(-58, -48), legBack: seg(-10, -6), legFront: seg(12, 8) }, prop: 'aura' },
 ];
 
-export const HERO_FRAME_COUNT =
+export const HERO_FRAME_COUNT_UNARMED =
   POSES_IDLE.length +
   POSES_WALK.length +
-  POSES_ATTACK_1.length +
-  POSES_ATTACK_2.length +
-  POSES_ATTACK_3.length +
   POSES_HIT.length +
   POSES_PALM_ATTACK_1.length +
   POSES_PALM_ATTACK_2.length +
   POSES_PALM_ATTACK_3.length;
 
+export const HERO_FRAME_COUNT_ARMED =
+  POSES_IDLE.length +
+  POSES_WALK.length +
+  POSES_ATTACK_1.length +
+  POSES_ATTACK_2.length +
+  POSES_ATTACK_3.length +
+  POSES_HIT.length;
+
+/** @deprecated use HERO_FRAME_COUNT_UNARMED or buildHeroFrames().length */
+export const HERO_FRAME_COUNT = HERO_FRAME_COUNT_UNARMED;
+
+export type HeroCombatStyle = 'unarmed' | 'sword' | 'lance' | 'stick';
+
+export function applyWeaponProp(poses: StickPose[], prop: 'sword' | 'lance' | 'stick'): StickPose[] {
+  return poses.map((pose) => ({ ...pose, prop }));
+}
+
 export function heroFrameOffset(
+  style: HeroCombatStyle,
   group:
     | 'idle'
     | 'walk'
@@ -929,32 +994,43 @@ export function heroFrameOffset(
   o += POSES_IDLE.length;
   if (group === 'walk') return o;
   o += POSES_WALK.length;
+
+  if (style === 'unarmed') {
+    if (group === 'hit') return o;
+    o += POSES_HIT.length;
+    if (group === 'palm1') return o;
+    o += POSES_PALM_ATTACK_1.length;
+    if (group === 'palm2') return o;
+    o += POSES_PALM_ATTACK_2.length;
+    return o;
+  }
+
   if (group === 'attack1') return o;
   o += POSES_ATTACK_1.length;
   if (group === 'attack2') return o;
   o += POSES_ATTACK_2.length;
   if (group === 'attack3') return o;
   o += POSES_ATTACK_3.length;
-  if (group === 'hit') return o;
-  o += POSES_HIT.length;
-  if (group === 'palm1') return o;
-  o += POSES_PALM_ATTACK_1.length;
-  if (group === 'palm2') return o;
-  o += POSES_PALM_ATTACK_2.length;
   return o;
 }
 
-export function buildHeroFrames(): StickPose[] {
+export function buildHeroFrames(style: HeroCombatStyle = 'unarmed'): StickPose[] {
+  const base = [...POSES_IDLE, ...POSES_WALK];
+  if (style === 'unarmed') {
+    return [
+      ...base,
+      ...POSES_HIT,
+      ...POSES_PALM_ATTACK_1,
+      ...POSES_PALM_ATTACK_2,
+      ...POSES_PALM_ATTACK_3,
+    ];
+  }
   return [
-    ...POSES_IDLE,
-    ...POSES_WALK,
-    ...POSES_ATTACK_1,
-    ...POSES_ATTACK_2,
-    ...POSES_ATTACK_3,
+    ...base,
+    ...applyWeaponProp(POSES_ATTACK_1, style),
+    ...applyWeaponProp(POSES_ATTACK_2, style),
+    ...applyWeaponProp(POSES_ATTACK_3, style),
     ...POSES_HIT,
-    ...POSES_PALM_ATTACK_1,
-    ...POSES_PALM_ATTACK_2,
-    ...POSES_PALM_ATTACK_3,
   ];
 }
 

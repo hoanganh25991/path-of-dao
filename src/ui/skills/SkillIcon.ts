@@ -29,6 +29,9 @@ export function getIntentVisual(intent: InsightIntentId): IntentVisual {
 
 /** Build inner HTML for a combat skill button. */
 export function renderSkillButtonHtml(skillId: string): string {
+  if (!skillId) {
+    return '<span class="skill-btn__icon skill-btn__icon--empty">·</span>';
+  }
   const def = getSkillDefinition(skillId);
   const visual = getIntentVisual(def.intent);
   const awakened = isAwakenedSkillId(skillId);
@@ -39,6 +42,7 @@ export function renderSkillButtonHtml(skillId: string): string {
 }
 
 export function skillButtonAriaLabel(skillId: string, slot: SkillSlotId): string {
+  if (!skillId) return `${slot} skill (empty)`;
   const def = getSkillDefinition(skillId);
   const visual = getIntentVisual(def.intent);
   const tier = isAwakenedSkillId(skillId) ? 'awakened' : 'base';

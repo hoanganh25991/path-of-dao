@@ -45,7 +45,7 @@ export class Player extends EntityBase implements HurtboxEntity {
   mapRecommendedRealmOrder = 1;
   /** Set when walking an ancient echo — custom sprite palette + tags. */
   ancientId: string | null = null;
-  /** Palm strikes before the ancient blade; sword combo after milestone. */
+  /** Palm strikes when unarmed; weapon combo when a blade/staff is equipped. */
   attackStyle: AttackStyle = 'unarmed';
 
   private ancientFx: AncientCombatFx | null = null;

@@ -7,6 +7,10 @@ export type EquipmentSlot = (typeof EQUIPMENT_SLOTS)[number];
 export const ITEM_RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary'] as const;
 export type ItemRarity = (typeof ITEM_RARITIES)[number];
 
+/** Procedural combat sprite prop — sword, lance, stick, etc. */
+export const WEAPON_PROP_TYPES = ['sword', 'lance', 'stick'] as const;
+export type WeaponPropType = (typeof WEAPON_PROP_TYPES)[number];
+
 export type EquipmentSlots = Record<EquipmentSlot, string | null>;
 
 const modifiableStatSchema = z.enum([
@@ -36,6 +40,8 @@ export const itemDefinitionSchema = z.object({
     }),
   ),
   requiredLevel: z.number().int().min(1),
+  /** Combat sprite prop when equipped (weapon slot only). */
+  weaponType: z.enum(WEAPON_PROP_TYPES).optional(),
 });
 
 export type ItemDefinition = z.infer<typeof itemDefinitionSchema>;

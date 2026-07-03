@@ -3,6 +3,7 @@
   "displayNameKey": "encounter.forgotten_memory.title",
   "flavorKey": "encounter.forgotten_memory.flavor",
   "theme": "memory",
+  "illustration": "assets/encounters/forgotten_memory.png",
   "trigger": "killStreak",
   "unique": false,
   "rate": 0.01,

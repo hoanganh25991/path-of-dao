@@ -76,6 +76,7 @@ export function createProfileHeader(): ProfileHeaderHandles {
   const cultivateBtn = document.createElement('button');
   cultivateBtn.type = 'button';
   cultivateBtn.className = 'home-profile__cultivate';
+  cultivateBtn.dataset.testid = 'cultivate-btn';
   cultivateBtn.textContent = I18nManager.t('home.cultivate');
   cultivateBtn.hidden = true;
 

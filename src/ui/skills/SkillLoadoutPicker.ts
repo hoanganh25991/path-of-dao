@@ -23,7 +23,7 @@ export function createLoadoutPickerElement(
 ): { root: HTMLElement; getLoadout: () => EquippedSkills } {
   const loadout = normalizeLoadout(initial, pool);
   let activeSlot: SkillSlotId = 'primary';
-  let previewSkillId = loadout.primary;
+  let previewSkillId = loadout.primary || pool[0] || '';
 
   const root = document.createElement('div');
   root.className = 'skill-loadout';
@@ -54,6 +54,10 @@ export function createLoadoutPickerElement(
   };
 
   const renderDetail = (): void => {
+    if (!previewSkillId) {
+      detailHost.replaceChildren();
+      return;
+    }
     detailHost.replaceChildren(createSkillDetailPanel(previewSkillId, { compact: true }));
   };
 
@@ -78,12 +82,20 @@ export function createLoadoutPickerElement(
       }
 
       const skillId = loadout[slot];
-      const skillName = I18nManager.t(getSkillDefinition(skillId).nameKey);
-      btn.innerHTML = `
-        <span class="ancient-demo-modal__slot-label">${I18nManager.t(`demo.skills.slot.${slot}`)}</span>
-        <span class="ancient-demo-modal__slot-icon">${renderSkillButtonHtml(skillId)}</span>
-        <span class="ancient-demo-modal__slot-skill">${skillName}</span>
-      `;
+      if (!skillId) {
+        btn.innerHTML = `
+          <span class="ancient-demo-modal__slot-label">${I18nManager.t(`demo.skills.slot.${slot}`)}</span>
+          <span class="ancient-demo-modal__slot-icon"><span class="skill-btn__icon skill-btn__icon--empty">·</span></span>
+          <span class="ancient-demo-modal__slot-skill">${I18nManager.t('home.skills.slot_empty')}</span>
+        `;
+      } else {
+        const skillName = I18nManager.t(getSkillDefinition(skillId).nameKey);
+        btn.innerHTML = `
+          <span class="ancient-demo-modal__slot-label">${I18nManager.t(`demo.skills.slot.${slot}`)}</span>
+          <span class="ancient-demo-modal__slot-icon">${renderSkillButtonHtml(skillId)}</span>
+          <span class="ancient-demo-modal__slot-skill">${skillName}</span>
+        `;
+      }
       btn.classList.toggle('ancient-demo-modal__slot--active', slot === activeSlot);
       btn.classList.toggle('ancient-demo-modal__slot--awakened', isAwakenedSkillId(skillId));
     }

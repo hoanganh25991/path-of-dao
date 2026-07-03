@@ -11,13 +11,9 @@ export class HitboxManager {
   private readonly hitboxes: Hitbox[] = [];
   private readonly targets: HurtboxEntity[] = [];
   readonly damageNumbers: DamageNumberPool;
-  private debugGfx: Phaser.GameObjects.Graphics | null = null;
 
   constructor(scene: Phaser.Scene) {
     this.damageNumbers = new DamageNumberPool(scene);
-    if (import.meta.env.DEV) {
-      this.debugGfx = scene.add.graphics().setDepth(100);
-    }
   }
 
   spawn(config: HitboxConfig): Hitbox {
@@ -60,16 +56,12 @@ export class HitboxManager {
         this.hitboxes.splice(i, 1);
       }
     }
-
-    this.drawDebug();
   }
 
   destroy(): void {
     this.hitboxes.length = 0;
     this.targets.length = 0;
     this.damageNumbers.destroy();
-    this.debugGfx?.destroy();
-    this.debugGfx = null;
   }
 
   get activeHitboxCount(): number {
@@ -102,29 +94,6 @@ export class HitboxManager {
         const closestX = Phaser.Math.Clamp(tx, shape.x - halfW, shape.x + halfW);
         const closestY = Phaser.Math.Clamp(ty, shape.y - halfH, shape.y + halfH);
         return circlesOverlap(closestX, closestY, 4, tx, ty, tr);
-      }
-    }
-  }
-
-  private drawDebug(): void {
-    if (!this.debugGfx) return;
-    this.debugGfx.clear();
-
-    for (const hitbox of this.hitboxes) {
-      const color = hitbox.team === 'player' ? 0x44ff88 : 0xff4444;
-      const { shape } = hitbox;
-      this.debugGfx.lineStyle(1, color, 0.85);
-
-      if (shape.kind === 'circle') {
-        this.debugGfx.strokeCircle(shape.x, shape.y, shape.radius);
-      } else if (shape.kind === 'arc') {
-        this.debugGfx.beginPath();
-        this.debugGfx.arc(shape.x, shape.y, shape.radius, shape.startAngle, shape.endAngle, false);
-        this.debugGfx.strokePath();
-        this.debugGfx.lineBetween(shape.x, shape.y, shape.x + Math.cos(shape.startAngle) * shape.radius, shape.y + Math.sin(shape.startAngle) * shape.radius);
-        this.debugGfx.lineBetween(shape.x, shape.y, shape.x + Math.cos(shape.endAngle) * shape.radius, shape.y + Math.sin(shape.endAngle) * shape.radius);
-      } else {
-        this.debugGfx.strokeRect(shape.x - shape.width / 2, shape.y - shape.height / 2, shape.width, shape.height);
       }
     }
   }

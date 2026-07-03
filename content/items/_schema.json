@@ -33,6 +33,7 @@
         }
       }
     },
-    "requiredLevel": { "type": "integer", "minimum": 1 }
+    "requiredLevel": { "type": "integer", "minimum": 1 },
+    "weaponType": { "enum": ["sword", "lance", "stick"] }
   }
 }

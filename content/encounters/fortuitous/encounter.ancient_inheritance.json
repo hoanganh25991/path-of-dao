@@ -3,6 +3,7 @@
   "displayNameKey": "encounter.ancient_inheritance.title",
   "flavorKey": "encounter.ancient_inheritance.flavor",
   "theme": "inheritance",
+  "illustration": "assets/encounters/ancient_inheritance.png",
   "trigger": "mapEnter",
   "unique": true,
   "rate": 0.03,

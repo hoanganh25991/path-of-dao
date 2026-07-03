@@ -95,18 +95,11 @@ export class SaveManager {
       realm: { id: 'mortal_body', tier: 'early', breakthroughReady: false },
       insights: seedDefaultInsights(),
       equippedSkills: {
-        primary: 'skill.void.slash',
-        secondary: 'skill.life.mend',
-        ultimate: 'skill.time.slow',
+        primary: '',
+        secondary: '',
+        ultimate: '',
       },
-      unlockedSkills: [
-        'skill.void.slash',
-        'skill.sword.slash',
-        'skill.flame.bolt',
-        'skill.lightning.strike',
-        'skill.time.slow',
-        'skill.life.mend',
-      ],
+      unlockedSkills: [],
       inventory: {
         items: [
           { id: 'item.bracelet.copper', qty: 1 },

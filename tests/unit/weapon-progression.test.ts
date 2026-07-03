@@ -8,8 +8,11 @@ import {
   filterSkillsForWeaponGate,
   getHeroDisplayEquipment,
   hasAncientSwordMilestone,
+  inferWeaponPropFromItemId,
+  isArmedAttackStyle,
   patchAncientSwordMilestone,
   resolveAttackStyle,
+  resolveWeaponPropFromItem,
 } from '@/progression/WeaponProgression';
 import { listUnlockedSkillIds } from '@/progression/SkillLoadout';
 
@@ -19,6 +22,21 @@ describe('WeaponProgression', () => {
     expect(save.equipped.weapon).toBeNull();
     expect(save.progress.weaponMilestone).toBe('none');
     expect(resolveAttackStyle(save)).toBe('unarmed');
+    expect(isArmedAttackStyle(resolveAttackStyle(save))).toBe(false);
+  });
+
+  it('equipped weapon switches basic attack sprite (not milestone)', () => {
+    const save = SaveManager.createNew();
+    const armed = { ...save, equipped: { ...save.equipped, weapon: 'item.sword.iron' } };
+    expect(resolveAttackStyle(armed)).toBe('sword');
+    expect(canUseSwordIntent(armed)).toBe(false);
+  });
+
+  it('infers weapon prop types from item ids', () => {
+    expect(inferWeaponPropFromItemId('item.sword.iron')).toBe('sword');
+    expect(inferWeaponPropFromItemId('item.lance.iron')).toBe('lance');
+    expect(inferWeaponPropFromItemId('item.staff.jade')).toBe('stick');
+    expect(resolveWeaponPropFromItem('item.sword.ancient')).toBe('sword');
   });
 
   it('hides weapon in Home display until milestone (T8)', () => {
@@ -36,7 +54,7 @@ describe('WeaponProgression', () => {
   it('gates sword intent skills until ancient blade (T7)', () => {
     const save = SaveManager.createNew();
     const pool = listUnlockedSkillIds(save);
-    expect(pool.some((id) => id.includes('sword'))).toBe(false);
+    expect(pool.length).toBe(0);
     expect(canUseSwordIntent(save)).toBe(false);
 
     const armed = {
@@ -49,13 +67,14 @@ describe('WeaponProgression', () => {
     );
   });
 
-  it('ancient sword POI sets milestone and equips blade (T2/T3)', () => {
+  it('ancient sword POI sets milestone, unlocks sword slash, and equips blade (T2/T3)', () => {
     const save = SaveManager.createNew();
     const encounter = getEncounterDefinition('encounter.ancient_sword');
     const next = { ...save, ...applyEncounterReward(encounter, save, 'sword.fallen_village') };
 
     expect(hasAncientSwordMilestone(next)).toBe(true);
     expect(next.equipped.weapon).toBe(ANCIENT_SWORD_ITEM_ID);
+    expect(next.unlockedSkills).toContain('skill.sword.slash');
     expect(resolveAttackStyle(next)).toBe('sword');
   });
 

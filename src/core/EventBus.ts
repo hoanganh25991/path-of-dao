@@ -48,6 +48,8 @@ export type GameEvents = {
   'settings:quality-changed': { preference: QualityPreference };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
   'cp:changed': { cp: number };
+  'skill:learned': { skillIds: string[] };
+  'chapter:unlocked': { chapterId: string };
   'combat:pause-changed': { paused: boolean };
   'combat:request-save': undefined;
   'combat:request-exit': { wavesCleared: boolean };

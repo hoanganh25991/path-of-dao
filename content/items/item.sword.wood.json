@@ -5,6 +5,7 @@
   "slot": "weapon",
   "rarity": "common",
   "modelId": "models/items/wood-sword.glb",
+  "weaponType": "sword",
   "modifiers": [
     { "stat": "atk", "kind": "flat", "value": 4 }
   ],

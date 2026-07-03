@@ -41,6 +41,8 @@ export const encounterDefinitionSchema = z.object({
   displayNameKey: z.string().min(1),
   flavorKey: z.string().min(1),
   theme: z.string().min(1),
+  /** Optional card art — path under /assets/ (e.g. assets/encounters/spirit_beast.webp). */
+  illustration: z.string().min(1).optional(),
   trigger: z.enum(ENCOUNTER_TRIGGERS),
   unique: z.boolean(),
   rate: z.number().min(0).max(1).default(0),

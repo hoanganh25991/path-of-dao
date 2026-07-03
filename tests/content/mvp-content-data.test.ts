@@ -4,7 +4,6 @@ import { listSkillIds } from '@/progression/SkillLoader';
 import { getLootTable, listLootTableIds } from '@/progression/LootLoader';
 import {
   isSkillUnlocked,
-  STARTER_SKILL_IDS,
   unlockSkillForBoss,
   unlockSkillsForLevel,
 } from '@/progression/SkillUnlockManager';
@@ -49,7 +48,7 @@ describe('MVP content data (sub-plan 23)', () => {
 
   it('unlocks skills on level and boss kill', () => {
     let save = SaveManager.createNew();
-    expect(isSkillUnlocked(save, STARTER_SKILL_IDS[0]!)).toBe(true);
+    expect(isSkillUnlocked(save, 'skill.void.slash')).toBe(false);
     save = unlockSkillsForLevel({ ...save, stats: { ...save.stats, level: 4 } }, 4);
     expect(isSkillUnlocked(save, 'skill.sword.crescent.v1')).toBe(true);
     save = unlockSkillForBoss(save, 'boss.jade_guardian');

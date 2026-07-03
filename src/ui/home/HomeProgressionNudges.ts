@@ -5,6 +5,8 @@ import { getActiveAncientId } from '@/progression/AncientDemoManager';
 import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
 import { listReadyAwakeningIntents } from '@/progression/InsightSystem';
 import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getChapter } from '@/progression/ChapterLoader';
+import { getSkillDefinition } from '@/progression/SkillLoader';
 
 const toastedAwakening = new Set<string>();
 
@@ -57,12 +59,39 @@ export function initHomeProgressionNudges(): () => void {
       // unknown boss — skip toast
     }
   });
+  const offSkill = EventBus.on('skill:learned', ({ skillIds }) => {
+    if (getActiveAncientId() || skillIds.length === 0) return;
+    const skillId = skillIds[0]!;
+    try {
+      const name = I18nManager.t(getSkillDefinition(skillId).nameKey);
+      showToast(I18nManager.t('home.skill_learned', { skill: name }), () => {
+        EventBus.emit('home:open-tab', { tab: 'skills' });
+      });
+    } catch {
+      // unknown skill — skip toast
+    }
+  });
+  const offChapter = EventBus.on('chapter:unlocked', ({ chapterId }) => {
+    if (getActiveAncientId()) return;
+    try {
+      const chapter = getChapter(chapterId);
+      showToast(I18nManager.t('home.chapter_unlocked', {
+        chapter: I18nManager.t(chapter.titleKey),
+      }), () => {
+        EventBus.emit('home:open-tab', { tab: 'play' });
+      });
+    } catch {
+      // unknown chapter — skip toast
+    }
+  });
 
   return () => {
     offReady();
     offAwakened();
     offScene();
     offBoss();
+    offSkill();
+    offChapter();
   };
 }
 

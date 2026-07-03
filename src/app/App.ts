@@ -12,6 +12,7 @@ import { getEncounterDefinition } from '@/progression/EncounterLoader';
 import { FortuitousEncounterManager } from '@/progression/FortuitousEncounterManager';
 import { buildPlayerStats } from '@/progression/playerStats';
 import { initDevControls } from '@/app/DevControls';
+import { seedRoadProgress, seedBossClearPendingStory, seedReadyForOrdeal, devEnterStory, devRequestMapExit, devEnterMapCombat, devShowEncounter, devSimulateMapClear } from '@/dev/DevSaveSeeds';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
 import { HomeUI } from '@/ui/home/HomeUI';
 import { AudioManager } from '@/core/audio/AudioManager';
@@ -97,7 +98,33 @@ export class App {
     ): void => {
       FortuitousEncounterManager.apply(getEncounterDefinition(encounterId));
     };
+    (window as unknown as Record<string, unknown>).__devSeedRoadProgress = (
+      chaptersComplete: number,
+    ): Promise<void> => seedRoadProgress(chaptersComplete);
+    (window as unknown as Record<string, unknown>).__devSeedBossPendingStory = (
+      chapterIndex: number,
+    ): Promise<void> => seedBossClearPendingStory(chapterIndex);
+    (window as unknown as Record<string, unknown>).__devSeedReadyForOrdeal = (
+      chapterIndex: number,
+    ): Promise<void> => seedReadyForOrdeal(chapterIndex);
+    (window as unknown as Record<string, unknown>).__devEnterStory = (
+      chapterId: string,
+      sceneId: string,
+    ): void => devEnterStory(chapterId, sceneId);
+    (window as unknown as Record<string, unknown>).__devRequestMapExit = (
+      wavesCleared: boolean,
+    ): void => devRequestMapExit(wavesCleared);
+    (window as unknown as Record<string, unknown>).__devEnterMapCombat = (
+      mapId: string,
+    ): void => devEnterMapCombat(mapId);
+    (window as unknown as Record<string, unknown>).__devShowEncounter = (
+      encounterId: string,
+    ): Promise<void> => devShowEncounter(encounterId);
+    (window as unknown as Record<string, unknown>).__devSimulateMapClear = (
+      mapId: string,
+      wavesCleared: boolean,
+    ): Promise<void> => devSimulateMapClear(mapId, wavesCleared);
 
-    initDevControls(uiRoot);
+    initDevControls();
   }
 }

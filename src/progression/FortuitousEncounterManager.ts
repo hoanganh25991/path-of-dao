@@ -7,6 +7,8 @@ import {
   getEncountersForTrigger,
 } from '@/progression/EncounterLoader';
 import type { EncounterDefinition, EncounterTriggerKind } from '@/shared/schemas/fortuitous-encounters';
+import { equipLearnedSkill } from '@/progression/SkillLoadout';
+import { unlockSkillIds } from '@/progression/SkillUnlockManager';
 import { patchAncientSwordMilestone } from '@/progression/WeaponProgression';
 import { recordJourney } from '@/progression/JourneyLog';
 
@@ -144,6 +146,7 @@ export function applyEncounterReward(
   let equippedSkills = save.equippedSkills;
   let equipped = save.equipped;
   let progress = save.progress;
+  let unlockedSkills = save.unlockedSkills;
 
   switch (encounter.reward.type) {
     case 'item': {
@@ -152,6 +155,8 @@ export function applyEncounterReward(
       if (milestonePatch) {
         progress = milestonePatch.progress ?? progress;
         equipped = milestonePatch.equipped ?? equipped;
+        if (milestonePatch.unlockedSkills) unlockedSkills = milestonePatch.unlockedSkills;
+        if (milestonePatch.equippedSkills) equippedSkills = milestonePatch.equippedSkills;
       } else {
         inventory = {
           ...inventory,
@@ -188,12 +193,8 @@ export function applyEncounterReward(
       break;
     case 'skill_variant': {
       const skillId = encounter.reward.skillId;
-      equippedSkills = { ...equippedSkills };
-      const slots = ['primary', 'secondary', 'ultimate'] as const;
-      if (!Object.values(equippedSkills).includes(skillId)) {
-        equippedSkills.secondary = skillId;
-      }
-      void slots;
+      unlockedSkills = unlockSkillIds({ ...save, unlockedSkills }, [skillId]).unlockedSkills;
+      equippedSkills = equipLearnedSkill(equippedSkills, skillId);
       break;
     }
   }
@@ -210,6 +211,7 @@ export function applyEncounterReward(
     cosmetics,
     equippedSkills,
     equipped,
+    unlockedSkills,
     progress: {
       ...progress,
       encountersFound,

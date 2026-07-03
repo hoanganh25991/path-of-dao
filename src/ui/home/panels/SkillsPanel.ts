@@ -1,3 +1,4 @@
+import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
 import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
@@ -6,16 +7,17 @@ import {
   getInsightState,
   insightDisplayPct,
 } from '@/progression/InsightSystem';
+import { listDiscoveredIntentIds } from '@/progression/SkillLoadout';
 import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
 
-const SIGNATURE_INTENTS = [
-  { intentId: 'sword', icon: '⚔' },
-  { intentId: 'void', icon: '◈' },
-  { intentId: 'flame', icon: '🔥' },
-  { intentId: 'lightning', icon: '⚡' },
-  { intentId: 'time', icon: '⏳' },
-  { intentId: 'life', icon: '✦' },
-] as const;
+const SIGNATURE_INTENT_ICONS: Record<string, string> = {
+  sword: '⚔',
+  void: '◈',
+  flame: '🔥',
+  lightning: '⚡',
+  time: '⏳',
+  life: '✦',
+};
 
 export interface SkillsPanelHandles {
   root: HTMLElement;
@@ -32,10 +34,19 @@ export function createSkillsPanel(): SkillsPanelHandles {
   title.className = 'home-panel__title';
   title.textContent = I18nManager.t('home.nav.skills');
 
+  const intro = document.createElement('p');
+  intro.className = 'home-skills__intro';
+  intro.textContent = I18nManager.t('home.skills.intro');
+
   const list = document.createElement('div');
   list.className = 'home-skills__list';
 
-  root.append(title, list);
+  const empty = document.createElement('p');
+  empty.className = 'home-skills__empty';
+  empty.hidden = true;
+  empty.textContent = I18nManager.t('home.skills.empty');
+
+  root.append(title, intro, list, empty);
 
   let ceremonyActive = false;
 
@@ -43,20 +54,25 @@ export function createSkillsPanel(): SkillsPanelHandles {
     const save = gameStore.getState().save;
     list.replaceChildren();
 
-    for (const entry of SIGNATURE_INTENTS) {
-      const config = getInsightIntentConfig(entry.intentId);
-      const state = save ? getInsightState(save, entry.intentId) : null;
+    const discovered = save ? listDiscoveredIntentIds(save) : [];
+    empty.hidden = discovered.length > 0;
+
+    for (const intentId of discovered) {
+      const config = getInsightIntentConfig(intentId);
+      const iconChar = SIGNATURE_INTENT_ICONS[intentId] ?? '✦';
+      const state = save ? getInsightState(save, intentId) : null;
       const progress = state ? (state.awakened ? 100 : insightDisplayPct(state.xp)) : 0;
-      const ready = save ? checkAwakeningReady(save, entry.intentId) : false;
+      const ready = save ? checkAwakeningReady(save, intentId) : false;
 
       const row = document.createElement('div');
       row.className = 'home-skills__row';
+      row.dataset.testid = `home-skills-intent-${intentId}`;
       if (state?.awakened) row.classList.add('home-skills__row--awakened');
       if (ready) row.classList.add('home-skills__row--ready');
 
       const icon = document.createElement('div');
       icon.className = 'home-skills__icon';
-      icon.textContent = entry.icon;
+      icon.textContent = iconChar;
       icon.setAttribute('aria-hidden', 'true');
 
       const info = document.createElement('div');
@@ -93,7 +109,7 @@ export function createSkillsPanel(): SkillsPanelHandles {
           const uiRoot = document.getElementById('ui-root');
           if (!uiRoot) return;
           ceremonyActive = true;
-          void showAwakeningModal(uiRoot, { intentId: entry.intentId }).finally(() => {
+          void showAwakeningModal(uiRoot, { intentId }).finally(() => {
             ceremonyActive = false;
             refresh();
           });

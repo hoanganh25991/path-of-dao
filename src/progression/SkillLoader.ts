@@ -49,6 +49,7 @@ export function resolveEffectiveSkillId(
   skillId: string,
   insights: Record<string, { awakened: boolean }>,
 ): string {
+  if (!skillId) return skillId;
   const def = getSkillDefinition(skillId);
   const insight = insights[def.intent];
   if (!insight?.awakened) return skillId;

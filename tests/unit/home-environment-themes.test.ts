@@ -17,6 +17,20 @@ describe('getJourneyHomeMapId', () => {
       }),
     ).toBe('map.mist_forest.01');
   });
+
+  it('advances when currentMapId is already cleared', () => {
+    const save = SaveManager.createNew();
+    expect(
+      getJourneyHomeMapId({
+        ...save,
+        progress: {
+          ...save.progress,
+          clearedMaps: ['map.fallen_village.01'],
+          currentMapId: 'map.fallen_village.01',
+        },
+      }),
+    ).toBe('map.fallen_village.02');
+  });
 });
 
 describe('home environment themes', () => {

@@ -32,6 +32,14 @@ export function showEncounterModal(
     const art = document.createElement('div');
     art.className = 'encounter-modal__art';
 
+    if (encounter.illustration) {
+      const img = document.createElement('img');
+      img.className = 'encounter-modal__art-img';
+      img.src = encounter.illustration;
+      img.alt = '';
+      art.appendChild(img);
+    }
+
     const title = document.createElement('p');
     title.className = 'encounter-modal__title';
     title.textContent = I18nManager.t(encounter.displayNameKey);

@@ -90,8 +90,9 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
   if (scene.textures.exists(key)) return key;
 
   const palette = paletteForProfile(profile);
+  const combatStyle = 'sword' as const;
   const canvas = buildSheetCanvas(
-    buildHeroFrames(),
+    buildHeroFrames(combatStyle),
     FRAME_W,
     FRAME_H,
     palette,
@@ -110,8 +111,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_idle`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset('idle'),
-        end: heroFrameOffset('idle') + POSES_IDLE.length - 1,
+        start: heroFrameOffset(combatStyle, 'idle'),
+        end: heroFrameOffset(combatStyle, 'idle') + POSES_IDLE.length - 1,
       }),
       frameRate: 6,
       repeat: -1,
@@ -119,8 +120,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_walk`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset('walk'),
-        end: heroFrameOffset('walk') + POSES_WALK.length - 1,
+        start: heroFrameOffset(combatStyle, 'walk'),
+        end: heroFrameOffset(combatStyle, 'walk') + POSES_WALK.length - 1,
       }),
       frameRate: 10,
       repeat: -1,
@@ -128,8 +129,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_attack_1`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset('attack1'),
-        end: heroFrameOffset('attack1') + POSES_ATTACK_1.length - 1,
+        start: heroFrameOffset(combatStyle, 'attack1'),
+        end: heroFrameOffset(combatStyle, 'attack1') + POSES_ATTACK_1.length - 1,
       }),
       frameRate: 16,
       repeat: 0,
@@ -137,8 +138,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_attack_2`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset('attack2'),
-        end: heroFrameOffset('attack2') + POSES_ATTACK_2.length - 1,
+        start: heroFrameOffset(combatStyle, 'attack2'),
+        end: heroFrameOffset(combatStyle, 'attack2') + POSES_ATTACK_2.length - 1,
       }),
       frameRate: 16,
       repeat: 0,
@@ -146,8 +147,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_attack_3`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset('attack3'),
-        end: heroFrameOffset('attack3') + POSES_ATTACK_3.length - 1,
+        start: heroFrameOffset(combatStyle, 'attack3'),
+        end: heroFrameOffset(combatStyle, 'attack3') + POSES_ATTACK_3.length - 1,
       }),
       frameRate: 14,
       repeat: 0,
@@ -155,8 +156,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_hit`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset('hit'),
-        end: heroFrameOffset('hit') + POSES_HIT.length - 1,
+        start: heroFrameOffset(combatStyle, 'hit'),
+        end: heroFrameOffset(combatStyle, 'hit') + POSES_HIT.length - 1,
       }),
       frameRate: 10,
       repeat: 0,

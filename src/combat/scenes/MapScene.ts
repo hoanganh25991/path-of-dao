@@ -6,11 +6,12 @@ import { gameStore } from '@/core/store/gameStore';
 import { SaveManager } from '@/core/save/SaveManager';
 import { applyMapClearPatch } from '@/progression/ChapterManager';
 import { I18nManager } from '@/core/i18n/I18nManager';
-import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
+import { exitAncientDemo, getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { applyAncientGodMode, isAncientCombatActive } from '@/progression/AncientCombatMode';
 import { isPathWalkActive, onPathStepMapCleared, routePathWalk } from '@/progression/PathWalkManager';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import { resolveAttackStyle } from '@/progression/WeaponProgression';
+import { registerHeroCombatAssets } from '@/combat/art/stickyManAssets';
 import { StatSheet } from '@/progression/StatSheet';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { getMapConfig } from '@/combat/map/MapLoader';
@@ -52,6 +53,9 @@ export class MapScene extends Phaser.Scene {
   private runtimePersisted = false;
   private juiceBridge: CombatJuiceBridge | null = null;
   private unsubscribeCombatEvents: (() => void) | null = null;
+  private exitPortalRevealed = false;
+  private exitZone: Phaser.GameObjects.Zone | null = null;
+  private exitVisuals: Phaser.GameObjects.GameObject[] = [];
 
   constructor() {
     super(MapScene.KEY);
@@ -93,12 +97,14 @@ export class MapScene extends Phaser.Scene {
 
     const spawn = this.resolveSpawn(map, config);
     this.hitboxManager = new HitboxManager(this);
-    this.player = new Player(this, spawn.x, spawn.y, this.buildStatSheet(), this.hitboxManager);
     const save = gameStore.getState().save;
+    const attackStyle = save ? resolveAttackStyle(save) : 'unarmed';
+    registerHeroCombatAssets(this, attackStyle);
+    this.player = new Player(this, spawn.x, spawn.y, this.buildStatSheet(), this.hitboxManager);
     this.player.attackerRealmOrder = save ? getRealmOrder(save.realm.id) : 1;
     this.player.mapRecommendedRealmOrder = config.recommendedRealmOrder;
     if (save) {
-      this.player.attackStyle = resolveAttackStyle(save);
+      this.player.attackStyle = attackStyle;
     }
     this.physics.add.collider(this.player.sprite, collision);
 
@@ -156,6 +162,22 @@ export class MapScene extends Phaser.Scene {
     this.player.update(delta);
     this.spawnManager?.update(delta);
     this.hitboxManager.update(delta);
+    this.syncExitPortal();
+  }
+
+  /** Show the depart portal once waves are cleared (retreat anytime via pause). */
+  private syncExitPortal(): void {
+    if (this.exitPortalRevealed || !this.exitZone) return;
+    const ready = !this.spawnManager || this.spawnManager.isEncounterComplete();
+    if (!ready) return;
+    this.exitPortalRevealed = true;
+    this.exitZone.setActive(true);
+    for (const visual of this.exitVisuals) {
+      visual.setVisible(true);
+      if ('setAlpha' in visual && typeof visual.setAlpha === 'function') {
+        visual.setAlpha(1);
+      }
+    }
   }
 
   private teardown(): void {
@@ -213,7 +235,7 @@ export class MapScene extends Phaser.Scene {
     return { x: config.bounds.width / 2, y: config.bounds.height / 2 };
   }
 
-  /** Temporary dev exit (06 §6.2): walk into the marked zone → back to Home. */
+  /** Depart portal — hidden until the ordeal is cleared; use pause to retreat early. */
   private createExitZone(map: Phaser.Tilemaps.Tilemap): void {
     const objects = map.getObjectLayer('objects');
     const exitObj = objects?.objects.find((o) => o.type === 'exit');
@@ -223,24 +245,35 @@ export class MapScene extends Phaser.Scene {
     const y = exitObj.y ?? 0;
     const width = exitObj.width ?? 64;
     const height = exitObj.height ?? 64;
+    const label = I18nManager.t('combat.map.depart');
 
-    this.add
+    const rect = this.add
       .rectangle(x + width / 2, y + height / 2, width, height, 0x8fd4c4, 0.18)
       .setStrokeStyle(2, 0x8fd4c4, 0.6)
-      .setDepth(DEPTH.decoration);
-    this.add
-      .text(x + width / 2, y + height / 2, 'EXIT', {
+      .setDepth(DEPTH.decoration)
+      .setVisible(false)
+      .setAlpha(0);
+    const text = this.add
+      .text(x + width / 2, y + height / 2, label, {
         fontFamily: 'system-ui, sans-serif',
         fontSize: '14px',
         color: '#8fd4c4',
       })
       .setOrigin(0.5)
-      .setDepth(DEPTH.decoration);
+      .setDepth(DEPTH.decoration)
+      .setVisible(false)
+      .setAlpha(0);
 
     const zone = this.add.zone(x + width / 2, y + height / 2, width, height);
     this.physics.add.existing(zone, true);
+    zone.setActive(false);
+
+    this.exitZone = zone;
+    this.exitVisuals = [rect, text];
+    this.exitPortalRevealed = false;
 
     this.physics.add.overlap(this.player.sprite, zone, () => {
+      if (!zone.active) return;
       const wavesCleared =
         !this.spawnManager || this.spawnManager.isEncounterComplete();
       void this.finishMapExit(wavesCleared);
@@ -284,8 +317,13 @@ export class MapScene extends Phaser.Scene {
       AudioDirector.playMapClearSting();
     }
     const save = gameStore.getState().save;
-    if (isPathWalkActive()) {
-      void routePathWalk(onPathStepMapCleared(this.mapId));
+    if (isAncientCombatActive()) {
+      if (isPathWalkActive() && wavesCleared) {
+        void routePathWalk(onPathStepMapCleared(this.mapId));
+        return;
+      }
+      await exitAncientDemo();
+      void SceneRouter.instance.switchTo('home');
       return;
     }
     if (save) {

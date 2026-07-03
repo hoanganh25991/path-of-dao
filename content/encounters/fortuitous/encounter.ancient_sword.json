@@ -3,6 +3,7 @@
   "displayNameKey": "encounter.ancient_sword.title",
   "flavorKey": "encounter.ancient_sword.flavor",
   "theme": "sword",
+  "illustration": "assets/encounters/ancient_sword.png",
   "trigger": "poiAncientSword",
   "unique": true,
   "rate": 1,

@@ -59,6 +59,7 @@ export function createStoryPanel(): StoryPanelHandles {
 
       const row = document.createElement('div');
       row.className = `home-story__row home-path__row home-path__row--${entry.kind}`;
+      row.dataset.testid = `home-path-row-${entry.kind}-${entry.refId}`;
 
       const main = document.createElement('div');
       main.className = 'home-path__main';
@@ -79,11 +80,12 @@ export function createStoryPanel(): StoryPanelHandles {
       row.appendChild(main);
 
       if (view.replay) {
+        const { chapterId, sceneId } = view.replay;
         const replayBtn = document.createElement('button');
         replayBtn.type = 'button';
         replayBtn.className = 'home-story__replay';
+        replayBtn.dataset.testid = `home-story-replay-${sceneId}`;
         replayBtn.textContent = I18nManager.t('home.story.replay');
-        const { chapterId, sceneId } = view.replay;
         replayBtn.addEventListener('click', () => {
           void SceneRouter.instance.switchTo('story', { chapterId, sceneId, replay: true });
         });

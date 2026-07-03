@@ -16,6 +16,7 @@ Full MVP roster: 40 skills, 41 enemies, loot tables, boss phases, and skill unlo
 - Loot tables for five rarity tiers
 - Boss phase tracking wired into wave spawner
 - Skill unlock hooks: level up, boss clear, chapter story completion
+- **Road techniques** — `byMapClear` on all ten explore maps (`.01`); `byChapter` rewards for all ten finales
 - Unlocked-skills field on player save
 - Enemy HP balance reference table for designers
 - Generation CLIs for skills and enemy patches
@@ -28,4 +29,4 @@ Full MVP roster: 40 skills, 41 enemies, loot tables, boss phases, and skill unlo
 
 ## Verification
 
-- MVP content data tests pass; 292+ unit tests green at last run
+- MVP content data tests pass; **378 unit tests** green; road progression sim through ch10

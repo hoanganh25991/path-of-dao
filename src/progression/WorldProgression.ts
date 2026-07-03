@@ -85,7 +85,7 @@ export function getNextJourneyMapId(save: PlayerSaveV1): string | null {
 /** Map the Home shrine should reflect — last visited, or next stop on the road. */
 export function getJourneyHomeMapId(save: PlayerSaveV1): string {
   const { currentMapId } = save.progress;
-  if (currentMapId && findWorldMapNode(currentMapId)) {
+  if (currentMapId && findWorldMapNode(currentMapId) && !isMapCleared(save, currentMapId)) {
     return currentMapId;
   }
   return getNextJourneyMapId(save) ?? 'map.fallen_village.01';

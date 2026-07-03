@@ -6,7 +6,7 @@ import {
 } from '@/progression/ChapterLoader';
 import { getStoryScene } from '@/progression/StoryLoader';
 import type { StoryReward } from '@/shared/schemas/story';
-import { unlockSkillsForChapter } from '@/progression/SkillUnlockManager';
+import { unlockSkillsForChapter, unlockSkillsForMapClear } from '@/progression/SkillUnlockManager';
 import { recordJourney } from '@/progression/JourneyLog';
 
 export interface MapClearResult {
@@ -91,13 +91,22 @@ export function applyMapClearPatch(
   }
 
   return {
-    patch: {
-      progress: {
+    patch: (() => {
+      const clearedProgress = {
         ...save.progress,
         clearedMaps: [...save.progress.clearedMaps, mapId],
         journey: recordJourney(save, 'map_clear', mapId, mapId),
-      },
-    },
+      };
+      const merged = unlockSkillsForMapClear(
+        { ...save, progress: clearedProgress },
+        mapId,
+      );
+      return {
+        progress: merged.progress,
+        unlockedSkills: merged.unlockedSkills,
+        equippedSkills: merged.equippedSkills,
+      };
+    })(),
     result,
   };
 }

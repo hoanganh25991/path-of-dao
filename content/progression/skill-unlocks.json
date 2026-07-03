@@ -1,12 +1,5 @@
 {
-  "starter": [
-    "skill.void.slash",
-    "skill.sword.slash",
-    "skill.flame.bolt",
-    "skill.lightning.strike",
-    "skill.time.slow",
-    "skill.life.mend"
-  ],
+  "starter": [],
   "byLevel": {
     "4": "skill.sword.crescent.v1",
     "8": "skill.void.rift.v1",
@@ -34,6 +27,23 @@
     "chapter.02.mist_forest": "skill.time.drift.v2",
     "chapter.03.stone_canyon": "skill.sword.heaven.v5",
     "chapter.04.moon_lake": "skill.flame.lotus.v4",
-    "chapter.05.burning_desert": "skill.lightning.judgment.v4"
+    "chapter.05.burning_desert": "skill.lightning.judgment.v4",
+    "chapter.06.thunder_peaks": "skill.lightning.fork.v1",
+    "chapter.07.frozen_palace": "skill.life.bloom.v1",
+    "chapter.08.abyss_rift": "skill.void.abyss.v5",
+    "chapter.09.heavenly_gate": "skill.time.stasis.v4",
+    "chapter.10.void_throne": "skill.time.echo.v5"
+  },
+  "byMapClear": {
+    "map.fallen_village.01": "skill.void.slash",
+    "map.mist_forest.01": "skill.sword.slash",
+    "map.stone_canyon.01": "skill.flame.bolt",
+    "map.moon_lake.01": "skill.life.mend",
+    "map.burning_desert.01": "skill.lightning.strike",
+    "map.thunder_peaks.01": "skill.time.slow",
+    "map.frozen_palace.01": "skill.flame.scorch.v1",
+    "map.abyss_rift.01": "skill.void.rift.v1",
+    "map.heavenly_gate.01": "skill.sword.crescent.v1",
+    "map.void_throne.01": "skill.void.tear.v2"
   }
 }

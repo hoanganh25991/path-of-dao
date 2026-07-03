@@ -469,7 +469,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 - [~] All 10 chapters playable with end-of-chapter story scene — flow wired; *Tiên Nghịch* tone pass on story JSON deferred
 - [~] 20 maps traversable from world map with difficulty hints; **Continue Journey** CTA on Play panel
 - [ ] 8 boss fights with distinct patterns
-- [ ] 40 skills equippable; Sword Intent **gated** until ancient sword; at least 6 with full awakening VFX
+- [~] 40 skills equippable; earned on road — all 10 explore clears + chapter/boss/level hooks wired; Sword Intent **gated** until ancient sword
 - [x] Insight meter visible; one awakening demonstrable per intent — Skills tab + awakening toast on Home
 - [x] At least 3 fortuitous encounter types functional (including ancient sword)
 - [x] Realm breakthrough flow works once — Cultivate button + ready toast on Home
@@ -486,7 +486,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 ## 13. Next Step
 
-**Active thread:** E2E smoke covers **Continue Journey** round-trip (primary road). Sub-plan **26** ship sign-off remains. Progress: [tracks/index.md](../tracks/index.md).
+**Active thread:** Base flow — **384 unit + 29 E2E tests green**. Seeded 20-map road loop + **fresh-save ch1 loop** (no dev seeds). Sub-plan **26** deferred (polish). Next: fresh-save ch2 loop or Echoes path-walk E2E; bugs/polish deferred.
 
 Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
 

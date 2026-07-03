@@ -2,6 +2,7 @@ import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
 import { isAncientCombatActive } from '@/progression/AncientCombatMode';
+import { canCastEquippedSkill } from '@/progression/SkillLoadout';
 import { cooldownReadyPct } from '@/progression/SkillCooldown';
 import {
   isAwakenedSkillId,
@@ -144,6 +145,10 @@ export class ActionButtons {
       if (!state) continue;
 
       const skillId = save.equippedSkills[slot];
+      const active = canCastEquippedSkill(save, slot);
+      state.el.hidden = !active;
+      if (!active) continue;
+
       const iconWrap = state.el.querySelector('.action-btn__icon-wrap');
       if (iconWrap) {
         iconWrap.innerHTML = renderSkillButtonHtml(skillId);

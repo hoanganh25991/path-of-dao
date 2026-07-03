@@ -6,7 +6,8 @@ import type { Player } from '@/combat/entities/Player';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { recordSkillInsight } from '@/progression/InsightSystem';
 import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/SkillLoader';
-import { canUseSwordIntent } from '@/progression/WeaponProgression';
+import { canUseSwordIntent, isArmedAttackStyle } from '@/progression/WeaponProgression';
+import { canCastEquippedSkill } from '@/progression/SkillLoadout';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
 import { SkillExecutor } from '@/combat/skills/SkillExecutor';
@@ -55,7 +56,7 @@ export class CombatComponent {
 
   trySkill(slot: SkillSlot): boolean {
     const save = gameStore.getState().save;
-    if (!save) return false;
+    if (!save || !canCastEquippedSkill(save, slot)) return false;
 
     const skillId = resolveEffectiveSkillId(save.equippedSkills[slot], save.insights);
     const skill = getSkillDefinition(skillId);
@@ -92,7 +93,7 @@ export class CombatComponent {
   }
 
   private reachForStep(step: number): number {
-    const table = this.player.attackStyle === 'unarmed' ? PALM_REACH_PX : SWORD_REACH_PX;
+    const table = isArmedAttackStyle(this.player.attackStyle) ? SWORD_REACH_PX : PALM_REACH_PX;
     return table[step - 1] ?? table[0];
   }
 
@@ -101,7 +102,7 @@ export class CombatComponent {
     const reach = this.reachForStep(step);
     const cx = this.player.x + facing * SLASH_OFFSET_PX;
     const cy = this.player.y;
-    const halfArc = this.player.attackStyle === 'unarmed' ? PALM_HALF_ARC : SLASH_HALF_ARC;
+    const halfArc = isArmedAttackStyle(this.player.attackStyle) ? SLASH_HALF_ARC : PALM_HALF_ARC;
     const startAngle = facing > 0 ? -halfArc : Math.PI - halfArc;
     const endAngle = facing > 0 ? halfArc : Math.PI + halfArc;
 

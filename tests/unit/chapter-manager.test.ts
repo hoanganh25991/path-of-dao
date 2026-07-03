@@ -94,4 +94,38 @@ describe('applyMapClearPatch', () => {
     const { patch } = applyMapClearPatch(save, 'map.fallen_village.01', true);
     expect(patch.progress?.clearedMaps).toEqual(['map.fallen_village.01']);
   });
+
+  it('unlocks and equips the first technique on first explore clear', () => {
+    const save = SaveManager.createNew();
+    const { patch } = applyMapClearPatch(save, 'map.fallen_village.01', true);
+    expect(patch.unlockedSkills).toContain('skill.void.slash');
+    expect(Object.values(patch.equippedSkills ?? {})).toContain('skill.void.slash');
+  });
+
+  it('chapter 1 loop clears explore, boss, story, then opens chapter 2', () => {
+    let save = SaveManager.createNew();
+
+    const stage1 = applyMapClearPatch(save, 'map.fallen_village.01', true);
+    save = { ...save, ...stage1.patch };
+    expect(save.progress.clearedMaps).toEqual(['map.fallen_village.01']);
+    expect(save.unlockedSkills).toContain('skill.void.slash');
+
+    const stage2 = applyMapClearPatch(save, 'map.fallen_village.02', true);
+    expect(stage2.result.pendingStory).toEqual({
+      chapterId: 'chapter.01.fallen_village',
+      sceneId: 'story.ch01.awakening_jade',
+    });
+    save = { ...save, ...stage2.patch };
+    expect(save.progress.clearedMaps).toContain('map.fallen_village.02');
+
+    const { save: afterStory } = completeStory(save, 'story.ch01.awakening_jade', true);
+    expect(afterStory.progress.unlockedChapters).toContain('chapter.02.mist_forest');
+    expect(afterStory.unlockedSkills).toContain('skill.life.pulse.v2');
+  });
+
+  it('chapter 2 explore clear teaches a road technique', () => {
+    const save = SaveManager.createNew();
+    const { patch } = applyMapClearPatch(save, 'map.mist_forest.01', true);
+    expect(patch.unlockedSkills).toContain('skill.sword.slash');
+  });
 });

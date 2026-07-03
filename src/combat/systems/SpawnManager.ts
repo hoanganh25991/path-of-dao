@@ -367,6 +367,7 @@ export class SpawnManager {
         xp: rewards.xpTotal,
         ...(rewards.statsAfterLevelUp ? { stats: rewards.statsAfterLevelUp } : {}),
         unlockedSkills: withUnlocks.unlockedSkills,
+        equippedSkills: withUnlocks.equippedSkills,
         realm,
         progress: withUnlocks.progress,
       };

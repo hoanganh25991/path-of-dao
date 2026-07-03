@@ -35,6 +35,11 @@ export function createPlayPanel(): PlayPanelHandles {
   continueHint.className = 'home-play__hint';
   continueHint.dataset.testid = 'continue-journey-hint';
 
+  const completeHint = document.createElement('p');
+  completeHint.className = 'home-play__hint home-play__hint--complete';
+  completeHint.dataset.testid = 'journey-complete-hint';
+  completeHint.hidden = true;
+
   const echoesBtn = document.createElement('button');
   echoesBtn.type = 'button';
   echoesBtn.className = 'home-play__echoes home-play__portal home-play__portal--secondary';
@@ -66,6 +71,7 @@ export function createPlayPanel(): PlayPanelHandles {
     title,
     continueBtn,
     continueHint,
+    completeHint,
     echoesBtn,
     echoesHint,
     portalBtn,
@@ -79,9 +85,16 @@ export function createPlayPanel(): PlayPanelHandles {
     if (!mapId) {
       continueBtn.hidden = true;
       continueHint.hidden = true;
+      if (save && hasStartedJourney(save)) {
+        completeHint.hidden = false;
+        completeHint.textContent = I18nManager.t('home.journey_complete');
+      } else {
+        completeHint.hidden = true;
+      }
       return;
     }
 
+    completeHint.hidden = true;
     try {
       const config = getMapConfig(mapId);
       continueBtn.hidden = false;
