@@ -58,4 +58,4 @@ Manual QA script for [plans/index.md §12](../plans/index.md). Run on a mid-rang
 | Dev | | |
 | QA | | |
 
-When all items checked: `git tag v0.1.0-mvp` and deploy `dist/`.
+When all items checked: `git tag v0.1.0-mvp`, run `npm run build`, commit `docs/`, and enable GitHub Pages (**Settings → Pages → Deploy from branch → `/docs`**).

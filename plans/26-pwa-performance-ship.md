@@ -23,7 +23,7 @@ Ship MVP as installable PWA, hit performance targets on mid-range mobile, CI gre
 | `src/app/service-worker.ts` | Workbox config via vite-plugin-pwa |
 | `src/app/QualityProfile.ts` | low/mid/high settings |
 | `.github/workflows/ci.yml` | typecheck, test, validate, build |
-| `docs/SHIP_CHECKLIST.md` | Manual QA script |
+| `handbook/SHIP_CHECKLIST.md` | Manual QA script |
 
 ---
 
@@ -201,7 +201,7 @@ About panel in settings: version, licenses (Phaser, Three, Howler MIT).
 
 ## 14. Post-MVP Backlog (Document Only)
 
-Do not implement — list in `docs/BACKLOG.md`:
+Do not implement — list in `handbook/BACKLOG.md`:
 
 - Second hero
 - Cloud save

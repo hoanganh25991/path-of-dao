@@ -6,7 +6,7 @@
 
 Design north star: mortal beginnings, map-by-map hardship, fortuitous inheritance, legendary sword earned late — structure and *feeling* from *Tiên Nghịch*, original story only.
 
-**Story reference:** [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · **Skill:** `tien-nghich`
+**Story reference:** [handbook/tien-nghich-reference.md](../handbook/tien-nghich-reference.md) · **Skill:** `tien-nghich`
 
 **Suggested order:** T4 → T1 → T2 → T3 → T7 → T6 → T5 → T8
 

@@ -151,7 +151,7 @@ Skip allowed.
 pnpm content:validate --strict-i18n
 ```
 
-Playthrough checklist document `docs/qa/full-playthrough.md`:
+Playthrough checklist document `handbook/qa/full-playthrough.md`:
 
 - [ ] Ch6→10 sequential
 - [ ] Game complete flag set

@@ -9,7 +9,7 @@ Mobile-first cultivation action RPG — 2D combat maps, 3D Home shrine, PWA for 
 ```bash
 pnpm install
 pnpm dev          # http://localhost:5173/path-of-dao/
-pnpm build        # dist/ for GitHub Pages at /path-of-dao/
+pnpm build        # docs/ for GitHub Pages (Settings → Pages → /docs folder)
 pnpm preview      # http://localhost:4173/path-of-dao/
 ```
 
@@ -31,4 +31,4 @@ pnpm icons:gen
 - [plans/index.md](plans/index.md) — master implementation plan (what to build)
 - [tracks/index.md](tracks/index.md) — master progress index (what is done)
 
-Ship checklist: [docs/SHIP_CHECKLIST.md](docs/SHIP_CHECKLIST.md)
+Ship checklist: [handbook/SHIP_CHECKLIST.md](handbook/SHIP_CHECKLIST.md)

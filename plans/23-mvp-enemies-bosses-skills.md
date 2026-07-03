@@ -118,7 +118,7 @@ Extend enemy AI boss archetype to read phase config — if missing from sub-plan
 
 ## 8. Balance Pass
 
-Spreadsheet or markdown `docs/balance/enemy-hp-table.md`:
+Spreadsheet or markdown `handbook/balance/enemy-hp-table.md`:
 
 - TTK vs player DPS per chapter ~ 8–15 hits normal enemy
 - Boss fight 90–180 seconds

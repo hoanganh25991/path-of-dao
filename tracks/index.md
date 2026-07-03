@@ -89,7 +89,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 ## Tiên Nghịch alignment (T1–T8)
 
 **Detail:** [tracks/tien-nghich-alignment.md](./tien-nghich-alignment.md)  
-**Story reference:** [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · skill `tien-nghich`  
+**Story reference:** [handbook/tien-nghich-reference.md](../handbook/tien-nghich-reference.md) · skill `tien-nghich`  
 **Spec:** [plans/index.md §1.1, §7.7, §7.8](../plans/index.md)  
 **Suggested order:** T4 → T1 → T2 → T3 → T7 → T6 → T5 → T8
 
@@ -257,7 +257,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | QualityProfile; low tier disables juice + aura particles | Real app icons |
 | vite-plugin-pwa, manifest, SW; CI unit + e2e jobs | Lighthouse PWA audit |
 | E2E smoke: home → ch1 combat → home → vi locale | Manual SHIP_CHECKLIST sign-off |
-| `docs/SHIP_CHECKLIST.md`; version in settings | 30 FPS throttled Android verification |
+| `handbook/SHIP_CHECKLIST.md`; version in settings | 30 FPS throttled Android verification |
 
 → [full track](./26-pwa-performance-ship.md)
 

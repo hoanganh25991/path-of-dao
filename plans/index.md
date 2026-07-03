@@ -3,7 +3,7 @@
 > **Working title:** Path of Dao (candidate names: Void Ascension, Echoes of the Void)  
 > **Genre:** Mobile-first 2D Action RPG with 3D Home shrine  
 > **Design sources:** `echoes-of-the-void-game-design.md`, `void-ascension-game-concept.md`  
-> **Narrative north star:** [*Tiên Nghịch* (Renegade Immortal)](../docs/tien-nghich-reference.md) — mortal beginnings, map-by-map hardship, fortuitous inheritance, and a legendary sword earned late, not given at birth.
+> **Narrative north star:** [*Tiên Nghịch* (Renegade Immortal)](../handbook/tien-nghich-reference.md) — mortal beginnings, map-by-map hardship, fortuitous inheritance, and a legendary sword earned late, not given at birth.
 
 ---
 
@@ -33,7 +33,7 @@ These pillars override generic ARPG defaults when in conflict.
 | **Retreat & return** | Flee, cultivate elsewhere, come back overwhelming | CP badges + rematch scaling on lower maps (§7.5) |
 | **Story tone** | Cold perseverance, loss, obsession with dao | Chapter-end scenes: sparse prose, consequence, no power-fantasy quips in early acts |
 
-**Legal note:** We take *structure and feeling* from *Tiên Nghịch* — mortal rise, fortuitous sword, map odyssey — not plot, names, or verbatim text. Original characters, regions, and dialogue only. **Story reference for agents:** [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · skill: `tien-nghich`
+**Legal note:** We take *structure and feeling* from *Tiên Nghịch* — mortal rise, fortuitous sword, map odyssey — not plot, names, or verbatim text. Original characters, regions, and dialogue only. **Story reference for agents:** [handbook/tien-nghich-reference.md](../handbook/tien-nghich-reference.md) · skill: `tien-nghich`
 
 ---
 
@@ -75,7 +75,7 @@ These pillars override generic ARPG defaults when in conflict.
 | 2D maps (combat) | **Phaser 3** | Mature mobile 2D, tilemaps, physics, particles, touch input |
 | 3D Home | **Three.js r170+** | Hero viewer, aura VFX, equipment attach points |
 | UI overlay | **HTML/CSS** (not Phaser DOM) | Responsive HUD, menus, story reader; easier i18n |
-| 2D character art | **Sticky-man pixel** (procedural MVP) | See [docs/pixel-art-style.md](./docs/pixel-art-style.md) — 32×40 frames, 2× display, ≤6 colors |
+| 2D character art | **Sticky-man pixel** (procedural MVP) | See [handbook/pixel-art-style.md](../handbook/pixel-art-style.md) — 32×40 frames, 2× display, ≤6 colors |
 | Bridge | Custom `SceneRouter` | Single canvas stack; swap Phaser ↔ Three without full page reload |
 
 ### 3.3 Data & State
@@ -443,7 +443,7 @@ Every sub-plan must satisfy before marking done:
 | i18n string overflow (Vietnamese) | UI breaks | Flexible layouts, max-width tokens, test both locales early |
 | Insight system complexity | Over-engineering | MVP: 6 base skills + 6 awakenings; expand to 40 via variants in Phase 6 data |
 | **Tiên Nghịch alignment rework** | Player expects sword from minute one; undermines story | §7.7 weapon arc; TRACK T1–T8; unarmed animations before ancient sword POI |
-| Art consistency | Characters feel disconnected | Locked sticky-man style guide: [docs/pixel-art-style.md](./docs/pixel-art-style.md) |
+| Art consistency | Characters feel disconnected | Locked sticky-man style guide: [handbook/pixel-art-style.md](../handbook/pixel-art-style.md) |
 
 ---
 
@@ -490,4 +490,4 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
 
-**Design alignment:** §1.1 Tiên Nghịch pillars — [docs/tien-nghich-reference.md](../docs/tien-nghich-reference.md) · [tracks/tien-nghich-alignment.md](../tracks/tien-nghich-alignment.md) · skill `tien-nghich`
+**Design alignment:** §1.1 Tiên Nghịch pillars — [handbook/tien-nghich-reference.md](../handbook/tien-nghich-reference.md) · [tracks/tien-nghich-alignment.md](../tracks/tien-nghich-alignment.md) · skill `tien-nghich`

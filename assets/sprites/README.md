@@ -10,7 +10,7 @@ Until final pixel art ships, the **hero** and early **enemies** use the procedur
 | Unarmed | 8 strike anims (`hero_strike_jab`, …) — random light + heavy finisher combo |
 | Armed | `hero_sticky_attack_1/2/3` with sword / lance / stick prop when weapon equipped |
 | Preview | Open `sticky-man-review.html` on the Vite dev server |
-| Style spec | [docs/pixel-art-style.md](../docs/pixel-art-style.md) |
+| Style spec | [handbook/pixel-art-style.md](../handbook/pixel-art-style.md) |
 
 Sheet rebuilt per map load via `registerHeroCombatAssets(scene, resolveAttackStyle(save))`.
 
