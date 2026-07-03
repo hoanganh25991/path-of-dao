@@ -5,7 +5,22 @@
   "kind": "bolt",
   "manaCost": 20,
   "skillMultiplier": 2.0,
-  "awakenedOverrides": {
-    "pullForce": 140
-  }
+  "cooldownMs": 3400,
+  "vfx": { "cast": "vfx_void_cast", "impact": "vfx_void_impact" },
+  "effects": [
+    {
+      "type": "pull_field",
+      "radius": 120,
+      "durationMs": 400,
+      "pullStrength": 140
+    },
+    {
+      "type": "projectile",
+      "speed": 420,
+      "rangePx": 400,
+      "hitRadius": 12,
+      "pullForce": 140,
+      "damage": { "skillMultiplier": 2.0, "damageType": "spirit" }
+    }
+  ]
 }

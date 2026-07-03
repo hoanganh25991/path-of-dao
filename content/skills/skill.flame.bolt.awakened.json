@@ -4,5 +4,15 @@
   "nameKey": "skill.flame.bolt.awakened.name",
   "kind": "bolt",
   "manaCost": 20,
-  "skillMultiplier": 2.0
+  "skillMultiplier": 2.0,
+  "cooldownMs": 3600,
+  "effects": [
+    {
+      "type": "aoe_circle",
+      "radius": 72,
+      "ticks": 2,
+      "tickIntervalMs": 300,
+      "damage": { "skillMultiplier": 1.7, "damageType": "spirit" }
+    }
+  ]
 }

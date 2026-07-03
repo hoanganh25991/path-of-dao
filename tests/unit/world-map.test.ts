@@ -33,7 +33,7 @@ describe('WorldMap UI', () => {
     HomeUI.init(uiRoot);
     EventBus.emit('scene:changed', { id: 'home', payload: undefined });
 
-    const portalBtn = uiRoot.querySelector<HTMLButtonElement>('.home-play__portal');
+    const portalBtn = uiRoot.querySelector<HTMLButtonElement>('.home-play__portal--secondary');
     expect(portalBtn).toBeTruthy();
     portalBtn!.click();
 
@@ -47,7 +47,7 @@ describe('WorldMap UI', () => {
     HomeUI.init(uiRoot);
     EventBus.emit('scene:changed', { id: 'home', payload: undefined });
 
-    uiRoot.querySelector<HTMLButtonElement>('.home-play__portal')!.click();
+    uiRoot.querySelector<HTMLButtonElement>('.home-play__portal--secondary')!.click();
 
     const node = document.querySelector<HTMLButtonElement>('[data-map-id="map.fallen_village.01"]');
     expect(node).toBeTruthy();

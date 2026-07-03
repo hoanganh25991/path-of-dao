@@ -1,3 +1,4 @@
+import { resolveSkillEffects } from '@/combat/skills/resolveSkillEffects';
 import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
 import { getSkillCooldownMs } from '@/progression/SkillCooldown';
 import { getSkillDefinition } from '@/progression/SkillLoader';
@@ -46,7 +47,26 @@ export function buildSkillDisplayStats(skillId: string): SkillDisplayStats {
   }
 
   if (skill.kind === 'bolt') {
-    const pull = overrides?.pullForce;
+    const effects = resolveSkillEffects(skill);
+    const projectile = effects.find((e) => e.type === 'projectile');
+    const pullField = effects.some((e) => e.type === 'pull_field');
+    const pull =
+      pullField ||
+      projectile?.type === 'projectile' && projectile.pullForce != null ||
+      overrides?.pullForce;
+    const aoe = effects.find((e) => e.type === 'aoe_circle');
+    if (aoe?.type === 'aoe_circle') {
+      return {
+        kind: skill.kind,
+        tier,
+        damageText: `×${aoe.damage.skillMultiplier.toFixed(1)}`,
+        manaCost: skill.manaCost,
+        cooldownMs,
+        aoeText: `${aoe.radius}px · ${aoe.ticks}×`,
+        rangeText: 'Self',
+        difficultyStars: tier === 'awakened' ? 5 : 2,
+      };
+    }
     return {
       kind: skill.kind,
       tier,
