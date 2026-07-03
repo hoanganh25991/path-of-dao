@@ -6,7 +6,7 @@
 }
 
 #game-shell {
-  position: fixed;
+  position: absolute;
   inset: 0;
 }
 
@@ -24,7 +24,7 @@
 }
 
 #ui-root {
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 2;
@@ -62,14 +62,22 @@
 }
 
 .dev-nav button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
   border: 1px solid rgba(143, 212, 196, 0.35);
   background: rgba(10, 10, 18, 0.85);
   color: #e8e4dc;
   font: inherit;
-  font-size: 0.75rem;
-  padding: 0.4rem 0.65rem;
-  border-radius: 0.35rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  border-radius: 0.5rem;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dev-nav button:active {

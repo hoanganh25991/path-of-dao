@@ -1,5 +1,6 @@
 import { PerspectiveCamera, WebGLRenderer } from 'three';
 import type { SceneHost } from '@/app/SceneHost';
+import { OrientationManager } from '@/app/OrientationManager';
 import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
 import { gameStore } from '@/core/store/gameStore';
@@ -18,16 +19,22 @@ export class HomeSceneHost implements SceneHost {
   private lastTapMs = 0;
   private unsubscribeEquipment: (() => void) | null = null;
   private unsubscribeRealm: (() => void) | null = null;
+  private unsubscribeLayout: (() => void) | null = null;
 
   private readonly onResize = (): void => {
+    this.resizeToLayout();
+  };
+
+  private resizeToLayout(): void {
     if (!this.renderer || !this.homeScene?.cameraRig) return;
+    const { width, height } = OrientationManager.getLayoutSize();
     resizeCamera(
       this.homeScene.cameraRig.controls.object as PerspectiveCamera,
       this.renderer,
-      window.innerWidth,
-      window.innerHeight,
+      width,
+      height,
     );
-  };
+  }
 
   private readonly onDoubleTap = (event: PointerEvent): void => {
     const now = performance.now();
@@ -51,7 +58,8 @@ export class HomeSceneHost implements SceneHost {
 
     this.renderer = new WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(window.innerWidth, window.innerHeight, false);
+    const { width, height } = OrientationManager.getLayoutSize();
+    this.renderer.setSize(width, height, false);
 
     this.homeScene = new HomeScene();
     await this.homeScene.build(this.renderer, canvas, save);
@@ -67,6 +75,9 @@ export class HomeSceneHost implements SceneHost {
     });
 
     window.addEventListener('resize', this.onResize);
+    this.unsubscribeLayout = EventBus.on('layout:changed', () => {
+      this.resizeToLayout();
+    });
     canvas.addEventListener('pointerdown', this.onDoubleTap);
 
     this.running = true;
@@ -81,6 +92,8 @@ export class HomeSceneHost implements SceneHost {
     }
 
     window.removeEventListener('resize', this.onResize);
+    this.unsubscribeLayout?.();
+    this.unsubscribeLayout = null;
     this.unsubscribeEquipment?.();
     this.unsubscribeEquipment = null;
     this.unsubscribeRealm?.();

@@ -1,5 +1,5 @@
 .combat-hud {
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
@@ -15,7 +15,7 @@
 
 /* Touch capture area for the floating joystick — left half of the screen. */
 .joystick-zone {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
@@ -25,12 +25,11 @@
 /* --- Virtual joystick --- */
 
 .joystick {
-  position: fixed;
+  position: absolute;
   width: calc(var(--joystick-base-radius, 48px) * 2);
   height: calc(var(--joystick-base-radius, 48px) * 2);
   transform: translate(-50%, -50%);
-  opacity: 0.7;
-  transition: opacity 300ms ease;
+  opacity: 0.78;
   z-index: 1;
 }
 
@@ -41,10 +40,6 @@
 
 .joystick--active {
   opacity: 1;
-}
-
-.joystick--fading {
-  opacity: 0;
 }
 
 .joystick-base {
@@ -73,7 +68,7 @@
   --btn-size: 56px;
   --btn-gap: 16px;
 
-  position: fixed;
+  position: absolute;
   right: max(1rem, env(safe-area-inset-right));
   bottom: max(1.25rem, env(safe-area-inset-bottom));
   display: grid;

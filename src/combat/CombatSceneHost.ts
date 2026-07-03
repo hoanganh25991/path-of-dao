@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import type { SceneHost } from '@/app/SceneHost';
+import { OrientationManager } from '@/app/OrientationManager';
+import { EventBus } from '@/core/EventBus';
 import { BootScene } from '@/combat/scenes/BootScene';
 import { MapScene } from '@/combat/scenes/MapScene';
 import { PoolManager } from '@/combat/PoolManager';
@@ -9,6 +11,7 @@ export class CombatSceneHost implements SceneHost {
   readonly id = 'combat' as const;
 
   private game: Phaser.Game | null = null;
+  private unsubscribeLayout: (() => void) | null = null;
 
   constructor(private readonly mapId: string) {}
 
@@ -19,6 +22,7 @@ export class CombatSceneHost implements SceneHost {
     }
 
     const mapId = this.mapId;
+    const { width, height } = OrientationManager.getLayoutSize();
 
     // Phaser.AUTO is not allowed with a custom canvas — renderType must be explicit.
     const renderType = window.WebGLRenderingContext ? Phaser.WEBGL : Phaser.CANVAS;
@@ -27,12 +31,14 @@ export class CombatSceneHost implements SceneHost {
       this.game = new Phaser.Game({
         type: renderType,
         canvas,
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width,
+        height,
         backgroundColor: '#0d1117',
         scale: {
-          mode: Phaser.Scale.RESIZE,
-          autoCenter: Phaser.Scale.CENTER_BOTH,
+          // NONE — RESIZE reads getBoundingClientRect which is viewport-aligned
+          // (390×844) when #app is CSS-rotated, squashing square tiles.
+          mode: Phaser.Scale.NONE,
+          autoCenter: Phaser.Scale.NO_CENTER,
         },
         physics: {
           default: 'arcade',
@@ -50,6 +56,12 @@ export class CombatSceneHost implements SceneHost {
       });
     });
 
+    this.game.scale.resize(width, height);
+
+    this.unsubscribeLayout = EventBus.on('layout:changed', ({ width: w, height: h }) => {
+      this.game?.scale.resize(w, h);
+    });
+
     if (import.meta.env.DEV) {
       // Debug handle for browser smoke tests / console poking.
       (window as unknown as Record<string, unknown>).__phaserGame = this.game;
@@ -57,6 +69,8 @@ export class CombatSceneHost implements SceneHost {
   }
 
   async unmount(): Promise<void> {
+    this.unsubscribeLayout?.();
+    this.unsubscribeLayout = null;
     PoolManager.clear();
     if (this.game) {
       // Wake the loop so Phaser processes the deferred destroy (a sleeping

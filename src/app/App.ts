@@ -79,8 +79,8 @@ export class App {
     const panel = document.createElement('div');
     panel.className = 'dev-nav';
     panel.innerHTML = `
-      <button type="button" data-scene="home">Home (H)</button>
-      <button type="button" data-scene="combat">Combat (C)</button>
+      <button type="button" data-scene="home" aria-label="Home">🏠</button>
+      <button type="button" data-scene="combat" aria-label="Combat">⚔️</button>
     `;
 
     panel.addEventListener('click', (event) => {

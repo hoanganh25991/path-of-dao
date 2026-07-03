@@ -1,14 +1,25 @@
 import type { Vec2 } from '@/core/input/InputState';
 import { OrientationManager } from '@/app/OrientationManager';
+import { EventBus } from '@/core/EventBus';
 
 export const JOYSTICK_BASE_RADIUS_PX = 48;
-export const JOYSTICK_CLAMP_RADIUS_PX = 60;
+export const JOYSTICK_CLAMP_RADIUS_PX = 80;
 /** Normalized deadzone — magnitudes below this become zero. */
-export const JOYSTICK_DEADZONE = 0.15;
+export const JOYSTICK_DEADZONE = 0.08;
+
+const ANCHOR_INSET_PX = 20;
+
+/** Bottom-left anchor in landscape layout space — matches combat-hud.css inset. */
+export function getJoystickAnchor(layoutWidth: number, layoutHeight: number): Vec2 {
+  return {
+    x: ANCHOR_INSET_PX + JOYSTICK_BASE_RADIUS_PX,
+    y: layoutHeight - ANCHOR_INSET_PX - JOYSTICK_BASE_RADIUS_PX,
+  };
+}
 
 /**
  * Normalize thumb offset to a game-space vector.
- * Screen Y is inverted so pushing the stick up yields negative y (forward in 2D maps).
+ * Matches keyboard: negative y is up, positive y is down.
  */
 export function normalizeJoystick(
   dx: number,
@@ -23,7 +34,7 @@ export function normalizeJoystick(
   const clamped = Math.min(len, maxRadius) / maxRadius;
   return {
     x: (dx / len) * clamped,
-    y: -(dy / len) * clamped,
+    y: (dy / len) * clamped,
   };
 }
 
@@ -35,50 +46,43 @@ export class VirtualJoystick {
   private baseEl: HTMLElement;
   private thumbEl: HTMLElement;
   private enabled = false;
-  private activeTouchId: number | null = null;
+  /** Active pointer or touch identifier — zone hit-testing already limits to the left side. */
+  private activePointerId: number | null = null;
   private centerX = 0;
   private centerY = 0;
   private moveVector: Vec2 = { x: 0, y: 0 };
-  private fadeTimer: ReturnType<typeof setTimeout> | null = null;
+  private layoutUnsub: (() => void) | null = null;
 
-  private readonly onTouchStart = (event: TouchEvent): void => {
-    if (!this.enabled || this.activeTouchId !== null) return;
+  private readonly onPointerDown = (event: PointerEvent): void => {
+    if (!this.enabled || this.activePointerId !== null) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
 
-    const { width: layoutW } = OrientationManager.getLayoutSize();
+    this.activePointerId = event.pointerId;
+    this.zone.setPointerCapture?.(event.pointerId);
+    this.snapToAnchor();
 
-    for (const touch of event.changedTouches) {
-      const { x, y } = OrientationManager.toLayoutCoords(touch.clientX, touch.clientY);
-      if (x > layoutW * 0.5) continue;
-
-      this.activeTouchId = touch.identifier;
-      this.showAt(x, y);
-      this.updateFromTouch(x, y);
-      event.preventDefault();
-      return;
-    }
+    const { x, y } = OrientationManager.toLayoutCoords(event.clientX, event.clientY);
+    this.updateFromTouch(x, y);
+    this.element.classList.add('joystick--active');
+    event.preventDefault();
   };
 
-  private readonly onTouchMove = (event: TouchEvent): void => {
-    if (!this.enabled || this.activeTouchId === null) return;
+  private readonly onPointerMove = (event: PointerEvent): void => {
+    if (!this.enabled || this.activePointerId !== event.pointerId) return;
 
-    for (const touch of event.changedTouches) {
-      if (touch.identifier !== this.activeTouchId) continue;
-      const { x, y } = OrientationManager.toLayoutCoords(touch.clientX, touch.clientY);
-      this.updateFromTouch(x, y);
-      event.preventDefault();
-      return;
-    }
+    const { x, y } = OrientationManager.toLayoutCoords(event.clientX, event.clientY);
+    this.updateFromTouch(x, y);
+    event.preventDefault();
   };
 
-  private readonly onTouchEnd = (event: TouchEvent): void => {
-    if (!this.enabled || this.activeTouchId === null) return;
+  private readonly onPointerEnd = (event: PointerEvent): void => {
+    if (!this.enabled || this.activePointerId !== event.pointerId) return;
 
-    for (const touch of event.changedTouches) {
-      if (touch.identifier !== this.activeTouchId) continue;
-      this.release();
-      event.preventDefault();
-      return;
+    if (this.zone.hasPointerCapture?.(event.pointerId)) {
+      this.zone.releasePointerCapture?.(event.pointerId);
     }
+    this.release();
+    event.preventDefault();
   };
 
   constructor(container: HTMLElement) {
@@ -100,19 +104,29 @@ export class VirtualJoystick {
 
     container.append(this.zone, this.element);
 
-    this.zone.addEventListener('touchstart', this.onTouchStart, { passive: false });
-    this.zone.addEventListener('touchmove', this.onTouchMove, { passive: false });
-    this.zone.addEventListener('touchend', this.onTouchEnd, { passive: false });
-    this.zone.addEventListener('touchcancel', this.onTouchEnd, { passive: false });
+    this.zone.addEventListener('pointerdown', this.onPointerDown);
+    this.zone.addEventListener('pointermove', this.onPointerMove);
+    this.zone.addEventListener('pointerup', this.onPointerEnd);
+    this.zone.addEventListener('pointercancel', this.onPointerEnd);
   }
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     this.zone.hidden = !enabled;
-    if (!enabled) {
-      this.release();
-      this.hideImmediate();
+
+    if (enabled) {
+      this.layoutUnsub = EventBus.on('layout:changed', () => {
+        if (this.activePointerId === null) this.snapToAnchor();
+      });
+      this.snapToAnchor();
+      this.element.classList.remove('hidden');
+      return;
     }
+
+    this.layoutUnsub?.();
+    this.layoutUnsub = null;
+    this.release();
+    this.hideImmediate();
   }
 
   getMoveVector(): Vec2 {
@@ -121,8 +135,8 @@ export class VirtualJoystick {
 
   /** For tests — simulate a touch without DOM events. */
   simulateTouch(clientX: number, clientY: number): void {
-    if (this.activeTouchId === null) {
-      this.activeTouchId = 0;
+    if (this.activePointerId === null) {
+      this.activePointerId = 0;
       this.showAt(clientX, clientY);
     }
     this.updateFromTouch(clientX, clientY);
@@ -134,40 +148,51 @@ export class VirtualJoystick {
   }
 
   destroy(): void {
-    if (this.fadeTimer !== null) {
-      clearTimeout(this.fadeTimer);
-      this.fadeTimer = null;
-    }
+    this.layoutUnsub?.();
+    this.layoutUnsub = null;
 
-    this.zone.removeEventListener('touchstart', this.onTouchStart);
-    this.zone.removeEventListener('touchmove', this.onTouchMove);
-    this.zone.removeEventListener('touchend', this.onTouchEnd);
-    this.zone.removeEventListener('touchcancel', this.onTouchEnd);
+    this.zone.removeEventListener('pointerdown', this.onPointerDown);
+    this.zone.removeEventListener('pointermove', this.onPointerMove);
+    this.zone.removeEventListener('pointerup', this.onPointerEnd);
+    this.zone.removeEventListener('pointercancel', this.onPointerEnd);
     this.zone.remove();
     this.element.remove();
   }
 
-  private showAt(layoutX: number, layoutY: number): void {
-    if (this.fadeTimer !== null) {
-      clearTimeout(this.fadeTimer);
-      this.fadeTimer = null;
-    }
+  private snapToAnchor(): void {
+    const { width, height } = OrientationManager.getLayoutSize();
+    const anchor = getJoystickAnchor(width, height);
+    this.showAt(anchor.x, anchor.y);
+  }
 
+  private showAt(layoutX: number, layoutY: number): void {
     this.centerX = layoutX;
     this.centerY = layoutY;
     this.element.style.left = `${layoutX}px`;
     this.element.style.top = `${layoutY}px`;
-    this.element.classList.remove('hidden', 'joystick--fading');
-    this.element.classList.add('joystick--active');
     this.thumbEl.style.transform = 'translate(-50%, -50%)';
   }
 
   private updateFromTouch(layoutX: number, layoutY: number): void {
-    const dx = layoutX - this.centerX;
-    const dy = layoutY - this.centerY;
+    let dx = layoutX - this.centerX;
+    let dy = layoutY - this.centerY;
+    let dist = Math.hypot(dx, dy);
+
+    // Shift the base when the finger outruns the clamp — allows continuous drag.
+    if (dist > JOYSTICK_CLAMP_RADIUS_PX) {
+      const overflow = (dist - JOYSTICK_CLAMP_RADIUS_PX) / dist;
+      this.centerX += dx * overflow;
+      this.centerY += dy * overflow;
+      this.element.style.left = `${this.centerX}px`;
+      this.element.style.top = `${this.centerY}px`;
+      dx = layoutX - this.centerX;
+      dy = layoutY - this.centerY;
+      dist = Math.hypot(dx, dy);
+    }
+
     this.moveVector = normalizeJoystick(dx, dy, JOYSTICK_CLAMP_RADIUS_PX);
 
-    const clampedLen = Math.min(Math.hypot(dx, dy), JOYSTICK_CLAMP_RADIUS_PX);
+    const clampedLen = Math.min(dist, JOYSTICK_CLAMP_RADIUS_PX);
     const angle = Math.atan2(dy, dx);
     const thumbX = Math.cos(angle) * clampedLen;
     const thumbY = Math.sin(angle) * clampedLen;
@@ -175,21 +200,14 @@ export class VirtualJoystick {
   }
 
   private release(): void {
-    this.activeTouchId = null;
+    this.activePointerId = null;
     this.moveVector = { x: 0, y: 0 };
-    this.thumbEl.style.transform = 'translate(-50%, -50%)';
     this.element.classList.remove('joystick--active');
-    this.element.classList.add('joystick--fading');
-
-    if (this.fadeTimer !== null) clearTimeout(this.fadeTimer);
-    this.fadeTimer = setTimeout(() => {
-      this.hideImmediate();
-      this.fadeTimer = null;
-    }, 300);
+    this.snapToAnchor();
   }
 
   private hideImmediate(): void {
     this.element.classList.add('hidden');
-    this.element.classList.remove('joystick--fading', 'joystick--active');
+    this.element.classList.remove('joystick--active');
   }
 }

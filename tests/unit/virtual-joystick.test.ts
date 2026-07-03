@@ -2,6 +2,8 @@
  * @vitest-environment jsdom
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { EventBus } from '@/core/EventBus';
+import { OrientationManager } from '@/app/OrientationManager';
 import {
   JOYSTICK_CLAMP_RADIUS_PX,
   JOYSTICK_DEADZONE,
@@ -25,8 +27,14 @@ describe('normalizeJoystick', () => {
     expect(result.y).toBeCloseTo(0, 5);
   });
 
-  it('inverts screen Y so up on stick is negative game Y', () => {
+  it('maps screen up to negative game Y (matches keyboard W)', () => {
     const result = normalizeJoystick(0, -JOYSTICK_CLAMP_RADIUS_PX, JOYSTICK_CLAMP_RADIUS_PX);
+    expect(result.x).toBeCloseTo(0, 5);
+    expect(result.y).toBeCloseTo(-1, 5);
+  });
+
+  it('maps screen down to positive game Y (matches keyboard S)', () => {
+    const result = normalizeJoystick(0, JOYSTICK_CLAMP_RADIUS_PX, JOYSTICK_CLAMP_RADIUS_PX);
     expect(result.x).toBeCloseTo(0, 5);
     expect(result.y).toBeCloseTo(1, 5);
   });
@@ -72,5 +80,44 @@ describe('VirtualJoystick', () => {
 
     expect(joystick.getMoveVector()).toEqual({ x: 0, y: 0 });
     joystick.destroy();
+  });
+
+  it('accepts pointer input on the zone in portrait-rotated layout', () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390, writable: true });
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 844, writable: true });
+    OrientationManager.init();
+
+    const joystick = new VirtualJoystick(container);
+    joystick.setEnabled(true);
+
+    const zone = joystick.zone;
+    // Physical coords that map to layout x > 50% — rejected by the old half-screen filter.
+    zone.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        clientX: 80,
+        clientY: 200,
+        pointerId: 1,
+        pointerType: 'touch',
+      }),
+    );
+    zone.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        clientX: 80,
+        clientY: 350,
+        pointerId: 1,
+        pointerType: 'touch',
+      }),
+    );
+
+    expect(joystick.getMoveVector().x).toBeLessThan(-0.5);
+
+    joystick.destroy();
+    EventBus.clear();
+    OrientationManager.resetForTests();
+    document.documentElement.className = '';
+    document.documentElement.style.removeProperty('--layout-w');
+    document.documentElement.style.removeProperty('--layout-h');
   });
 });
