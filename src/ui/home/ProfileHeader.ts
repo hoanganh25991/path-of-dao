@@ -1,6 +1,10 @@
 import { I18nManager } from '@/core/i18n/I18nManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
+import {
+  AncientDemoManager,
+  getActiveAncientId,
+} from '@/progression/AncientDemoManager';
 import { computeCombatPowerStub, formatCombatPower } from '@/progression/combatPowerStub';
 import { BreakthroughManager } from '@/progression/BreakthroughManager';
 import { showBreakthroughModal } from '@/ui/modals/BreakthroughModal';
@@ -25,6 +29,15 @@ export function createProfileHeader(): ProfileHeaderHandles {
 
   const nameEl = document.createElement('h1');
   nameEl.className = 'home-profile__name';
+
+  const demoBadge = document.createElement('span');
+  demoBadge.className = 'home-profile__demo-badge';
+  demoBadge.hidden = true;
+  demoBadge.textContent = I18nManager.t('demo.badge');
+
+  const nameRow = document.createElement('div');
+  nameRow.className = 'home-profile__name-row';
+  nameRow.append(nameEl, demoBadge);
 
   const realmRow = document.createElement('div');
   realmRow.className = 'home-profile__realm-row';
@@ -62,7 +75,7 @@ export function createProfileHeader(): ProfileHeaderHandles {
   yearsBlock.append(yearsLabel, yearsValue);
 
   statsRow.append(cpBlock, yearsBlock);
-  root.append(nameEl, realmRow, statsRow);
+  root.append(nameRow, realmRow, statsRow);
 
   let ceremonyActive = false;
 
@@ -91,12 +104,21 @@ export function createProfileHeader(): ProfileHeaderHandles {
     const save = gameStore.getState().save;
     if (!save) return;
 
-    nameEl.textContent = I18nManager.t('hero.wanderer.name');
+    const activeAncientId = getActiveAncientId();
+    if (activeAncientId) {
+      const profile = AncientDemoManager.getProfile(activeAncientId);
+      nameEl.textContent = I18nManager.t(profile.nameKey);
+      demoBadge.hidden = false;
+    } else {
+      nameEl.textContent = I18nManager.t('hero.wanderer.name');
+      demoBadge.hidden = true;
+    }
+
     realmEl.textContent = I18nManager.t(realmLabelKey(save));
     cpValue.textContent = formatCombatPower(computeCombatPowerStub(save), I18nManager.locale);
     yearsValue.textContent = String(yearsCultivated(save.meta.totalPlaySeconds));
 
-    const ready = save.realm.breakthroughReady;
+    const ready = save.realm.breakthroughReady && !activeAncientId;
     cultivateBtn.hidden = !ready;
     cultivateBtn.classList.toggle('home-profile__cultivate--ready', ready);
   };

@@ -1,6 +1,7 @@
 import { SceneRouter } from '@/app/SceneRouter';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
+import { createAncientDemoSection } from '@/ui/home/panels/AncientDemoSection';
 
 export interface PlayPanelHandles {
   root: HTMLElement;
@@ -28,6 +29,8 @@ export function createPlayPanel(): PlayPanelHandles {
   const devSlot = document.createElement('div');
   devSlot.className = 'home-play__dev-slot';
 
+  const ancientSection = createAncientDemoSection();
+
   const portalBtn = document.createElement('button');
   portalBtn.type = 'button';
   portalBtn.className = 'home-play__portal';
@@ -51,11 +54,12 @@ export function createPlayPanel(): PlayPanelHandles {
     void SceneRouter.instance.switchTo('combat', { mapId });
   });
 
-  root.append(title, devSlot, portalBtn, hint, continueBtn);
+  root.append(title, ancientSection.root, devSlot, portalBtn, hint, continueBtn);
 
   const refresh = (): void => {
     const mapId = gameStore.getState().save?.progress.currentMapId;
     continueBtn.hidden = !mapId;
+    ancientSection.refresh();
   };
 
   refresh();

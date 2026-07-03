@@ -19,6 +19,8 @@ export class HomeSceneHost implements SceneHost {
   private lastTapMs = 0;
   private unsubscribeEquipment: (() => void) | null = null;
   private unsubscribeRealm: (() => void) | null = null;
+  private unsubscribeDemo: (() => void) | null = null;
+  private unsubscribeDemoExit: (() => void) | null = null;
   private unsubscribeLayout: (() => void) | null = null;
 
   private readonly onResize = (): void => {
@@ -74,6 +76,17 @@ export class HomeSceneHost implements SceneHost {
       this.homeScene?.updateAura(realmId);
     });
 
+    const syncFromSave = (): void => {
+      const save = gameStore.getState().save;
+      if (!save || !this.homeScene) return;
+      void this.homeScene.syncEquipment(save.equipped);
+      this.homeScene.syncPet(save.cosmetics.pet);
+      this.homeScene.updateAura(save.realm.id);
+    };
+
+    this.unsubscribeDemo = EventBus.on('demo:entered', syncFromSave);
+    this.unsubscribeDemoExit = EventBus.on('demo:exited', syncFromSave);
+
     window.addEventListener('resize', this.onResize);
     this.unsubscribeLayout = EventBus.on('layout:changed', () => {
       this.resizeToLayout();
@@ -98,6 +111,10 @@ export class HomeSceneHost implements SceneHost {
     this.unsubscribeEquipment = null;
     this.unsubscribeRealm?.();
     this.unsubscribeRealm = null;
+    this.unsubscribeDemo?.();
+    this.unsubscribeDemo = null;
+    this.unsubscribeDemoExit?.();
+    this.unsubscribeDemoExit = null;
 
     const canvas = this.renderer?.domElement;
     if (canvas) {

@@ -1,6 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import { SaveManager } from '@/core/save/SaveManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
+import { isAncientDemoActive } from '@/progression/AncientDemoManager';
 
 type SavePatch =
   | Partial<PlayerSaveV1>
@@ -60,6 +61,8 @@ export const gameStore = createStore<GameStore>()((set, get) => ({
   async persist() {
     const current = get().save;
     if (!current) return;
+    // Demo walks are ephemeral — real journey stays in session backup until exit.
+    if (isAncientDemoActive()) return;
     await SaveManager.save(current);
   },
 

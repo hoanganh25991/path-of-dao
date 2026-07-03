@@ -74,6 +74,11 @@ export class HomeScene {
     await this.handles.heroViewer.syncEquipment(equipped);
   }
 
+  syncPet(petId: string | null): void {
+    if (!this.handles) return;
+    this.handles.heroViewer.syncPet(petId);
+  }
+
   updateAura(realmId: string): void {
     if (!this.handles) return;
     this.handles.auraController.setTier(realmToAuraTier(realmId));

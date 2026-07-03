@@ -30,13 +30,28 @@ export function createStoryPanel(): StoryPanelHandles {
     const save = gameStore.getState().save;
     list.replaceChildren();
 
+    const lore = save?.progress.loreUnlocked ?? [];
     const seen = save?.progress.storySeen ?? [];
-    if (seen.length === 0) {
+
+    if (lore.length === 0 && seen.length === 0) {
       const empty = document.createElement('p');
       empty.className = 'home-panel__empty';
       empty.textContent = I18nManager.t('home.story.empty');
       list.appendChild(empty);
       return;
+    }
+
+    for (const loreId of lore) {
+      const row = document.createElement('div');
+      row.className = 'home-story__row home-story__row--lore';
+
+      const loreTitle = document.createElement('p');
+      loreTitle.className = 'home-story__title';
+      const loreKey = loreId.replace(/^lore\./, 'demo.lore.');
+      loreTitle.textContent = I18nManager.t(loreKey);
+
+      row.appendChild(loreTitle);
+      list.appendChild(row);
     }
 
     for (const chapterId of seen) {
