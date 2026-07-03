@@ -3,8 +3,10 @@ import { SceneRouter } from '@/app/SceneRouter';
 import { createDefaultSceneHost } from '@/app/createDefaultSceneHost';
 import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
+import { I18nManager } from '@/core/i18n/I18nManager';
 import { connectAutosave, gameStore, startPlayTimeTracking } from '@/core/store/gameStore';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
+import { HomeUI } from '@/ui/home/HomeUI';
 
 export class App {
   private static initialized = false;
@@ -21,8 +23,14 @@ export class App {
     connectAutosave();
     startPlayTimeTracking();
 
+    const save = gameStore.getState().save;
+    if (save) {
+      await I18nManager.load(save.settings.locale);
+    }
+
     const elements = GameShell.mount(root);
     CombatHUD.init(elements.uiRoot);
+    HomeUI.init(elements.uiRoot);
     App.mountDevControls(elements.uiRoot);
     App.registerVisibilityHandlers();
 

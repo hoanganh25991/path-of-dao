@@ -1,9 +1,9 @@
 import { I18nManager } from '@/core/i18n/I18nManager';
-import type { HomeTab } from '@/ui/home/HomeUI';
+import type { HomeTab } from '@/ui/home/types';
 
 export interface BottomNavHandles {
   root: HTMLElement;
-  setActive(tab: HomeTab): void;
+  setActive(tab: HomeTab | null): void;
   destroy(): void;
 }
 
@@ -37,9 +37,9 @@ export function createBottomNav(onSelect: (tab: HomeTab) => void): BottomNavHand
 
   return {
     root,
-    setActive(tab: HomeTab) {
+    setActive(tab: HomeTab | null) {
       for (const button of buttons) {
-        const active = button.dataset.tab === tab;
+        const active = tab !== null && button.dataset.tab === tab;
         button.setAttribute('aria-selected', active ? 'true' : 'false');
       }
     },

@@ -30,9 +30,9 @@
   z-index: 2;
 }
 
-/* Full-screen overlays (e.g. .combat-hud) opt out and scope pointer-events
+/* Full-screen overlays (e.g. .combat-hud, .home-ui) opt out and scope pointer-events
    to their interactive children instead. */
-#ui-root > :not(.combat-hud) {
+#ui-root > :not(.combat-hud):not(.home-ui) {
   pointer-events: auto;
 }
 

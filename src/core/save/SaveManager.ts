@@ -98,7 +98,15 @@ export class SaveManager {
       xp: 0,
       realm: { id: 'mortal_body', tier: 'early', breakthroughReady: false },
       insights: {},
-      inventory: { items: [], gold: 0 },
+      inventory: {
+        items: [
+          { id: 'item.sword.iron', qty: 1 },
+          { id: 'item.bracelet.copper', qty: 1 },
+          { id: 'item.ring.speed', qty: 1 },
+          { id: 'item.spirit.jade', qty: 1 },
+        ],
+        gold: 0,
+      },
       equipped: {
         weapon: 'item.sword.wood',
         armor: 'item.robe.novice',

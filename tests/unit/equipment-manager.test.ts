@@ -119,6 +119,15 @@ describe('EquipmentManager', () => {
   });
 
   it('cannot equip item not in inventory', () => {
+    const save = gameStore.getState().save!;
+    gameStore.getState().patch({
+      equipped: { ...save.equipped, weapon: 'item.sword.wood' },
+      inventory: {
+        ...save.inventory,
+        items: save.inventory.items.filter((entry) => entry.id !== 'item.sword.iron'),
+      },
+    });
+
     const result = EquipmentManager.equip('item.sword.iron');
     expect(result.ok).toBe(false);
     expect(result.reason).toBe('not_in_inventory');
