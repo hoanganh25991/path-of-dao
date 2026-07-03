@@ -1,0 +1,176 @@
+{
+  "width": 920,
+  "height": 1320,
+  "regions": [
+    {
+      "chapterId": "chapter.01.fallen_village",
+      "displayNameKey": "chapter.01.fallen_village.name",
+      "position": { "x": 140, "y": 1140 },
+      "maps": [
+        {
+          "mapId": "map.fallen_village.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "default" }
+        },
+        {
+          "mapId": "map.fallen_village.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.fallen_village.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.02.mist_forest",
+      "displayNameKey": "chapter.02.mist_forest.name",
+      "position": { "x": 300, "y": 1000 },
+      "maps": [
+        {
+          "mapId": "map.mist_forest.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.01.fallen_village" }
+        },
+        {
+          "mapId": "map.mist_forest.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.mist_forest.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.03.stone_canyon",
+      "displayNameKey": "chapter.03.stone_canyon.name",
+      "position": { "x": 500, "y": 860 },
+      "maps": [
+        {
+          "mapId": "map.stone_canyon.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.02.mist_forest" }
+        },
+        {
+          "mapId": "map.stone_canyon.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.stone_canyon.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.04.moon_lake",
+      "displayNameKey": "chapter.04.moon_lake.name",
+      "position": { "x": 280, "y": 720 },
+      "maps": [
+        {
+          "mapId": "map.moon_lake.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.03.stone_canyon" }
+        },
+        {
+          "mapId": "map.moon_lake.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.moon_lake.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.05.burning_desert",
+      "displayNameKey": "chapter.05.burning_desert.name",
+      "position": { "x": 120, "y": 580 },
+      "maps": [
+        {
+          "mapId": "map.burning_desert.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.04.moon_lake" }
+        },
+        {
+          "mapId": "map.burning_desert.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.burning_desert.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.06.thunder_peaks",
+      "displayNameKey": "chapter.06.thunder_peaks.name",
+      "position": { "x": 340, "y": 440 },
+      "maps": [
+        {
+          "mapId": "map.thunder_peaks.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.05.burning_desert" }
+        },
+        {
+          "mapId": "map.thunder_peaks.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.thunder_peaks.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.07.frozen_palace",
+      "displayNameKey": "chapter.07.frozen_palace.name",
+      "position": { "x": 560, "y": 300 },
+      "maps": [
+        {
+          "mapId": "map.frozen_palace.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.06.thunder_peaks" }
+        },
+        {
+          "mapId": "map.frozen_palace.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.frozen_palace.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.08.abyss_rift",
+      "displayNameKey": "chapter.08.abyss_rift.name",
+      "position": { "x": 360, "y": 160 },
+      "maps": [
+        {
+          "mapId": "map.abyss_rift.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.07.frozen_palace" }
+        },
+        {
+          "mapId": "map.abyss_rift.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.abyss_rift.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.09.heavenly_gate",
+      "displayNameKey": "chapter.09.heavenly_gate.name",
+      "position": { "x": 160, "y": 40 },
+      "maps": [
+        {
+          "mapId": "map.heavenly_gate.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.08.abyss_rift" }
+        },
+        {
+          "mapId": "map.heavenly_gate.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.heavenly_gate.01" }
+        }
+      ]
+    },
+    {
+      "chapterId": "chapter.10.void_throne",
+      "displayNameKey": "chapter.10.void_throne.name",
+      "position": { "x": 480, "y": 20 },
+      "maps": [
+        {
+          "mapId": "map.void_throne.01",
+          "position": { "x": 0, "y": 0 },
+          "unlock": { "type": "chapterGate", "required": "chapter.09.heavenly_gate" }
+        },
+        {
+          "mapId": "map.void_throne.02",
+          "position": { "x": 72, "y": 52 },
+          "unlock": { "type": "clearMap", "required": "map.void_throne.01" }
+        }
+      ]
+    }
+  ]
+}

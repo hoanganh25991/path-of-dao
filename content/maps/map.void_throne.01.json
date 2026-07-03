@@ -1,0 +1,21 @@
+{
+  "id": "map.void_throne.01",
+  "chapterId": "chapter.10.void_throne",
+  "displayNameKey": "map.void_throne.01.name",
+  "tiledPath": "assets/maps/test-grove.json",
+  "tilesetName": "grove",
+  "spawn": {
+    "x": 320,
+    "y": 480
+  },
+  "bounds": {
+    "width": 1600,
+    "height": 1216
+  },
+  "connections": [],
+  "encounterTable": "encounters.test",
+  "bgm": null,
+  "pois": [],
+  "recommendedCp": 8900,
+  "recommendedRealmOrder": 7
+}

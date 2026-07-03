@@ -1,0 +1,21 @@
+{
+  "id": "map.mist_forest.01",
+  "chapterId": "chapter.02.mist_forest",
+  "displayNameKey": "map.mist_forest.01.name",
+  "tiledPath": "assets/maps/test-grove.json",
+  "tilesetName": "grove",
+  "spawn": {
+    "x": 320,
+    "y": 480
+  },
+  "bounds": {
+    "width": 1600,
+    "height": 1216
+  },
+  "connections": [],
+  "encounterTable": "encounters.test",
+  "bgm": null,
+  "pois": [],
+  "recommendedCp": 1700,
+  "recommendedRealmOrder": 1
+}

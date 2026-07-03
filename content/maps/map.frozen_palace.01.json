@@ -1,0 +1,21 @@
+{
+  "id": "map.frozen_palace.01",
+  "chapterId": "chapter.07.frozen_palace",
+  "displayNameKey": "map.frozen_palace.01.name",
+  "tiledPath": "assets/maps/test-grove.json",
+  "tilesetName": "grove",
+  "spawn": {
+    "x": 320,
+    "y": 480
+  },
+  "bounds": {
+    "width": 1600,
+    "height": 1216
+  },
+  "connections": [],
+  "encounterTable": "encounters.test",
+  "bgm": null,
+  "pois": [],
+  "recommendedCp": 6200,
+  "recommendedRealmOrder": 5
+}
