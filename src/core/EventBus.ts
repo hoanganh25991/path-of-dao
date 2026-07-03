@@ -20,6 +20,7 @@ export type GameEvents = {
   'insight:awakened': { intentId: string; skillId: string };
   'encounter:completed': { encounterId: string; poiKey?: string };
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
+  'boss:defeated': { bossId: string };
   'combat:hit-landed': {
     isCrit: boolean;
     finalDamage: number;
@@ -47,6 +48,10 @@ export type GameEvents = {
   'settings:quality-changed': { preference: QualityPreference };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
   'cp:changed': { cp: number };
+  'combat:pause-changed': { paused: boolean };
+  'combat:request-save': undefined;
+  'combat:request-exit': { wavesCleared: boolean };
+  'combat:request-retry': undefined;
 };
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

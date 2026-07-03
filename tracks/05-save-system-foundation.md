@@ -16,10 +16,12 @@ Persistent player save in the browser with checksum, migration, and export/impor
 - Autosave when leaving a scene
 - Export and import save as JSON backup
 - Default new-game save template
+- **Combat pause menu:** Save button persists runtime + schedules autosave without leaving map
+- **Map exit autosave:** pause Return Home and EXIT zone both persist runtime + flush to IndexedDB
 
 ## Remaining
 
-- **Tiên Nghịch gap:** new game still equips a starter wood sword; should start with no weapon (see [tien-nghich-alignment.md](./tien-nghich-alignment.md) T4)
+None for save-anywhere MVP path.
 
 ## Verification
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SaveManager } from '@/core/save/SaveManager';
-import { canEnter } from '@/progression/WorldProgression';
+import { canEnter, getNextJourneyMapId, hasStartedJourney } from '@/progression/WorldProgression';
 
 describe('WorldProgression.canEnter', () => {
   it('chapter 1 map 1 is always enterable', () => {
@@ -60,5 +60,40 @@ describe('WorldProgression.canEnter', () => {
       ok: false,
       reasonKey: 'world.lock.unknown',
     });
+  });
+});
+
+describe('WorldProgression.hasStartedJourney', () => {
+  it('is false on a fresh save', () => {
+    expect(hasStartedJourney(SaveManager.createNew())).toBe(false);
+  });
+
+  it('is true after entering the road', () => {
+    const save = SaveManager.createNew();
+    expect(
+      hasStartedJourney({
+        ...save,
+        progress: { ...save.progress, currentMapId: 'map.fallen_village.01' },
+      }),
+    ).toBe(true);
+  });
+});
+
+describe('WorldProgression.getNextJourneyMapId', () => {
+  it('starts on chapter 1 explore map for a new save', () => {
+    const save = SaveManager.createNew();
+    expect(getNextJourneyMapId(save)).toBe('map.fallen_village.01');
+  });
+
+  it('advances to the next uncleared unlocked map', () => {
+    const save = SaveManager.createNew();
+    const clearedStage1 = {
+      ...save,
+      progress: {
+        ...save.progress,
+        clearedMaps: ['map.fallen_village.01'],
+      },
+    };
+    expect(getNextJourneyMapId(clearedStage1)).toBe('map.fallen_village.02');
   });
 });

@@ -16,7 +16,7 @@ My Path = your auto-recorded road; Ancient Paths = authored roads to "learn from
 |------|--------|
 | Save schema | `journeyEntrySchema` + `progress.journey` (default `[]` — pre-28 saves load); `createNew()` seeds `[]` |
 | JourneyLog | `makeJourneyEntry` (strength snapshot via `computeCombatPowerFromSave`), `appendJourneyStep` (dedupe by `kind`+`refId`), `recordJourney` |
-| Recording hooks | `ChapterManager.applyMapClearPatch` → `map_clear`; `completeStory` → `story`; `BreakthroughManager.applyBreakthrough` → `breakthrough` |
+| Recording hooks | `ChapterManager` → `map_clear` / `story`; `BreakthroughManager` → `breakthrough`; `FortuitousEncounterManager` → `encounter`; `SpawnManager` first boss kill → `boss` |
 | My Path UI | `StoryPanel` rewritten to a journey scroll (newest first); `journeyView.describeJourneyEntry` resolves region/realm/story labels; story steps keep Replay; lore preserved |
 | Ancient roads | `ancientPathStepSchema` + `profile.path`; 2–3 step road authored per ancient in `content/demo/ancients.json`; `getAncientPath()` accessor |
 | Locale | `home.path.*`, `path.kind.*`, `path.stage.*`, `path.strength.*` (en/vi); Path nav label |
@@ -51,4 +51,5 @@ My Path = your auto-recorded road; Ancient Paths = authored roads to "learn from
 - [x] Every ancient has a ≥2-step road of real maps, realm order non-decreasing
 - [x] Pre-28 saves load unchanged; typecheck + full suite green
 - [x] Following an ancient's path walks each map in order with story beats between
-- [ ] `boss` / `encounter` journey kinds wired (deferred — scroll renders if present)
+- [x] `encounter` journey kind wired on fortune claim; scroll shows localized title
+- [x] `boss` journey kind wired on first boss kill; defeat toast → Path tab

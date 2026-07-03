@@ -14,7 +14,9 @@ Seven-realm cultivation ladder with breakthrough ceremony when gates are met.
 - Sub-tier auto-advance every 3 player levels within a realm
 - Breakthrough gates: level threshold, spirit resource, boss clear
 - Full-screen breakthrough modal ceremony
-- Cultivate button on profile when breakthrough is ready
+- Cultivate button appears when breakthrough gates are met
+- Toast nudge when breakthrough first becomes ready on Home
+- Listens to `realm:breakthrough-ready` for live refresh after boss kills
 - Realm stat scaling on level-curve stats
 - Combat damage bonus per realm tier (+10% per tier, max +50%)
 - Home aura updates after breakthrough

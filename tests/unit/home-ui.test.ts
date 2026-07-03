@@ -67,6 +67,13 @@ describe('HomeUI', () => {
   });
 
   it('inventory equip button calls EquipmentManager', () => {
+    gameStore.getState().patch({
+      inventory: {
+        items: [{ id: 'item.sword.iron', qty: 1 }],
+        gold: 0,
+      },
+    });
+
     const equipSpy = vi.spyOn(EquipmentManager, 'equip');
 
     const uiRoot = document.getElementById('ui-root')!;
@@ -84,6 +91,36 @@ describe('HomeUI', () => {
 
     expect(equipSpy).toHaveBeenCalledWith('item.sword.iron');
     equipSpy.mockRestore();
+  });
+
+  it('play panel shows begin journey on a fresh save', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    const continueBtn = uiRoot.querySelector('[data-testid="continue-journey-btn"]');
+    expect(continueBtn).toBeTruthy();
+    expect(continueBtn?.textContent).toBe('Begin Journey');
+
+    const hint = uiRoot.querySelector('[data-testid="continue-journey-hint"]');
+    expect(hint?.textContent).toContain('Next:');
+  });
+
+  it('play panel shows continue journey after the road has started', () => {
+    const save = SaveManager.createNew();
+    gameStore.setState({
+      save: {
+        ...save,
+        progress: { ...save.progress, currentMapId: 'map.fallen_village.01' },
+      },
+    });
+
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    const continueBtn = uiRoot.querySelector('[data-testid="continue-journey-btn"]');
+    expect(continueBtn?.textContent).toBe('Continue Journey');
   });
 
   it('play panel echoes button opens echoes tab', () => {
@@ -141,13 +178,13 @@ describe('HomeUI', () => {
 describe('I18nManager', () => {
   it('loads English home strings', async () => {
     await I18nManager.load('en');
-    expect(I18nManager.t('home.nav.play')).toBe('Play');
+    expect(I18nManager.t('home.nav.play')).toBe('Journey');
     expect(I18nManager.t('home.nav.echoes')).toBe('Echoes');
     expect(I18nManager.t('home.map_portal')).toBe('Map Portal');
   });
 
   it('loads Vietnamese home strings', async () => {
     await I18nManager.load('vi');
-    expect(I18nManager.t('home.nav.play')).toBe('Chơi');
+    expect(I18nManager.t('home.nav.play')).toBe('Hành Trình');
   });
 });

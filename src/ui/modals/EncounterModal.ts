@@ -70,10 +70,21 @@ export function showEncounterModal(
       burst.hidden = false;
       burst.classList.add('encounter-modal__burst--active');
       FortuitousEncounterManager.apply(encounter, poiKey);
+      showFortuneToast(I18nManager.t(encounter.displayNameKey));
       setTimeout(() => {
         cleanup();
         resolve(true);
       }, 500);
     });
   });
+}
+
+function showFortuneToast(displayNameKey: string): void {
+  const toast = document.createElement('div');
+  toast.className = 'home-toast home-ui__interactive';
+  toast.textContent = I18nManager.t('home.fortune_received', {
+    name: I18nManager.t(displayNameKey),
+  });
+  document.body.appendChild(toast);
+  toast.addEventListener('animationend', () => toast.remove());
 }

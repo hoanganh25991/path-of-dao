@@ -6,6 +6,7 @@ import type { Player } from '@/combat/entities/Player';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { recordSkillInsight } from '@/progression/InsightSystem';
 import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/SkillLoader';
+import { canUseSwordIntent } from '@/progression/WeaponProgression';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
 import { SkillExecutor } from '@/combat/skills/SkillExecutor';
@@ -17,10 +18,12 @@ export interface SkillCooldownSnapshot {
 
 const SLASH_VISIBLE_MS = 100;
 const SLASH_OFFSET_PX = 26;
-const SLASH_REACH_PX = [40, 45, 60] as const;
+const SWORD_REACH_PX = [40, 45, 60] as const;
+const PALM_REACH_PX = [28, 32, 38] as const;
 const SLASH_TEXTURE_SIZE = 64;
 const SLASH_HIT_MS = 80;
 const SLASH_HALF_ARC = Math.PI / 3;
+const PALM_HALF_ARC = Math.PI / 5;
 const COMBO_FINISHER_KNOCKBACK = 180;
 
 /** Attack combo + equipped skill slots via SkillExecutor. */
@@ -42,8 +45,10 @@ export class CombatComponent {
 
     this.currentMultiplier = ATTACK_STEP_MULTIPLIERS[step - 1] ?? 1;
     this.player.body.setVelocity(0, 0);
-    this.spawnSlash(step);
-    this.spawnSlashHitbox(step);
+    if (this.player.attackStyle === 'sword') {
+      this.spawnSlash(step);
+    }
+    this.spawnAttackHitbox(step);
     EventBus.emit('player:attack-started', { step: step as 1 | 2 | 3 });
     return true;
   }
@@ -54,6 +59,8 @@ export class CombatComponent {
 
     const skillId = resolveEffectiveSkillId(save.equippedSkills[slot], save.insights);
     const skill = getSkillDefinition(skillId);
+
+    if (skill.intent === 'sword' && !canUseSwordIntent(save)) return false;
 
     if (!this.skills.canCast(skill, this.cooldowns.remainingMs(slot))) return false;
     if (!this.player.stats.spendMana(skill.manaCost)) return false;
@@ -84,13 +91,19 @@ export class CombatComponent {
     this.skills.update(dtMs);
   }
 
-  private spawnSlashHitbox(step: number): void {
+  private reachForStep(step: number): number {
+    const table = this.player.attackStyle === 'unarmed' ? PALM_REACH_PX : SWORD_REACH_PX;
+    return table[step - 1] ?? table[0];
+  }
+
+  private spawnAttackHitbox(step: number): void {
     const { facing } = this.player;
-    const reach = SLASH_REACH_PX[step - 1] ?? 40;
+    const reach = this.reachForStep(step);
     const cx = this.player.x + facing * SLASH_OFFSET_PX;
     const cy = this.player.y;
-    const startAngle = facing > 0 ? -SLASH_HALF_ARC : Math.PI - SLASH_HALF_ARC;
-    const endAngle = facing > 0 ? SLASH_HALF_ARC : Math.PI + SLASH_HALF_ARC;
+    const halfArc = this.player.attackStyle === 'unarmed' ? PALM_HALF_ARC : SLASH_HALF_ARC;
+    const startAngle = facing > 0 ? -halfArc : Math.PI - halfArc;
+    const endAngle = facing > 0 ? halfArc : Math.PI + halfArc;
 
     this.hitboxes.spawn({
       ownerId: this.player.id,
@@ -111,7 +124,7 @@ export class CombatComponent {
 
   private spawnSlash(step: number): void {
     const { scene, sprite, facing } = this.player;
-    const scale = (SLASH_REACH_PX[step - 1] ?? 40) / SLASH_TEXTURE_SIZE;
+    const scale = this.reachForStep(step) / SLASH_TEXTURE_SIZE;
 
     const slash = scene.add
       .image(

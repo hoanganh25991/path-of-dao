@@ -6,6 +6,8 @@ import { GameClock } from '@/core/GameClock';
 import { gameStore } from '@/core/store/gameStore';
 import { resizeCamera } from '@/home/CameraRig';
 import { disposeRenderer } from '@/home/disposeThree';
+import { getHeroDisplayEquipment } from '@/progression/WeaponProgression';
+import { getJourneyHomeMapId } from '@/progression/WorldProgression';
 import { HomeScene } from '@/home/HomeScene';
 
 /** Full Three.js home shrine — floating island, hero viewer, realm aura. */
@@ -22,6 +24,8 @@ export class HomeSceneHost implements SceneHost {
   private unsubscribeDemo: (() => void) | null = null;
   private unsubscribeDemoExit: (() => void) | null = null;
   private unsubscribeLayout: (() => void) | null = null;
+  private unsubscribeStore: (() => void) | null = null;
+  private journeyMapId: string | null = null;
 
   private readonly onResize = (): void => {
     this.resizeToLayout();
@@ -65,11 +69,28 @@ export class HomeSceneHost implements SceneHost {
 
     this.homeScene = new HomeScene();
     await this.homeScene.build(this.renderer, canvas, save);
+    this.journeyMapId = getJourneyHomeMapId(save);
+
+    this.unsubscribeStore = gameStore.subscribe((state, prev) => {
+      const current = state.save;
+      const previous = prev.save;
+      if (!current || !this.homeScene) return;
+      const nextMapId = getJourneyHomeMapId(current);
+      if (nextMapId !== this.journeyMapId) {
+        this.journeyMapId = nextMapId;
+        this.homeScene.syncJourneyEnvironment(current);
+      } else if (
+        previous &&
+        current.progress.clearedMaps.length !== previous.progress.clearedMaps.length
+      ) {
+        this.homeScene.syncJourneyEnvironment(current);
+      }
+    });
 
     this.unsubscribeEquipment = EventBus.on('equipment:changed', () => {
       const current = gameStore.getState().save;
       if (!current || !this.homeScene) return;
-      void this.homeScene.syncEquipment(current.equipped);
+      void this.homeScene.syncEquipment(getHeroDisplayEquipment(current));
     });
 
     this.unsubscribeRealm = EventBus.on('realm:breakthrough', ({ realmId }) => {
@@ -79,7 +100,7 @@ export class HomeSceneHost implements SceneHost {
     const syncFromSave = (): void => {
       const save = gameStore.getState().save;
       if (!save || !this.homeScene) return;
-      void this.homeScene.syncEquipment(save.equipped);
+      void this.homeScene.syncEquipment(getHeroDisplayEquipment(save));
       this.homeScene.syncPet(save.cosmetics.pet);
       this.homeScene.updateAura(save.realm.id);
     };
@@ -115,6 +136,9 @@ export class HomeSceneHost implements SceneHost {
     this.unsubscribeDemo = null;
     this.unsubscribeDemoExit?.();
     this.unsubscribeDemoExit = null;
+    this.unsubscribeStore?.();
+    this.unsubscribeStore = null;
+    this.journeyMapId = null;
 
     const canvas = this.renderer?.domElement;
     if (canvas) {

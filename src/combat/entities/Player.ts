@@ -18,6 +18,7 @@ import {
   type AncientCombatFx,
 } from '@/combat/art/ancientHeroVisuals';
 import type { AncientProfile } from '@/shared/schemas/ancient-demo';
+import type { AttackStyle } from '@/progression/WeaponProgression';
 import type { HurtboxEntity, CombatTeam } from '@/combat/combat/Hurtbox';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
@@ -44,6 +45,8 @@ export class Player extends EntityBase implements HurtboxEntity {
   mapRecommendedRealmOrder = 1;
   /** Set when walking an ancient echo — custom sprite palette + tags. */
   ancientId: string | null = null;
+  /** Palm strikes before the ancient blade; sword combo after milestone. */
+  attackStyle: AttackStyle = 'unarmed';
 
   private ancientFx: AncientCombatFx | null = null;
 
@@ -166,7 +169,7 @@ export class Player extends EntityBase implements HurtboxEntity {
     super.destroy();
   }
 
-  /** MVP death: fade out, respawn at spawn point with full HP/mana. */
+  /** Death fade complete — player stays down until retry or return home. */
   private die(): void {
     this.sm.kill();
     this.knockback = null;
@@ -176,14 +179,26 @@ export class Player extends EntityBase implements HurtboxEntity {
 
     const camera = this.scene.cameras.main;
     camera.fadeOut(RESPAWN_FADE_MS, 0, 0, 0);
-    camera.once('camerafadeoutcomplete', () => {
-      this.sprite.setPosition(this.spawnPoint.x, this.spawnPoint.y);
-      this.stats.refill();
-      this.sm.revive();
-      this.respawning = false;
-      this.emitStatsChanged();
-      camera.fadeIn(RESPAWN_FADE_MS / 2, 0, 0, 0);
-    });
+  }
+
+  /** Retry current wave after death overlay choice. */
+  respawn(): void {
+    this.sprite.setPosition(this.spawnPoint.x, this.spawnPoint.y);
+    this.stats.refill();
+    this.sm.revive();
+    this.respawning = false;
+    this.emitStatsChanged();
+    this.scene.cameras.main.fadeIn(RESPAWN_FADE_MS / 2, 0, 0, 0);
+  }
+
+  /** Restore stats before persisting save when leaving map after a death. */
+  prepareForMapExit(): void {
+    if (this.sm.state !== 'dead' && !this.stats.isDead) return;
+    this.sprite.setPosition(this.spawnPoint.x, this.spawnPoint.y);
+    this.stats.refill();
+    this.sm.revive();
+    this.respawning = false;
+    this.emitStatsChanged();
   }
 
   private applyKnockback(dtMs: number): void {

@@ -51,6 +51,11 @@ export function checkAwakeningReady(save: PlayerSaveV1, intentId: string): boole
   return playerRealmOrder >= requiredOrder;
 }
 
+/** Intent ids that meet awakening ceremony gates (signature order). */
+export function listReadyAwakeningIntents(save: PlayerSaveV1): string[] {
+  return listInsightIntentIds().filter((intentId) => checkAwakeningReady(save, intentId));
+}
+
 export function grantInsightXp(
   save: PlayerSaveV1,
   intentId: string,

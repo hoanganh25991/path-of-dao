@@ -1,6 +1,7 @@
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { getInsightIntentConfig, listInsightIntentIds } from '@/progression/InsightDefinitions';
+import { filterSkillsForWeaponGate } from '@/progression/WeaponProgression';
 import { STARTER_SKILL_IDS } from '@/progression/SkillUnlockManager';
 import type { SkillSlotId } from '@/ui/skills/SkillIcon';
 
@@ -22,7 +23,7 @@ export function listUnlockedSkillIds(save: PlayerSaveV1): string[] {
     if (ids.has(config.baseSkillId) || state) ids.add(config.baseSkillId);
     if (state?.awakened) ids.add(config.awakenedSkillId);
   }
-  return [...ids].sort();
+  return filterSkillsForWeaponGate(save, [...ids].sort());
 }
 
 /** Pool for a slot — excludes skills already on the other two buttons. */

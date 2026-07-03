@@ -10,6 +10,7 @@ import type { EncounterConfig } from '@/combat/enemies/EnemyConfig';
 import { EnemyPool } from '@/combat/systems/EnemyPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
+import { recordJourney } from '@/progression/JourneyLog';
 import { unlockSkillForBoss, unlockSkillsForLevel } from '@/progression/SkillUnlockManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 
@@ -320,17 +321,33 @@ export class SpawnManager {
           ? [...current.progress.clearedBosses, bossClearId]
           : current.progress.clearedBosses;
 
+      const firstBossClear = Boolean(bossClearId && !wasRematch);
+
+      let progress = {
+        ...current.progress,
+        clearedBosses,
+        ...(rewards.bestiaryAdd
+          ? { bestiary: [...current.progress.bestiary, rewards.bestiaryAdd] }
+          : {}),
+      };
+
+      if (firstBossClear && bossClearId) {
+        progress = {
+          ...progress,
+          journey: recordJourney(
+            { ...current, progress },
+            'boss',
+            bossClearId,
+            current.progress.currentMapId ?? null,
+          ),
+        };
+      }
+
       const interim = {
         ...current,
         xp: rewards.xpTotal,
         ...(rewards.statsAfterLevelUp ? { stats: rewards.statsAfterLevelUp } : {}),
-        progress: {
-          ...current.progress,
-          clearedBosses,
-          ...(rewards.bestiaryAdd
-            ? { bestiary: [...current.progress.bestiary, rewards.bestiaryAdd] }
-            : {}),
-        },
+        progress,
       };
 
       let withUnlocks = interim;
@@ -371,6 +388,10 @@ export class SpawnManager {
       isBoss,
       wasRematch,
     });
+
+    if (bossClearId && !wasRematch) {
+      EventBus.emit('boss:defeated', { bossId: bossClearId });
+    }
   }
 
   private spawnGoldPickup(x: number, y: number, value: number): void {

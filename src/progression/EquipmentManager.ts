@@ -3,6 +3,7 @@ import { SaveManager } from '@/core/save/SaveManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
 import { notifyCombatPowerChanged } from '@/progression/CombatPower';
+import { patchAncientSwordMilestone } from '@/progression/WeaponProgression';
 import {
   type EquipmentSlot,
   type EquipmentSlots,
@@ -125,10 +126,12 @@ export class EquipmentManager {
 
     const equipped: EquipmentSlots = { ...save.equipped, [slot]: itemId };
     const modifiers = EquipmentManager.getModifiers(equipped);
+    const milestonePatch = patchAncientSwordMilestone(save, itemId);
 
     gameStore.getState().patch({
       inventory: { ...save.inventory, items },
-      equipped,
+      equipped: milestonePatch?.equipped ?? equipped,
+      ...(milestonePatch?.progress ? { progress: milestonePatch.progress } : {}),
     });
 
     EventBus.emit('equipment:changed', { modifiers });

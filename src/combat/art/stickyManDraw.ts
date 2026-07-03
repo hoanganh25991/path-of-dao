@@ -749,6 +749,25 @@ export const POSES_ATTACK_3: StickPose[] = [
   { limbs: { armBack: seg(-22, -15), armFront: seg(-32, -22), legBack: seg(-12, -8), legFront: seg(14, 10) }, prop: 'sword' },
 ];
 
+export const POSES_PALM_ATTACK_1: StickPose[] = [
+  { lean: 2, limbs: { armBack: seg(-16, -10), armFront: seg(24, 18), legBack: seg(-14, -8), legFront: seg(10, 6) } },
+  { limbs: { armBack: seg(-8, -5), armFront: seg(40, 30), legBack: seg(-12, -7), legFront: seg(12, 8) } },
+  { lean: -2, limbs: { armBack: seg(6, 4), armFront: seg(-20, -14), legBack: seg(-10, -6), legFront: seg(14, 10) } },
+];
+
+export const POSES_PALM_ATTACK_2: StickPose[] = [
+  { limbs: { armBack: seg(18, 12), armFront: seg(32, 24), legBack: seg(-16, -10), legFront: seg(10, 6) } },
+  { lean: -2, limbs: { armBack: seg(-4, -2), armFront: seg(-48, -38), legBack: seg(-8, -5), legFront: seg(16, 10) } },
+  { limbs: { armBack: seg(-14, -9), armFront: seg(-32, -24), legBack: seg(-10, -6), legFront: seg(12, 8) } },
+];
+
+export const POSES_PALM_ATTACK_3: StickPose[] = [
+  { lean: 3, limbs: { armBack: seg(-28, -18), armFront: seg(44, 34), legBack: seg(-18, -11), legFront: seg(8, 5) } },
+  { lean: -5, limbs: { armBack: seg(10, 6), armFront: seg(-58, -48), legBack: seg(-4, -2), legFront: seg(22, 14) } },
+  { lean: -6, limbs: { armBack: seg(14, 8), armFront: seg(-62, -52), legBack: seg(-3, -2), legFront: seg(24, 16) } },
+  { limbs: { armBack: seg(-18, -12), armFront: seg(-28, -20), legBack: seg(-12, -8), legFront: seg(14, 10) } },
+];
+
 export const POSES_HIT: StickPose[] = [
   { lean: 6, limbs: { armBack: seg(42, 35), armFront: seg(48, 40), legBack: seg(20, 14), legFront: seg(-12, -8) } },
   { bob: 2, lean: 8, limbs: { armBack: seg(48, 40), armFront: seg(52, 44), legBack: seg(24, 18), legFront: seg(-16, -10) } },
@@ -888,10 +907,22 @@ export const HERO_FRAME_COUNT =
   POSES_ATTACK_1.length +
   POSES_ATTACK_2.length +
   POSES_ATTACK_3.length +
-  POSES_HIT.length;
+  POSES_HIT.length +
+  POSES_PALM_ATTACK_1.length +
+  POSES_PALM_ATTACK_2.length +
+  POSES_PALM_ATTACK_3.length;
 
 export function heroFrameOffset(
-  group: 'idle' | 'walk' | 'attack1' | 'attack2' | 'attack3' | 'hit',
+  group:
+    | 'idle'
+    | 'walk'
+    | 'attack1'
+    | 'attack2'
+    | 'attack3'
+    | 'hit'
+    | 'palm1'
+    | 'palm2'
+    | 'palm3',
 ): number {
   let o = 0;
   if (group === 'idle') return o;
@@ -904,6 +935,12 @@ export function heroFrameOffset(
   o += POSES_ATTACK_2.length;
   if (group === 'attack3') return o;
   o += POSES_ATTACK_3.length;
+  if (group === 'hit') return o;
+  o += POSES_HIT.length;
+  if (group === 'palm1') return o;
+  o += POSES_PALM_ATTACK_1.length;
+  if (group === 'palm2') return o;
+  o += POSES_PALM_ATTACK_2.length;
   return o;
 }
 
@@ -915,6 +952,9 @@ export function buildHeroFrames(): StickPose[] {
     ...POSES_ATTACK_2,
     ...POSES_ATTACK_3,
     ...POSES_HIT,
+    ...POSES_PALM_ATTACK_1,
+    ...POSES_PALM_ATTACK_2,
+    ...POSES_PALM_ATTACK_3,
   ];
 }
 

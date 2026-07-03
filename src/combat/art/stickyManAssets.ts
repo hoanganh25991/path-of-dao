@@ -29,6 +29,9 @@ export const ANIM = {
   heroAttack1: 'hero_sticky_attack_1',
   heroAttack2: 'hero_sticky_attack_2',
   heroAttack3: 'hero_sticky_attack_3',
+  heroPalmAttack1: 'hero_sticky_palm_1',
+  heroPalmAttack2: 'hero_sticky_palm_2',
+  heroPalmAttack3: 'hero_sticky_palm_3',
   heroHit: 'hero_sticky_hit',
   slimeIdle: 'enemy_slime_idle',
   slimeWalk: 'enemy_slime_walk',
@@ -101,6 +104,9 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
   createAnim(scene, ANIM.heroAttack2, heroKey, heroFrameOffset('attack2'), 3, 16, 0, { 1: 110 });
   createAnim(scene, ANIM.heroAttack3, heroKey, heroFrameOffset('attack3'), 4, 14, 0, { 2: 150 });
   createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset('hit'), 2, 10, 0, { 0: 70 });
+  createAnim(scene, ANIM.heroPalmAttack1, heroKey, heroFrameOffset('palm1'), 3, 14, 0, { 1: 90 });
+  createAnim(scene, ANIM.heroPalmAttack2, heroKey, heroFrameOffset('palm2'), 3, 14, 0, { 1: 85 });
+  createAnim(scene, ANIM.heroPalmAttack3, heroKey, heroFrameOffset('palm3'), 4, 14, 0, { 2: 120 });
 
   registerEnemySheet(
     scene,

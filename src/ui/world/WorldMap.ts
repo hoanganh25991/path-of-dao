@@ -32,7 +32,8 @@ function closeWorldMap(): void {
   activeOverlay = null;
 }
 
-function enterMap(mapId: string): void {
+/** Enter combat on a world-map node (persists current map + autosave). */
+export function enterMapCombat(mapId: string): void {
   const save = gameStore.getState().save;
   if (!save) return;
 
@@ -101,7 +102,7 @@ function renderDetailSheet(mapId: string, host: HTMLElement): void {
   enterBtn.className = 'world-map-detail__enter';
   enterBtn.textContent = I18nManager.t('world.enter');
   enterBtn.disabled = !check.ok;
-  enterBtn.addEventListener('click', () => enterMap(mapId));
+  enterBtn.addEventListener('click', () => enterMapCombat(mapId));
 
   if (!check.ok && check.reasonKey) {
     const reason = document.createElement('p');

@@ -17,6 +17,7 @@ Non-linear world map with 20 destinations, unlock rules, and difficulty hints.
 - Region clear indicators and map detail sheet
 - Difficulty badge on each map from recommended CP vs player CP
 - Play → Map Portal opens world map; Enter launches combat on chosen map
+- **Continue Journey** on Play panel — `getNextJourneyMapId()` picks first unlocked uncleared map; one-tap enter via `enterMapCombat()`
 - English and Vietnamese world map strings
 
 ## Remaining

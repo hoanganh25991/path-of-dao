@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { SaveManager } from '@/core/save/SaveManager';
 import { appendJourneyStep, makeJourneyEntry, recordJourney } from '@/progression/JourneyLog';
 import { applyMapClearPatch, completeStory } from '@/progression/ChapterManager';
+import { getEncounterDefinition } from '@/progression/EncounterLoader';
+import { applyEncounterReward } from '@/progression/FortuitousEncounterManager';
 
 describe('JourneyLog', () => {
   it('stamps a step with the current strength snapshot', () => {
@@ -50,5 +52,26 @@ describe('journey recording hooks', () => {
     const { save: next } = completeStory(save, 'story.ch01.awakening_jade', true);
 
     expect(next.progress.journey.some((e) => e.kind === 'story')).toBe(true);
+  });
+
+  it('records an encounter step when fortune is claimed', () => {
+    const save = SaveManager.createNew();
+    const encounter = getEncounterDefinition('encounter.ancient_inheritance');
+    const next = { ...save, ...applyEncounterReward(encounter, save) };
+
+    expect(next.progress.journey.some((e) => e.kind === 'encounter')).toBe(true);
+    expect(next.progress.journey.at(-1)?.refId).toBe(encounter.id);
+  });
+
+  it('records a boss step when a boss is first cleared', () => {
+    const save = SaveManager.createNew();
+    const nextJourney = recordJourney(
+      { ...save, progress: { ...save.progress, currentMapId: 'map.stone_canyon.02' } },
+      'boss',
+      'boss.bandit_lord',
+      'map.stone_canyon.02',
+    );
+
+    expect(nextJourney.some((e) => e.kind === 'boss' && e.refId === 'boss.bandit_lord')).toBe(true);
   });
 });

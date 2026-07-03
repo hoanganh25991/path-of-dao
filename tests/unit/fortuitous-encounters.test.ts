@@ -48,17 +48,27 @@ describe('FortuitousEncounterManager', () => {
   });
 
   it('apply inheritance adds epic item to inventory', () => {
-    setEncounterRng(() => 0);
+    setEncounterRng(() => 0.99);
     const save = makeSave();
     const encounter = getEncounterDefinition('encounter.ancient_inheritance');
     const next = { ...save, ...applyEncounterReward(encounter, save) };
 
     expect(wasFound(encounter.id, next)).toBe(true);
-    expect(next.inventory.items.some((item) => item.id === 'item.sword.ancient')).toBe(true);
+    expect(next.inventory.items.some((item) => item.id === 'item.spirit.jade')).toBe(true);
+  });
+
+  it('apply ancient sword POI sets milestone and equips blade', () => {
+    const save = makeSave();
+    const encounter = getEncounterDefinition('encounter.ancient_sword');
+    const next = { ...save, ...applyEncounterReward(encounter, save, 'sword.fallen_village') };
+
+    expect(next.progress.weaponMilestone).toBe('ancient_sword');
+    expect(next.equipped?.weapon).toBe('item.sword.ancient');
+    expect(next.inventory.items.some((item) => item.id === 'item.sword.ancient')).toBe(false);
   });
 
   it('POI encounter tracks per poi key', () => {
-    const save = makeSave();
+    const save = makeSave({ progress: { ...makeSave().progress, currentMapId: 'map.test.grove' } });
     const encounter = getEncounterDefinition('encounter.hidden_cave');
     const poiKey = 'cave.grove';
     const next = { ...save, ...applyEncounterReward(encounter, save, poiKey) };
@@ -66,6 +76,9 @@ describe('FortuitousEncounterManager', () => {
     expect(wasPoiFound(encounter.id, poiKey, next)).toBe(true);
     expect(wasFound(encounter.id, next)).toBe(false);
     expect(next.inventory.gold).toBeGreaterThan(0);
+    expect(next.progress.journey.some((e) => e.kind === 'encounter' && e.refId.includes(poiKey))).toBe(
+      true,
+    );
   });
 
   it('spirit beast unlocks pet cosmetic', () => {

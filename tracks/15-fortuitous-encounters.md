@@ -1,6 +1,6 @@
 # 15 — Fortuitous encounter events
 
-**Status:** `[~]` In progress  
+**Status:** `[x]` Done  
 **Plan:** [plans/15-fortuitous-encounters.md](../plans/15-fortuitous-encounters.md)  
 **Last updated:** 2026-07-03
 
@@ -18,13 +18,16 @@ Random and POI-triggered cultivation encounters with rewards, lore, and cosmetic
 - Pet appears as orbiting orb in Home hero viewer
 - POI encounters tracked so each location fires once per save
 - Dev tools to force-trigger encounters and tune roll rates
+- **Ancient sword POI** sets `weaponMilestone` + equips blade (T2, T3)
+- **My Path:** `recordJourney('encounter', …)` on claim; localized titles in journey scroll
+- **Fortune toast** after accepting encounter reward
 
 ## Remaining
 
-- **Tiên Nghịch gap:** ancient sword POI exists on chapter 1 map but does not yet swap attack style or gate Sword Intent (T2, T3)
-- Wire full weapon milestone flow when player claims the blade
+None for core encounter flow.
 
 ## Verification
 
 - Rate rolls, unique POI skip, and reward application tested
 - Encounter modal blocks input during display
+- Journey log records encounter milestones once per refId

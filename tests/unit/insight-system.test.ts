@@ -9,6 +9,7 @@ import {
   grantInsightXp,
   insightDisplayPct,
   InsightSystem,
+  listReadyAwakeningIntents,
   seedDefaultInsights,
 } from '@/progression/InsightSystem';
 import { buildPlayerStats } from '@/progression/playerStats';
@@ -109,5 +110,18 @@ describe('InsightSystem', () => {
     expect(awakenedId).toBe(getInsightIntentConfig('void').awakenedSkillId);
     expect(next?.insights.void?.awakened).toBe(true);
     expect(next?.equippedSkills.primary).toBe('skill.void.slash.awakened');
+  });
+
+  it('lists intents ready for awakening ceremony', () => {
+    const save = makeSave({
+      stats: buildPlayerStats('hero.wanderer', 12, 'foundation_establishment'),
+      realm: { id: 'foundation_establishment', tier: 'early', breakthroughReady: false },
+      insights: {
+        ...seedDefaultInsights(),
+        void: { xp: 200, awakened: false, totalUses: 50 },
+        life: { xp: 50, awakened: false, totalUses: 5 },
+      },
+    });
+    expect(listReadyAwakeningIntents(save)).toEqual(['void']);
   });
 });

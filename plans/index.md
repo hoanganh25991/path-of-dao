@@ -463,19 +463,19 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 ## 12. Definition of Done (MVP Ship)
 
-- [ ] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
-- [ ] **New game starts unarmed** — palm combo only; no sword in weapon slot
-- [ ] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent
-- [ ] All 10 chapters playable with end-of-chapter story scene (*Tiên Nghịch* tone pass on all story JSON)
-- [ ] 20 maps traversable from world map with difficulty hints; map-to-map road readable in UI
+- [x] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
+- [x] **New game starts unarmed** — palm combo only; no sword in weapon slot (T4, T1)
+- [x] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
+- [~] All 10 chapters playable with end-of-chapter story scene — flow wired; *Tiên Nghịch* tone pass on story JSON deferred
+- [~] 20 maps traversable from world map with difficulty hints; **Continue Journey** CTA on Play panel
 - [ ] 8 boss fights with distinct patterns
 - [ ] 40 skills equippable; Sword Intent **gated** until ancient sword; at least 6 with full awakening VFX
-- [ ] Insight meter visible; one awakening demonstrable per intent
-- [ ] At least 3 fortuitous encounter types functional (including ancient sword)
-- [ ] Realm breakthrough flow works once
-- [ ] Combat power displayed in Home profile
-- [ ] Aura visible in 3D Home per realm tier
-- [ ] Save anywhere (pause menu + autosave on map exit)
+- [x] Insight meter visible; one awakening demonstrable per intent — Skills tab + awakening toast on Home
+- [x] At least 3 fortuitous encounter types functional (including ancient sword)
+- [x] Realm breakthrough flow works once — Cultivate button + ready toast on Home
+- [x] Combat power displayed in Home profile
+- [x] Aura visible in 3D Home per realm tier
+- [x] Save anywhere (pause menu + autosave on map exit)
 - [ ] Full UI in English and Vietnamese
 - [ ] PWA installable; 30 FPS on mid-range Android
 - [ ] No console errors in 10-minute playthrough
@@ -486,7 +486,7 @@ For a solo developer or small team, execute sub-plans in numeric order. Safe par
 
 ## 13. Next Step
 
-**Active thread:** Sub-plan **26** (PWA & ship) — E2E smoke + SHIP_CHECKLIST landed; manual sign-off + real icons next. Progress: [tracks/index.md](../tracks/index.md) · detail in [tracks/](../tracks/).
+**Active thread:** E2E smoke covers **Continue Journey** round-trip (primary road). Sub-plan **26** ship sign-off remains. Progress: [tracks/index.md](../tracks/index.md).
 
 Start with **`plans/01-project-scaffold.md`** for greenfield onboarding. Each sub-plan links `Depends on` / `Blocks` and includes file-level implementation steps, test cases, and acceptance criteria.
 

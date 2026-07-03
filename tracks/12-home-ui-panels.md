@@ -14,7 +14,8 @@ Home screen navigation with bottom tabs, profile header, and slide-up panels.
 - Profile header shows combat power, realm, years cultivated
 - Slide-up panel sheet (~40% height; top 60% free for 3D hero)
 - Inventory grid with equip/unequip detail popover
-- Play panel with map portal entry and Continue for last map
+- Play panel: **Continue Journey** (next uncleared map), Map Portal, Echoes entry
+- Breakthrough-ready toast when Cultivate becomes available
 - English and Vietnamese home UI strings
 - Default save seeds a few swap items in inventory for testing
 

@@ -5,6 +5,8 @@ import { isAncientCombatActive } from '@/progression/AncientCombatMode';
 import { AncientEchoBanner } from '@/ui/hud/AncientEchoBanner';
 import { PlayerStatusBar } from '@/ui/hud/PlayerStatusBar';
 import { CombatSkillPicker } from '@/ui/hud/CombatSkillPicker';
+import { CombatPauseMenu } from '@/ui/hud/CombatPauseMenu';
+import { CombatDeathOverlay } from '@/ui/hud/CombatDeathOverlay';
 import '@/ui/hud/combat-hud.css';
 import '@/ui/hud/combat-skill-picker.css';
 
@@ -26,6 +28,8 @@ export class CombatHUD {
     PlayerStatusBar.init(CombatHUD.root);
     AncientEchoBanner.init(CombatHUD.root);
     CombatSkillPicker.init(CombatHUD.root);
+    CombatPauseMenu.init(CombatHUD.root);
+    CombatDeathOverlay.init(CombatHUD.root);
 
     CombatHUD.unsubscribe = EventBus.on('scene:changed', ({ id }) => {
       CombatHUD.applyScene(id);
@@ -40,6 +44,8 @@ export class CombatHUD {
     PlayerStatusBar.destroy();
     AncientEchoBanner.destroy();
     CombatSkillPicker.destroy();
+    CombatPauseMenu.destroy();
+    CombatDeathOverlay.destroy();
     InputManager.destroy();
     CombatHUD.root?.remove();
     CombatHUD.root = null;
@@ -59,6 +65,10 @@ export class CombatHUD {
     InputManager.setEnabled(showCombat);
     AncientEchoBanner.syncVisible(showCombat);
     PlayerStatusBar.setAncientMode(showCombat && isAncientCombatActive());
-    if (!showCombat) CombatSkillPicker.close();
+    if (!showCombat) {
+      CombatSkillPicker.close();
+      CombatPauseMenu.close();
+      CombatDeathOverlay.close();
+    }
   }
 }

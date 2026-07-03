@@ -61,3 +61,32 @@ export function isChapterComplete(chapterId: string, save: PlayerSaveV1): boolea
   const finalMap = getChapterFinalMapId(chapterId);
   return finalMap ? isMapCleared(save, finalMap) : false;
 }
+
+/** True after the player has entered the road at least once (return visits show Continue Journey). */
+export function hasStartedJourney(save: PlayerSaveV1): boolean {
+  if (save.progress.currentMapId != null) return true;
+  if (save.progress.clearedMaps.length > 0) return true;
+  if (save.progress.journey.length > 0) return true;
+  return false;
+}
+
+/** First unlocked, uncleared map along the world road — for journey CTA. */
+export function getNextJourneyMapId(save: PlayerSaveV1): string | null {
+  for (const region of listWorldRegions()) {
+    for (const node of region.maps) {
+      const mapId = node.mapId;
+      if (isMapCleared(save, mapId)) continue;
+      if (canEnter(mapId, save).ok) return mapId;
+    }
+  }
+  return null;
+}
+
+/** Map the Home shrine should reflect — last visited, or next stop on the road. */
+export function getJourneyHomeMapId(save: PlayerSaveV1): string {
+  const { currentMapId } = save.progress;
+  if (currentMapId && findWorldMapNode(currentMapId)) {
+    return currentMapId;
+  }
+  return getNextJourneyMapId(save) ?? 'map.fallen_village.01';
+}

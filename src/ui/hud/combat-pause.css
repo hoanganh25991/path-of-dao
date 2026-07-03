@@ -1,0 +1,111 @@
+.combat-pause-btn {
+  position: absolute;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: max(0.75rem, env(safe-area-inset-right));
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(143, 212, 196, 0.45);
+  background: rgba(10, 10, 18, 0.88);
+  color: #e8e4dc;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.combat-pause-btn:active {
+  transform: scale(0.92);
+}
+
+.combat-pause-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.combat-pause-menu--active {
+  display: flex;
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.combat-pause-menu__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.combat-pause-menu__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  max-width: 20rem;
+  width: calc(100% - 2rem);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 0.75rem;
+  background: rgba(20, 25, 35, 0.96);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+.combat-pause-menu__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #e8e4dc;
+  text-align: center;
+}
+
+.combat-pause-menu__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.combat-pause-menu__btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(143, 212, 196, 0.35);
+  background: rgba(12, 16, 24, 0.92);
+  color: #e8e4dc;
+  font-size: 0.95rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.combat-pause-menu__btn--primary {
+  border-color: rgba(143, 212, 196, 0.55);
+  background: rgba(143, 212, 196, 0.12);
+}
+
+.combat-pause-menu__btn--danger {
+  border-color: rgba(232, 160, 143, 0.45);
+  color: #f0c4b8;
+}
+
+.combat-death-overlay {
+  z-index: 95;
+}
+
+.combat-death-overlay__flavor {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: rgba(232, 228, 220, 0.78);
+  text-align: center;
+}

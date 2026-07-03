@@ -1,13 +1,16 @@
 import Phaser from 'phaser';
 import { SceneRouter } from '@/app/SceneRouter';
 import { AudioDirector } from '@/core/audio/AudioDirector';
+import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
+import { SaveManager } from '@/core/save/SaveManager';
 import { applyMapClearPatch } from '@/progression/ChapterManager';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { applyAncientGodMode, isAncientCombatActive } from '@/progression/AncientCombatMode';
 import { isPathWalkActive, onPathStepMapCleared, routePathWalk } from '@/progression/PathWalkManager';
 import { EquipmentManager } from '@/progression/EquipmentManager';
+import { resolveAttackStyle } from '@/progression/WeaponProgression';
 import { StatSheet } from '@/progression/StatSheet';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { getMapConfig } from '@/combat/map/MapLoader';
@@ -48,6 +51,7 @@ export class MapScene extends Phaser.Scene {
   private exiting = false;
   private runtimePersisted = false;
   private juiceBridge: CombatJuiceBridge | null = null;
+  private unsubscribeCombatEvents: (() => void) | null = null;
 
   constructor() {
     super(MapScene.KEY);
@@ -93,6 +97,9 @@ export class MapScene extends Phaser.Scene {
     const save = gameStore.getState().save;
     this.player.attackerRealmOrder = save ? getRealmOrder(save.realm.id) : 1;
     this.player.mapRecommendedRealmOrder = config.recommendedRealmOrder;
+    if (save) {
+      this.player.attackStyle = resolveAttackStyle(save);
+    }
     this.physics.add.collider(this.player.sprite, collision);
 
     if (isAncientCombatActive()) {
@@ -115,6 +122,7 @@ export class MapScene extends Phaser.Scene {
     camera.setDeadzone(CAMERA_DEADZONE, CAMERA_DEADZONE);
 
     this.createExitZone(map);
+    this.subscribeCombatEvents();
 
     if (config.encounterTable) {
       this.spawnManager = new SpawnManager(
@@ -151,6 +159,11 @@ export class MapScene extends Phaser.Scene {
   }
 
   private teardown(): void {
+    this.unsubscribeCombatEvents?.();
+    this.unsubscribeCombatEvents = null;
+    if (this.scene.isPaused()) {
+      this.scene.resume();
+    }
     this.persistRuntime();
     this.juiceBridge?.destroy();
     this.juiceBridge = null;
@@ -228,34 +241,67 @@ export class MapScene extends Phaser.Scene {
     this.physics.add.existing(zone, true);
 
     this.physics.add.overlap(this.player.sprite, zone, () => {
-      if (this.exiting) return;
-      this.exiting = true;
-      this.persistRuntime();
-
       const wavesCleared =
         !this.spawnManager || this.spawnManager.isEncounterComplete();
-      if (wavesCleared) {
-        AudioDirector.playMapClearSting();
+      void this.finishMapExit(wavesCleared);
+    });
+  }
+
+  private subscribeCombatEvents(): void {
+    const offExit = EventBus.on('combat:request-exit', ({ wavesCleared }) => {
+      if (this.exiting) return;
+      void this.finishMapExit(wavesCleared);
+    });
+    const offSave = EventBus.on('combat:request-save', () => {
+      this.persistRuntime();
+      if (gameStore.getState().save) {
+        void gameStore.getState().persist();
+        SaveManager.scheduleAutosave();
       }
-      const save = gameStore.getState().save;
-      if (isPathWalkActive()) {
-        void routePathWalk(onPathStepMapCleared(this.mapId));
+    });
+    const offRetry = EventBus.on('combat:request-retry', () => {
+      this.player.respawn();
+    });
+    const offPause = EventBus.on('combat:pause-changed', ({ paused }) => {
+      if (paused) this.scene.pause();
+      else if (this.scene.isPaused()) this.scene.resume();
+    });
+    this.unsubscribeCombatEvents = () => {
+      offExit();
+      offSave();
+      offRetry();
+      offPause();
+    };
+  }
+
+  private async finishMapExit(wavesCleared: boolean): Promise<void> {
+    if (this.exiting) return;
+    this.exiting = true;
+    this.player.prepareForMapExit();
+    this.persistRuntime();
+
+    if (wavesCleared) {
+      AudioDirector.playMapClearSting();
+    }
+    const save = gameStore.getState().save;
+    if (isPathWalkActive()) {
+      void routePathWalk(onPathStepMapCleared(this.mapId));
+      return;
+    }
+    if (save) {
+      const { patch, result } = applyMapClearPatch(save, this.mapId, wavesCleared);
+      if (Object.keys(patch).length > 0) {
+        gameStore.getState().patch(patch);
+      }
+      void gameStore.getState().persist();
+      SaveManager.scheduleAutosave();
+      if (result.pendingStory) {
+        void SceneRouter.instance.switchTo('story', result.pendingStory);
         return;
       }
-      if (save) {
-        const { patch, result } = applyMapClearPatch(save, this.mapId, wavesCleared);
-        if (Object.keys(patch).length > 0) {
-          gameStore.getState().patch(patch);
-          void gameStore.getState().persist();
-        }
-        if (result.pendingStory) {
-          void SceneRouter.instance.switchTo('story', result.pendingStory);
-          return;
-        }
-      }
+    }
 
-      void SceneRouter.instance.switchTo('home');
-    });
+    void SceneRouter.instance.switchTo('home');
   }
 
   private persistRuntime(): void {

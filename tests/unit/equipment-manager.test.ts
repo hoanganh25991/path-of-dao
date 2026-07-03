@@ -47,9 +47,9 @@ describe('ItemLoader', () => {
 });
 
 describe('EquipmentManager', () => {
-  it('new game starts with starter weapon and armor equipped', () => {
+  it('new game starts unarmed with armor only (T4)', () => {
     const save = gameStore.getState().save!;
-    expect(save.equipped.weapon).toBe('item.sword.wood');
+    expect(save.equipped.weapon).toBeNull();
     expect(save.equipped.armor).toBe('item.robe.novice');
   });
 
@@ -71,12 +71,12 @@ describe('EquipmentManager', () => {
     const modifiers = EquipmentManager.getModifiers(save.equipped);
     const resolved = applyModifiers(save.stats, modifiers);
 
-    expect(resolved.atk).toBe(save.stats.atk + 4);
+    expect(resolved.atk).toBe(save.stats.atk);
     expect(resolved.def).toBe(save.stats.def + 6);
     expect(resolved.hpMax).toBe(save.stats.hpMax + 20);
   });
 
-  it('equips iron sword, swaps wood sword back to inventory', () => {
+  it('equips iron sword from empty weapon slot', () => {
     gameStore.getState().patch({
       inventory: { items: [{ id: 'item.sword.iron', qty: 1 }], gold: 0 },
     });
@@ -86,22 +86,36 @@ describe('EquipmentManager', () => {
 
     const save = gameStore.getState().save!;
     expect(save.equipped.weapon).toBe('item.sword.iron');
-    expect(save.inventory.items).toContainEqual({ id: 'item.sword.wood', qty: 1 });
 
     const resolved = applyModifiers(save.stats, result.modifiers);
     expect(resolved.atk).toBe(save.stats.atk + 12);
     expect(resolved.crit).toBeCloseTo(save.stats.crit + 0.02);
   });
 
+  it('equipping ancient sword sets weapon milestone (T2/T3)', () => {
+    gameStore.getState().patch({
+      inventory: { items: [{ id: 'item.sword.ancient', qty: 1 }], gold: 0 },
+    });
+
+    const result = EquipmentManager.equip('item.sword.ancient');
+    expect(result.ok).toBe(true);
+
+    const save = gameStore.getState().save!;
+    expect(save.progress.weaponMilestone).toBe('ancient_sword');
+    expect(save.equipped.weapon).toBe('item.sword.ancient');
+  });
+
   it('unequip returns item to inventory and removes modifiers', () => {
-    const before = EquipmentManager.getModifiers(gameStore.getState().save!.equipped);
-    expect(before.length).toBeGreaterThan(0);
+    gameStore.getState().patch({
+      inventory: { items: [{ id: 'item.sword.iron', qty: 1 }], gold: 0 },
+    });
+    EquipmentManager.equip('item.sword.iron');
 
     const modifiers = EquipmentManager.unequip('weapon');
     const save = gameStore.getState().save!;
 
     expect(save.equipped.weapon).toBeNull();
-    expect(save.inventory.items).toContainEqual({ id: 'item.sword.wood', qty: 1 });
+    expect(save.inventory.items).toContainEqual({ id: 'item.sword.iron', qty: 1 });
     expect(modifiers.some((m) => m.stat === 'atk')).toBe(false);
   });
 
@@ -122,7 +136,6 @@ describe('EquipmentManager', () => {
   it('cannot equip item not in inventory', () => {
     const save = gameStore.getState().save!;
     gameStore.getState().patch({
-      equipped: { ...save.equipped, weapon: 'item.sword.wood' },
       inventory: {
         ...save.inventory,
         items: save.inventory.items.filter((entry) => entry.id !== 'item.sword.iron'),

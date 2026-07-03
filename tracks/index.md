@@ -95,14 +95,14 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 
 | # | Requirement | Status | Owner tracks |
 |---|-------------|--------|--------------|
-| T1 | New game **unarmed** — palm 3-hit combo, no sword equipped | `[ ]` | 07, 11 |
-| T2 | **Ancient Spirit Sword** from shrine POI in chapters 1–2 | `[~]` | 15, 21 |
-| T3 | Equipping ancient sword **swaps** combo to sword + unlocks Sword Intent | `[ ]` | 07, 14, 23 |
-| T4 | Remove **starter wood sword** from default new game loadout | `[ ]` | 05, 11 |
+| T1 | New game **unarmed** — palm 3-hit combo, no sword equipped | `[x]` | 07, 11 |
+| T2 | **Ancient Spirit Sword** from shrine POI in chapters 1–2 | `[x]` | 15, 21 |
+| T3 | Equipping ancient sword **swaps** combo to sword + unlocks Sword Intent | `[x]` | 07, 14, 23 |
+| T4 | Remove **starter wood sword** from default new game loadout | `[x]` | 05, 11 |
 | T5 | **Map-by-map road** — world map labels match chapter arc table | `[~]` | 17, 21, 22 |
 | T6 | **Chapter stories** — perseverance tone, sword destiny in ch1–2 | `[ ]` | 18, 24 |
-| T7 | **Sword Intent gating** in skill picker and combat | `[ ]` | 19, 23 |
-| T8 | **3D Home** shows empty hands until sword milestone | `[ ]` | 10, 11 |
+| T7 | **Sword Intent gating** in skill picker and combat | `[x]` | 19, 23 |
+| T8 | **3D Home** shows empty hands until sword milestone | `[x]` | 10, 11 |
 
 ---
 
@@ -112,19 +112,19 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 - [x] Echoes of the Ancients — six focused demo walks; combat-first god-mode (sub-plan 27)
 - [x] Path & Journey — My Path scroll + guided ancient walk (sub-plan 28)
-- [ ] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
-- [ ] **New game starts unarmed** — palm combo only; no sword in weapon slot (T1, T4)
-- [ ] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
-- [ ] All 10 chapters playable with end-of-chapter story scene (*Tiên Nghịch* tone pass) (18, 24, T6)
-- [ ] 20 maps traversable from world map with difficulty hints (17 done; copy T5)
+- [x] Player can: boot → Home → pick map → combat → clear/fail → save → return Home
+- [x] **New game starts unarmed** — palm combo only; no sword in weapon slot (T1, T4)
+- [x] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
+- [~] All 10 chapters playable with end-of-chapter story scene (18 flow wired; tone T6)
+- [~] 20 maps traversable from world map with difficulty hints; Continue Journey on Play (17; copy T5)
 - [ ] 8 boss fights with distinct patterns (23)
 - [ ] 40 skills equippable; Sword Intent **gated** until ancient sword; ≥6 with full awakening VFX (23, T7)
-- [ ] Insight meter visible; one awakening demonstrable per intent (14 done; Sword gate T7)
-- [ ] ≥3 fortuitous encounter types functional including ancient sword (15 — POI exists; milestone flow T2–T3)
-- [ ] Realm breakthrough flow works once (13)
-- [ ] Combat power displayed in Home profile (16)
-- [ ] Aura visible in 3D Home per realm tier (10)
-- [ ] Save anywhere (pause menu + autosave on map exit) (05)
+- [x] Insight meter visible; awakening toast + Skills ceremony (14)
+- [x] ≥3 fortuitous encounter types functional including ancient sword (15)
+- [x] Realm breakthrough flow works once — Cultivate + ready toast (13)
+- [x] Combat power displayed in Home profile (16)
+- [x] Aura visible in 3D Home per realm tier (10)
+- [x] Save anywhere (pause menu + autosave on map exit) (05)
 - [ ] Full UI in English and Vietnamese (24)
 - [ ] PWA installable; 30 FPS on mid-range Android (26)
 - [ ] No console errors in 10-minute playthrough (26)
@@ -133,26 +133,24 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ## Active thread
 
-**Now:** Sub-plan **26** — PWA & ship (E2E smoke landed)  
-- QualityProfile + PWA shell + CI — **done**
-- E2E smoke (`boot → home → map → combat → home → vi`) — **done**
-- SHIP_CHECKLIST.md — **done**
-- Home aura respects quality tier — **done**
-- **Remaining:** real icons, manual checklist sign-off, Lighthouse / 30 FPS
+**Now:** E2E smoke — **Continue Journey** round-trip (primary road, no dev nav / map portal)  
+- **351 unit + 1 e2e green**
 
-**Deferred:** Tiên Nghịch weapon arc (T4 → T1 → T2 → T3), audio OGG assets (25), content polish (18–24)
+**Next:** Sub-plan **26** — manual SHIP_CHECKLIST sign-off + real icons
+
+**Deferred:** story tone (T6), world copy (T5), audio OGG assets (25)
 
 ---
 
 ## Detail tracks — in progress
 
-### 15 — Fortuitous encounters `[~]`
+### 15 — Fortuitous encounters `[x]`
 
 | Done | Remaining |
 |------|-----------|
-| Six encounter types, roll tables, POI triggers | Ancient sword POI does not yet swap attack style or gate Sword Intent |
-| Modal pause flow, rewards (items, gold, insight, lore, pet) | Wire full `weaponMilestone` flow on blade claim |
-| POI once-per-save tracking; dev force-trigger tools | |
+| Six encounter types, roll tables, POI triggers | — |
+| Modal pause flow, rewards; ancient sword milestone | — |
+| My Path journey + fortune toast on claim | — |
 
 → [full track](./15-fortuitous-encounters.md)
 

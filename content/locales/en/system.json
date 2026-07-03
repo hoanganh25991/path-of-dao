@@ -6,5 +6,14 @@
   "system.duration.minutes": "{m}m {s}s",
   "system.locale.changed": "Language updated.",
   "system.combat_power": "CP {cp}",
-  "system.audio.unlock": "Tap to enable sound"
+  "system.audio.unlock": "Tap to enable sound",
+  "combat.pause.open": "Pause",
+  "combat.pause.title": "Paused",
+  "combat.pause.resume": "Resume",
+  "combat.pause.save": "Save",
+  "combat.pause.return_home": "Return Home",
+  "combat.death.title": "You Have Fallen",
+  "combat.death.flavor": "The dao path is long. Retreat, cultivate, and return when you are ready.",
+  "combat.death.retry": "Try Again",
+  "combat.death.return_home": "Return Home"
 }

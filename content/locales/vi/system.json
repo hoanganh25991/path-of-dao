@@ -6,5 +6,14 @@
   "system.duration.minutes": "{m} phút {s} giây",
   "system.locale.changed": "Đã đổi ngôn ngữ.",
   "system.combat_power": "Uy lực {cp}",
-  "system.audio.unlock": "Chạm để bật âm thanh"
+  "system.audio.unlock": "Chạm để bật âm thanh",
+  "combat.pause.open": "Tạm dừng",
+  "combat.pause.title": "Tạm dừng",
+  "combat.pause.resume": "Tiếp tục",
+  "combat.pause.save": "Lưu",
+  "combat.pause.return_home": "Về Nhà",
+  "combat.death.title": "Ngươi Đã Ngã",
+  "combat.death.flavor": "Con đường tu luyện còn dài. Rút lui, tu luyện, rồi quay lại khi đã sẵn sàng.",
+  "combat.death.retry": "Thử Lại",
+  "combat.death.return_home": "Về Nhà"
 }

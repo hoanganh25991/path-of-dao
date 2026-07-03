@@ -2,6 +2,8 @@ import type { JourneyEntry } from '@/core/save/SaveSchema';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { formatCombatPower } from '@/progression/CombatPower';
 import { getChapterByStoryScene } from '@/progression/ChapterLoader';
+import { getEncounterDefinition } from '@/progression/EncounterLoader';
+import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
 import { findWorldMapNode } from '@/progression/WorldMapLoader';
 
 export interface JourneyView {
@@ -57,10 +59,25 @@ export function describeJourneyEntry(entry: JourneyEntry): JourneyView {
         kindLabel: I18nManager.t('path.kind.breakthrough'),
         strength,
       };
-    case 'boss':
-      return { title: entry.refId, kindLabel: I18nManager.t('path.kind.boss'), strength };
-    case 'encounter':
-      return { title: entry.refId, kindLabel: I18nManager.t('path.kind.encounter'), strength };
+    case 'boss': {
+      let title = entry.refId;
+      try {
+        title = I18nManager.t(getEnemyConfig(entry.refId).displayNameKey);
+      } catch {
+        // unknown boss id — keep refId
+      }
+      return { title, kindLabel: I18nManager.t('path.kind.boss'), strength };
+    }
+    case 'encounter': {
+      const encounterId = entry.refId.split('@')[0] ?? entry.refId;
+      let title = entry.refId;
+      try {
+        title = I18nManager.t(getEncounterDefinition(encounterId).displayNameKey);
+      } catch {
+        // unknown encounter id — keep refId
+      }
+      return { title, kindLabel: I18nManager.t('path.kind.encounter'), strength };
+    }
     case 'map_clear':
     default:
       return {

@@ -1,9 +1,12 @@
-import { attachDevControlsToPlaySlot, detachDevControlsToRoot } from '@/app/DevControls';
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { closeWorldMapOverlay } from '@/ui/world/WorldMap';
 import { createBottomNav } from '@/ui/home/BottomNav';
 import { createProfileHeader } from '@/ui/home/ProfileHeader';
+import {
+  initHomeProgressionNudges,
+  resetHomeProgressionNudgesForTests,
+} from '@/ui/home/HomeProgressionNudges';
 import { createInventoryPanel } from '@/ui/home/panels/InventoryPanel';
 import { createEchoesPanel } from '@/ui/home/panels/EchoesPanel';
 import { createPlayPanel } from '@/ui/home/panels/PlayPanel';
@@ -34,9 +37,12 @@ export class HomeUI {
   private static unsubscribeStore: (() => void) | null = null;
   private static unsubscribeOpenTab: (() => void) | null = null;
   private static unsubscribeLocale: (() => void) | null = null;
+  private static unsubscribeNudges: (() => void) | null = null;
 
   static init(uiRoot: HTMLElement): void {
     if (HomeUI.mounted) return;
+
+    HomeUI.unsubscribeNudges = initHomeProgressionNudges();
 
     HomeUI.unsubscribeScene = EventBus.on('scene:changed', ({ id }) => {
       if (id === 'home') {
@@ -51,6 +57,8 @@ export class HomeUI {
 
   static destroy(): void {
     HomeUI.unmount();
+    HomeUI.unsubscribeNudges?.();
+    HomeUI.unsubscribeNudges = null;
     HomeUI.unsubscribeScene?.();
     HomeUI.unsubscribeScene = null;
     HomeUI.mounted = false;
@@ -58,6 +66,7 @@ export class HomeUI {
 
   /** @internal Exposed for unit tests. */
   static resetForTests(): void {
+    resetHomeProgressionNudgesForTests();
     HomeUI.destroy();
   }
 
@@ -147,7 +156,6 @@ export class HomeUI {
     if (!HomeUI.root) return;
 
     closeWorldMapOverlay();
-    detachDevControlsToRoot();
 
     HomeUI.unsubscribeStore?.();
     HomeUI.unsubscribeStore = null;
@@ -191,14 +199,7 @@ export class HomeUI {
       HomeUI.panelInner.appendChild(HomeUI.panels[tab].root);
       HomeUI.bottomNav.setActive(tab);
       HomeUI.panels[tab].refresh();
-      if (tab === 'play') {
-        const slot = HomeUI.panels.play.root.querySelector('.home-play__dev-slot');
-        if (slot instanceof HTMLElement) attachDevControlsToPlaySlot(slot);
-      } else {
-        detachDevControlsToRoot();
-      }
     } else {
-      detachDevControlsToRoot();
       HomeUI.panelSheet.classList.remove('home-panel-sheet--open');
       HomeUI.bottomNav.setActive(null);
     }

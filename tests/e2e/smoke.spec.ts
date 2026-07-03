@@ -1,40 +1,65 @@
 import { expect, test } from '@playwright/test';
 
+async function dismissAudioUnlock(page: import('@playwright/test').Page): Promise<void> {
+  const audioUnlock = page.locator('[data-testid="audio-unlock"]');
+  if (await audioUnlock.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await audioUnlock.click();
+  }
+}
+
+async function dismissEncounterIfPresent(page: import('@playwright/test').Page): Promise<void> {
+  const encounterModal = page.locator('[data-testid="encounter-modal"]');
+  if (await encounterModal.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await page.getByRole('button', { name: 'Embrace the Dao' }).click();
+    await expect(encounterModal).toBeHidden({ timeout: 10_000 });
+  }
+}
+
+async function waitForCombatCanvas(page: import('@playwright/test').Page): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      const canvas = document.querySelector('#canvas-2d');
+      return canvas instanceof HTMLCanvasElement && !canvas.classList.contains('canvas--inactive');
+    },
+    { timeout: 30_000 },
+  );
+}
+
+async function returnHomeViaPause(page: import('@playwright/test').Page): Promise<void> {
+  await page.getByTestId('combat-pause-btn').click();
+  await expect(page.getByTestId('combat-pause-menu')).toBeVisible();
+  await page.getByRole('button', { name: 'Return Home' }).click();
+  await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+}
+
 test.describe('MVP smoke', () => {
-  test('boot → home → world map → combat → home → vi locale', async ({ page }) => {
+  test('boot → Begin Journey → combat → home → Continue again → vi locale', async ({ page }) => {
     await page.goto('/');
-
-    const audioUnlock = page.locator('[data-testid="audio-unlock"]');
-    if (await audioUnlock.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await audioUnlock.click();
-    }
+    await dismissAudioUnlock(page);
 
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByRole('tab', { name: 'Play' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Journey' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Map Portal' }).click();
-    await expect(page.locator('[data-testid="world-map"]')).toBeVisible();
+    await expect(page.getByTestId('continue-journey-btn')).toBeVisible();
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Begin Journey');
+    await expect(page.getByTestId('continue-journey-hint')).toContainText('Next:');
 
-    await page.locator('[data-map-id="map.fallen_village.01"]').click();
-    await expect(page.locator('[data-testid="world-map-detail"]')).toBeVisible();
-    await page.getByRole('button', { name: 'Enter' }).click();
+    await page.getByTestId('continue-journey-btn').click();
+    await waitForCombatCanvas(page);
+    await dismissEncounterIfPresent(page);
+    await returnHomeViaPause(page);
 
-    await page.waitForFunction(
-      () => {
-        const canvas = document.querySelector('#canvas-2d');
-        return canvas instanceof HTMLCanvasElement && !canvas.classList.contains('canvas--inactive');
-      },
-      { timeout: 30_000 },
-    );
-
-    await page.locator('button[data-scene="home"]').click();
-    await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('continue-journey-btn')).toHaveText('Continue Journey');
+    await page.getByTestId('continue-journey-btn').click();
+    await waitForCombatCanvas(page);
+    await dismissEncounterIfPresent(page);
+    await returnHomeViaPause(page);
 
     await page.locator('.home-profile__settings').click();
     await expect(page.locator('[data-testid="settings-modal"]')).toBeVisible();
     await page.locator('label[data-value="vi"]').click();
 
     await page.locator('.settings-modal__backdrop').click({ force: true });
-    await expect(page.getByRole('tab', { name: 'Chơi' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Hành Trình' })).toBeVisible();
   });
 });

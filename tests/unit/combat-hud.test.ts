@@ -27,6 +27,7 @@ describe('CombatHUD', () => {
     expect(hud?.hidden).toBe(false);
     expect(uiRoot.querySelector('#joystick')).toBeTruthy();
     expect(uiRoot.querySelector('.action-buttons')).toBeTruthy();
+    expect(uiRoot.querySelector('[data-testid="combat-pause-btn"]')).toBeTruthy();
 
     EventBus.emit('scene:changed', { id: 'home', payload: undefined });
     expect(hud?.hidden).toBe(true);

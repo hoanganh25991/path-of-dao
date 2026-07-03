@@ -96,6 +96,7 @@ export const playerSaveV1Schema = z.object({
     // default([]) keeps pre-journey v1 saves loadable (added in sub-plan 28).
     journey: z.array(journeyEntrySchema).default([]),
     currentMapId: z.string().nullable(),
+    weaponMilestone: z.enum(['none', 'ancient_sword']).default('none'),
   }),
   cosmetics: z
     .object({

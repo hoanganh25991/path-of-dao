@@ -96,7 +96,7 @@ export class SaveManager {
       insights: seedDefaultInsights(),
       equippedSkills: {
         primary: 'skill.void.slash',
-        secondary: 'skill.sword.slash',
+        secondary: 'skill.life.mend',
         ultimate: 'skill.time.slow',
       },
       unlockedSkills: [
@@ -109,15 +109,13 @@ export class SaveManager {
       ],
       inventory: {
         items: [
-          { id: 'item.sword.iron', qty: 1 },
           { id: 'item.bracelet.copper', qty: 1 },
           { id: 'item.ring.speed', qty: 1 },
-          { id: 'item.spirit.jade', qty: 1 },
         ],
         gold: 0,
       },
       equipped: {
-        weapon: 'item.sword.wood',
+        weapon: null,
         armor: 'item.robe.novice',
         accessory: null,
         spirit: null,
@@ -132,6 +130,7 @@ export class SaveManager {
         loreUnlocked: [],
         journey: [],
         currentMapId: null,
+        weaponMilestone: 'none',
       },
       cosmetics: { pet: null },
       settings: { locale: 'system', quality: 'auto', sfxVolume: 1, musicVolume: 1 },

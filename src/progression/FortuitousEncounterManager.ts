@@ -7,6 +7,8 @@ import {
   getEncountersForTrigger,
 } from '@/progression/EncounterLoader';
 import type { EncounterDefinition, EncounterTriggerKind } from '@/shared/schemas/fortuitous-encounters';
+import { patchAncientSwordMilestone } from '@/progression/WeaponProgression';
+import { recordJourney } from '@/progression/JourneyLog';
 
 export type RngFn = () => number;
 
@@ -140,14 +142,22 @@ export function applyEncounterReward(
   let loreUnlocked = save.progress.loreUnlocked;
   let cosmetics = save.cosmetics;
   let equippedSkills = save.equippedSkills;
+  let equipped = save.equipped;
+  let progress = save.progress;
 
   switch (encounter.reward.type) {
     case 'item': {
       const itemId = pickRandomItem(encounter.reward.itemIds);
-      inventory = {
-        ...inventory,
-        items: addInventoryItem(inventory.items, itemId),
-      };
+      const milestonePatch = patchAncientSwordMilestone(save, itemId);
+      if (milestonePatch) {
+        progress = milestonePatch.progress ?? progress;
+        equipped = milestonePatch.equipped ?? equipped;
+      } else {
+        inventory = {
+          ...inventory,
+          items: addInventoryItem(inventory.items, itemId),
+        };
+      }
       break;
     }
     case 'gold_insight': {
@@ -199,10 +209,17 @@ export function applyEncounterReward(
     insights,
     cosmetics,
     equippedSkills,
+    equipped,
     progress: {
-      ...save.progress,
+      ...progress,
       encountersFound,
       loreUnlocked,
+      journey: recordJourney(
+        save,
+        'encounter',
+        foundId,
+        save.progress.currentMapId ?? null,
+      ),
     },
   };
 }

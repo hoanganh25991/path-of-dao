@@ -17,10 +17,10 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 - **PWA** — `vite-plugin-pwa`, manifest, service worker precache, placeholder icons
 - **Build** — manual chunks (`phaser`, `three`, `vendor`); build + SW generation green
 - **CI** — unit job + **e2e job** (Playwright chromium)
-- **E2E smoke** — `tests/e2e/smoke.spec.ts`: boot → home → ch1 map → combat → home → vi locale
+- **E2E smoke** — `tests/e2e/smoke.spec.ts`: boot → **Continue Journey** → combat → home → Continue again → vi locale
 - **ErrorReporter** — client error ring buffer stub
 - **SHIP_CHECKLIST** — [docs/SHIP_CHECKLIST.md](../docs/SHIP_CHECKLIST.md)
-- **Tests** — `quality-profile.test.ts`; **334 unit + 1 e2e green**
+- **Tests** — **351 unit + 1 e2e green**
 
 ## Remaining
 
@@ -31,6 +31,6 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 ## Verification
 
 - `npm run typecheck` — clean
-- `npm test` — **334 tests green**
+- `npm test` — **351 tests green**
 - `npm run test:e2e` — **1 smoke green**
 - `npm run build` — dist + `sw.js` generated

@@ -15,6 +15,7 @@ Clearing a chapter finale triggers a full-screen story scene; archive replays un
 - Chapter finale routes to dedicated story scene host
 - Story reader: typewriter text, tap to advance, skip with confirm
 - Rewards applied once per chapter; next chapter unlocks
+- **Chapter unlock toast** on story finish → Home ("The road opens: …")
 - Story archive in Home replays without duplicate rewards
 - Chapter 1 full English and Vietnamese copy
 - Chapters 2–10 use stub slide keys pending literary pass

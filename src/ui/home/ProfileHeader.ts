@@ -17,6 +17,14 @@ import { showBreakthroughModal } from '@/ui/modals/BreakthroughModal';
 import { showSettingsModal } from '@/ui/modals/SettingsModal';
 import { createProfilePanel } from '@/ui/home/ProfilePanel';
 
+function showToast(message: string): void {
+  const toast = document.createElement('div');
+  toast.className = 'home-toast home-ui__interactive';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  toast.addEventListener('animationend', () => toast.remove());
+}
+
 export interface ProfileHeaderHandles {
   root: HTMLElement;
   refresh(): void;
@@ -102,6 +110,7 @@ export function createProfileHeader(): ProfileHeaderHandles {
 
   let ceremonyActive = false;
   let profilePanel: ReturnType<typeof createProfilePanel> | null = null;
+  let wasBreakthroughReady = false;
 
   const closeProfilePanel = (): void => {
     profilePanel?.destroy();
@@ -167,6 +176,11 @@ export function createProfileHeader(): ProfileHeaderHandles {
     cultivateBtn.hidden = !ready;
     cultivateBtn.classList.toggle('home-profile__cultivate--ready', ready);
 
+    if (ready && !wasBreakthroughReady) {
+      showToast(I18nManager.t('home.breakthrough_ready'));
+    }
+    wasBreakthroughReady = ready;
+
     profilePanel?.refresh();
   };
 
@@ -176,11 +190,16 @@ export function createProfileHeader(): ProfileHeaderHandles {
     refresh();
   });
 
+  const unsubscribeBreakthrough = EventBus.on('realm:breakthrough-ready', () => {
+    refresh();
+  });
+
   return {
     root,
     refresh,
     destroy() {
       unsubscribeCp();
+      unsubscribeBreakthrough();
       closeProfilePanel();
       root.remove();
     },

@@ -27,13 +27,13 @@ function makeStats(overrides: Partial<BaseStats> = {}): BaseStats {
   };
 }
 
-/** Level-1 mortal body with default wood sword + novice robe (documented starter loadout). */
+/** Level-1 mortal body, unarmed with novice robe (T4 — no starter sword). */
 const STARTER_STATS = makeStats();
 
 describe('computeCombatPower', () => {
-  it('starter stat contribution is ~854 (level 1 + starter gear, no realm/insight bonus)', () => {
-    const cp = computeCombatPower(STARTER_STATS, 0, {});
-    expect(cp).toBe(854);
+  it('starter stat contribution is ~869 (level 1 + robe, no weapon, no realm/insight bonus)', () => {
+    const cp = computeCombatPower({ ...STARTER_STATS, def: 17, hpMax: 140 }, 0, {});
+    expect(cp).toBe(869);
     expect(cp).toBeGreaterThanOrEqual(500);
     expect(cp).toBeLessThanOrEqual(2000);
   });
@@ -56,15 +56,15 @@ describe('computeCombatPower', () => {
   it('computes from default new save with mortal_body realm order 1', () => {
     const save = SaveManager.createNew();
     const cp = computeCombatPowerFromSave(save);
-    expect(cp).toBe(computeCombatPower(STARTER_STATS, 1, save.insights));
-    expect(cp).toBe(50_854);
+    expect(cp).toBe(50_844);
+    expect(save.equipped.weapon).toBeNull();
   });
 });
 
 describe('formatCombatPower', () => {
   it('formats with locale thousands separator', () => {
-    expect(formatCombatPower(50854, 'en')).toBe('50,854');
-    expect(formatCombatPower(50854, 'vi')).toMatch(/50[\s.]854/);
+    expect(formatCombatPower(50844, 'en')).toBe('50,844');
+    expect(formatCombatPower(50844, 'vi')).toMatch(/50[\s.]844/);
   });
 });
 

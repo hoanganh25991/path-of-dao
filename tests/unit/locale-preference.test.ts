@@ -39,13 +39,13 @@ describe('I18nManager locale preference', () => {
     vi.stubGlobal('navigator', { language: 'vi-VN' });
     await I18nManager.load('system');
     expect(I18nManager.locale).toBe('vi');
-    expect(I18nManager.t('home.nav.play')).toBe('Chơi');
+    expect(I18nManager.t('home.nav.play')).toBe('Hành Trình');
   });
 
   it('loads explicit en preference regardless of navigator', async () => {
     vi.stubGlobal('navigator', { language: 'vi-VN' });
     await I18nManager.load('en');
     expect(I18nManager.locale).toBe('en');
-    expect(I18nManager.t('home.nav.play')).toBe('Play');
+    expect(I18nManager.t('home.nav.play')).toBe('Journey');
   });
 });

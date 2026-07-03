@@ -393,6 +393,15 @@
   cursor: pointer;
 }
 
+.home-play__continue {
+  margin-bottom: 0.35rem;
+}
+
+.home-play__continue + .home-play__hint:not(.home-play__hint--muted) {
+  margin-bottom: 1rem;
+  color: var(--dao-jade);
+}
+
 .home-play__portal--secondary {
   margin-top: 0.75rem;
   opacity: 0.92;

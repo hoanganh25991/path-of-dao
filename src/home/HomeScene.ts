@@ -5,6 +5,7 @@ import { CameraRig, createHomeCamera } from '@/home/CameraRig';
 import { disposeControls, disposeSceneGraph } from '@/home/disposeThree';
 import { EnvironmentBuilder } from '@/home/EnvironmentBuilder';
 import { HeroViewer } from '@/home/HeroViewer';
+import { getHeroDisplayEquipment } from '@/progression/WeaponProgression';
 import { realmToAuraTier } from '@/home/realmAura';
 
 export interface HomeSceneHandles {
@@ -27,11 +28,11 @@ export class HomeScene {
     const camera = createHomeCamera(canvas.clientWidth, canvas.clientHeight);
 
     const environment = new EnvironmentBuilder();
-    environment.build(scene);
+    environment.build(scene, save);
 
     const heroViewer = new HeroViewer(scene);
     await heroViewer.load(save.heroId);
-    await heroViewer.syncEquipment(save.equipped);
+    await heroViewer.syncEquipment(getHeroDisplayEquipment(save));
     heroViewer.syncPet(save.cosmetics.pet);
     heroViewer.playIdle();
 
@@ -82,6 +83,11 @@ export class HomeScene {
   updateAura(realmId: string): void {
     if (!this.handles) return;
     this.handles.auraController.setTier(realmToAuraTier(realmId));
+  }
+
+  syncJourneyEnvironment(save: PlayerSaveV1): void {
+    if (!this.handles) return;
+    this.handles.environment.syncFromSave(save);
   }
 
   dispose(): void {
