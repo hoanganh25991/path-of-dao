@@ -31,3 +31,4 @@ None for this sub-plan.
 
 - Demo enter → combat → exit to Home with demo save loaded
 - God mode and encounter skip confirmed in playtest
+- Ancient hero name + epithet tags stack without overlap (`ancientHeroVisuals.ts` Y offsets)
