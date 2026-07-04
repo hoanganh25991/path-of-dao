@@ -24,6 +24,7 @@ import {
 } from '@/progression/InsightSystem';
 import { listDiscoveredIntentIds } from '@/progression/SkillLoadout';
 import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
+import type { EquipFailureReason } from '@/progression/EquipmentManager';
 
 export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent' | 'destiny';
 
@@ -267,6 +268,14 @@ export function createProfilePanel(): ProfilePanelHandles {
     detailOverlay = null;
   }
 
+  function showEquipErrorToast(message: string): void {
+    const toast = document.createElement('div');
+    toast.className = 'home-toast home-ui__interactive';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    toast.addEventListener('animationend', () => toast.remove());
+  }
+
   function openDharmaDetail(itemId: string): void {
     closeDetail();
     const save = gameStore.getState().save;
@@ -356,10 +365,35 @@ export function createProfilePanel(): ProfilePanelHandles {
       : I18nManager.t('home.dharma.equip');
 
     primary.addEventListener('click', () => {
-      if (equipped && slot) { EquipmentManager.unequip(slot); }
-      else { EquipmentManager.equip(itemId); }
-      closeDetail();
-      renderDharma();
+      if (equipped && slot) {
+        EquipmentManager.unequip(slot);
+        closeDetail();
+        renderDharma();
+      } else {
+        const result = EquipmentManager.equip(itemId);
+        if (result.ok) {
+          closeDetail();
+          renderDharma();
+        } else {
+          const reason = result.reason!;
+          let msg: string;
+          if (reason === 'level_too_low') {
+            try {
+              const def = getItemDefinition(itemId);
+              msg = I18nManager.t('home.dharma.equip_fail_level', { level: String(def.requiredLevel) });
+            } catch {
+              msg = I18nManager.t('home.dharma.equip_fail_level', { level: '?' });
+            }
+          } else if (reason === 'wrong_slot') {
+            msg = I18nManager.t('home.dharma.equip_fail_slot');
+          } else if (reason === 'not_in_inventory') {
+            msg = I18nManager.t('home.dharma.equip_fail_inventory');
+          } else {
+            msg = I18nManager.t('home.dharma.equip_fail_unknown');
+          }
+          showEquipErrorToast(msg);
+        }
+      }
     });
 
     const secondary = document.createElement('button');

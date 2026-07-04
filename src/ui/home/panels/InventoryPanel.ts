@@ -3,6 +3,7 @@ import { I18nManager } from '@/core/i18n/I18nManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
 import { EquipmentManager } from '@/progression/EquipmentManager';
+import type { EquipFailureReason } from '@/progression/EquipmentManager';
 import {
   EQUIPMENT_SLOTS,
   type EquipmentSlot,
@@ -117,11 +118,37 @@ export function createInventoryPanel(): InventoryPanelHandles {
     primary.addEventListener('click', () => {
       if (equipped && slot) {
         EquipmentManager.unequip(slot);
+        closeDetail();
+        refresh();
       } else {
-        EquipmentManager.equip(itemId);
+        const result = EquipmentManager.equip(itemId);
+        if (result.ok) {
+          closeDetail();
+          refresh();
+        } else {
+          const reason = result.reason!;
+          let msg: string;
+          if (reason === 'level_too_low') {
+            try {
+              const def = getItemDefinition(itemId);
+              msg = I18nManager.t('home.dharma.equip_fail_level', { level: String(def.requiredLevel) });
+            } catch {
+              msg = I18nManager.t('home.dharma.equip_fail_level', { level: '?' });
+            }
+          } else if (reason === 'wrong_slot') {
+            msg = I18nManager.t('home.dharma.equip_fail_slot');
+          } else if (reason === 'not_in_inventory') {
+            msg = I18nManager.t('home.dharma.equip_fail_inventory');
+          } else {
+            msg = I18nManager.t('home.dharma.equip_fail_unknown');
+          }
+          const toast = document.createElement('div');
+          toast.className = 'home-toast home-ui__interactive';
+          toast.textContent = msg;
+          document.body.appendChild(toast);
+          toast.addEventListener('animationend', () => toast.remove());
+        }
       }
-      closeDetail();
-      refresh();
     });
 
     const secondary = document.createElement('button');
