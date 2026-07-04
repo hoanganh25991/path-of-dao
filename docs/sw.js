@@ -81,7 +81,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"
   }, {
     "url": "index.html",
-    "revision": "f17ac2ab2e384d5bd2b87984a51b48af"
+    "revision": "5e726c4ce6d56d51fdae34382dc0b7e6"
   }, {
     "url": "favicon.ico",
     "revision": "e1625ff44026e81605560873d7fcf309"
@@ -98,7 +98,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/void_throne-01-CCf2eSqK.json",
     "revision": null
   }, {
-    "url": "assets/virtual_pwa-register-C-1MKxGX.js",
+    "url": "assets/virtual_pwa-register-C9wjhKtp.js",
     "revision": null
   }, {
     "url": "assets/vendor-C8bt_7hy.js",
@@ -146,7 +146,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/index-ZmMzrzUK.css",
     "revision": null
   }, {
-    "url": "assets/index-RmTgsuAU.js",
+    "url": "assets/index-V9Bm5g98.js",
     "revision": null
   }, {
     "url": "assets/hidden_cave-B3gJzmH4.png",
