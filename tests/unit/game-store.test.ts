@@ -5,6 +5,11 @@ import { EventBus } from '@/core/EventBus';
 import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import {
+  enterAncientDemo,
+  hasJourneyBackup,
+  isAncientDemoActive,
+} from '@/progression/AncientDemoManager';
+import {
   computeCombatPowerFromSave,
   yearsCultivated,
 } from '@/progression/CombatPower';
@@ -176,5 +181,21 @@ describe('gameStore', () => {
     expect(
       yearsCultivated(after.meta.totalPlaySeconds, getRealmOrder(after.realm.id)),
     ).toBe(17);
+  });
+
+  it('newGame clears ancient demo session and journey backup', async () => {
+    await gameStore.getState().load();
+    gameStore.getState().patch({ xp: 500 });
+    await enterAncientDemo('ancient.breakthrough_sage');
+
+    expect(isAncientDemoActive()).toBe(true);
+    expect(hasJourneyBackup()).toBe(true);
+
+    await gameStore.getState().newGame({ preserveSettings: true });
+
+    expect(isAncientDemoActive()).toBe(false);
+    expect(hasJourneyBackup()).toBe(false);
+    expect(gameStore.getState().save?.xp).toBe(0);
+    expect(gameStore.getState().save?.realm.id).toBe('mortal_body');
   });
 });

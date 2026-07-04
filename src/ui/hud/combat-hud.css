@@ -71,15 +71,21 @@
 .action-buttons {
   --btn-size: 52px;
   --btn-lg: 72px;
+  --swap-btn-size: 44px;
   /* Arc fan: attack center → satellites left/up (180°→68°, ~28° apart for 52px buttons). */
   --arc-radius: 122px;
   --arc-origin-x: calc(100% - var(--btn-lg) / 2);
   --arc-origin-y: calc(100% - var(--btn-lg) / 2);
   --cluster-size: calc(var(--btn-lg) / 2 + var(--arc-radius) + var(--btn-size) / 2 + 4px);
+  /* 68° sits right of vertical; shift cluster left so swap btn stays in viewport. */
+  --arc-right-overhang: calc(
+    cos(68deg) * var(--arc-radius) + var(--swap-btn-size) / 2 - var(--btn-lg) / 2
+  );
 
   position: absolute;
   right: max(1rem, env(safe-area-inset-right));
   bottom: max(1.25rem, env(safe-area-inset-bottom));
+  padding-right: max(4px, var(--arc-right-overhang));
   z-index: 1;
   pointer-events: none;
 }
@@ -136,10 +142,10 @@
 }
 
 .action-btn--swap-skills {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
+  width: var(--swap-btn-size);
+  height: var(--swap-btn-size);
+  min-width: var(--swap-btn-size);
+  min-height: var(--swap-btn-size);
   border-color: rgba(143, 212, 196, 0.35);
   background: rgba(12, 16, 24, 0.92);
   font-size: 1.1rem;
