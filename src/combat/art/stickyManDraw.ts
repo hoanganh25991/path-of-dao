@@ -1,7 +1,12 @@
 import type { StickPalette, StickPose, SegmentAngles } from '@/combat/art/stickyManPalette';
 import { limbEnd, seg } from '@/combat/art/stickyManPalette';
 import { smoothPoseStrip } from '@/combat/art/stickyManPoseMath';
-import { STRIKE_POSES, UNARMED_STRIKE_KINDS } from '@/combat/art/stickyManStrikes';
+import {
+  STRIKE_POSES,
+  UNARMED_STRIKE_KINDS,
+  WEAPON_STRIKE_KINDS,
+  WEAPON_STRIKE_POSES,
+} from '@/combat/art/stickyManStrikes';
 
 const HEAD_R = 4;
 const UPPER_ARM = 4;
@@ -633,9 +638,13 @@ export function drawStickyFrame(
   const shift = pose.shiftX ?? 0;
   const bob = pose.bob ?? 0;
   const lean = pose.lean ?? 0;
+  const hipDrop = pose.hipDrop ?? 0;
   const leanX = Math.round(lean * 0.35);
   const layout = resolveBodyLayout(h, scale.headR, bob);
-  const { headY, shoulderY, hipY, footY } = layout;
+  let { headY, shoulderY, hipY, footY } = layout;
+  headY += hipDrop;
+  shoulderY += hipDrop;
+  hipY += hipDrop;
   const torsoCx = w / 2 + shift;
   const shoulderCx = torsoCx + leanX;
   const hipCx = torsoCx + Math.round(lean * 0.22);
@@ -908,35 +917,37 @@ export const POSES_ATTACK_3: StickPose[] = [
   { lean: 3, shiftX: 1, limbs: { armBack: seg(-22, -15), armFront: seg(-32, -22), legBack: seg(-12, -8), legFront: seg(14, 10) } },
 ];
 
-export const POSES_ATTACK_1_SMOOTH = smoothPoseStrip(POSES_ATTACK_1, 1);
-export const POSES_ATTACK_2_SMOOTH = smoothPoseStrip(POSES_ATTACK_2, 1);
-export const POSES_ATTACK_3_SMOOTH = smoothPoseStrip(POSES_ATTACK_3, 1);
+export const POSES_ATTACK_1_SMOOTH = WEAPON_STRIKE_POSES.wepSlash1;
+export const POSES_ATTACK_2_SMOOTH = WEAPON_STRIKE_POSES.wepSlash2;
+export const POSES_ATTACK_3_SMOOTH = WEAPON_STRIKE_POSES.wepSlam3;
 
 export const POSES_HIT: StickPose[] = [
   { lean: 6, limbs: { armBack: seg(42, 35), armFront: seg(48, 40), legBack: seg(20, 14), legFront: seg(-12, -8) } },
   { bob: 2, lean: 8, limbs: { armBack: seg(48, 40), armFront: seg(52, 44), legBack: seg(24, 18), legFront: seg(-16, -10) } },
 ];
 
-/** Seated meditation — cultivator recovery after losing an exchange. */
+/** Seated meditation — lotus legs + dhyana mudra (palms on lap). */
 export const POSES_SIT: StickPose[] = [
   {
     bob: 0,
-    lean: 3,
+    lean: 0,
+    hipDrop: 8,
     limbs: {
-      armBack: seg(-28, -38),
-      armFront: seg(28, -38),
-      legBack: seg(-42, -18),
-      legFront: seg(42, -18),
+      armBack: seg(5, 75),
+      armFront: seg(-5, -75),
+      legBack: seg(58, -65),
+      legFront: seg(-58, 65),
     },
   },
   {
-    bob: -0.5,
-    lean: 3,
+    bob: -0.8,
+    lean: 0,
+    hipDrop: 8,
     limbs: {
-      armBack: seg(-27, -37),
-      armFront: seg(27, -37),
-      legBack: seg(-41, -17),
-      legFront: seg(41, -17),
+      armBack: seg(4, 74),
+      armFront: seg(-4, -74),
+      legBack: seg(57, -64),
+      legFront: seg(-57, 64),
     },
   },
 ];
@@ -1078,9 +1089,7 @@ export const HERO_FRAME_COUNT_UNARMED =
 export const HERO_FRAME_COUNT_ARMED =
   POSES_IDLE.length +
   POSES_WALK.length +
-  POSES_ATTACK_1_SMOOTH.length +
-  POSES_ATTACK_2_SMOOTH.length +
-  POSES_ATTACK_3_SMOOTH.length +
+  WEAPON_STRIKE_KINDS.reduce((n, kind) => n + WEAPON_STRIKE_POSES[kind].length, 0) +
   POSES_HIT.length;
 
 /** @deprecated use HERO_FRAME_COUNT_UNARMED or buildHeroFrames().length */
@@ -1094,7 +1103,15 @@ export function applyWeaponProp(poses: StickPose[], prop: 'sword' | 'lance' | 's
 
 export function heroFrameOffset(
   style: HeroCombatStyle,
-  group: 'idle' | 'walk' | 'attack1' | 'attack2' | 'attack3' | 'hit' | 'sit',
+  group:
+    | 'idle'
+    | 'walk'
+    | 'hit'
+    | 'sit'
+    | 'attack1'
+    | 'attack2'
+    | 'attack3'
+    | WeaponStrikeKind,
 ): number {
   if (group === 'sit') {
     return buildHeroFrames(style).length - POSES_SIT.length;
@@ -1111,14 +1128,26 @@ export function heroFrameOffset(
     return o;
   }
 
-  if (group === 'attack1') return o;
-  o += POSES_ATTACK_1_SMOOTH.length;
-  if (group === 'attack2') return o;
-  o += POSES_ATTACK_2_SMOOTH.length;
-  if (group === 'attack3') return o;
-  o += POSES_ATTACK_3_SMOOTH.length;
+  // Armed layout: idle → walk → step 1 variants → step 2 variants → step 3 variants → hit → sit
+  for (const kind of WEAPON_STRIKE_KINDS) {
+    if (group === kind) return o;
+    o += WEAPON_STRIKE_POSES[kind].length;
+  }
+
   if (group === 'hit') return o;
   return o;
+}
+
+export function heroFrameOffsetForStep(
+  style: HeroCombatStyle,
+  step: 1 | 2 | 3,
+  strikeKind: WeaponStrikeKind,
+): number {
+  if (style === 'unarmed') {
+    return heroFrameOffset(style, 'hit');
+  }
+  // Step 1 and step 3 have multiple variants; step 2 has fewer. Simply return the requested kind.
+  return heroFrameOffset(style, strikeKind);
 }
 
 export function buildHeroFrames(style: HeroCombatStyle = 'unarmed'): StickPose[] {
@@ -1133,9 +1162,7 @@ export function buildHeroFrames(style: HeroCombatStyle = 'unarmed'): StickPose[]
   }
   return [
     ...base,
-    ...applyWeaponProp(POSES_ATTACK_1_SMOOTH, style),
-    ...applyWeaponProp(POSES_ATTACK_2_SMOOTH, style),
-    ...applyWeaponProp(POSES_ATTACK_3_SMOOTH, style),
+    ...WEAPON_STRIKE_KINDS.flatMap((kind) => applyWeaponProp(WEAPON_STRIKE_POSES[kind], style)),
     ...POSES_HIT,
     ...POSES_SIT,
   ];

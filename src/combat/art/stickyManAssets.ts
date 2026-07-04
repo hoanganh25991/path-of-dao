@@ -16,9 +16,6 @@ import {
   POSES_ARCHER_ATTACK,
   POSES_ARCHER_IDLE,
   POSES_ARCHER_WALK,
-  POSES_ATTACK_1_SMOOTH,
-  POSES_ATTACK_2_SMOOTH,
-  POSES_ATTACK_3_SMOOTH,
   POSES_HIT,
   POSES_SIT,
   POSES_SLIME_IDLE,
@@ -32,6 +29,10 @@ import {
   STRIKE_POSES,
   UNARMED_STRIKE_KINDS,
   type UnarmedStrikeKind,
+  WEAPON_STRIKE_ANIM,
+  WEAPON_STRIKE_KINDS,
+  WEAPON_STRIKE_POSES,
+  type WeaponStrikeKind,
 } from '@/combat/art/stickyManStrikes';
 import type { AttackStyle } from '@/progression/WeaponProgression';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
@@ -39,9 +40,6 @@ import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 export const ANIM = {
   heroIdle: 'hero_sticky_idle',
   heroWalk: 'hero_sticky_walk',
-  heroAttack1: 'hero_sticky_attack_1',
-  heroAttack2: 'hero_sticky_attack_2',
-  heroAttack3: 'hero_sticky_attack_3',
   heroHit: 'hero_sticky_hit',
   heroSit: 'hero_sticky_sit',
   slimeIdle: 'enemy_slime_idle',
@@ -59,11 +57,10 @@ export const ANIM = {
 const HERO_ANIM_KEYS = [
   ANIM.heroIdle,
   ANIM.heroWalk,
-  ANIM.heroAttack1,
-  ANIM.heroAttack2,
-  ANIM.heroAttack3,
   ANIM.heroHit,
+  ANIM.heroSit,
   ...UNARMED_STRIKE_KINDS.map((k) => STRIKE_ANIM[k]),
+  ...WEAPON_STRIKE_KINDS.map((k) => WEAPON_STRIKE_ANIM[k]),
 ] as const;
 
 function toHeroCombatStyle(style: AttackStyle): HeroCombatStyle {
@@ -147,6 +144,38 @@ function registerUnarmedStrikes(scene: Phaser.Scene, heroKey: string): void {
   }
 }
 
+function weaponStrikeHold(kind: WeaponStrikeKind): Record<number, number> | undefined {
+  if (kind.endsWith('3')) {
+    return { 3: kind === 'wepSlam3' ? 140 : 130, 4: kind === 'wepSlam3' ? 130 : 110 };
+  }
+  if (kind.endsWith('2')) {
+    return { 2: kind === 'wepSlash2' ? 110 : 0 };
+  }
+  return { 2: kind === 'wepChop1' ? 120 : 0, 3: kind === 'wepSlash1' ? 100 : 0 };
+}
+
+function registerWeaponStrikes(
+  scene: Phaser.Scene,
+  heroKey: string,
+  style: Exclude<HeroCombatStyle, 'unarmed'>,
+): void {
+  let offset = heroFrameOffset(style, 'idle') + POSES_IDLE.length + POSES_WALK.length;
+  for (const kind of WEAPON_STRIKE_KINDS) {
+    const poses = WEAPON_STRIKE_POSES[kind];
+    createAnim(
+      scene,
+      WEAPON_STRIKE_ANIM[kind],
+      heroKey,
+      offset,
+      poses.length,
+      kind.endsWith('3') ? 13 : 14,
+      0,
+      weaponStrikeHold(kind),
+    );
+    offset += poses.length;
+  }
+}
+
 /** Rebuild hero spritesheet + anims for hand strikes (unarmed) or equipped weapon type. */
 export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle = 'unarmed'): void {
   const combatStyle = toHeroCombatStyle(style);
@@ -174,36 +203,7 @@ export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle
     return;
   }
 
-  createAnim(
-    scene,
-    ANIM.heroAttack1,
-    heroKey,
-    heroFrameOffset(combatStyle, 'attack1'),
-    POSES_ATTACK_1_SMOOTH.length,
-    14,
-    0,
-    { 2: 120, 3: 100 },
-  );
-  createAnim(
-    scene,
-    ANIM.heroAttack2,
-    heroKey,
-    heroFrameOffset(combatStyle, 'attack2'),
-    POSES_ATTACK_2_SMOOTH.length,
-    14,
-    0,
-    { 2: 110 },
-  );
-  createAnim(
-    scene,
-    ANIM.heroAttack3,
-    heroKey,
-    heroFrameOffset(combatStyle, 'attack3'),
-    POSES_ATTACK_3_SMOOTH.length,
-    13,
-    0,
-    { 3: 140, 4: 130 },
-  );
+  registerWeaponStrikes(scene, heroKey, combatStyle);
 }
 
 /** Register sticky-man spritesheets + Phaser animations (BootScene). */

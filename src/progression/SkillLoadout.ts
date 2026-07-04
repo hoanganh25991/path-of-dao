@@ -1,5 +1,4 @@
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
-import { BUILTIN_SKILL_IDS } from '@/progression/BuiltinSkills';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { getInsightIntentConfig, getIntentForSkillId, listInsightIntentIds } from '@/progression/InsightDefinitions';
 import { getInsightState } from '@/progression/InsightSystem';
@@ -33,16 +32,9 @@ export function listDiscoveredIntentIds(save: PlayerSaveV1): string[] {
   return [...discovered].sort();
 }
 
-/** Built-in skills always available in the loadout picker (meditate, etc.). */
-export function listBuiltinSkillIds(): string[] {
-  return [...BUILTIN_SKILL_IDS];
-}
-
-/** Assignable pool — earned unlocks (+ awakened variants) plus built-ins. */
+/** Assignable pool — earned unlocks (+ awakened variants). */
 export function listAssignableSkillPool(save: PlayerSaveV1): string[] {
-  const unlocked = listUnlockedSkillIds(save);
-  const merged = new Set([...listBuiltinSkillIds(), ...unlocked]);
-  return [...merged].sort();
+  return listUnlockedSkillIds(save);
 }
 
 /** Skills the player may assign — only earned unlocks (+ awakened variants). */
@@ -117,6 +109,5 @@ export function defaultLoadoutFromSave(save: PlayerSaveV1): EquippedSkills {
 export function canCastEquippedSkill(save: PlayerSaveV1, slot: SkillSlotId): boolean {
   const skillId = save.equippedSkills[slot];
   if (!isFilledSkillSlot(skillId)) return false;
-  if (listBuiltinSkillIds().includes(skillId)) return true;
   return listUnlockedSkillIds(save).includes(skillId);
 }

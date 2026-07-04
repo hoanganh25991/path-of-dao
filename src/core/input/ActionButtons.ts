@@ -14,6 +14,7 @@ import {
 export type ActionButtonId =
   | 'attack'
   | 'dodge'
+  | 'health'
   | 'skillPrimary'
   | 'skillSecondary'
   | 'skillUltimate';
@@ -38,6 +39,13 @@ const STATIC_BUTTONS: Omit<ButtonLayout, 'slot'>[] = [
     className: 'action-btn--attack',
     iconHtml: '<span class="skill-btn__icon skill-btn__icon--attack">⚔</span>',
     ariaLabel: 'Attack',
+  },
+  {
+    id: 'health',
+    className: 'action-btn--health',
+    iconHtml:
+      '<span class="skill-btn__icon skill-btn__icon--health" style="--skill-color:#286848;--skill-glow:#80ffb0">✦</span>',
+    ariaLabel: 'Gather Qi',
   },
   {
     id: 'dodge',
@@ -111,7 +119,8 @@ export class ActionButtons {
       EventBus.on('scene:changed', () => this.syncFromSave()),
       EventBus.on('demo:entered', () => this.syncFromSave()),
       EventBus.on('loadout:changed', () => this.syncFromSave()),
-      EventBus.on('skill:cooldown-state', (state) => this.applyCooldowns(state)),
+      EventBus.on('skill:cooldown-state', (state) => this.applySkillCooldowns(state)),
+      EventBus.on('health:cooldown-state', (state) => this.applyHealthCooldown(state)),
     );
     this.syncFromSave();
   }
@@ -224,13 +233,19 @@ export class ActionButtons {
     const arcClass = layout.id === 'attack' ? '' : ' action-btn--arc';
     button.className = `action-btn${arcClass} ${layout.className}`;
     button.dataset.action = layout.id;
-    button.setAttribute('aria-label', layout.ariaLabel);
+    button.setAttribute(
+      'aria-label',
+      layout.id === 'health' ? I18nManager.t('combat.health.aria') : layout.ariaLabel,
+    );
     button.innerHTML = layout.iconHtml;
     this.wirePointer(button, layout.id);
 
     const cooldown = document.createElement('span');
     cooldown.className = 'action-btn__cooldown';
-    cooldown.hidden = true;
+    cooldown.setAttribute('aria-hidden', 'true');
+    if (layout.id !== 'health') {
+      cooldown.hidden = true;
+    }
     button.appendChild(cooldown);
 
     this.buttons.set(layout.id, {
@@ -262,7 +277,9 @@ export class ActionButtons {
     if (!state || state.held) return;
 
     const slot = SLOT_BY_BUTTON[id];
-    if (slot && state.cooldownEl.style.opacity !== '0' && state.el.classList.contains('action-btn--cooldown')) {
+    const onCooldown =
+      state.cooldownEl.style.opacity !== '0' && state.el.classList.contains('action-btn--cooldown');
+    if (onCooldown && (slot || id === 'health')) {
       return;
     }
 
@@ -282,7 +299,7 @@ export class ActionButtons {
     state.el.classList.remove('action-btn--pressed');
   }
 
-  private applyCooldowns(state: {
+  private applySkillCooldowns(state: {
     primary: { remainingMs: number; totalMs: number };
     secondary: { remainingMs: number; totalMs: number };
     ultimate: { remainingMs: number; totalMs: number };
@@ -306,6 +323,18 @@ export class ActionButtons {
       btn.cooldownEl.style.opacity = onCd ? '1' : '0';
       btn.cooldownEl.style.setProperty('--cd-deg', `${Math.floor(ready * 360)}deg`);
     }
+  }
+
+  private applyHealthCooldown(state: { remainingMs: number; totalMs: number }): void {
+    const btn = this.buttons.get('health');
+    if (!btn) return;
+
+    const ready = cooldownReadyPct(state.remainingMs, state.totalMs);
+    const onCd = state.remainingMs > 0;
+
+    btn.el.classList.toggle('action-btn--cooldown', onCd);
+    btn.cooldownEl.style.opacity = onCd ? '1' : '0';
+    btn.cooldownEl.style.setProperty('--cd-deg', `${Math.floor(ready * 360)}deg`);
   }
 
   private tryHaptic(): void {

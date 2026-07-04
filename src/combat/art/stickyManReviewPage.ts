@@ -8,6 +8,7 @@ import {
   POSES_ATTACK_1_SMOOTH,
   POSES_ATTACK_3_SMOOTH,
   POSES_IDLE,
+  POSES_SIT,
   POSES_SLIME_IDLE,
   POSES_TOTEM_IDLE,
   POSES_WALK,
@@ -37,6 +38,7 @@ interface ReviewRow {
 const ROWS: ReviewRow[] = [
   { label: 'Hero idle', frames: POSES_IDLE, palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Hero walk', frames: POSES_WALK, palette: PALETTE_HERO, variant: 'hero' },
+  { label: 'Hero sit (meditate)', frames: POSES_SIT, palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Jab (smooth)', frames: STRIKE_POSES.jab, palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Front kick (smooth)', frames: STRIKE_POSES.frontKick, palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Heavy haymaker', frames: STRIKE_POSES.heavyHaymaker, palette: PALETTE_HERO, variant: 'hero' },

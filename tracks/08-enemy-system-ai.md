@@ -14,7 +14,9 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 - Non-lethal defeat: 0 HP → sit/meditation at spawn → recover in place → fight again (roaming stays in world)
 - `EncounterScaling`: solo 1 · squad 10 · horde 100 · mass 500 by player realm vs map `recommendedRealmOrder`
 - `CultivatorPool` prewarms 20/type; live cap up to 18 during mass-tier queue drain
-- `CombatCameraDirector` in MapScene — zoom by `combatReadyCount` (solo 1.05 → mass 0.58)
+- `CombatCameraDirector` in MapScene — zoom by `combatReadyCount` (solo 1.05 → mass 0.58); attack/skill engagement pulse zooms in for duels
+- Map intro shows encounter tier hint (solo → mass) from player realm vs map cap
+- Defeat toast + `enemy.defeated` SFX (non-lethal copy — Tu Sĩ sits to recover, not die)
 - `AoeScaling` wired into basic attack + skill effects (realm/level widen arcs and radii)
 - AI archetypes: melee chaser, kiting archer, patrol, stationary totem
 - Wave spawner clears map when all waves defeated; roaming uses in-place recovery

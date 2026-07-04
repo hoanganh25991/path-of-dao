@@ -14,10 +14,14 @@
   "combat.pause.return_home": "Về Nhà",
   "combat.map.depart": "Rời Đi",
   "combat.map.portal": "Lối Đi",
-  "combat.death.title": "Ngươi Đã Ngã",
+  "combat.death.title": "Ngươi Thua Trận",
   "combat.death.flavor": "Con đường tu luyện còn dài. Rút lui, tu luyện, rồi quay lại khi đã sẵn sàng.",
   "combat.death.retry": "Thử Lại",
   "combat.death.return_home": "Về Nhà",
   "combat.cultivator.label": "Tu Sĩ",
-  "combat.cultivator.defeated": "Tu Sĩ thua trận, ngồi tu luyện"
+  "combat.cultivator.defeated": "Tu Sĩ thua trận — ngồi tu luyện hồi phục",
+  "combat.encounter.tier.solo": "Trên chân tinh này, đối thủ gặp ngươi từng người một cho đến khi tu vi sâu hơn.",
+  "combat.encounter.tier.squad": "Khí của ngươi kéo theo một đội — chuẩn bị đối mặt mười Tu Sĩ.",
+  "combat.encounter.tier.horde": "Ngươi vượt trội chân tinh này — trăm Tu Sĩ có thể đáp lại một chiêu.",
+  "combat.encounter.tier.mass": "Quay lại khi đã mạnh — năm trăm Tu Sĩ yếu; một chiêu có thể quét sạch."
 }

@@ -15,7 +15,13 @@ function isKeyboardInputEnabled(): boolean {
   return true;
 }
 
-type CombatAction = 'attack' | 'dodge' | 'skillPrimary' | 'skillSecondary' | 'skillUltimate';
+type CombatAction =
+  | 'attack'
+  | 'dodge'
+  | 'health'
+  | 'skillPrimary'
+  | 'skillSecondary'
+  | 'skillUltimate';
 
 /** Singleton input hub — engine-agnostic; consumed by Phaser in sub-plan 07. */
 export class InputManager {
@@ -28,6 +34,7 @@ export class InputManager {
   private static keyboardHeld: Record<CombatAction, boolean> = {
     attack: false,
     dodge: false,
+    health: false,
     skillPrimary: false,
     skillSecondary: false,
     skillUltimate: false,
@@ -35,6 +42,7 @@ export class InputManager {
   private static keyboardPressed: Record<CombatAction, boolean> = {
     attack: false,
     dodge: false,
+    health: false,
     skillPrimary: false,
     skillSecondary: false,
     skillUltimate: false,
@@ -42,6 +50,7 @@ export class InputManager {
   private static keyboardReleased: Record<CombatAction, boolean> = {
     attack: false,
     dodge: false,
+    health: false,
     skillPrimary: false,
     skillSecondary: false,
     skillUltimate: false,
@@ -89,6 +98,7 @@ export class InputManager {
       move,
       attack: InputManager.readButtonState('attack'),
       dodge: InputManager.readButtonState('dodge'),
+      health: InputManager.readButtonState('health'),
       skillPrimary: InputManager.readButtonState('skillPrimary'),
       skillSecondary: InputManager.readButtonState('skillSecondary'),
       skillUltimate: InputManager.readButtonState('skillUltimate'),
@@ -111,6 +121,7 @@ export class InputManager {
     for (const key of [
       'attack',
       'dodge',
+      'health',
       'skillPrimary',
       'skillSecondary',
       'skillUltimate',
@@ -220,6 +231,10 @@ export class InputManager {
       case 'KeyC':
         InputManager.pressKeyboardAction('dodge');
         break;
+      case 'KeyH':
+      case 'KeyV':
+        InputManager.pressKeyboardAction('health');
+        break;
       default:
         return;
     }
@@ -266,6 +281,10 @@ export class InputManager {
       case 'KeyL':
       case 'KeyC':
         InputManager.releaseKeyboardAction('dodge');
+        break;
+      case 'KeyH':
+      case 'KeyV':
+        InputManager.releaseKeyboardAction('health');
         break;
       default:
         return;

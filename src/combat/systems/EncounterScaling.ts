@@ -71,6 +71,14 @@ export function zoomForActiveEnemies(count: number): number {
   return ENCOUNTER_ZOOM.mass;
 }
 
+/** Max temporary zoom-in from attacks/skills — smaller when many cultivators are active. */
+export function engagementBoostCap(activeCultivatorCount: number): number {
+  if (activeCultivatorCount <= 1) return 0.14;
+  if (activeCultivatorCount <= 10) return 0.1;
+  if (activeCultivatorCount <= 100) return 0.04;
+  return 0;
+}
+
 function countWaveEnemies(wave: EncounterConfig['waves'][number]): number {
   return wave.enemies.reduce((sum, g) => sum + g.count, 0);
 }

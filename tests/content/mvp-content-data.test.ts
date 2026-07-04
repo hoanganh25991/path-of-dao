@@ -17,8 +17,8 @@ describe('MVP content data (sub-plan 23)', () => {
     expect(report.errors).toEqual([]);
   });
 
-  it('has 40 skill definitions', () => {
-    expect(listSkillIds().length).toBe(40);
+  it('has 41 skill definitions (incl. skill.basic.meditate)', () => {
+    expect(listSkillIds().length).toBe(41);
   });
 
   it('has at least 25 enemy types', () => {

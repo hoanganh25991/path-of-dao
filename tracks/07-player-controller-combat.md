@@ -2,11 +2,11 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/07-player-controller-combat.md](../plans/07-player-controller-combat.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 ## Summary
 
-Playable hero with 3-hit combo, dodge with invulnerability, skill bolt, and combat HUD.
+Playable hero with 3-hit combo, dodge with invulnerability, skill bolt, meditation recovery, and combat HUD.
 
 ## Done
 
@@ -17,6 +17,8 @@ Playable hero with 3-hit combo, dodge with invulnerability, skill bolt, and comb
 - **Armed combo** — `hero_sticky_attack_1/2/3` when a weapon is equipped; prop type from item (`sword` / `lance` / `stick`)
 - Hero spritesheet rebuilt per map via `registerHeroCombatAssets()` from `resolveAttackStyle(save)` (T1, T3)
 - Dodge travels a fixed distance with i-frames and afterimage VFX
+- **Meditate skill** (`skill.basic.meditate`, **Gather Qi** / **Hấp Khí**) — dedicated health button (like dodge); toggle sit pose + spirit wisps; fastest HP regen; cancels on move/attack/dodge/hit
+- **Passive HP regen** by state — meditate 6×, walk 0.5×, combat 0.3×; scales with level + realm (`HealthRegen.ts`)
 - Skill button spends mana and fires a spirit bolt
 - HP and mana bars in combat HUD
 - Combat runtime (HP, mana, position) saved when leaving a map
@@ -31,6 +33,8 @@ None for core combat loop.
 
 - 3-hit combo chains correctly on test map (unarmed strike variety + armed weapon combo)
 - Dodge i-frames prevent damage
+- Meditate toggles sit pose; move/attack interrupts (`tests/unit/meditation-skill.test.ts`)
+- Regen formula covered (`tests/unit/health-regen.test.ts`)
 - Skill spends 20 mana and spawns bolt
 - Mana persists after returning Home and re-entering combat
 - Equipping a weapon swaps attack visuals and hitbox reach; unarmed when weapon slot empty

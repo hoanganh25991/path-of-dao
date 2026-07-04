@@ -4,13 +4,11 @@ import {
   buildSheetCanvas,
   heroFrameOffset,
   NORMAL,
-  POSES_ATTACK_1_SMOOTH,
-  POSES_ATTACK_2_SMOOTH,
-  POSES_ATTACK_3_SMOOTH,
   POSES_HIT,
   POSES_IDLE,
   POSES_WALK,
 } from '@/combat/art/stickyManDraw';
+import { WEAPON_STRIKE_POSES } from '@/combat/art/stickyManStrikes';
 import {
   applyStickyManSprite,
   ANIM,
@@ -146,8 +144,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_attack_1`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset(combatStyle, 'attack1'),
-        end: heroFrameOffset(combatStyle, 'attack1') + POSES_ATTACK_1_SMOOTH.length - 1,
+        start: heroFrameOffset(combatStyle, 'wepSlash1'),
+        end: heroFrameOffset(combatStyle, 'wepSlash1') + WEAPON_STRIKE_POSES.wepSlash1.length - 1,
       }),
       frameRate: 16,
       repeat: 0,
@@ -155,8 +153,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_attack_2`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset(combatStyle, 'attack2'),
-        end: heroFrameOffset(combatStyle, 'attack2') + POSES_ATTACK_2_SMOOTH.length - 1,
+        start: heroFrameOffset(combatStyle, 'wepSlash2'),
+        end: heroFrameOffset(combatStyle, 'wepSlash2') + WEAPON_STRIKE_POSES.wepSlash2.length - 1,
       }),
       frameRate: 16,
       repeat: 0,
@@ -164,8 +162,8 @@ function registerAncientHeroTexture(scene: Phaser.Scene, profile: AncientProfile
     scene.anims.create({
       key: `${heroKey}_attack_3`,
       frames: scene.anims.generateFrameNumbers(heroKey, {
-        start: heroFrameOffset(combatStyle, 'attack3'),
-        end: heroFrameOffset(combatStyle, 'attack3') + POSES_ATTACK_3_SMOOTH.length - 1,
+        start: heroFrameOffset(combatStyle, 'wepSlam3'),
+        end: heroFrameOffset(combatStyle, 'wepSlam3') + WEAPON_STRIKE_POSES.wepSlam3.length - 1,
       }),
       frameRate: 14,
       repeat: 0,
@@ -281,15 +279,11 @@ export function mapAncientToHeroAnim(ancientId: string, heroAnim: string): strin
       return keys.idle;
     case ANIM.heroWalk:
       return keys.walk;
-    case ANIM.heroAttack1:
-      return keys.attack1;
-    case ANIM.heroAttack2:
-      return keys.attack2;
-    case ANIM.heroAttack3:
-      return keys.attack3;
     case ANIM.heroHit:
       return keys.hit;
     default:
-      return keys.idle;
+      if (heroAnim.endsWith('3')) return keys.attack3;
+      if (heroAnim.endsWith('2')) return keys.attack2;
+      return keys.attack1;
   }
 }

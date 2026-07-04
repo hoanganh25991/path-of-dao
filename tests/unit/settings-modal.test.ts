@@ -99,13 +99,13 @@ describe('SettingsModal', () => {
     expect(save.meta.totalPlaySeconds).toBe(0);
     expect(save.realm.id).toBe('mortal_body');
     expect(computeCombatPowerFromSave(save)).toBeLessThan(cpBefore);
-    expect(computeCombatPowerFromSave(save)).toBe(50_844);
+    expect(computeCombatPowerFromSave(save)).toBe(844);
     expect(
       yearsCultivated(save.meta.totalPlaySeconds, getRealmOrder(save.realm.id)),
     ).toBeLessThan(yearsBefore);
     expect(
       yearsCultivated(save.meta.totalPlaySeconds, getRealmOrder(save.realm.id)),
-    ).toBe(17);
+    ).toBe(0);
     expect(switchToMock).toHaveBeenCalledWith('home');
 
     const loaded = await SaveManager.load();

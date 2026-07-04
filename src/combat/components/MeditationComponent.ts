@@ -1,43 +1,41 @@
-import { gameStore } from '@/core/store/gameStore';
 import { EventBus } from '@/core/EventBus';
-import { isMeditateSkillId } from '@/progression/BuiltinSkills';
-import { canCastEquippedSkill } from '@/progression/SkillLoadout';
+import { MEDITATE_SKILL_ID } from '@/progression/BuiltinSkills';
 import { getSkillDefinition } from '@/progression/SkillLoader';
-import type { SkillSlot } from '@/core/input/InputState';
+import { getSkillCooldownMs } from '@/progression/SkillCooldown';
 import type { Player } from '@/combat/entities/Player';
 import { MeditationVfx } from '@/combat/vfx/MeditationVfx';
-import { CooldownManager } from '@/combat/skills/CooldownManager';
 
-const SKILL_SLOTS: SkillSlot[] = ['primary', 'secondary', 'ultimate'];
+export interface MeditateCooldownSnapshot {
+  remainingMs: number;
+  totalMs: number;
+}
 
-/** Toggle meditation via equipped {@link MEDITATE_SKILL_ID} slot; spirit wisps + sit pose. */
+/** Toggle meditation via the dedicated health button; spirit wisps + sit pose. */
 export class MeditationComponent {
   private readonly vfx: MeditationVfx;
-  private readonly cooldowns = new CooldownManager();
+  private cooldownRemainingMs = 0;
+  private cooldownTotalMs = 0;
   private wasMeditating = false;
 
   constructor(private readonly player: Player) {
     this.vfx = new MeditationVfx(player.scene, player.sprite.depth);
   }
 
-  /** Press edge on a skill slot — toggles meditate when that slot holds the skill. */
-  tryToggleSlot(slot: SkillSlot): boolean {
-    const save = gameStore.getState().save;
-    if (!save || !canCastEquippedSkill(save, slot)) return false;
-
-    const skillId = save.equippedSkills[slot];
-    if (!isMeditateSkillId(skillId)) return false;
-
+  /** Press edge on the health button — toggles seated recovery. */
+  tryToggle(): boolean {
     if (this.player.sm.state === 'meditate') {
       this.cancel();
       return true;
     }
 
-    const skill = getSkillDefinition(skillId);
-    if (!this.cooldowns.isReady(slot)) return false;
+    if (this.cooldownRemainingMs > 0) return false;
     if (!this.player.sm.tryMeditate()) return false;
 
-    this.cooldowns.start(slot, skill, this.player.stats.isGodMode);
+    const skill = getSkillDefinition(MEDITATE_SKILL_ID);
+    const ms = getSkillCooldownMs(skill, this.player.stats.isGodMode);
+    this.cooldownRemainingMs = ms;
+    this.cooldownTotalMs = ms;
+
     this.player.body.setVelocity(0, 0);
     this.vfx.start(this.player.x, this.player.y);
     EventBus.emit('player:meditate-started', undefined);
@@ -55,7 +53,10 @@ export class MeditationComponent {
   }
 
   update(dtMs: number): void {
-    this.cooldowns.tick(dtMs);
+    if (this.cooldownRemainingMs > 0) {
+      this.cooldownRemainingMs = Math.max(0, this.cooldownRemainingMs - dtMs);
+    }
+
     const meditating = this.player.sm.state === 'meditate';
 
     if (meditating) {
@@ -69,20 +70,11 @@ export class MeditationComponent {
     this.wasMeditating = meditating;
   }
 
-  /** Slot holding meditate skill, if any. */
-  findMeditateSlot(): SkillSlot | null {
-    const save = gameStore.getState().save;
-    if (!save) return null;
-    for (const slot of SKILL_SLOTS) {
-      if (canCastEquippedSkill(save, slot) && isMeditateSkillId(save.equippedSkills[slot])) {
-        return slot;
-      }
-    }
-    return null;
-  }
-
-  getCooldownSnapshot(): Record<SkillSlot, { remainingMs: number; totalMs: number }> {
-    return this.cooldowns.snapshot();
+  getCooldownSnapshot(): MeditateCooldownSnapshot {
+    return {
+      remainingMs: this.cooldownRemainingMs,
+      totalMs: this.cooldownTotalMs,
+    };
   }
 
   destroy(): void {

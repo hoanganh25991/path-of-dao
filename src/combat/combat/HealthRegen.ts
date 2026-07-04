@@ -8,16 +8,16 @@
  * ```
  *
  * Examples (approx):
- * - L1 Mortal Body (order 1): ~2.4 HP/s at walk baseline
- * - L10 Foundation (order 2): ~5.5 HP/s at walk baseline
- * - L20 Core Formation (order 3): ~9.8 HP/s at walk baseline
+ * - L1 Mortal Body (order 1): ~1.2 HP/s while walking
+ * - L10 Foundation (order 2): ~2.8 HP/s while walking
+ * - L20 Core Formation (order 3): ~4.9 HP/s while walking
  *
  * ## State multipliers (× baseRegenPerSec)
  *
  * | State              | Multiplier | Notes                                      |
  * |--------------------|------------|--------------------------------------------|
- * | meditate / sit     | 12×        | Seated cultivation — fastest recovery      |
- * | walk / idle        | 1×         | Moderate passive regen while traveling       |
+ * | meditate / sit     | 6×         | Seated cultivation — fastest recovery      |
+ * | walk / idle        | 0.5×       | Light passive regen while traveling        |
  * | combat / attack    | 0.3×       | Qi diverted to techniques; minimal recovery  |
  *
  * `finalRegenPerSec = baseRegenPerSec × stateMultiplier`
@@ -27,8 +27,8 @@ export type HealthRegenState = 'meditate' | 'walk' | 'combat';
 
 /** Multipliers applied to {@link computeBaseRegenPerSec}. */
 export const REGEN_STATE_MULTIPLIER: Record<HealthRegenState, number> = {
-  meditate: 12,
-  walk: 1,
+  meditate: 6,
+  walk: 0.5,
   combat: 0.3,
 };
 

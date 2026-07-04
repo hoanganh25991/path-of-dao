@@ -127,6 +127,7 @@ export class Player extends EntityBase implements HurtboxEntity {
       }
 
       if (input.dodge.pressed) this.dodge.tryStart(move);
+      if (input.health.pressed) this.meditate.tryToggle();
       if (input.attack.pressed) this.combat.tryAttack();
 
       if (input.skillPrimary.pressed) this.combat.trySkillPressed('primary');
@@ -145,6 +146,7 @@ export class Player extends EntityBase implements HurtboxEntity {
     this.combat.update(dtMs);
     this.applyPassiveRegen(dtMs);
     EventBus.emit('skill:cooldown-state', this.combat.getCooldownSnapshot());
+    EventBus.emit('health:cooldown-state', this.meditate.getCooldownSnapshot());
     this.applyKnockback(dtMs);
     this.anim.update();
     if (this.ancientFx) {

@@ -1,10 +1,28 @@
 import { getMapConfig } from '@/combat/map/MapLoader';
+import { resolveEncounterScale } from '@/combat/systems/EncounterScaling';
+import { gameStore } from '@/core/store/gameStore';
 import { I18nManager } from '@/core/i18n/I18nManager';
+import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { realmCapLabelKeyForOrder } from '@/progression/CultivationDisplay';
 import '@/ui/modals/map-intro.css';
 
 export interface MapIntroModalOptions {
   mapId: string;
+}
+
+function encounterTierHint(mapId: string): string | null {
+  const config = getMapConfig(mapId);
+  if (config.spawnMode === 'roam' || !config.encounterTable) return null;
+
+  const save = gameStore.getState().save;
+  if (!save) return null;
+
+  const scale = resolveEncounterScale(
+    getRealmOrder(save.realm.id),
+    config.recommendedRealmOrder,
+    save.stats.level,
+  );
+  return I18nManager.t(`combat.encounter.tier.${scale.tier}`);
 }
 
 /** Story-as-you-play intro when entering a map for the first time. */
@@ -21,6 +39,7 @@ export function showMapIntroModal(
 
     const realmCapKey = realmCapLabelKeyForOrder(config.recommendedRealmOrder);
     const realmCap = I18nManager.t(realmCapKey);
+    const encounterHint = encounterTierHint(options.mapId);
 
     const overlay = document.createElement('div');
     overlay.className = 'map-intro-modal home-ui__interactive';
@@ -49,6 +68,13 @@ export function showMapIntroModal(
     cap.className = 'map-intro-modal__cap';
     cap.textContent = I18nManager.t('map.intro.realm_cap', { realm: realmCap });
     panel.append(cap);
+
+    if (encounterHint) {
+      const tier = document.createElement('p');
+      tier.className = 'map-intro-modal__tier';
+      tier.textContent = I18nManager.t('map.intro.encounter_tier', { tier: encounterHint });
+      panel.append(tier);
+    }
 
     const continueBtn = document.createElement('button');
     continueBtn.type = 'button';

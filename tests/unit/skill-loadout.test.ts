@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { SaveManager } from '@/core/save/SaveManager';
 import {
   assignSkillToSlot,
+  listAssignableSkillPool,
   listAssignableSkills,
   listDiscoveredIntentIds,
   listUnlockedSkillIds,
   normalizeLoadout,
+  canCastEquippedSkill,
 } from '@/progression/SkillLoadout';
+import { MEDITATE_SKILL_ID } from '@/progression/BuiltinSkills';
 import { unlockSkillIds } from '@/progression/SkillUnlockManager';
 
 describe('SkillLoadout', () => {
@@ -14,6 +17,11 @@ describe('SkillLoadout', () => {
     const save = SaveManager.createNew();
     expect(listUnlockedSkillIds(save)).toEqual([]);
     expect(listDiscoveredIntentIds(save)).toEqual([]);
+  });
+
+  it('does not include gather qi in assignable pool — it lives on the health button', () => {
+    const save = SaveManager.createNew();
+    expect(listAssignableSkillPool(save)).not.toContain(MEDITATE_SKILL_ID);
   });
 
   it('discovers intents after earning a skill', () => {
@@ -65,5 +73,11 @@ describe('SkillLoadout', () => {
       ultimate: 'skill.flame.bolt',
     };
     expect(listAssignableSkills(loadout, 'primary', pool)).toEqual(pool);
+  });
+
+  it('cannot cast meditate from a skill slot even if legacy save still lists it', () => {
+    const save = SaveManager.createNew();
+    save.equippedSkills.secondary = MEDITATE_SKILL_ID;
+    expect(canCastEquippedSkill(save, 'secondary')).toBe(false);
   });
 });

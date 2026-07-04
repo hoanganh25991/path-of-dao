@@ -31,7 +31,8 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 | Heavy hit / player hurt | `player.attack3` / `player.hit` | SFX + brief duck on big hits |
 | Crit | `combat.hit.crit` | SFX + duck ~180ms |
 | Skill cast | `skill.*` | Element-colored sweep + harmonic |
-| Enemy death | `enemy.death` | Descending dissolve |
+| Cultivator defeated | `enemy.defeated` | Soft impact — sits to recover, not death dissolve |
+| Boss first clear | `boss.phase_change` | UI sting + boss BGM duck |
 | Gold pickup | `loot.pickup` | Soft chime, UI bus |
 | Level up / breakthrough / encounter | `level.up` / `ui.breakthrough` / `encounter.*` | UI sting + duck |
 
@@ -67,6 +68,9 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 
 ### Home aura
 - Pulsing point light for Core Formation+ aura tiers
+
+### VFX / juice
+- **Meditation VFX** — spirit wisps + subtle aura flowing inward while sit pose active (`MeditationVfx.ts`); capped particle budget for mobile
 
 ## Remaining
 

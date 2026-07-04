@@ -2,7 +2,7 @@
 
 > **Spec:** [plans/index.md](../plans/index.md)  
 > **Detail notes:** [tracks/](./) (one file per sub-plan)  
-> **Last updated:** 2026-07-04
+> **Last updated:** 2026-07-04 (Gather Qi health button + HP regen)
 
 This is the **master progress index**. Each sub-plan has a detailed track file under `tracks/` with done/remaining items, verification notes, and Tiên Nghịch gaps where relevant.
 

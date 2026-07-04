@@ -6,7 +6,7 @@
 
 ## Summary
 
-Seven-realm cultivation ladder with breakthrough ceremony when gates are met.
+Seven-realm cultivation ladder with breakthrough ceremony when gates are met. Passive qi recovery scales with realm order.
 
 ## Done
 
@@ -23,6 +23,7 @@ Seven-realm cultivation ladder with breakthrough ceremony when gates are met.
 - Realm stat scaling on level-curve stats
 - Combat damage bonus per realm tier (+10% per tier, max +50%)
 - Home aura updates after breakthrough
+- **Health regen formula** uses `realmOrder` + level — shared by player meditate and cultivator sit recovery
 
 ## Remaining
 
@@ -32,6 +33,7 @@ None for this sub-plan.
 
 - Breakthrough flow testable via dev cheat (level 5 + spirit 100)
 - Realm damage bonus covered by unit tests
+- Health regen scales with realm order (`tests/unit/health-regen.test.ts`)
 - `progression:xp-gained` refreshes combat HUD meter on every kill (`tests/unit/player-status-bar.test.ts`)
 - Level-up toast uses sub-tier at new level via `CultivationRealm.updateTierFromLevel` (`tests/unit/kill-progression-events.test.ts`)
 - Home toast when only Tiên Ngọc blocks breakthrough (`ProfileHeader` + `getBreakthroughBlockers`)

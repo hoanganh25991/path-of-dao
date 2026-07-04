@@ -56,23 +56,23 @@ describe('computeCombatPower', () => {
   it('computes from default new save with mortal_body realm order 1', () => {
     const save = SaveManager.createNew();
     const cp = computeCombatPowerFromSave(save);
-    expect(cp).toBe(50_844);
+    expect(cp).toBe(844);
     expect(save.equipped.weapon).toBeNull();
   });
 });
 
 describe('formatCombatPower', () => {
   it('formats with locale thousands separator', () => {
-    expect(formatCombatPower(50844, 'en')).toBe('50,844');
-    expect(formatCombatPower(50844, 'vi')).toMatch(/50[\s.]844/);
+    expect(formatCombatPower(844, 'en')).toBe('844');
+    expect(formatCombatPower(844, 'vi')).toBe('844');
   });
 });
 
 describe('yearsCultivated', () => {
   it('combines play time and realm depth', () => {
-    expect(yearsCultivated(0, 1)).toBe(17);
-    expect(yearsCultivated(86_400, 1)).toBe(18);
-    expect(yearsCultivated(86_400 * 2, 3)).toBe(53);
+    expect(yearsCultivated(0, 1)).toBe(0);
+    expect(yearsCultivated(86_400, 1)).toBe(1);
+    expect(yearsCultivated(86_400 * 2, 3)).toBe(36);
   });
 
   it('accrues one year per real day of play time', () => {

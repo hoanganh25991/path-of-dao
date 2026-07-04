@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   ENCOUNTER_ZOOM,
+  engagementBoostCap,
   resolveEncounterScale,
   scaleEncounterForPower,
   zoomForActiveEnemies,
@@ -52,5 +53,12 @@ describe('zoomForActiveEnemies', () => {
     expect(zoomForActiveEnemies(10)).toBe(ENCOUNTER_ZOOM.squad);
     expect(zoomForActiveEnemies(50)).toBe(ENCOUNTER_ZOOM.horde);
     expect(zoomForActiveEnemies(200)).toBe(ENCOUNTER_ZOOM.mass);
+  });
+});
+
+describe('engagementBoostCap', () => {
+  it('reduces punch-in as more cultivators fight', () => {
+    expect(engagementBoostCap(1)).toBeGreaterThan(engagementBoostCap(12));
+    expect(engagementBoostCap(200)).toBe(0);
   });
 });

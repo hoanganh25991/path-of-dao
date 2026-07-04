@@ -46,6 +46,9 @@ describe('CombatHUD', () => {
       false,
     );
     expect(uiRoot.querySelector('.action-btn--dodge')?.classList.contains('action-btn--arc')).toBe(true);
+    expect(uiRoot.querySelector('.action-btn--health')?.classList.contains('action-btn--arc')).toBe(
+      true,
+    );
     expect(uiRoot.querySelector('.action-btn--skill-primary')?.classList.contains('action-btn--arc')).toBe(
       true,
     );

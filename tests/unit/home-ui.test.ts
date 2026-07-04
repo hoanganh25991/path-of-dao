@@ -189,7 +189,7 @@ describe('HomeUI', () => {
       );
 
     const [cpBefore, yearsBefore = ''] = statValues();
-    expect(cpBefore).not.toBe(formatCombatPower(50_844, 'en'));
+    expect(cpBefore).not.toBe(formatCombatPower(844, 'en'));
 
     void showSettingsModal(uiRoot);
     document.querySelector<HTMLButtonElement>('[data-testid="settings-reset-btn"]')!.click();
@@ -197,8 +197,8 @@ describe('HomeUI', () => {
 
     await vi.waitFor(() => {
       const [cpAfter, yearsAfter = ''] = statValues();
-      expect(cpAfter).toBe(formatCombatPower(50_844, 'en'));
-      expect(yearsAfter).toBe('17');
+      expect(cpAfter).toBe(formatCombatPower(844, 'en'));
+      expect(yearsAfter).toBe('0');
       expect(Number.parseInt(yearsAfter, 10)).toBeLessThan(Number.parseInt(yearsBefore, 10));
     });
   });

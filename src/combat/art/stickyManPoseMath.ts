@@ -28,6 +28,7 @@ export function lerpPose(a: StickPose, b: StickPose, t: number): StickPose {
     bob: lerp(a.bob ?? 0, b.bob ?? 0, e),
     lean: lerp(a.lean ?? 0, b.lean ?? 0, e),
     shiftX: lerp(a.shiftX ?? 0, b.shiftX ?? 0, e),
+    hipDrop: lerp(a.hipDrop ?? 0, b.hipDrop ?? 0, e),
     limbs: lerpLimbs(a.limbs, b.limbs, e),
     prop: t < 0.5 ? a.prop : b.prop,
   };

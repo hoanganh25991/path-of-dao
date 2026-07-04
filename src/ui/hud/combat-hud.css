@@ -121,6 +121,11 @@
   z-index: 3;
 }
 
+.action-buttons__cluster .action-btn--health {
+  --arc-angle: 166deg;
+  z-index: 3;
+}
+
 .action-buttons__cluster .action-btn--skill-primary {
   --arc-angle: 152deg;
   z-index: 3;
@@ -221,6 +226,12 @@
   background: rgba(16, 24, 32, 0.9);
 }
 
+.action-btn--health {
+  border-color: rgba(128, 255, 176, 0.45);
+  background: rgba(12, 28, 20, 0.92);
+  box-shadow: 0 0 12px rgba(128, 255, 176, 0.12);
+}
+
 .action-btn--skill-primary {
   border-color: rgba(201, 162, 39, 0.55);
   box-shadow: 0 0 14px rgba(201, 162, 39, 0.15);
@@ -280,6 +291,10 @@
 .skill-btn__icon--dodge {
   font-size: 1.2rem;
   opacity: 0.9;
+}
+
+.skill-btn__icon--health {
+  font-size: 1.25rem;
 }
 
 .skill-btn__awakened {

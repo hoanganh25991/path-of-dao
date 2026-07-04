@@ -92,10 +92,10 @@ describe('gameStore', () => {
     expect(save.xp).toBe(0);
     expect(save.meta.totalPlaySeconds).toBe(0);
     expect(save.realm.id).toBe('mortal_body');
-    expect(computeCombatPowerFromSave(save)).toBe(50_844);
+    expect(computeCombatPowerFromSave(save)).toBe(844);
     expect(
       yearsCultivated(save.meta.totalPlaySeconds, getRealmOrder(save.realm.id)),
-    ).toBe(17);
+    ).toBe(0);
 
     const loaded = await SaveManager.load();
     expect(loaded.xp).toBe(0);
@@ -130,7 +130,7 @@ describe('gameStore', () => {
     const loaded = await SaveManager.load();
     expect(loaded.meta.totalPlaySeconds).toBe(0);
     expect(loaded.realm.id).toBe('mortal_body');
-    expect(computeCombatPowerFromSave(loaded)).toBe(50_844);
+    expect(computeCombatPowerFromSave(loaded)).toBe(844);
 
     vi.restoreAllMocks();
   });
@@ -167,20 +167,20 @@ describe('gameStore', () => {
     });
 
     const before = gameStore.getState().save!;
-    expect(computeCombatPowerFromSave(before)).toBeGreaterThan(50_844);
+    expect(computeCombatPowerFromSave(before)).toBeGreaterThan(844);
     expect(
       yearsCultivated(before.meta.totalPlaySeconds, getRealmOrder(before.realm.id)),
-    ).toBeGreaterThan(17);
+    ).toBeGreaterThan(0);
 
     await gameStore.getState().newGame({ preserveSettings: true });
 
     const after = gameStore.getState().save!;
     expect(after.realm.id).toBe('mortal_body');
     expect(after.meta.totalPlaySeconds).toBe(0);
-    expect(computeCombatPowerFromSave(after)).toBe(50_844);
+    expect(computeCombatPowerFromSave(after)).toBe(844);
     expect(
       yearsCultivated(after.meta.totalPlaySeconds, getRealmOrder(after.realm.id)),
-    ).toBe(17);
+    ).toBe(0);
   });
 
   it('newGame clears ancient demo session and journey backup', async () => {

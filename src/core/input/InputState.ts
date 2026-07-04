@@ -19,6 +19,7 @@ export interface InputState {
   move: Vec2;
   attack: ButtonState;
   dodge: ButtonState;
+  health: ButtonState;
   skillPrimary: ButtonState;
   skillSecondary: ButtonState;
   skillUltimate: ButtonState;
@@ -38,6 +39,7 @@ export function createEmptyInputState(): InputState {
     move: { x: 0, y: 0 },
     attack: createEmptyButtonState(),
     dodge: createEmptyButtonState(),
+    health: createEmptyButtonState(),
     skillPrimary: createEmptyButtonState(),
     skillSecondary: createEmptyButtonState(),
     skillUltimate: createEmptyButtonState(),
@@ -49,6 +51,7 @@ export function cloneInputState(state: InputState): InputState {
     move: { x: state.move.x, y: state.move.y },
     attack: { ...state.attack },
     dodge: { ...state.dodge },
+    health: { ...state.health },
     skillPrimary: { ...state.skillPrimary },
     skillSecondary: { ...state.skillSecondary },
     skillUltimate: { ...state.skillUltimate },

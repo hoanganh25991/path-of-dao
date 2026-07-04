@@ -40,7 +40,7 @@
   "home.profile.spirit": "Linh Lực",
   "home.profile.play_time": "Thời Gian Chơi",
   "home.profile.maps_cleared": "Bản Đồ Đã Qua",
-  "home.profile.bosses_defeated": "Boss Đã Hạ",
+  "home.profile.bosses_defeated": "Thử Thách Đã Thắng",
   "home.profile.awakenings": "Giác Ngộ",
   "home.profile.years_value": "{years} năm",
   "difficulty.trivial": "Dễ",
@@ -115,6 +115,11 @@
   "skill.detail.kind.arc": "Cận Chiến Cung",
   "skill.detail.kind.bolt": "Linh Đạn",
   "skill.detail.kind.heal": "Hồi Sinh",
+  "skill.detail.kind.meditate": "Hấp Khí",
+  "skill.basic.meditate.name": "Hấp Khí",
+  "skill.basic.meditate.desc": "Ngồi tĩnh hấp khí hồi máu — hồi phục nhanh nhất. Dừng khi di chuyển, tấn công hoặc bị đánh.",
+  "skill.basic.meditate.lore": "Tu sĩ nào cũng học nghỉ thân để linh khí quay về — bước đầu trên con đường tu luyện.",
+  "skill.basic.meditate.difficulty": "★☆☆☆☆ — Hồi phục cơ bản",
   "skill.detail.stat.damage": "Uy Lực",
   "skill.detail.stat.mana": "Linh Lực",
   "skill.detail.stat.cooldown": "Hồi Chiêu",
@@ -185,5 +190,6 @@
   "combat.skills.swap": "Đổi kỹ năng",
   "combat.skills.swap_title": "Đổi Kỹ Năng",
   "combat.skills.swap_hint": "Chọn ô rồi chọn kỹ. Giữ nút kỹ năng trong chiến đấu để liên tục thi triển.",
-  "combat.skills.done": "Xong"
+  "combat.skills.done": "Xong",
+  "combat.health.aria": "Hấp Khí — ngồi hồi máu"
 }

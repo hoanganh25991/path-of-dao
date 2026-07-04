@@ -80,6 +80,8 @@ export interface StickPose {
   lean?: number;
   /** Whole-body horizontal offset (+ = toward strike when facing right). */
   shiftX?: number;
+  /** Lower hip/shoulders/head toward the ground — seated lotus (feet stay anchored). */
+  hipDrop?: number;
   limbs: LimbAngles;
   prop?: 'sword' | 'lance' | 'stick' | 'bow' | 'crown' | 'aura';
 }

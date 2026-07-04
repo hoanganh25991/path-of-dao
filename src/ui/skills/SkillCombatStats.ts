@@ -1,7 +1,10 @@
 import { resolveSkillEffects } from '@/combat/skills/resolveSkillEffects';
+import { computeAoeScale, scaledMeleeHalfArc } from '@/combat/combat/AoeScaling';
+import { gameStore } from '@/core/store/gameStore';
 import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
 import { getSkillCooldownMs } from '@/progression/SkillCooldown';
 import { getSkillDefinition } from '@/progression/SkillLoader';
+import { getRealmOrder } from '@/progression/RealmStatScaling';
 import type { SkillKind } from '@/progression/SkillDefinition';
 
 /** Mirrors combat arc defaults in CombatComponent. */
@@ -25,15 +28,24 @@ function arcDegrees(halfArcRad: number): number {
   return Math.round((halfArcRad * 2 * 180) / Math.PI);
 }
 
+/** Live cultivation widens skill AOE in combat — mirror that in the detail panel. */
+function cultivationAoeScale(): number {
+  const save = gameStore.getState().save;
+  if (!save) return 1;
+  return computeAoeScale(getRealmOrder(save.realm.id), save.stats.level);
+}
+
 export function buildSkillDisplayStats(skillId: string): SkillDisplayStats {
   const skill = getSkillDefinition(skillId);
   const tier = skill.id.endsWith('.awakened') ? 'awakened' : 'base';
   const overrides = skill.awakenedOverrides;
   const cooldownMs = getSkillCooldownMs(skill);
+  const aoeScale = cultivationAoeScale();
 
   if (skill.kind === 'arc') {
-    const halfArc = overrides?.arcHalfAngle ?? SLASH_HALF_ARC_RAD;
-    const reach = SKILL_ARC_REACH_PX + (overrides?.arcReachBonus ?? 0);
+    const baseHalfArc = overrides?.arcHalfAngle ?? SLASH_HALF_ARC_RAD;
+    const halfArc = scaledMeleeHalfArc(baseHalfArc, aoeScale);
+    const reach = Math.round((SKILL_ARC_REACH_PX + (overrides?.arcReachBonus ?? 0)) * aoeScale);
     return {
       kind: skill.kind,
       tier,
@@ -56,26 +68,42 @@ export function buildSkillDisplayStats(skillId: string): SkillDisplayStats {
       Boolean(overrides?.pullForce);
     const aoe = effects.find((e) => e.type === 'aoe_circle');
     if (aoe?.type === 'aoe_circle') {
+      const radius = Math.round(aoe.radius * aoeScale);
       return {
         kind: skill.kind,
         tier,
         damageText: `×${aoe.damage.skillMultiplier.toFixed(1)}`,
         manaCost: skill.manaCost,
         cooldownMs,
-        aoeText: `${aoe.radius}px · ${aoe.ticks}×`,
+        aoeText: `${radius}px · ${aoe.ticks}×`,
         rangeText: 'Self',
         difficultyStars: tier === 'awakened' ? 5 : 2,
       };
     }
+    const hitRadius = Math.round(BOLT_HIT_RADIUS_PX * aoeScale);
+    const range = Math.round(BOLT_RANGE_PX * aoeScale);
     return {
       kind: skill.kind,
       tier,
       damageText: `×${skill.skillMultiplier.toFixed(1)}`,
       manaCost: skill.manaCost,
       cooldownMs,
-      aoeText: pull ? `${BOLT_HIT_RADIUS_PX}px · pull` : `${BOLT_HIT_RADIUS_PX}px`,
-      rangeText: `${BOLT_RANGE_PX}px`,
+      aoeText: pull ? `${hitRadius}px · pull` : `${hitRadius}px`,
+      rangeText: `${range}px`,
       difficultyStars: tier === 'awakened' ? 5 : 2,
+    };
+  }
+
+  if (skill.kind === 'meditate') {
+    return {
+      kind: skill.kind,
+      tier: 'base',
+      damageText: 'HP/s',
+      manaCost: skill.manaCost,
+      cooldownMs,
+      aoeText: 'Self',
+      rangeText: '—',
+      difficultyStars: 1,
     };
   }
 

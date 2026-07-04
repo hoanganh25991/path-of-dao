@@ -49,6 +49,7 @@ export type GameEvents = {
     secondary: { remainingMs: number; totalMs: number };
     ultimate: { remainingMs: number; totalMs: number };
   };
+  'health:cooldown-state': { remainingMs: number; totalMs: number };
   'home:open-tab': { tab: HomeTab };
   'settings:locale-changed': { preference: LocalePreference; locale: Locale };
   'settings:quality-changed': { preference: QualityPreference };

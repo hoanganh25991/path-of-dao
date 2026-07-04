@@ -31,7 +31,7 @@ export function computeCombatPower(
     stats.speed * 1.2 +
     stats.spirit * 1.5;
 
-  const realmBonus = realmOrder * REALM_CP_PER_ORDER;
+  const realmBonus = Math.max(0, realmOrder - 1) * REALM_CP_PER_ORDER;
   const insightBonus = Object.values(insights).filter((i) => i.awakened).length * INSIGHT_CP_PER_AWAKENING;
 
   return Math.floor(base + realmBonus + insightBonus);
@@ -58,7 +58,7 @@ export const SECONDS_PER_CULTIVATION_YEAR = 86_400;
 
 /** Flavor stat — play time + realm depth (sub-plan 16 §5). */
 export function yearsCultivated(totalPlaySeconds: number, realmOrder: number): number {
-  return Math.floor(totalPlaySeconds / SECONDS_PER_CULTIVATION_YEAR) + realmOrder * 17;
+  return Math.floor(totalPlaySeconds / SECONDS_PER_CULTIVATION_YEAR) + Math.max(0, realmOrder - 1) * 17;
 }
 
 /** Over-level damage multiplier when revisiting lower-realm maps (sub-plan 13 / 16 §7). */

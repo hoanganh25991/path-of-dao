@@ -332,6 +332,10 @@ export class MapScene extends Phaser.Scene {
   }
 
   private subscribeCombatEvents(): void {
+    const pulseCamera = (kind: 'attack' | 'skill'): void => {
+      this.cameraDirector?.notifyEngagement(this.spawnManager?.combatReadyCount ?? 1, kind);
+    };
+
     const offExit = EventBus.on('combat:request-exit', ({ wavesCleared }) => {
       if (this.exiting) return;
       void this.finishMapExit(wavesCleared);
@@ -350,12 +354,29 @@ export class MapScene extends Phaser.Scene {
       if (paused) this.scene.pause();
       else if (this.scene.isPaused()) this.scene.resume();
     });
+    const offAttack = EventBus.on('player:attack-started', () => pulseCamera('attack'));
+    const offSkill = EventBus.on('skill:cast', () => pulseCamera('skill'));
+    const offDefeat = EventBus.on('map:cultivator-defeated', ({ isBoss }) => {
+      if (isBoss) return;
+      this.showCombatToast(I18nManager.t('combat.cultivator.defeated'));
+    });
     this.unsubscribeCombatEvents = () => {
       offExit();
       offSave();
       offRetry();
       offPause();
+      offAttack();
+      offSkill();
+      offDefeat();
     };
+  }
+
+  private showCombatToast(message: string): void {
+    const toast = document.createElement('div');
+    toast.className = 'home-toast home-ui__interactive combat-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    toast.addEventListener('animationend', () => toast.remove());
   }
 
   private async finishMapExit(wavesCleared: boolean): Promise<void> {

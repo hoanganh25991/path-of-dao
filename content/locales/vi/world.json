@@ -80,5 +80,6 @@
   "map.void_throne.02.name": "Lôi Tiên Điện",
   "map.test.grove.name": "Rừng Thử",
   "map.intro.continue": "Bước lên con đường",
-  "map.intro.realm_cap": "Trên chân tinh này, tu luyện có thể đạt tới {realm} trước khi đạo lộ đòi hỏi khắc nghiệt hơn. Cảnh giới cao hơn — Tu sĩ bước thứ 2 trở lên — còn rất xa phía trước."
+  "map.intro.realm_cap": "Trên chân tinh này, tu luyện có thể đạt tới {realm} trước khi đạo lộ đòi hỏi khắc nghiệt hơn. Cảnh giới cao hơn — Tu sĩ bước thứ 2 trở lên — còn rất xa phía trước.",
+  "map.intro.encounter_tier": "Quy mô giao đấu: {tier}"
 }

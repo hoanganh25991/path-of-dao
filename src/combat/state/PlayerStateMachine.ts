@@ -13,7 +13,10 @@
 import {
   pickHeavyStrike,
   pickLightStrike,
+  pickWeaponHeavyStrike,
+  pickWeaponLightStrike,
   type UnarmedStrikeKind,
+  type WeaponStrikeKind,
 } from '@/combat/art/stickyManStrikes';
 
 export type PlayerStateId =
@@ -51,7 +54,9 @@ export class PlayerStateMachine {
   private dodgeCooldownMs = 0;
   private heavyFinisherCycle = 0;
   private strikeCycle = 0;
+  private weaponStrikeCycle = 0;
   private activeStrike: UnarmedStrikeKind = 'jab';
+  private activeWeaponStrike: WeaponStrikeKind = 'wepSlash1';
 
   get state(): PlayerStateId {
     return this.current;
@@ -65,6 +70,11 @@ export class PlayerStateMachine {
   /** Current unarmed strike animation (jab, kick, heavy, etc.). */
   get strikeKind(): UnarmedStrikeKind {
     return this.activeStrike;
+  }
+
+  /** Current weapon strike variant when armed (empty string when unarmed). */
+  get weaponStrikeKind(): WeaponStrikeKind {
+    return this.activeWeaponStrike;
   }
 
   /** @deprecated use strikeKind — kept for combat juice branching */
@@ -136,10 +146,14 @@ export class PlayerStateMachine {
 
     if (this.comboStep === MAX_COMBO_STEP) {
       this.activeStrike = pickHeavyStrike(this.heavyFinisherCycle);
+      this.activeWeaponStrike = pickWeaponHeavyStrike(this.weaponStrikeCycle);
       this.heavyFinisherCycle = (this.heavyFinisherCycle + 1) % HEAVY_FINISHER_VARIANTS;
+      this.weaponStrikeCycle += 1;
     } else {
       this.activeStrike = pickLightStrike(this.strikeCycle);
+      this.activeWeaponStrike = pickWeaponLightStrike(this.weaponStrikeCycle);
       this.strikeCycle += 1;
+      this.weaponStrikeCycle += 1;
     }
 
     this.comboWindowMs = 0;
@@ -187,7 +201,9 @@ export class PlayerStateMachine {
     this.dodgeCooldownMs = 0;
     this.heavyFinisherCycle = 0;
     this.strikeCycle = 0;
+    this.weaponStrikeCycle = 0;
     this.activeStrike = 'jab';
+    this.activeWeaponStrike = 'wepSlash1';
     this.setState('idle');
   }
 

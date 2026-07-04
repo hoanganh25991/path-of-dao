@@ -43,8 +43,16 @@ export class AudioDirector {
       }),
       EventBus.on('app:pause', () => AudioManager.pause()),
       EventBus.on('app:resume', () => AudioManager.resume()),
+      EventBus.on('map:cultivator-defeated', ({ isBoss }) => {
+        AudioManager.playSfx(isBoss ? 'boss.phase_change' : 'enemy.defeated');
+        if (isBoss && !this.bossBgmActive) {
+          this.bossBgmActive = true;
+          AudioManager.playBgm('bgm.combat.boss');
+          AudioManager.duckMusic(0.55, 500);
+        }
+      }),
       EventBus.on('map:enemy-killed', ({ isBoss }) => {
-        AudioManager.playSfx(isBoss ? 'boss.phase_change' : 'enemy.death');
+        // Back-compat alias — map:cultivator-defeated is the canonical event.
         if (isBoss && !this.bossBgmActive) {
           this.bossBgmActive = true;
           AudioManager.playBgm('bgm.combat.boss');

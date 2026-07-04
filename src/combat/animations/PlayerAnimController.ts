@@ -1,10 +1,27 @@
 import Phaser from 'phaser';
-import { STRIKE_ANIM } from '@/combat/art/stickyManStrikes';
+import { STRIKE_ANIM, WEAPON_STRIKE_ANIM, type WeaponStrikeKind } from '@/combat/art/stickyManStrikes';
 import { ANIM } from '@/combat/art/stickyManAssets';
 import { moveSpeedPxPerSec } from '@/progression/DamageCalculator';
 import { isArmedAttackStyle } from '@/progression/WeaponProgression';
 import { MAX_COMBO_STEP, type PlayerStateId } from '@/combat/state/PlayerStateMachine';
 import type { Player } from '@/combat/entities/Player';
+
+/**
+ * Pick a weapon strike of the correct combo step if the state machine happened
+ * to roll a variant that belongs to a different step.
+ */
+function selectWeaponStrikeForStep(step: 1 | 2 | 3, kind: WeaponStrikeKind): WeaponStrikeKind {
+  if (step === 3 || kind.endsWith('3')) {
+    if (kind === 'wepSlam3' || kind === 'wepSpin3') return kind;
+    return 'wepSlam3';
+  }
+  if (step === 2 || kind.endsWith('2')) {
+    if (kind === 'wepSlash2' || kind === 'wepThrust2') return kind;
+    return 'wepSlash2';
+  }
+  if (kind === 'wepSlash1' || kind === 'wepChop1') return kind;
+  return 'wepSlash1';
+}
 
 /**
  * Sticky-man sprite animations driven by the player state machine.
@@ -44,13 +61,13 @@ export class PlayerAnimController {
       sprite.anims.timeScale = 1;
     } else if (state === 'attack') {
       const step = sm.attackStep;
-      const strikeAnim = isArmedAttackStyle(this.player.attackStyle)
-        ? step === 1
-          ? ANIM.heroAttack1
-          : step === 2
-            ? ANIM.heroAttack2
-            : ANIM.heroAttack3
-        : STRIKE_ANIM[sm.strikeKind];
+      let strikeAnim: string;
+      if (isArmedAttackStyle(this.player.attackStyle)) {
+        const weaponKind = selectWeaponStrikeForStep(step as 1 | 2 | 3, sm.weaponStrikeKind);
+        strikeAnim = WEAPON_STRIKE_ANIM[weaponKind];
+      } else {
+        strikeAnim = STRIKE_ANIM[sm.strikeKind];
+      }
 
       if (step !== this.lastAttackStep || strikeAnim !== this.lastStrikeAnim) {
         this.lastAttackStep = step;
@@ -58,8 +75,7 @@ export class PlayerAnimController {
         sprite.play(this.player.resolveAnim(strikeAnim));
       }
 
-      const heavy = step === MAX_COMBO_STEP && !isArmedAttackStyle(this.player.attackStyle);
-      sprite.anims.timeScale = heavy ? 0.9 : 1;
+      sprite.anims.timeScale = 1;
     } else {
       this.lastAttackStep = 0;
       this.lastStrikeAnim = '';

@@ -10,7 +10,6 @@ import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/Skill
 import { canUseSwordIntent, isArmedAttackStyle } from '@/progression/WeaponProgression';
 import { isKickStrike } from '@/combat/art/stickyManStrikes';
 import { canCastEquippedSkill } from '@/progression/SkillLoadout';
-import { isMeditateSkillId } from '@/progression/BuiltinSkills';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
 import { SkillExecutor } from '@/combat/skills/SkillExecutor';
@@ -73,7 +72,6 @@ export class CombatComponent {
     if (!save || !canCastEquippedSkill(save, slot)) return false;
 
     const equippedId = save.equippedSkills[slot];
-    if (isMeditateSkillId(equippedId)) return false;
 
     this.player.meditate.cancel();
 
@@ -98,16 +96,8 @@ export class CombatComponent {
     return true;
   }
 
-  /** Press-edge handler — meditate toggles; other skills fall through to held cast. */
+  /** Press-edge handler for skill slots — held cast falls through to trySkill. */
   trySkillPressed(slot: SkillSlot): boolean {
-    const save = gameStore.getState().save;
-    if (!save || !canCastEquippedSkill(save, slot)) return false;
-
-    const equippedId = save.equippedSkills[slot];
-    if (isMeditateSkillId(equippedId)) {
-      return this.player.meditate.tryToggleSlot(slot);
-    }
-
     return this.trySkill(slot);
   }
 
