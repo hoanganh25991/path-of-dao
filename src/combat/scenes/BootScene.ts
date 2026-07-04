@@ -12,13 +12,15 @@ export class BootScene extends Phaser.Scene {
   static readonly KEY = 'BootScene';
 
   private mapId = '';
+  private spawnFromPortal?: string;
 
   constructor() {
     super(BootScene.KEY);
   }
 
-  init(data: { mapId?: string }): void {
+  init(data: { mapId?: string; spawnFromPortal?: string }): void {
     this.mapId = data.mapId ?? (this.registry.get('mapId') as string);
+    this.spawnFromPortal = data.spawnFromPortal;
     if (!this.mapId) {
       throw new Error('BootScene: no mapId provided (init data or registry)');
     }
@@ -33,6 +35,6 @@ export class BootScene extends Phaser.Scene {
     createPlaceholderTextures(this);
     registerPixelVfxAssets(this);
     registerStickyManAssets(this);
-    this.scene.start(MapScene.KEY, { mapId: this.mapId });
+    this.scene.start(MapScene.KEY, { mapId: this.mapId, spawnFromPortal: this.spawnFromPortal });
   }
 }

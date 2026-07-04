@@ -13,7 +13,6 @@ import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { recordJourney } from '@/progression/JourneyLog';
 import { unlockSkillForBoss, unlockSkillsForLevel } from '@/progression/SkillUnlockManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
-import { PatrolAI } from '@/combat/ai/PatrolAI';
 
 const MELEE_HIT_SLACK = 1.3;
 const ARROW_SPEED = 300;
@@ -135,7 +134,7 @@ export class RoamingSpawnManager {
     const enemy = this.pool.acquire(slot.enemyId, slot.x, slot.y);
     if (slot.patrolRadius > 0) {
       const r = slot.patrolRadius;
-      (enemy as unknown as { brain: PatrolAI }).brain = new PatrolAI([
+      enemy.setPatrolWaypoints([
         { x: 0, y: 0 },
         { x: r, y: 0 },
         { x: r, y: r * 0.6 },

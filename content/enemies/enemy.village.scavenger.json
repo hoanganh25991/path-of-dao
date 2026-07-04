@@ -1,0 +1,27 @@
+{
+  "id": "enemy.village.scavenger",
+  "displayNameKey": "enemy.village.scavenger.name",
+  "archetype": "patrol",
+  "stats": {
+    "hpMax": 35,
+    "atk": 7,
+    "def": 2,
+    "speed": 65,
+    "crit": 0.04,
+    "critDmg": 1.4
+  },
+  "aggroRange": 180,
+  "attackRange": 34,
+  "attackCooldownMs": 1300,
+  "xpReward": 12,
+  "goldReward": [
+    1,
+    4
+  ],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_slime",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_village_scavenger.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

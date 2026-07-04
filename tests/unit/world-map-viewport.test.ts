@@ -54,7 +54,7 @@ describe('WorldMapViewport math', () => {
 describe('getMapNodeWorldPosition', () => {
   it('returns region + node coordinates for known map', () => {
     const point = getMapNodeWorldPosition('map.fallen_village.01');
-    expect(point).toEqual({ x: 140 + 16, y: 1140 + 16 });
+    expect(point).toEqual({ x: 620 + 16, y: 1540 + 16 });
   });
 });
 

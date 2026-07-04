@@ -231,3 +231,194 @@ function tileLayer(id, name, data, width, height, visible = true) {
 }
 
 export { TILE };
+
+/**
+ * Large Tu Chân Tinh sub-zone (~25× legacy footprint). Peaceful paths, portal gaps, roam markers.
+ *
+ * @param {object} opts
+ * @param {number} [opts.width=250]
+ * @param {number} [opts.height=190]
+ * @param {number} opts.seed
+ * @param {'village'|'forest'|'canyon'|'lake'|'desert'|'thunder'|'frozen'|'abyss'|'celestial'|'void'} opts.theme
+ * @param {Array<{id:string,x:number,y:number,width:number,height:number}>} [opts.portals=[]]
+ * @param {boolean} [opts.includeExit=false]
+ * @param {{x:number,y:number}} [opts.spawn]
+ */
+export function buildStarZoneMap({
+  width = 250,
+  height = 190,
+  seed,
+  theme,
+  portals = [],
+  includeExit = false,
+  spawn,
+}) {
+  const rand = mulberry32(seed);
+  const ground = grid(width, height);
+  const decoration = grid(width, height);
+  const collision = grid(width, height);
+  const foreground = grid(width, height);
+
+  const grassVarChance = {
+    village: 0.12, forest: 0.35, canyon: 0.1, lake: 0.25, desert: 0.08,
+    thunder: 0.1, frozen: 0.2, abyss: 0.42, celestial: 0.12, void: 0.05,
+  }[theme] ?? 0.15;
+  const dirtBias = {
+    village: 0.22, forest: 0.08, canyon: 0.12, lake: 0.1, desert: 0.45,
+    thunder: 0.22, frozen: 0.08, abyss: 0.18, celestial: 0.16, void: 0.38,
+  }[theme] ?? 0.15;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (rand() < dirtBias) ground[idx(width, x, y)] = G.DIRT;
+      else ground[idx(width, x, y)] = rand() < grassVarChance ? G.GRASS_VAR : G.GRASS;
+    }
+  }
+
+  // Wandering paths — horizontal + vertical meanders for peaceful exploration
+  for (let x = 8; x < width - 8; x++) {
+    const pathY = Math.floor(height * 0.45 + Math.sin(x * 0.08) * 6);
+    for (let dy = -1; dy <= 1; dy++) {
+      const y = pathY + dy;
+      if (y > 0 && y < height - 1) ground[idx(width, x, y)] = G.DIRT;
+    }
+  }
+  for (let y = 8; y < height - 8; y++) {
+    const pathX = Math.floor(width * 0.35 + Math.cos(y * 0.06) * 8);
+    for (let dx = -1; dx <= 1; dx++) {
+      const x = pathX + dx;
+      if (x > 0 && x < width - 1) ground[idx(width, x, y)] = G.DIRT;
+    }
+  }
+
+  // Border walls with portal gaps
+  const portalTiles = new Set();
+  for (const portal of portals) {
+    const tx0 = Math.floor(portal.x / TILE);
+    const ty0 = Math.floor(portal.y / TILE);
+    const tx1 = Math.ceil((portal.x + portal.width) / TILE);
+    const ty1 = Math.ceil((portal.y + portal.height) / TILE);
+    for (let y = ty0; y <= ty1; y++) {
+      for (let x = tx0; x <= tx1; x++) {
+        portalTiles.add(`${x},${y}`);
+      }
+    }
+  }
+
+  for (let x = 0; x < width; x++) {
+    if (!portalTiles.has(`${x},0`)) collision[idx(width, x, 0)] = G.ROCK;
+    if (!portalTiles.has(`${x},${height - 1}`)) collision[idx(width, x, height - 1)] = G.ROCK;
+  }
+  for (let y = 0; y < height; y++) {
+    if (!portalTiles.has(`0,${y}`)) collision[idx(width, 0, y)] = G.ROCK;
+    if (!portalTiles.has(`${width - 1},${y}`)) collision[idx(width, width - 1, y)] = G.ROCK;
+  }
+
+  const treeCount = {
+    village: 28, forest: 48, canyon: 18, lake: 32, desert: 14,
+    thunder: 10, frozen: 22, abyss: 36, celestial: 20, void: 8,
+  }[theme] ?? 24;
+
+  for (let i = 0; i < treeCount; i++) {
+    const tx = 4 + Math.floor(rand() * (width - 8));
+    const ty = 4 + Math.floor(rand() * (height - 8));
+    if (ground[idx(width, tx, ty)] === G.DIRT) continue;
+    if (collision[idx(width, tx, ty)] !== 0) continue;
+    collision[idx(width, tx, ty)] = G.TRUNK;
+    foreground[idx(width, tx, ty - 1)] = G.CANOPY;
+    foreground[idx(width, tx - 1, ty - 1)] = G.CANOPY;
+    foreground[idx(width, tx + 1, ty - 1)] = G.CANOPY;
+    foreground[idx(width, tx, ty - 2)] = G.CANOPY;
+  }
+
+  for (let i = 0; i < 120; i++) {
+    const x = 3 + Math.floor(rand() * (width - 6));
+    const y = 3 + Math.floor(rand() * (height - 6));
+    if (collision[idx(width, x, y)] === 0 && decoration[idx(width, x, y)] === 0) {
+      decoration[idx(width, x, y)] = G.BUSH;
+    }
+  }
+
+  const spawnX = spawn?.x ?? Math.floor(width * 0.15) * TILE;
+  const spawnY = spawn?.y ?? Math.floor(height * 0.5) * TILE;
+  for (let y = Math.floor(spawnY / TILE) - 2; y <= Math.floor(spawnY / TILE) + 2; y++) {
+    for (let x = Math.floor(spawnX / TILE) - 2; x <= Math.floor(spawnX / TILE) + 2; x++) {
+      if (x < 1 || y < 1 || x >= width - 1 || y >= height - 1) continue;
+      collision[idx(width, x, y)] = 0;
+      decoration[idx(width, x, y)] = 0;
+      foreground[idx(width, x, y)] = 0;
+    }
+  }
+
+  for (let i = 0; i < collision.length; i++) {
+    if (collision[i] !== 0) decoration[i] = collision[i];
+  }
+
+  const objects = [
+    { id: 1, name: 'spawn', type: 'spawn', x: spawnX, y: spawnY, width: 0, height: 0, point: true },
+  ];
+
+  let nextId = 2;
+  for (const portal of portals) {
+    objects.push({
+      id: nextId++,
+      name: portal.id,
+      type: 'portal',
+      x: portal.x,
+      y: portal.y,
+      width: portal.width,
+      height: portal.height,
+    });
+  }
+
+  if (includeExit) {
+    const exitX = (width - 10) * TILE;
+    const exitY = Math.floor(height * 0.48) * TILE;
+    objects.push({
+      id: nextId++,
+      name: 'exit_home',
+      type: 'exit',
+      x: exitX,
+      y: exitY,
+      width: 96,
+      height: 128,
+    });
+  }
+
+  return {
+    type: 'map',
+    version: '1.10',
+    tiledversion: '1.10.2',
+    orientation: 'orthogonal',
+    renderorder: 'right-down',
+    infinite: false,
+    width,
+    height,
+    tilewidth: TILE,
+    tileheight: TILE,
+    nextlayerid: 6,
+    nextobjectid: nextId,
+    tilesets: [
+      {
+        firstgid: 1,
+        name: 'grove',
+        tilewidth: TILE,
+        tileheight: TILE,
+        tilecount: 8,
+        columns: 8,
+        spacing: 0,
+        margin: 0,
+        image: 'grove.png',
+        imagewidth: 256,
+        imageheight: 32,
+      },
+    ],
+    layers: [
+      tileLayer(1, 'ground', ground, width, height),
+      tileLayer(2, 'decoration', decoration, width, height),
+      tileLayer(3, 'collision', collision, width, height, false),
+      tileLayer(4, 'foreground', foreground, width, height),
+      { id: 5, name: 'objects', type: 'objectgroup', x: 0, y: 0, opacity: 1, visible: true, objects },
+    ],
+  };
+}

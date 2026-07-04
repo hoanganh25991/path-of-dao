@@ -29,9 +29,27 @@ const worldRegionSchema = z.object({
   maps: z.array(worldMapNodeSchema).min(1),
 });
 
+const starDecorationSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  size: z.enum(['sm', 'md', 'lg']).optional(),
+});
+
+const sealingBarrierSchema = z.object({
+  center: positionSchema,
+  radiusX: z.number().positive(),
+  radiusY: z.number().positive(),
+  labelKey: z.string().min(1),
+  outerRealmHintKey: z.string().min(1).optional(),
+});
+
 export const worldMapFileSchema = z.object({
   width: z.number().positive(),
   height: z.number().positive(),
+  /** Phong Giới Đại Trận — cosmic boundary enclosing the Inner Realm. */
+  sealingBarrier: sealingBarrierSchema.optional(),
+  /** Decorative star field across the vast map canvas. */
+  stars: z.array(starDecorationSchema).optional(),
   regions: z.array(worldRegionSchema).min(1),
 });
 

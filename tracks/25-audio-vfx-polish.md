@@ -24,7 +24,7 @@ Game feel through audio, combat juice, and enhanced Home aura — player should 
 - Manifest BGM roots retuned for clearer home/combat/boss/story moods; victory sting extended to 5-note ascent
 - **Combat SFX wired:** attack combo (1–3), dodge, skill cast (all intents incl. lightning/life), hit impacts
 - **UI tap sound** on buttons/tabs/action controls via global click bridge
-- Manifest gains boosted ~1.75× for mobile audibility
+- **Per-map BGM:** `MapScene` plays `config.bgm` when set; `bgm.combat.fallen_village` — relaxing pentatonic drone for Fallen Village star explore
 
 ### Combat juice
 - Hit-stop on heavy hits
@@ -40,7 +40,7 @@ Game feel through audio, combat juice, and enhanced Home aura — player should 
 - Replace procedural placeholders with real OGG assets
 - ~~BGM crossfade between Home and combat (currently hard switch)~~ — crossfade shipped (800ms)
 - Boss phase sting + screen darken
-- Map ambience loops per region (optional)
+- Map ambience loops per region (optional) — Fallen Village star shipped; ch2–10 deferred
 - Performance profile to disable juice on low-end devices (ties to 26)
 - `player.land` SFX (manifest key exists; no jump/land mechanic yet)
 - `ui.panel_open` on modal open (key exists; not wired)

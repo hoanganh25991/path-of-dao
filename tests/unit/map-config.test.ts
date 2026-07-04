@@ -12,6 +12,10 @@ const validConfig = {
   recommendedCp: 1000,
   connections: [],
   encounterTable: null,
+  roamTable: null,
+  spawnMode: 'wave' as const,
+  portals: [],
+  portalSpawns: {},
   bgm: null,
 };
 

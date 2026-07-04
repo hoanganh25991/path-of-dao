@@ -2,7 +2,7 @@
 
 > **Spec:** [plans/index.md](../plans/index.md)  
 > **Detail notes:** [tracks/](./) (one file per sub-plan)  
-> **Last updated:** 2026-07-03
+> **Last updated:** 2026-07-04
 
 This is the **master progress index**. Each sub-plan has a detailed track file under `tracks/` with done/remaining items, verification notes, and Tiên Nghịch gaps where relevant.
 
@@ -15,7 +15,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | Sub-plans done | **18 / 28** (64%) |
 | In progress | **9** (incl. 26 — PWA foundation) |
 | Pending | **0** |
-| Cross-cutting | Tiên Nghịch alignment **8 / 8 open or partial** |
+| Cross-cutting | Tiên Nghịch alignment **7 / 8 done** (T5–T6 landed 2026-07-04) |
 | Active thread | **Base flow `[x]`** — 37 E2E automated sign-off |
 
 ### By phase
@@ -99,8 +99,8 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | T2 | **Ancient Spirit Sword** from shrine POI in chapters 1–2 | `[x]` | 15, 21 |
 | T3 | Equipping ancient sword **swaps** combo to sword + unlocks Sword Intent | `[x]` | 07, 14, 23 |
 | T4 | Remove **starter wood sword** from default new game loadout | `[x]` | 05, 11 |
-| T5 | **Map-by-map road** — world map labels match chapter arc table | `[~]` | 17, 21, 22 |
-| T6 | **Chapter stories** — perseverance tone, sword destiny in ch1–2 | `[ ]` | 18, 24 |
+| T5 | **Map-by-map road** — world map labels + Phong Giới cosmic barrier | `[x]` | 17, 21, 22 |
+| T6 | **Chapter stories** — Vương Lâm diary tone, Thiên Nghịch ch1–2 | `[x]` | 18, 24 |
 | T7 | **Sword Intent gating** in skill picker and combat | `[x]` | 19, 23 |
 | T8 | **3D Home** shows empty hands until sword milestone | `[x]` | 10, 11 |
 

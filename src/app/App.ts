@@ -4,6 +4,7 @@ import { createDefaultSceneHost } from '@/app/createDefaultSceneHost';
 import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
 import { I18nManager } from '@/core/i18n/I18nManager';
+import { FullscreenManager } from '@/app/FullscreenManager';
 import { OrientationManager } from '@/app/OrientationManager';
 import { connectAutosave, gameStore, startPlayTimeTracking } from '@/core/store/gameStore';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
@@ -44,6 +45,7 @@ export class App {
     }
 
     const elements = GameShell.mount(root);
+    FullscreenManager.mount(root);
     AudioUnlock.mount(root);
     mountUiSounds(root);
     TopRightHud.init(elements.uiRoot);

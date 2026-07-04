@@ -1,3 +1,4 @@
+import { FullscreenManager } from '@/app/FullscreenManager';
 import { SceneRouter } from '@/app/SceneRouter';
 import { AudioDirector } from '@/core/audio/AudioDirector';
 import { AudioManager } from '@/core/audio/AudioManager';
@@ -16,6 +17,7 @@ export class AudioUnlock {
     AudioUnlock.mounted = true;
 
     const finishUnlock = async (): Promise<void> => {
+      FullscreenManager.requestOnBootGesture();
       await AudioManager.unlock();
       AudioUnlock.teardown();
       AudioUnlock.resumeSceneAudio();

@@ -4,6 +4,11 @@ import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import { getMapConfig } from '@/combat/map/MapLoader';
 import { computeCombatPowerFromSave, formatCombatPower } from '@/progression/CombatPower';
+import {
+  getPhongTonLoreId,
+  getSealingBarrierStage,
+  isPhongTonLoreUnlocked,
+} from '@/progression/SealingBarrierProgression';
 import { canEnter, getMapTravelState } from '@/progression/WorldProgression';
 import { getWorldMapData, listWorldRegions } from '@/progression/WorldMapLoader';
 import {
@@ -17,10 +22,12 @@ import {
   getDifficultyTier,
 } from '@/ui/components/DifficultyBadge';
 import { createRegionConnectionPath, createRegionNode } from '@/ui/world/RegionNode';
+import { createSealingBarrierLayer } from '@/ui/world/SealingBarrierLayer';
 import '@/ui/world/world-map.css';
 
 let activeOverlay: HTMLElement | null = null;
 let activeDetail: HTMLElement | null = null;
+let activeLore: HTMLElement | null = null;
 
 function showToast(message: string): void {
   const toast = document.createElement('div');
@@ -31,6 +38,8 @@ function showToast(message: string): void {
 }
 
 function closeWorldMap(): void {
+  activeLore?.remove();
+  activeLore = null;
   activeDetail?.remove();
   activeDetail = null;
   activeOverlay?.remove();
@@ -85,6 +94,17 @@ function renderDetailSheet(mapId: string, host: HTMLElement): void {
   name.className = 'world-map-detail__name';
   name.textContent = I18nManager.t(config.displayNameKey);
 
+  const descKey = `${mapId}.desc`;
+  const descText = I18nManager.t(descKey);
+  if (descText !== descKey && !descText.startsWith('[missing:')) {
+    const blurb = document.createElement('p');
+    blurb.className = 'world-map-detail__desc';
+    blurb.textContent = descText;
+    sheet.append(name, blurb);
+  } else {
+    sheet.append(name);
+  }
+
   const meta = document.createElement('div');
   meta.className = 'world-map-detail__meta';
 
@@ -113,13 +133,103 @@ function renderDetailSheet(mapId: string, host: HTMLElement): void {
     const reason = document.createElement('p');
     reason.className = 'world-map-detail__lock';
     reason.textContent = I18nManager.t(check.reasonKey);
-    sheet.append(name, meta, reason, enterBtn);
+    sheet.append(meta, reason, enterBtn);
   } else {
-    sheet.append(name, meta, enterBtn);
+    sheet.append(meta, enterBtn);
+  }
+
+  const stage = getSealingBarrierStage(save);
+  appendBarrierHint(sheet, stage);
+
+  if (
+    mapId.startsWith('map.void_throne')
+    && isPhongTonLoreUnlocked(save)
+  ) {
+    const loreBtn = document.createElement('button');
+    loreBtn.type = 'button';
+    loreBtn.className = 'world-map-detail__lore-link';
+    loreBtn.textContent = I18nManager.t('world.barrier.phong_ton.link');
+    loreBtn.addEventListener('click', () => renderPhongTonLoreSheet(host));
+    sheet.append(loreBtn);
   }
 
   host.append(sheet);
   activeDetail = sheet;
+}
+
+function persistPhongTonLore(): void {
+  const save = gameStore.getState().save;
+  if (!save) return;
+  const loreId = getPhongTonLoreId();
+  if (save.progress.loreUnlocked.includes(loreId)) return;
+  gameStore.getState().patch({
+    progress: {
+      ...save.progress,
+      loreUnlocked: [...save.progress.loreUnlocked, loreId],
+    },
+  });
+  void gameStore.getState().persist();
+}
+
+function renderPhongTonLoreSheet(host: HTMLElement): void {
+  activeLore?.remove();
+  activeDetail?.remove();
+  activeDetail = null;
+
+  persistPhongTonLore();
+
+  const sheet = document.createElement('div');
+  sheet.className = 'world-map-lore home-ui__interactive';
+  sheet.dataset.testid = 'world-map-phong-ton-lore';
+
+  const title = document.createElement('h3');
+  title.className = 'world-map-lore__title';
+  title.textContent = I18nManager.t('world.barrier.phong_ton.title');
+
+  const intro = document.createElement('p');
+  intro.className = 'world-map-lore__intro';
+  intro.textContent = I18nManager.t('world.barrier.phong_ton.intro');
+
+  const beats = document.createElement('ul');
+  beats.className = 'world-map-lore__beats';
+  for (const key of [
+    'world.barrier.phong_ton.beat01',
+    'world.barrier.phong_ton.beat02',
+    'world.barrier.phong_ton.beat03',
+  ]) {
+    const li = document.createElement('li');
+    li.textContent = I18nManager.t(key);
+    beats.append(li);
+  }
+
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'world-map-lore__close';
+  closeBtn.textContent = I18nManager.t('world.close');
+  closeBtn.addEventListener('click', () => {
+    activeLore?.remove();
+    activeLore = null;
+  });
+
+  sheet.append(title, intro, beats, closeBtn);
+  host.append(sheet);
+  activeLore = sheet;
+}
+
+function appendBarrierHint(sheet: HTMLElement, stage: ReturnType<typeof getSealingBarrierStage>): void {
+  const hintKey = stage === 'revealed' || stage === 'behold'
+    ? 'world.barrier.hint_revealed'
+    : stage === 'approach'
+      ? 'world.barrier.hint_approach'
+      : stage === 'sense'
+        ? 'world.barrier.hint_sense'
+        : null;
+  if (!hintKey) return;
+
+  const hint = document.createElement('p');
+  hint.className = 'world-map-detail__barrier-hint';
+  hint.textContent = I18nManager.t(hintKey);
+  sheet.prepend(hint);
 }
 
 export function showWorldMap(uiRoot: HTMLElement): void {
@@ -165,6 +275,12 @@ export function showWorldMap(uiRoot: HTMLElement): void {
   canvas.className = 'world-map-canvas';
   canvas.style.width = `${data.width}px`;
   canvas.style.height = `${data.height}px`;
+
+  const barrierSvg = createSealingBarrierLayer({
+    data,
+    save,
+    onLoreRequest: () => renderPhongTonLoreSheet(overlay),
+  });
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'world-map__svg');
@@ -214,14 +330,21 @@ export function showWorldMap(uiRoot: HTMLElement): void {
     }
   }
 
-  canvas.append(svg, regionsLayer);
+  canvas.append(barrierSvg, svg, regionsLayer);
   viewport.append(canvas);
 
   overlay.append(header, viewport);
   uiRoot.append(overlay);
   activeOverlay = overlay;
 
+  const barrier = data.sealingBarrier;
+  const stage = getSealingBarrierStage(save);
+  const barrierFocus = barrier && (stage === 'behold' || stage === 'revealed')
+    ? { x: barrier.center.x + barrier.radiusX * 0.75, y: barrier.center.y - barrier.radiusY * 0.55 }
+    : null;
+
   const playerFocus = getMapNodeWorldPosition(save.progress.currentMapId)
+    ?? barrierFocus
     ?? { x: data.width / 2, y: data.height / 2 };
 
   let viewportController: WorldMapViewportController | null = createWorldMapViewport({

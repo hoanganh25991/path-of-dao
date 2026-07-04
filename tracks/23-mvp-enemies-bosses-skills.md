@@ -2,7 +2,7 @@
 
 **Status:** `[~]` In progress  
 **Plan:** [plans/23-mvp-enemies-bosses-skills.md](../plans/23-mvp-enemies-bosses-skills.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 ## Summary
 
@@ -19,12 +19,12 @@ Full MVP roster: 40 skills, 41 enemies, loot tables, boss phases, and skill unlo
 - **Road techniques** — `byMapClear` on all ten explore maps (`.01`); `byChapter` rewards for all ten finales
 - Unlocked-skills field on player save
 - Enemy HP balance reference table for designers
+- **Tiên Nghịch level design (ch1–3):** `enemy.heng_yue.disciple`, village roam roster, encounter tables, bestiary lore — see [21](./21-mvp-maps-chapters-1-5.md)
 - Generation CLIs for skills and enemy patches
 
 ## Remaining
 
-- **Tiên Nghịch gap:** Sword Intent skills should require ancient sword milestone (T7)
-- Boss distinct patterns for all eight MVP bosses
+- Boss distinct patterns polish for all eight MVP bosses
 - Six skills with full awakening VFX (MVP ship target)
 
 ## Verification

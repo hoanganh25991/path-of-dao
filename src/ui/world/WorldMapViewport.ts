@@ -153,7 +153,8 @@ export function createWorldMapViewport(options: WorldMapViewportOptions): WorldM
     return Boolean(
       target.closest('.world-map-node')
         || target.closest('.world-map-overlay__close')
-        || target.closest('.world-map-overlay__locate'),
+        || target.closest('.world-map-overlay__locate')
+        || target.closest('[data-testid="world-map-barrier-lore"]'),
     );
   };
 

@@ -76,15 +76,29 @@
   background:
     radial-gradient(circle at 30% 20%, rgba(45, 212, 168, 0.08), transparent 45%),
     radial-gradient(circle at 70% 80%, rgba(201, 162, 39, 0.1), transparent 50%),
-    linear-gradient(180deg, #0a1018 0%, #121a28 100%);
+    radial-gradient(ellipse at 50% 52%, rgba(80, 140, 220, 0.04), transparent 62%),
+    linear-gradient(180deg, #060a12 0%, #0a1018 40%, #121a28 100%);
   border: 1px solid var(--dao-border);
   border-radius: 0.75rem;
+}
+
+.world-map-barrier-svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.world-map-barrier-svg .world-map-barrier__lore-pin {
+  pointer-events: all;
+  cursor: pointer;
 }
 
 .world-map__svg {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 1;
 }
 
 .world-map__link {
@@ -102,6 +116,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  z-index: 2;
 }
 
 .world-region {
@@ -130,6 +145,17 @@
   color: var(--dao-jade);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.world-region__blurb {
+  margin: 0 0 0.35rem;
+  font-size: 0.58rem;
+  line-height: 1.35;
+  color: var(--dao-muted);
+  max-width: 11rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
 }
 
 .world-region__dots {
@@ -232,8 +258,15 @@
 }
 
 .world-map-detail__name {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.35rem;
   font-size: 1rem;
+}
+
+.world-map-detail__desc {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--dao-muted);
 }
 
 .world-map-detail__meta {
@@ -321,5 +354,216 @@
   }
   50% {
     transform: rotate(-45deg) scale(1.06);
+  }
+}
+
+/* Phong Giới Đại Trận — cosmic sealing boundary */
+.world-map-barrier__star {
+  fill: rgba(232, 230, 227, 0.35);
+}
+
+.world-map-barrier__star--md {
+  fill: rgba(232, 230, 227, 0.5);
+}
+
+.world-map-barrier__star--lg {
+  fill: rgba(201, 162, 39, 0.55);
+}
+
+.world-map-barrier__outer-fog {
+  fill: rgba(12, 18, 32, 0.55);
+  stroke: none;
+}
+
+.world-map-barrier__inner-glow {
+  fill: rgba(45, 120, 200, 0.04);
+  stroke: none;
+}
+
+.world-map-barrier__ring {
+  fill: none;
+  stroke: rgba(100, 170, 240, 0.22);
+  stroke-width: 3;
+  stroke-dasharray: 14 10;
+}
+
+.world-map-barrier__arc-highlight {
+  fill: none;
+  stroke: rgba(140, 210, 255, 0.45);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.world-map-barrier__label,
+.world-map-barrier__outer-label {
+  fill: rgba(140, 200, 255, 0.75);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.world-map-barrier__outer-label {
+  fill: rgba(180, 140, 220, 0.55);
+  font-size: 10px;
+}
+
+.world-map-barrier__lore-pin {
+  fill: rgba(201, 162, 39, 0.35);
+  stroke: rgba(201, 162, 39, 0.85);
+  stroke-width: 2;
+  animation: barrier-lore-pulse 2.4s ease-in-out infinite;
+}
+
+.world-map-barrier__lore-glyph {
+  fill: var(--dao-gold);
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  font-family: 'Songti SC', 'Noto Serif SC', serif;
+}
+
+.world-map-barrier--whisper .world-map-barrier__ring {
+  stroke: rgba(100, 170, 240, 0.08);
+  stroke-width: 2;
+}
+
+.world-map-barrier--whisper .world-map-barrier__arc-highlight {
+  stroke: rgba(140, 210, 255, 0.12);
+  stroke-width: 2;
+}
+
+.world-map-barrier--whisper .world-map-barrier__outer-fog {
+  fill: rgba(12, 18, 32, 0.25);
+}
+
+.world-map-barrier--sense .world-map-barrier__ring {
+  stroke: rgba(100, 170, 240, 0.16);
+}
+
+.world-map-barrier--sense .world-map-barrier__arc-highlight {
+  stroke: rgba(140, 210, 255, 0.28);
+}
+
+.world-map-barrier--approach .world-map-barrier__ring {
+  stroke: rgba(100, 170, 240, 0.32);
+  animation: barrier-ring-shimmer 4s ease-in-out infinite;
+}
+
+.world-map-barrier--behold .world-map-barrier__ring,
+.world-map-barrier--revealed .world-map-barrier__ring {
+  stroke: rgba(120, 190, 255, 0.55);
+  stroke-width: 4;
+  animation: barrier-ring-shimmer 3s ease-in-out infinite;
+}
+
+.world-map-barrier--behold .world-map-barrier__arc-highlight,
+.world-map-barrier--revealed .world-map-barrier__arc-highlight {
+  stroke: rgba(180, 230, 255, 0.75);
+  stroke-width: 5;
+  filter: drop-shadow(0 0 6px rgba(120, 200, 255, 0.45));
+}
+
+.world-map-barrier--revealed .world-map-barrier__outer-fog {
+  fill: rgba(8, 12, 24, 0.72);
+}
+
+.world-map-detail__barrier-hint {
+  margin: 0 0 0.5rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(100, 170, 240, 0.25);
+  background: rgba(60, 120, 200, 0.08);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: rgba(160, 210, 255, 0.9);
+}
+
+.world-map-detail__lore-link {
+  width: 100%;
+  margin-top: 0.5rem;
+  min-height: 40px;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: 0.5rem;
+  background: rgba(201, 162, 39, 0.1);
+  color: var(--dao-gold);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.world-map-lore {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem max(1rem, env(safe-area-inset-right, 0px))
+    calc(1rem + var(--safe-bottom)) max(1rem, env(safe-area-inset-left, 0px));
+  background: var(--dao-panel);
+  border-top: 1px solid rgba(201, 162, 39, 0.35);
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.world-map-lore__title {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  color: var(--dao-gold);
+}
+
+.world-map-lore__intro {
+  margin: 0 0 0.65rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--dao-muted);
+}
+
+.world-map-lore__beats {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--dao-text);
+}
+
+.world-map-lore__beats li + li {
+  margin-top: 0.35rem;
+}
+
+.world-map-lore__close {
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--dao-gold);
+  color: var(--dao-bg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes barrier-ring-shimmer {
+  0%,
+  100% {
+    stroke-opacity: 0.45;
+  }
+  50% {
+    stroke-opacity: 0.85;
+  }
+}
+
+@keyframes barrier-lore-pulse {
+  0%,
+  100% {
+    r: 14;
+    fill-opacity: 0.35;
+  }
+  50% {
+    r: 16;
+    fill-opacity: 0.55;
   }
 }

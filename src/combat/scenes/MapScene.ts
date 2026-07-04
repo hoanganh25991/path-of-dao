@@ -19,6 +19,11 @@ import type { MapConfig } from '@/combat/map/MapConfig';
 import { CollisionLayer } from '@/combat/map/CollisionLayer';
 import { Player } from '@/combat/entities/Player';
 import { SpawnManager } from '@/combat/systems/SpawnManager';
+import { RoamingSpawnManager } from '@/combat/systems/RoamingSpawnManager';
+import { ZonePortalManager } from '@/combat/systems/ZonePortalManager';
+import { resolvePortalSpawn } from '@/combat/map/portalSpawn';
+import { getRoamConfig } from '@/combat/map/RoamLoader';
+import { AudioManager } from '@/core/audio/AudioManager';
 import { EncounterTrigger } from '@/combat/systems/EncounterTrigger';
 import { HitboxManager } from '@/combat/combat/HitboxManager';
 import { tilemapKey } from '@/combat/scenes/BootScene';
@@ -45,9 +50,11 @@ export class MapScene extends Phaser.Scene {
   static readonly KEY = 'MapScene';
 
   private mapId = '';
+  private spawnFromPortal?: string;
   private player!: Player;
   private hitboxManager!: HitboxManager;
-  private spawnManager: SpawnManager | null = null;
+  private spawnManager: SpawnManager | RoamingSpawnManager | null = null;
+  private zonePortalManager: ZonePortalManager | null = null;
   private encounterTrigger: EncounterTrigger | null = null;
   private exiting = false;
   private runtimePersisted = false;
@@ -61,8 +68,9 @@ export class MapScene extends Phaser.Scene {
     super(MapScene.KEY);
   }
 
-  init(data: { mapId: string }): void {
+  init(data: { mapId: string; spawnFromPortal?: string }): void {
     this.mapId = data.mapId;
+    this.spawnFromPortal = data.spawnFromPortal;
   }
 
   create(): void {
@@ -136,7 +144,22 @@ export class MapScene extends Phaser.Scene {
     this.createExitZone(map);
     this.subscribeCombatEvents();
 
-    if (config.encounterTable) {
+    if (config.portals.length > 0) {
+      this.zonePortalManager = new ZonePortalManager(this, this.player, map, config, () => {
+        this.persistRuntime();
+      });
+    }
+
+    if (config.spawnMode === 'roam' && config.roamTable) {
+      const roam = getRoamConfig(config.roamTable);
+      this.spawnManager = new RoamingSpawnManager(
+        this,
+        this.player,
+        roam,
+        collision,
+        this.hitboxManager,
+      );
+    } else if (config.encounterTable) {
       this.spawnManager = new SpawnManager(
         this,
         this.player,
@@ -146,6 +169,10 @@ export class MapScene extends Phaser.Scene {
         this.hitboxManager,
       );
       this.spawnManager.start();
+    }
+
+    if (config.bgm) {
+      AudioManager.playBgm(config.bgm);
     }
 
     this.encounterTrigger = new EncounterTrigger(this, this.player, config);
@@ -171,10 +198,12 @@ export class MapScene extends Phaser.Scene {
     this.syncExitPortal();
   }
 
-  /** Show the depart portal once waves are cleared (retreat anytime via pause). */
+  /** Show the depart portal once waves are cleared (retreat anytime via pause / roam maps). */
   private syncExitPortal(): void {
     if (this.exitPortalRevealed || !this.exitZone) return;
-    const ready = !this.spawnManager || this.spawnManager.isEncounterComplete();
+    const config = getMapConfig(this.mapId);
+    const roamExplore = config.spawnMode === 'roam';
+    const ready = roamExplore || !this.spawnManager || this.spawnManager.isEncounterComplete();
     if (!ready) return;
     this.exitPortalRevealed = true;
     this.exitZone.setActive(true);
@@ -197,6 +226,8 @@ export class MapScene extends Phaser.Scene {
     this.juiceBridge = null;
     this.encounterTrigger?.destroy();
     this.encounterTrigger = null;
+    this.zonePortalManager?.destroy();
+    this.zonePortalManager = null;
     this.spawnManager?.destroy();
     this.spawnManager = null;
     this.hitboxManager?.destroy();
@@ -218,8 +249,11 @@ export class MapScene extends Phaser.Scene {
     return sheet;
   }
 
-  /** Spawn object from the Tiled "objects" layer, else config coords. */
+  /** Spawn object from the Tiled "objects" layer, portal entry, else config coords. */
   private resolveSpawn(map: Phaser.Tilemaps.Tilemap, config: MapConfig): { x: number; y: number } {
+    const portalSpawn = resolvePortalSpawn(config, this.spawnFromPortal);
+    if (portalSpawn) return portalSpawn;
+
     const objects = map.getObjectLayer('objects');
     const spawnObj = objects?.objects.find((o) => o.type === 'spawn');
     if (spawnObj && typeof spawnObj.x === 'number' && typeof spawnObj.y === 'number') {
@@ -280,8 +314,12 @@ export class MapScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player.sprite, zone, () => {
       if (!zone.active) return;
+      const config = getMapConfig(this.mapId);
+      const roamExplore = config.spawnMode === 'roam';
       const wavesCleared =
-        !this.spawnManager || this.spawnManager.isEncounterComplete();
+        roamExplore ||
+        !this.spawnManager ||
+        this.spawnManager.isEncounterComplete();
       void this.finishMapExit(wavesCleared);
     });
   }

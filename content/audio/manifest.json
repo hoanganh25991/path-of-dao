@@ -5,7 +5,14 @@
     "bgm.combat.generic": { "type": "procedural", "loop": true, "frequencies": [82.41, 123.47, 110], "gain": 0.11 },
     "bgm.combat.boss": { "type": "procedural", "loop": true, "frequencies": [65.41, 98, 87.31], "gain": 0.12 },
     "bgm.story": { "type": "procedural", "loop": true, "frequencies": [98, 147, 196], "gain": 0.09 },
-    "bgm.victory": { "type": "procedural", "loop": false, "frequencies": [262, 330, 392, 523, 659], "gain": 0.14, "durationMs": 3200 }
+    "bgm.victory": { "type": "procedural", "loop": false, "frequencies": [262, 330, 392, 523, 659], "gain": 0.14, "durationMs": 3200 },
+    "bgm.combat.fallen_village": {
+      "type": "procedural",
+      "loop": true,
+      "frequencies": [98, 147, 196, 247],
+      "gain": 0.07,
+      "wave": "sine"
+    }
   },
   "sfx": {
     "ui.tap": { "type": "procedural", "frequency": 880, "durationMs": 45, "wave": "sine", "gain": 0.18 },

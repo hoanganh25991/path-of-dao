@@ -1,0 +1,53 @@
+{
+  "id": "roam.fallen_village.01",
+  "spawns": [
+    {
+      "enemyId": "enemy.slime",
+      "x": 1200,
+      "y": 2800,
+      "patrolRadius": 72
+    },
+    {
+      "enemyId": "enemy.slime",
+      "x": 2400,
+      "y": 3200,
+      "patrolRadius": 64
+    },
+    {
+      "enemyId": "enemy.village.scavenger",
+      "x": 1800,
+      "y": 4200,
+      "patrolRadius": 80
+    },
+    {
+      "enemyId": "enemy.village.scavenger",
+      "x": 3200,
+      "y": 3600,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 4200,
+      "y": 2800,
+      "patrolRadius": 90
+    },
+    {
+      "enemyId": "enemy.slime",
+      "x": 5200,
+      "y": 4400,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "enemy.village.spirit_pest",
+      "x": 2800,
+      "y": 5200,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 6000,
+      "y": 5200,
+      "patrolRadius": 85
+    }
+  ]
+}

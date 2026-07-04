@@ -35,6 +35,18 @@ export function createRegionNode(options: RegionNodeOptions): HTMLElement {
   title.className = 'world-region__title';
   title.textContent = I18nManager.t(region.displayNameKey);
 
+  const descKey = `${region.chapterId}.desc`;
+  const descText = I18nManager.t(descKey);
+  const regionHeader = document.createElement('div');
+  regionHeader.className = 'world-region__header';
+  regionHeader.append(title);
+  if (descText !== descKey && !descText.startsWith('[missing:')) {
+    const blurb = document.createElement('p');
+    blurb.className = 'world-region__blurb';
+    blurb.textContent = descText;
+    regionHeader.append(blurb);
+  }
+
   const dots = document.createElement('div');
   dots.className = 'world-region__dots';
   dots.setAttribute('aria-hidden', 'true');
@@ -59,7 +71,7 @@ export function createRegionNode(options: RegionNodeOptions): HTMLElement {
     mapsLayer.append(mapEl);
   }
 
-  root.append(...children, title, dots, mapsLayer);
+  root.append(...children, regionHeader, dots, mapsLayer);
   return root;
 }
 

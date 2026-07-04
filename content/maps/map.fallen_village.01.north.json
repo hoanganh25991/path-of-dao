@@ -1,0 +1,47 @@
+{
+  "id": "map.fallen_village.01.north",
+  "chapterId": "chapter.01.fallen_village",
+  "displayNameKey": "map.zone.village_north.name",
+  "starId": "star.fallen_village",
+  "zoneId": "zone.village_north",
+  "tiledPath": "assets/maps/fallen_village-star-north.json",
+  "tilesetName": "grove",
+  "spawn": {
+    "x": 1184,
+    "y": 3040
+  },
+  "bounds": {
+    "width": 8000,
+    "height": 6080
+  },
+  "connections": [],
+  "encounterTable": null,
+  "roamTable": "roam.fallen_village.01.north",
+  "spawnMode": "roam",
+  "portals": [
+    {
+      "id": "portal.south",
+      "targetMapId": "map.fallen_village.01.east",
+      "targetPortalId": "portal.north"
+    },
+    {
+      "id": "portal.west",
+      "targetMapId": "map.fallen_village.01.south",
+      "targetPortalId": "portal.east"
+    }
+  ],
+  "portalSpawns": {
+    "portal.south": {
+      "x": 4384,
+      "y": 5952
+    },
+    "portal.east": {
+      "x": 7872,
+      "y": 2432
+    }
+  },
+  "bgm": "bgm.combat.fallen_village",
+  "pois": [],
+  "recommendedCp": 800,
+  "recommendedRealmOrder": 1
+}

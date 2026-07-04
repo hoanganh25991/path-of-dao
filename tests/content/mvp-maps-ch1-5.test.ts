@@ -35,7 +35,12 @@ describe('MVP maps chapters 1–5', () => {
   for (const mapId of CH1_5_MAPS) {
     it(`loads ${mapId} with dedicated tiled asset`, () => {
       const config = getMapConfig(mapId);
-      expect(config.encounterTable).toMatch(/^encounter\./);
+      if (config.spawnMode === 'roam') {
+        expect(config.roamTable).toMatch(/^roam\./);
+        expect(config.encounterTable).toBeNull();
+      } else {
+        expect(config.encounterTable).toMatch(/^encounter\./);
+      }
       expect(config.tiledPath).not.toContain('test-grove');
       expect(resolveTiledUrl(config)).toMatch(new RegExp(config.tiledPath.replace(/^.*\//, '')));
 
@@ -57,6 +62,8 @@ describe('MVP maps chapters 1–5', () => {
   it('places POIs on boss and cave maps', () => {
     const sword = getMapConfig('map.fallen_village.02').pois;
     expect(sword.some((p) => p.type === 'ancient_sword')).toBe(true);
+    const ch2Sword = getMapConfig('map.mist_forest.02').pois;
+    expect(ch2Sword.some((p) => p.type === 'ancient_sword')).toBe(true);
     expect(getMapConfig('map.stone_canyon.01').pois.some((p) => p.type === 'hidden_cave')).toBe(true);
   });
 

@@ -17,6 +17,7 @@ import {
   enemyAnimKeys,
 } from '@/combat/art/stickyManAssets';
 import { BossPhaseTracker } from '@/combat/ai/BossPhaseTracker';
+import { PatrolAI } from '@/combat/ai/PatrolAI';
 import { DISPLAY_SCALE } from '@/combat/art/stickyManPalette';
 
 export const TELEGRAPH_MS = 300;
@@ -139,6 +140,11 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.hpBarFill.setVisible(true).setScale(1, 1);
     this.updateHpBar();
     this.sprite.play(this.animKeys.idle);
+  }
+
+  /** Override patrol loop for roaming map spawns. */
+  setPatrolWaypoints(offsets: ReadonlyArray<{ x: number; y: number }>): void {
+    this.brain = new PatrolAI(offsets);
   }
 
   /** Hide + disable (pool release). Does not destroy the GameObject. */

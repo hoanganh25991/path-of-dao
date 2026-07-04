@@ -1,3 +1,4 @@
+import { FullscreenManager } from '@/app/FullscreenManager';
 import '@/ui/modals/ancient-demo.css';
 import '@/ui/skills/skill-detail.css';
 import { I18nManager } from '@/core/i18n/I18nManager';
@@ -190,11 +191,13 @@ export function showAncientDemoModal(
     backdrop.addEventListener('click', dismiss);
 
     walkHere.addEventListener('click', () => {
+      FullscreenManager.requestOnPlay();
       cleanup();
       resolve({ mode: 'walk_here' });
     });
 
     followPath.addEventListener('click', () => {
+      FullscreenManager.requestOnPlay();
       cleanup();
       resolve({ mode: 'follow_path' });
     });
