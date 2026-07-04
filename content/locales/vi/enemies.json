@@ -40,5 +40,7 @@
   "boss.void_sovereign.name": "Lôi Tiên Tôn",
   "enemy.training.dummy.name": "Mục Tiêu Luyện",
   "enemy.elite.shadow.name": "Tinh Anh U Linh",
-  "enemy.spirit.fox.name": "Tiểu Bạch"
+  "enemy.spirit.fox.name": "Tiểu Bạch",
+  "enemy.village.scavenger.name": "Kẻ Nhặt Nhạnh Tàn Tích",
+  "enemy.village.spirit_pest.name": "Yêu Thú Linh Nhỏ"
 }
