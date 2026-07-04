@@ -13,8 +13,8 @@
 import {
   pickHeavyStrike,
   pickLightStrike,
-  pickWeaponHeavyStrike,
-  pickWeaponLightStrike,
+  pickWeaponHeavyStrikeForStep,
+  pickWeaponLightStrikeForStep,
   type UnarmedStrikeKind,
   type WeaponStrikeKind,
 } from '@/combat/art/stickyManStrikes';
@@ -146,12 +146,15 @@ export class PlayerStateMachine {
 
     if (this.comboStep === MAX_COMBO_STEP) {
       this.activeStrike = pickHeavyStrike(this.heavyFinisherCycle);
-      this.activeWeaponStrike = pickWeaponHeavyStrike(this.weaponStrikeCycle);
+      this.activeWeaponStrike = pickWeaponHeavyStrikeForStep(this.weaponStrikeCycle);
       this.heavyFinisherCycle = (this.heavyFinisherCycle + 1) % HEAVY_FINISHER_VARIANTS;
       this.weaponStrikeCycle += 1;
     } else {
       this.activeStrike = pickLightStrike(this.strikeCycle);
-      this.activeWeaponStrike = pickWeaponLightStrike(this.weaponStrikeCycle);
+      this.activeWeaponStrike = pickWeaponLightStrikeForStep(
+        this.comboStep as 1 | 2,
+        this.weaponStrikeCycle,
+      );
       this.strikeCycle += 1;
       this.weaponStrikeCycle += 1;
     }

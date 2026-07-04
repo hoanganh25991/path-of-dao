@@ -17,11 +17,13 @@ import {
   POSES_ARCHER_IDLE,
   POSES_ARCHER_WALK,
   POSES_HIT,
+  POSES_IDLE,
   POSES_SIT,
   POSES_SLIME_IDLE,
   POSES_SLIME_WALK,
   POSES_TOTEM_ATTACK,
   POSES_TOTEM_IDLE,
+  POSES_WALK,
   type HeroCombatStyle,
 } from '@/combat/art/stickyManDraw';
 import {

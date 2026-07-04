@@ -1,11 +1,11 @@
 import type { StickPalette, StickPose, SegmentAngles } from '@/combat/art/stickyManPalette';
 import { limbEnd, seg } from '@/combat/art/stickyManPalette';
-import { smoothPoseStrip } from '@/combat/art/stickyManPoseMath';
 import {
   STRIKE_POSES,
   UNARMED_STRIKE_KINDS,
   WEAPON_STRIKE_KINDS,
   WEAPON_STRIKE_POSES,
+  type WeaponStrikeKind,
 } from '@/combat/art/stickyManStrikes';
 
 const HEAD_R = 4;

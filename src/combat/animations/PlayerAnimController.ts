@@ -3,7 +3,7 @@ import { STRIKE_ANIM, WEAPON_STRIKE_ANIM, type WeaponStrikeKind } from '@/combat
 import { ANIM } from '@/combat/art/stickyManAssets';
 import { moveSpeedPxPerSec } from '@/progression/DamageCalculator';
 import { isArmedAttackStyle } from '@/progression/WeaponProgression';
-import { MAX_COMBO_STEP, type PlayerStateId } from '@/combat/state/PlayerStateMachine';
+import type { PlayerStateId } from '@/combat/state/PlayerStateMachine';
 import type { Player } from '@/combat/entities/Player';
 
 /**
