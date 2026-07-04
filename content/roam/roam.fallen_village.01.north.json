@@ -2,40 +2,76 @@
   "id": "roam.fallen_village.01.north",
   "spawns": [
     {
-      "enemyId": "enemy.bandit.thug",
+      "enemyPool": ["enemy.bandit.thug", "enemy.bandit.thug", "enemy.village.scavenger"],
       "x": 2200,
       "y": 3200,
       "patrolRadius": 80
     },
     {
-      "enemyId": "enemy.bandit.thug",
+      "enemyPool": ["enemy.bandit.thug", "enemy.wolf", "enemy.bandit.thug"],
       "x": 4000,
       "y": 2800,
       "patrolRadius": 75
     },
     {
-      "enemyId": "enemy.wolf",
+      "enemyPool": ["enemy.wolf", "enemy.wolf", "enemy.wolf", "enemy.village.spirit_pest"],
       "x": 5600,
       "y": 3600,
       "patrolRadius": 85
     },
     {
-      "enemyId": "enemy.village.scavenger",
+      "enemyPool": ["enemy.village.scavenger", "enemy.village.scavenger", "enemy.bandit.thug"],
       "x": 3400,
       "y": 4600,
       "patrolRadius": 70
     },
     {
-      "enemyId": "enemy.village.spirit_pest",
+      "enemyPool": ["enemy.village.spirit_pest", "enemy.village.spirit_pest", "enemy.slime"],
       "x": 6200,
       "y": 4800,
       "patrolRadius": 60
     },
     {
-      "enemyId": "enemy.slime",
+      "enemyPool": ["enemy.slime", "enemy.slime", "enemy.wolf"],
       "x": 4800,
       "y": 5200,
       "patrolRadius": 55
+    },
+    {
+      "enemyPool": ["enemy.wolf", "enemy.bandit.thug"],
+      "x": 1400,
+      "y": 4200,
+      "patrolRadius": 70
+    },
+    {
+      "enemyPool": ["enemy.slime", "enemy.slime", "enemy.village.spirit_pest"],
+      "x": 6600,
+      "y": 2800,
+      "patrolRadius": 65
+    },
+    {
+      "enemyPool": ["enemy.village.scavenger", "enemy.bandit.thug", "enemy.bandit.thug"],
+      "x": 2800,
+      "y": 3600,
+      "patrolRadius": 72
+    },
+    {
+      "enemyPool": ["enemy.slime", "enemy.slime", "enemy.slime"],
+      "x": 7400,
+      "y": 4200,
+      "patrolRadius": 60
+    },
+    {
+      "enemyPool": ["enemy.wolf", "enemy.wolf", "enemy.village.spirit_pest"],
+      "x": 1200,
+      "y": 2400,
+      "patrolRadius": 80
+    },
+    {
+      "enemyPool": ["enemy.bandit.thug", "enemy.village.scavenger"],
+      "x": 5400,
+      "y": 2000,
+      "patrolRadius": 70
     }
   ]
 }

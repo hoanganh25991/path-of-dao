@@ -78,6 +78,7 @@ export default defineConfig({
         sourcemap: false,
         globPatterns: ['**/*.{js,css,html,ico,png,json,woff2}'],
         navigateFallback: `${BASE_PATH}index.html`,
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
     }),
   ],

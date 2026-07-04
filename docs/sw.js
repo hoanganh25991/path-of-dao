@@ -81,7 +81,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"
   }, {
     "url": "index.html",
-    "revision": "85409784f8d315130b6b5abeebb14e0f"
+    "revision": "f17ac2ab2e384d5bd2b87984a51b48af"
   }, {
     "url": "favicon.ico",
     "revision": "e1625ff44026e81605560873d7fcf309"
@@ -92,7 +92,13 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "icons/icon-192.png",
     "revision": "16d8cd7e83a3b7e2f9f8a050e9a42ab1"
   }, {
-    "url": "assets/virtual_pwa-register-4pQuFLuT.js",
+    "url": "assets/void_throne-02-BcuhAwRe.json",
+    "revision": null
+  }, {
+    "url": "assets/void_throne-01-CCf2eSqK.json",
+    "revision": null
+  }, {
+    "url": "assets/virtual_pwa-register-C-1MKxGX.js",
     "revision": null
   }, {
     "url": "assets/vendor-C8bt_7hy.js",
@@ -140,10 +146,16 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/index-ZmMzrzUK.css",
     "revision": null
   }, {
-    "url": "assets/index-Dt4J_hcV.js",
+    "url": "assets/index-RmTgsuAU.js",
     "revision": null
   }, {
     "url": "assets/hidden_cave-B3gJzmH4.png",
+    "revision": null
+  }, {
+    "url": "assets/heavenly_gate-02-WOR2nLKY.json",
+    "revision": null
+  }, {
+    "url": "assets/heavenly_gate-01-N9TSXxSf.json",
     "revision": null
   }, {
     "url": "assets/frozen_palace-02-4AezZ3rv.json",
@@ -183,6 +195,12 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "assets/ancient_inheritance-CItgCV1O.png",
+    "revision": null
+  }, {
+    "url": "assets/abyss_rift-02-BCXujazi.json",
+    "revision": null
+  }, {
+    "url": "assets/abyss_rift-01-DSqWhb-l.json",
     "revision": null
   }, {
     "url": "favicon.ico",
