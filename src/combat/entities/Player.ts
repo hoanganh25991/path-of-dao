@@ -128,7 +128,7 @@ export class Player extends EntityBase implements HurtboxEntity {
 
       if (input.dodge.pressed) this.dodge.tryStart(move);
       if (input.health.pressed) this.meditate.tryToggle();
-      if (input.attack.pressed) this.combat.tryAttack();
+      if (input.attack.pressed || input.attack.held) this.combat.tryAttack();
 
       if (input.skillPrimary.pressed) this.combat.trySkillPressed('primary');
       else if (input.skillPrimary.held) this.combat.trySkill('primary');

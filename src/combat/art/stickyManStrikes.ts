@@ -188,3 +188,14 @@ export function pickWeaponLightStrike(seed: number): WeaponLightKind {
 export function pickWeaponHeavyStrike(seed: number): WeaponHeavyKind {
   return WEAPON_HEAVY_KINDS[seed % WEAPON_HEAVY_KINDS.length]!;
 }
+
+/** Step-aware weapon light strike: picks among the variants that belong to step 1 or 2. */
+export function pickWeaponLightStrikeForStep(step: 1 | 2, seed: number): WeaponLightKind {
+  const variants = step === 1 ? ['wepSlash1', 'wepChop1'] as const : ['wepSlash2', 'wepThrust2'] as const;
+  return variants[seed % variants.length]!;
+}
+
+/** Step-aware weapon heavy strike: picks among the variants that belong to step 3. */
+export function pickWeaponHeavyStrikeForStep(seed: number): WeaponHeavyKind {
+  return pickWeaponHeavyStrike(seed);
+}

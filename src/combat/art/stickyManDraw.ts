@@ -931,23 +931,23 @@ export const POSES_SIT: StickPose[] = [
   {
     bob: 0,
     lean: 0,
-    hipDrop: 8,
+    hipDrop: 10,
     limbs: {
       armBack: seg(5, 75),
       armFront: seg(-5, -75),
-      legBack: seg(58, -65),
-      legFront: seg(-58, 65),
+      legBack: seg(78, -40),
+      legFront: seg(-78, 40),
     },
   },
   {
     bob: -0.8,
     lean: 0,
-    hipDrop: 8,
+    hipDrop: 10,
     limbs: {
       armBack: seg(4, 74),
       armFront: seg(-4, -74),
-      legBack: seg(57, -64),
-      legFront: seg(-57, 64),
+      legBack: seg(77, -39),
+      legFront: seg(-77, 39),
     },
   },
 ];
