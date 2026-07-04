@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { emptyEquippedSkills } from '@/progression/SkillSlots';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import {
   getPhongTonLoreId,
@@ -28,7 +29,7 @@ function makeSave(overrides: Partial<PlayerSaveV1['progress']> = {}): PlayerSave
     xp: 0,
     realm: { id: 'realm.mortal', tier: 'early', breakthroughReady: false },
     insights: {},
-    equippedSkills: { primary: '', secondary: '', ultimate: '' },
+    equippedSkills: emptyEquippedSkills(),
     unlockedSkills: [],
     inventory: { items: [], gold: 0 },
     equipped: { weapon: null, armor: null, accessory: null, spirit: null },
@@ -48,6 +49,7 @@ function makeSave(overrides: Partial<PlayerSaveV1['progress']> = {}): PlayerSave
     cosmetics: { pet: null },
     settings: { locale: 'en', quality: 'auto', sfxVolume: 1, musicVolume: 1, fullscreen: true },
     meta: { totalPlaySeconds: 0, createdAt: '', updatedAt: '' },
+    destinyPoints: { dharma: 0, divine: 0, intent: 0, unspent: 0 },
   };
 }
 

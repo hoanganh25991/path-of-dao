@@ -60,10 +60,14 @@ export function createRegionNode(options: RegionNodeOptions): HTMLElement {
   mapsLayer.className = 'world-region__maps';
 
   for (const node of region.maps) {
+    const travelState = getMapTravelState(node.mapId, save);
+    // Map Portal bypasses sequential unlock — all maps are accessible.
+    // Locked nodes show as unlocked so the player can tap them.
+    const portalState = travelState === 'locked' ? 'unlocked' : travelState;
     const mapEl = createMapNode({
       mapId: node.mapId,
       label: I18nManager.t(`${node.mapId}.name`),
-      state: getMapTravelState(node.mapId, save),
+      state: portalState,
       x: node.position.x,
       y: node.position.y,
       onSelect: onSelectMap,

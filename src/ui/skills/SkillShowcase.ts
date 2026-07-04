@@ -19,6 +19,7 @@ export function createSkillIconStrip(loadout: EquippedSkills): HTMLElement {
 
   for (const slot of SKILL_SLOTS) {
     const skillId = loadout[slot];
+    if (!skillId) continue;
     const icon = document.createElement('span');
     icon.className = 'skill-icon-strip__icon';
     if (isAwakenedSkillId(skillId)) icon.classList.add('skill-icon-strip__icon--awakened');
@@ -50,7 +51,9 @@ export function createSkillShowcaseList(
   list.className = 'skill-showcase__list';
 
   for (const slot of SKILL_SLOTS) {
-    list.appendChild(createSkillShowcaseRow(loadout[slot], slot, options.compact));
+    const skillId = loadout[slot];
+    if (!skillId) continue;
+    list.appendChild(createSkillShowcaseRow(skillId, slot, options.compact));
   }
 
   root.appendChild(list);

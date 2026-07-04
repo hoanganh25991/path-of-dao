@@ -3,6 +3,7 @@ import { AudioDirector } from '@/core/audio/AudioDirector';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { FortuitousEncounterManager } from '@/progression/FortuitousEncounterManager';
 import type { EncounterDefinition } from '@/shared/schemas/fortuitous-encounters';
+import { showDestinyChoiceModal } from '@/ui/modals/DestinyChoiceModal';
 
 export interface EncounterModalOptions {
   encounter: EncounterDefinition;
@@ -56,7 +57,15 @@ export function showEncounterModal(
     burst.className = 'encounter-modal__burst';
     burst.hidden = true;
 
-    card.append(art, title, flavor, confirm);
+    // Show reward preview for destiny_choice encounters
+    if (encounter.reward.type === 'destiny_choice') {
+      const preview = document.createElement('p');
+      preview.className = 'encounter-modal__preview';
+      preview.textContent = I18nManager.t('destiny.prompt');
+      card.append(art, title, flavor, preview, confirm);
+    } else {
+      card.append(art, title, flavor, confirm);
+    }
     overlay.append(backdrop, card, burst);
     uiRoot.appendChild(overlay);
     AudioDirector.playPanelOpen();
@@ -72,6 +81,12 @@ export function showEncounterModal(
     };
 
     confirm.addEventListener('click', () => {
+      if (encounter.reward.type === 'destiny_choice') {
+        cleanup();
+        void showDestinyChoiceModal(uiRoot, { encounter, poiKey }).then(() => resolve(true));
+        return;
+      }
+
       burst.hidden = false;
       burst.classList.add('encounter-modal__burst--active');
       FortuitousEncounterManager.apply(encounter, poiKey);

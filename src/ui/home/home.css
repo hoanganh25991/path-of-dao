@@ -678,6 +678,87 @@
   cursor: pointer;
 }
 
+/* Destiny point spending */
+.home-destiny-section__intro {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--dao-muted);
+}
+
+.home-destiny-section__summary {
+  margin-bottom: 0.75rem;
+}
+
+.home-destiny-section__summary-text {
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.8rem;
+  color: var(--dao-text);
+  text-align: center;
+}
+
+.home-destiny-section__empty {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px dashed var(--dao-border);
+  border-radius: 0.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--dao-muted);
+}
+
+.home-destiny-section__spend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.home-destiny-section__spend-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--dao-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.home-destiny-section__spend-btn:hover,
+.home-destiny-section__spend-btn:focus-visible {
+  border-color: var(--dao-gold);
+  background: rgba(201, 162, 39, 0.1);
+  outline: none;
+}
+
+.home-destiny-section__spend-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dao-gold);
+}
+
+.home-destiny-section__spend-desc {
+  flex: 1;
+  font-size: 0.65rem;
+  color: var(--dao-muted);
+}
+
+.home-destiny-section__spend-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--dao-tabs-active, rgba(45, 212, 168, 0.9));
+}
+
 /* Echoes panel */
 .home-echoes__intro {
   margin: 0 0 0.75rem;

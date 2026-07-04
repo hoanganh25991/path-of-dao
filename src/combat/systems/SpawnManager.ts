@@ -418,6 +418,14 @@ export class SpawnManager {
         withUnlocks = unlockSkillForBoss(withUnlocks, bossClearId);
       }
 
+      // Grant destiny points on level-up: 1 unspent point per level-up
+      const destinyPoints = current.destinyPoints ?? { dharma: 0, divine: 0, intent: 0, unspent: 0 };
+      const unspentBonus = rewards.statsAfterLevelUp ? 1 : 0;
+      const newDestinyPoints = {
+        ...destinyPoints,
+        unspent: destinyPoints.unspent + unspentBonus,
+      };
+
       const { realm, emitReady } = syncRealmProgress(withUnlocks);
       if (emitReady) {
         EventBus.emit('realm:breakthrough-ready', undefined);
@@ -430,6 +438,7 @@ export class SpawnManager {
         equippedSkills: withUnlocks.equippedSkills,
         realm,
         progress: withUnlocks.progress,
+        destinyPoints: newDestinyPoints,
       };
     });
 

@@ -2,18 +2,21 @@ import '@/ui/skills/skill-detail.css';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getSkillDefinition } from '@/progression/SkillLoader';
 import {
-  assignSkillToSlot,
   listAssignableSkills,
   normalizeLoadout,
   SKILL_SLOTS,
   type EquippedSkills,
 } from '@/progression/SkillLoadout';
+import type { SkillSlotIndex } from '@/progression/SkillSlots';
 import { createSkillDetailPanel } from '@/ui/skills/SkillDetailPanel';
 import {
   isAwakenedSkillId,
   renderSkillButtonHtml,
-  type SkillSlotId,
 } from '@/ui/skills/SkillIcon';
+
+function slotLabel(slot: SkillSlotIndex): string {
+  return I18nManager.t('combat.skills.slot', { n: slot + 1 });
+}
 
 /** Shared loadout picker — slot row, skill detail preview, icon pool. */
 export function createLoadoutPickerElement(
@@ -22,8 +25,8 @@ export function createLoadoutPickerElement(
   onChange: (loadout: EquippedSkills) => void,
 ): { root: HTMLElement; getLoadout: () => EquippedSkills } {
   const loadout = normalizeLoadout(initial, pool);
-  let activeSlot: SkillSlotId = 'primary';
-  let previewSkillId = loadout.primary || pool[0] || '';
+  let activeSlot: SkillSlotIndex = 0;
+  let previewSkillId = loadout[0] || pool[0] || '';
 
   const root = document.createElement('div');
   root.className = 'skill-loadout';
@@ -33,7 +36,7 @@ export function createLoadoutPickerElement(
 
   const slotsRow = document.createElement('div');
   slotsRow.className = 'ancient-demo-modal__slots';
-  const slotButtons = new Map<SkillSlotId, HTMLButtonElement>();
+  const slotButtons = new Map<SkillSlotIndex, HTMLButtonElement>();
 
   const activeSlotLabel = document.createElement('p');
   activeSlotLabel.className = 'skill-loadout__active-slot';
@@ -49,8 +52,9 @@ export function createLoadoutPickerElement(
   detailHost.className = 'skill-loadout__detail';
 
   const renderActiveSlotLabel = (): void => {
-    const slotName = I18nManager.t(`demo.skills.slot.${activeSlot}`);
-    activeSlotLabel.textContent = I18nManager.t('combat.skills.pick_title', { slot: slotName });
+    activeSlotLabel.textContent = I18nManager.t('combat.skills.pick_title', {
+      slot: slotLabel(activeSlot),
+    });
   };
 
   const renderDetail = (): void => {
@@ -68,7 +72,7 @@ export function createLoadoutPickerElement(
         btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'ancient-demo-modal__slot';
-        btn.dataset.slot = slot;
+        btn.dataset.slot = String(slot);
         btn.addEventListener('click', () => {
           activeSlot = slot;
           previewSkillId = loadout[slot];
@@ -84,14 +88,14 @@ export function createLoadoutPickerElement(
       const skillId = loadout[slot];
       if (!skillId) {
         btn.innerHTML = `
-          <span class="ancient-demo-modal__slot-label">${I18nManager.t(`demo.skills.slot.${slot}`)}</span>
+          <span class="ancient-demo-modal__slot-label">${slotLabel(slot)}</span>
           <span class="ancient-demo-modal__slot-icon"><span class="skill-btn__icon skill-btn__icon--empty">·</span></span>
           <span class="ancient-demo-modal__slot-skill">${I18nManager.t('home.skills.slot_empty')}</span>
         `;
       } else {
         const skillName = I18nManager.t(getSkillDefinition(skillId).nameKey);
         btn.innerHTML = `
-          <span class="ancient-demo-modal__slot-label">${I18nManager.t(`demo.skills.slot.${slot}`)}</span>
+          <span class="ancient-demo-modal__slot-label">${slotLabel(slot)}</span>
           <span class="ancient-demo-modal__slot-icon">${renderSkillButtonHtml(skillId)}</span>
           <span class="ancient-demo-modal__slot-skill">${skillName}</span>
         `;
@@ -118,11 +122,11 @@ export function createLoadoutPickerElement(
 
       pick.addEventListener('click', () => {
         previewSkillId = skillId;
-        Object.assign(loadout, assignSkillToSlot(loadout, activeSlot, skillId));
+        loadout[activeSlot] = skillId;
         renderSlots();
         renderPool();
         renderDetail();
-        onChange({ ...loadout });
+        onChange([...loadout] as EquippedSkills);
       });
 
       poolEl.appendChild(pick);
@@ -138,6 +142,6 @@ export function createLoadoutPickerElement(
 
   return {
     root,
-    getLoadout: () => ({ ...loadout }),
+    getLoadout: () => [...loadout] as EquippedSkills,
   };
 }

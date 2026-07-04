@@ -42,13 +42,9 @@ export type GameEvents = {
   'progression:level-up': { level: number; realmId: string; tier: PlayerSaveV1['realm']['tier'] };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
-  'combat:open-skill-picker': { slot?: 'primary' | 'secondary' | 'ultimate' };
-  'loadout:changed': { equippedSkills: { primary: string; secondary: string; ultimate: string } };
-  'skill:cooldown-state': {
-    primary: { remainingMs: number; totalMs: number };
-    secondary: { remainingMs: number; totalMs: number };
-    ultimate: { remainingMs: number; totalMs: number };
-  };
+  'combat:open-skill-picker': { slot?: 0 | 1 | 2 | 3 | 4 | 5 };
+  'loadout:changed': { equippedSkills: import('@/progression/SkillSlots').EquippedSkills };
+  'skill:cooldown-state': import('@/progression/SkillSlots').SkillCooldownState;
   'health:cooldown-state': { remainingMs: number; totalMs: number };
   'home:open-tab': { tab: HomeTab };
   'settings:locale-changed': { preference: LocalePreference; locale: Locale };

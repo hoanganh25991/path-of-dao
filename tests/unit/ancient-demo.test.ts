@@ -57,7 +57,7 @@ describe('AncientDemoManager', () => {
     const save = buildAncientSave('ancient.void_walker');
     expect(save.realm.id).toBe('void_spirit');
     expect(save.insights.void?.awakened).toBe(true);
-    expect(save.equippedSkills.primary).toBe('skill.void.slash.awakened');
+    expect(save.equippedSkills[0]).toBe('skill.void.slash.awakened');
   });
 
   it('detects meaningful progress on leveled save', () => {
@@ -85,39 +85,45 @@ describe('AncientDemoManager', () => {
   it('enter applies normalized default loadout', async () => {
     await enterAncientDemo('ancient.sword_ancestor');
     const skills = gameStore.getState().save!.equippedSkills;
-    expect(new Set(Object.values(skills)).size).toBe(3);
+    expect(new Set(skills.filter(Boolean)).size).toBe(3);
     await exitAncientDemo();
   });
 
   it('buildAncientSave seeds profile unlocked skills', () => {
     const save = buildAncientSave('ancient.sword_ancestor');
     expect(save.unlockedSkills).toContain('skill.sword.slash.awakened');
-    expect(save.equippedSkills.primary).toBe('skill.sword.slash.awakened');
-    expect(save.equippedSkills.ultimate).toBe('skill.flame.bolt.awakened');
+    expect(save.equippedSkills[0]).toBe('skill.sword.slash.awakened');
+    expect(save.equippedSkills[2]).toBe('skill.flame.bolt.awakened');
   });
 
   it('enter replaces hero loadout and exit restores it', async () => {
-    const heroLoadout = {
-      primary: 'skill.void.slash',
-      secondary: 'skill.sword.slash',
-      ultimate: 'skill.sword.crescent.v1',
-    };
+    const heroLoadout = [
+      'skill.void.slash',
+      'skill.sword.slash',
+      'skill.sword.crescent.v1',
+      '',
+      '',
+      '',
+    ] as const;
     gameStore.getState().patch({
       xp: 100,
       stats: { ...gameStore.getState().save!.stats, level: 3 },
-      equippedSkills: heroLoadout,
-      unlockedSkills: Object.values(heroLoadout),
+      equippedSkills: [...heroLoadout],
+      unlockedSkills: heroLoadout.filter(Boolean),
     });
 
     await enterAncientDemo('ancient.breakthrough_sage');
-    expect(gameStore.getState().save!.equippedSkills).toEqual({
-      primary: 'skill.void.slash',
-      secondary: 'skill.sword.slash',
-      ultimate: 'skill.flame.bolt',
-    });
+    expect(gameStore.getState().save!.equippedSkills).toEqual([
+      'skill.void.slash',
+      'skill.sword.slash',
+      'skill.flame.bolt',
+      '',
+      '',
+      '',
+    ]);
 
     await exitAncientDemo();
-    expect(gameStore.getState().save!.equippedSkills).toEqual(heroLoadout);
+    expect(gameStore.getState().save!.equippedSkills).toEqual([...heroLoadout]);
   });
 
   it('each ancient exposes at least four unlocked skills', () => {

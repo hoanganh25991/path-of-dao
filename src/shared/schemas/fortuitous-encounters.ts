@@ -34,6 +34,25 @@ const rewardSchema = z.discriminatedUnion('type', [
     type: z.literal('skill_variant'),
     skillId: z.string(),
   }),
+  z.object({
+    type: z.literal('destiny_choice'),
+    options: z.array(
+      z.object({
+        key: z.string(),
+        labelKey: z.string().min(1),
+        descKey: z.string().min(1),
+        icon: z.string().min(1),
+        reward: z.object({
+          kind: z.enum(['dharma', 'divine', 'intent']),
+          itemIds: z.array(z.string()).optional(),
+          gold: z.number().int().min(0).optional(),
+          intentId: z.string().optional(),
+          xpGain: z.number().int().min(0).optional(),
+          skillId: z.string().optional(),
+        }),
+      }),
+    ).min(2).max(3),
+  }),
 ]);
 
 export const encounterDefinitionSchema = z.object({

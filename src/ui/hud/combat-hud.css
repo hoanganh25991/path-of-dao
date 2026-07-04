@@ -72,14 +72,14 @@
   --btn-size: 52px;
   --btn-lg: 72px;
   --swap-btn-size: 44px;
-  /* Arc fan: attack center → satellites left/up (180°→68°, ~28° apart for 52px buttons). */
-  --arc-radius: 122px;
+  /* Quarter-circle: utility inner ring + dynamic skill arc (angles set in JS). */
+  --arc-radius-inner: 76px;
+  --arc-radius-skill: 124px;
   --arc-origin-x: calc(100% - var(--btn-lg) / 2);
   --arc-origin-y: calc(100% - var(--btn-lg) / 2);
-  --cluster-size: calc(var(--btn-lg) / 2 + var(--arc-radius) + var(--btn-size) / 2 + 4px);
-  /* 68° sits right of vertical; shift cluster left so swap btn stays in viewport. */
+  --cluster-size: calc(var(--btn-lg) / 2 + var(--arc-radius-skill) + var(--btn-size) / 2 + 6px);
   --arc-right-overhang: calc(
-    cos(68deg) * var(--arc-radius) + var(--swap-btn-size) / 2 - var(--btn-lg) / 2
+    cos(98deg) * var(--arc-radius-skill) + var(--btn-size) / 2 - var(--btn-lg) / 2
   );
 
   position: absolute;
@@ -102,6 +102,11 @@
   pointer-events: auto;
 }
 
+.action-buttons__cluster > .action-btn[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
 /* Anchor: basic attack — largest, bottom-right of cluster. */
 .action-buttons__cluster .action-btn--attack {
   right: 0;
@@ -109,41 +114,41 @@
   z-index: 4;
 }
 
-/* Satellite buttons: evenly spaced on ~112° arc (left → up-left) around attack center. */
+/* Satellites on concentric rings inside the 90°–180° quadrant around attack. */
 .action-buttons__cluster .action-btn--arc {
   left: calc(var(--arc-origin-x) + cos(var(--arc-angle)) * var(--arc-radius));
   top: calc(var(--arc-origin-y) - sin(var(--arc-angle)) * var(--arc-radius));
   transform: translate(-50%, -50%);
 }
 
+/* Inner ring (r≈78): utility — 180°, 135°, 90° (45° apart). */
 .action-buttons__cluster .action-btn--dodge {
+  --arc-radius: var(--arc-radius-inner);
   --arc-angle: 180deg;
   z-index: 3;
 }
 
 .action-buttons__cluster .action-btn--health {
-  --arc-angle: 166deg;
+  --arc-radius: var(--arc-radius-inner);
+  --arc-angle: 135deg;
   z-index: 3;
-}
-
-.action-buttons__cluster .action-btn--skill-primary {
-  --arc-angle: 152deg;
-  z-index: 3;
-}
-
-.action-buttons__cluster .action-btn--skill-secondary {
-  --arc-angle: 124deg;
-  z-index: 2;
-}
-
-.action-buttons__cluster .action-btn--skill-ultimate {
-  --arc-angle: 96deg;
-  z-index: 2;
 }
 
 .action-buttons__cluster .action-btn--swap-skills {
-  --arc-angle: 68deg;
-  z-index: 1;
+  --arc-radius: var(--arc-radius-inner);
+  --arc-angle: 90deg;
+  z-index: 2;
+}
+
+.action-buttons__cluster .action-btn--skill {
+  --arc-radius: var(--arc-radius-skill);
+  z-index: 3;
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 14px rgba(201, 162, 39, 0.15);
+}
+
+.action-buttons--ancient .action-btn--skill {
+  border-color: rgba(201, 162, 39, 0.6);
 }
 
 .action-btn--swap-skills {
@@ -232,9 +237,10 @@
   box-shadow: 0 0 12px rgba(128, 255, 176, 0.12);
 }
 
-.action-btn--skill-primary {
-  border-color: rgba(201, 162, 39, 0.55);
-  box-shadow: 0 0 14px rgba(201, 162, 39, 0.15);
+.action-btn--skill-primary,
+.action-btn--skill-secondary,
+.action-btn--skill-ultimate {
+  /* legacy — use action-btn--skill */
 }
 
 .action-btn--awakened {
@@ -306,10 +312,4 @@
   border-radius: 50%;
   background: radial-gradient(circle, #ffe880, #c9a227);
   box-shadow: 0 0 8px rgba(255, 220, 100, 0.8);
-}
-
-.action-buttons--ancient .action-btn--skill-primary,
-.action-buttons--ancient .action-btn--skill-secondary,
-.action-buttons--ancient .action-btn--skill-ultimate {
-  border-color: rgba(201, 162, 39, 0.6);
 }

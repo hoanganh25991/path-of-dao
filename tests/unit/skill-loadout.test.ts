@@ -11,6 +11,7 @@ import {
 } from '@/progression/SkillLoadout';
 import { MEDITATE_SKILL_ID } from '@/progression/BuiltinSkills';
 import { unlockSkillIds } from '@/progression/SkillUnlockManager';
+import type { EquippedSkills } from '@/progression/SkillSlots';
 
 describe('SkillLoadout', () => {
   it('starts with no unlocked skills on a fresh save', () => {
@@ -39,45 +40,63 @@ describe('SkillLoadout', () => {
 
   it('normalizeLoadout keeps duplicate assignments when valid', () => {
     const loadout = normalizeLoadout(
-      {
-        primary: 'skill.void.slash',
-        secondary: 'skill.void.slash',
-        ultimate: 'skill.flame.bolt',
-      },
+      [
+        'skill.void.slash',
+        'skill.void.slash',
+        'skill.flame.bolt',
+        '',
+        '',
+        '',
+      ] satisfies EquippedSkills,
       pool,
     );
-    expect(loadout.primary).toBe('skill.void.slash');
-    expect(loadout.secondary).toBe('skill.void.slash');
-    expect(loadout.ultimate).toBe('skill.flame.bolt');
+    expect(loadout[0]).toBe('skill.void.slash');
+    expect(loadout[1]).toBe('skill.void.slash');
+    expect(loadout[2]).toBe('skill.flame.bolt');
+  });
+
+  it('normalizeLoadout clears invalid skills without filling placeholders', () => {
+    const loadout = normalizeLoadout(
+      ['skill.invalid', '', 'skill.flame.bolt', '', '', ''] satisfies EquippedSkills,
+      pool,
+    );
+    expect(loadout[0]).toBe('');
+    expect(loadout[2]).toBe('skill.flame.bolt');
   });
 
   it('assignSkillToSlot allows duplicates across slots', () => {
     const next = assignSkillToSlot(
-      {
-        primary: 'skill.void.slash',
-        secondary: 'skill.sword.slash',
-        ultimate: 'skill.flame.bolt',
-      },
-      'ultimate',
+      [
+        'skill.void.slash',
+        'skill.sword.slash',
+        'skill.flame.bolt',
+        '',
+        '',
+        '',
+      ] satisfies EquippedSkills,
+      2,
       'skill.void.slash',
     );
-    expect(next.ultimate).toBe('skill.void.slash');
-    expect(next.secondary).toBe('skill.sword.slash');
-    expect(next.primary).toBe('skill.void.slash');
+    expect(next[2]).toBe('skill.void.slash');
+    expect(next[1]).toBe('skill.sword.slash');
+    expect(next[0]).toBe('skill.void.slash');
   });
 
   it('listAssignableSkills returns the full pool', () => {
-    const loadout = {
-      primary: 'skill.void.slash',
-      secondary: 'skill.sword.slash',
-      ultimate: 'skill.flame.bolt',
-    };
-    expect(listAssignableSkills(loadout, 'primary', pool)).toEqual(pool);
+    const loadout = [
+      'skill.void.slash',
+      'skill.sword.slash',
+      'skill.flame.bolt',
+      '',
+      '',
+      '',
+    ] satisfies EquippedSkills;
+    expect(listAssignableSkills(loadout, 0, pool)).toEqual(pool);
   });
 
   it('cannot cast meditate from a skill slot even if legacy save still lists it', () => {
     const save = SaveManager.createNew();
-    save.equippedSkills.secondary = MEDITATE_SKILL_ID;
-    expect(canCastEquippedSkill(save, 'secondary')).toBe(false);
+    save.equippedSkills[1] = MEDITATE_SKILL_ID;
+    expect(canCastEquippedSkill(save, 1)).toBe(false);
   });
 });

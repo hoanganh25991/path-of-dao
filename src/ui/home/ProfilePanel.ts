@@ -25,7 +25,7 @@ import {
 import { listDiscoveredIntentIds } from '@/progression/SkillLoadout';
 import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
 
-export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent';
+export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent' | 'destiny';
 
 const SIGNATURE_INTENT_ICONS: Record<string, string> = {
   sword: '⚔',
@@ -95,6 +95,7 @@ export function createProfilePanel(): ProfilePanelHandles {
     { id: 'dharma', key: 'home.nav.dharma' },
     { id: 'divine', key: 'home.nav.divine_abilities' },
     { id: 'intent', key: 'home.nav.intents' },
+    { id: 'destiny', key: 'destiny.tab' },
   ];
   const subTabButtons: HTMLElement[] = [];
   for (const { id, key } of subTabDefs) {
@@ -161,7 +162,22 @@ export function createProfilePanel(): ProfilePanelHandles {
   intentEmpty.textContent = I18nManager.t('home.intent.semantics.empty');
   intentRoot.append(intentTitle, intentIntro, intentList, intentEmpty);
 
-  content.append(statsRoot, dharmaRoot, divineRoot, intentRoot);
+  // Destiny point spending
+  const destinyRoot = document.createElement('div');
+  destinyRoot.className = 'home-destiny-section';
+  const destinyTitle = document.createElement('h2');
+  destinyTitle.className = 'home-panel__title';
+  destinyTitle.textContent = I18nManager.t('destiny.tab');
+  const destinyIntro = document.createElement('p');
+  destinyIntro.className = 'home-destiny-section__intro';
+  destinyIntro.textContent = I18nManager.t('destiny.intro');
+  const destinySummary = document.createElement('div');
+  destinySummary.className = 'home-destiny-section__summary';
+  const destinySpend = document.createElement('div');
+  destinySpend.className = 'home-destiny-section__spend';
+  destinyRoot.append(destinyTitle, destinyIntro, destinySummary, destinySpend);
+
+  content.append(statsRoot, dharmaRoot, divineRoot, intentRoot, destinyRoot);
   root.append(subTabs, content);
 
   let activeSubTab: ProfileSubTab = 'stats';
@@ -177,6 +193,7 @@ export function createProfilePanel(): ProfilePanelHandles {
     dharmaRoot.hidden = id !== 'dharma';
     divineRoot.hidden = id !== 'divine';
     intentRoot.hidden = id !== 'intent';
+    destinyRoot.hidden = id !== 'destiny';
     render();
   }
 
@@ -221,6 +238,8 @@ export function createProfilePanel(): ProfilePanelHandles {
       years: String(yearsCultivated(save.meta.totalPlaySeconds, realmOrder)),
     }));
     addStatRow('home.profile.awakenings', String(awakenedCount));
+    const dp = save.destinyPoints ?? { dharma: 0, divine: 0, intent: 0, unspent: 0 };
+    addStatRow('destiny.unspent_points', `${dp.unspent} (Pháp Bảo: ${dp.dharma} | Thần Thông: ${dp.divine} | Ý Cảnh: ${dp.intent})`);
   }
 
   function closeDetail(): void {
@@ -446,11 +465,10 @@ export function createProfilePanel(): ProfilePanelHandles {
 
     let anyDiscovered = false;
     for (const intentId of ALL_INTENT_IDS) {
-      const config = getInsightIntentConfig(intentId);
       const iconChar = SIGNATURE_INTENT_ICONS[intentId] ?? '✦';
-      const discovered = save.insights[intentId]?.discovered ?? false;
-      if (discovered) anyDiscovered = true;
       const state = save.insights[intentId] ?? null;
+      const discovered = state !== null && (state.xp > 0 || state.totalUses > 0 || state.awakened);
+      if (discovered) anyDiscovered = true;
       const progress = state ? (state.awakened ? 100 : insightDisplayPct(state.xp || 0)) : 0;
       const ready = state ? checkAwakeningReady(save, intentId) : false;
 
@@ -514,12 +532,88 @@ export function createProfilePanel(): ProfilePanelHandles {
     intentEmpty.hidden = anyDiscovered;
   }
 
+  function renderDestiny(): void {
+    const save = gameStore.getState().save;
+    if (!save) return;
+
+    const dp = save.destinyPoints ?? { dharma: 0, divine: 0, intent: 0, unspent: 0 };
+
+    // Summary bar
+    destinySummary.replaceChildren();
+    const summaryText = document.createElement('p');
+    summaryText.className = 'home-destiny-section__summary-text';
+    summaryText.textContent = I18nManager.t('destiny.summary', {
+      unspent: String(dp.unspent),
+      dharma: String(dp.dharma),
+      divine: String(dp.divine),
+      intent: String(dp.intent),
+    });
+    destinySummary.appendChild(summaryText);
+
+    destinySpend.replaceChildren();
+
+    if (dp.unspent <= 0) {
+      const empty = document.createElement('p');
+      empty.className = 'home-destiny-section__empty';
+      empty.textContent = I18nManager.t('destiny.empty');
+      destinySpend.appendChild(empty);
+      return;
+    }
+
+    // Three spend buttons
+    const spendTargets: { key: string; kind: keyof typeof dp; labelKey: string; descKey: string }[] = [
+      { key: 'dharma', kind: 'dharma', labelKey: 'destiny.option.dharma.label', descKey: 'destiny.spend.dharma.desc' },
+      { key: 'divine', kind: 'divine', labelKey: 'destiny.option.divine.label', descKey: 'destiny.spend.divine.desc' },
+      { key: 'intent', kind: 'intent', labelKey: 'destiny.option.intent.label', descKey: 'destiny.spend.intent.desc' },
+    ];
+
+    for (const target of spendTargets) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'home-destiny-section__spend-btn';
+
+      const label = document.createElement('span');
+      label.className = 'home-destiny-section__spend-label';
+      label.textContent = I18nManager.t(target.labelKey);
+
+      const desc = document.createElement('span');
+      desc.className = 'home-destiny-section__spend-desc';
+      desc.textContent = I18nManager.t(target.descKey);
+
+      const count = document.createElement('span');
+      count.className = 'home-destiny-section__spend-count';
+      count.textContent = String(dp[target.kind]);
+
+      btn.append(label, desc, count);
+
+      btn.addEventListener('click', () => {
+        const current = gameStore.getState().save;
+        if (!current) return;
+        const currentDp = current.destinyPoints ?? { dharma: 0, divine: 0, intent: 0, unspent: 0 };
+        if (currentDp.unspent <= 0) return;
+
+        gameStore.getState().patch({
+          destinyPoints: {
+            ...currentDp,
+            unspent: currentDp.unspent - 1,
+            [target.kind]: currentDp[target.kind] + 1,
+          },
+        });
+        void gameStore.getState().persist();
+        renderDestiny();
+      });
+
+      destinySpend.appendChild(btn);
+    }
+  }
+
   function render(): void {
     switch (activeSubTab) {
       case 'stats': renderStats(); break;
       case 'dharma': renderDharma(); break;
       case 'divine': renderDivine(); break;
       case 'intent': renderIntent(); break;
+      case 'destiny': renderDestiny(); break;
     }
   }
 

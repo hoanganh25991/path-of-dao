@@ -17,7 +17,7 @@ export const INTENT_VISUALS: Record<InsightIntentId, IntentVisual> = {
   life: { icon: '✦', color: '#286848', glow: '#80ffb0', label: 'Life' },
 };
 
-export type SkillSlotId = 'primary' | 'secondary' | 'ultimate';
+export type SkillSlotId = import('@/progression/SkillSlots').SkillSlotIndex;
 
 export function isAwakenedSkillId(skillId: string): boolean {
   return skillId.endsWith('.awakened');
@@ -30,7 +30,7 @@ export function getIntentVisual(intent: InsightIntentId): IntentVisual {
 /** Build inner HTML for a combat skill button. */
 export function renderSkillButtonHtml(skillId: string): string {
   if (!skillId) {
-    return '<span class="skill-btn__icon skill-btn__icon--empty">·</span>';
+    return '';
   }
   const def = getSkillDefinition(skillId);
   const visual = getIntentVisual(def.intent);
@@ -41,10 +41,10 @@ export function renderSkillButtonHtml(skillId: string): string {
   `.trim();
 }
 
-export function skillButtonAriaLabel(skillId: string, slot: SkillSlotId): string {
-  if (!skillId) return `${slot} skill (empty)`;
+export function skillButtonAriaLabel(skillId: string): string {
+  if (!skillId) return 'Skill';
   const def = getSkillDefinition(skillId);
   const visual = getIntentVisual(def.intent);
   const tier = isAwakenedSkillId(skillId) ? 'awakened' : 'base';
-  return `${visual.label} ${slot} skill (${tier})`;
+  return `${visual.label} skill (${tier})`;
 }

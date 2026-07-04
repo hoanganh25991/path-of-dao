@@ -2,18 +2,22 @@ import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { getInsightIntentConfig, getIntentForSkillId, listInsightIntentIds } from '@/progression/InsightDefinitions';
 import { getInsightState } from '@/progression/InsightSystem';
+import {
+  coerceEquippedSkills,
+  emptyEquippedSkills,
+  SKILL_SLOT_INDICES,
+  type EquippedSkills,
+  type SkillSlotIndex,
+} from '@/progression/SkillSlots';
 import { filterSkillsForWeaponGate } from '@/progression/WeaponProgression';
-import type { SkillSlotId } from '@/ui/skills/SkillIcon';
 
-export type EquippedSkills = PlayerSaveV1['equippedSkills'];
+export type { EquippedSkills, SkillSlotIndex as SkillSlotId } from '@/progression/SkillSlots';
+export { SKILL_SLOT_INDICES as SKILL_SLOTS } from '@/progression/SkillSlots';
 
-export const SKILL_SLOTS: SkillSlotId[] = ['primary', 'secondary', 'ultimate'];
-
-export function isFilledSkillSlot(skillId: string): boolean {
-  return skillId.length > 0;
+export function isFilledSkillSlot(skillId: string | undefined): boolean {
+  return typeof skillId === 'string' && skillId.length > 0;
 }
 
-/** Intents the player has touched — unlocked skill, insight XP, or awakening. */
 export function listDiscoveredIntentIds(save: PlayerSaveV1): string[] {
   const discovered = new Set<string>();
 
@@ -32,12 +36,10 @@ export function listDiscoveredIntentIds(save: PlayerSaveV1): string[] {
   return [...discovered].sort();
 }
 
-/** Assignable pool — earned unlocks (+ awakened variants). */
 export function listAssignableSkillPool(save: PlayerSaveV1): string[] {
   return listUnlockedSkillIds(save);
 }
 
-/** Skills the player may assign — only earned unlocks (+ awakened variants). */
 export function listUnlockedSkillIds(save: PlayerSaveV1): string[] {
   const ancientId = getActiveAncientId();
   if (ancientId) {
@@ -54,47 +56,42 @@ export function listUnlockedSkillIds(save: PlayerSaveV1): string[] {
   return filterSkillsForWeaponGate(save, [...ids].sort());
 }
 
-/** Full skill pool for a slot — duplicates allowed across slots. */
 export function listAssignableSkills(
   _loadout: EquippedSkills,
-  _slot: SkillSlotId,
+  _slot: SkillSlotIndex,
   pool: string[],
 ): string[] {
   return pool.filter(isFilledSkillSlot);
 }
 
-/** Assign a skill to a slot — duplicates across slots are allowed. */
 export function assignSkillToSlot(
   loadout: EquippedSkills,
-  slot: SkillSlotId,
+  slot: SkillSlotIndex,
   skillId: string,
 ): EquippedSkills {
-  return { ...loadout, [slot]: skillId };
+  const next = [...loadout] as EquippedSkills;
+  next[slot] = skillId;
+  return next;
 }
 
-/** Put a newly learned skill on the first empty combat slot. */
 export function equipLearnedSkill(loadout: EquippedSkills, skillId: string): EquippedSkills {
-  if (Object.values(loadout).includes(skillId)) return loadout;
-  for (const slot of SKILL_SLOTS) {
+  if (loadout.includes(skillId)) return loadout;
+  for (const slot of SKILL_SLOT_INDICES) {
     if (!isFilledSkillSlot(loadout[slot])) {
-      return { ...loadout, [slot]: skillId };
+      return assignSkillToSlot(loadout, slot, skillId);
     }
   }
   return loadout;
 }
 
-/** Ensure each slot has a valid pool skill — duplicates are kept. */
-export function normalizeLoadout(
-  loadout: EquippedSkills,
-  pool: string[],
-): EquippedSkills {
-  const fallback = pool.find(isFilledSkillSlot) ?? '';
-  const next = { ...loadout };
+/** Drop skills outside the pool; leave empty slots empty (no HUD placeholder). */
+export function normalizeLoadout(loadout: EquippedSkills | unknown, pool: string[]): EquippedSkills {
+  const next = coerceEquippedSkills(loadout);
 
-  for (const slot of SKILL_SLOTS) {
+  for (const slot of SKILL_SLOT_INDICES) {
     const id = next[slot];
-    if (!isFilledSkillSlot(id) || !pool.includes(id)) {
-      next[slot] = fallback;
+    if (isFilledSkillSlot(id) && !pool.includes(id)) {
+      next[slot] = '';
     }
   }
 
@@ -106,8 +103,11 @@ export function defaultLoadoutFromSave(save: PlayerSaveV1): EquippedSkills {
   return normalizeLoadout(save.equippedSkills, pool);
 }
 
-export function canCastEquippedSkill(save: PlayerSaveV1, slot: SkillSlotId): boolean {
-  const skillId = save.equippedSkills[slot];
+export function canCastEquippedSkill(save: PlayerSaveV1, slot: SkillSlotIndex): boolean {
+  const loadout = coerceEquippedSkills(save.equippedSkills);
+  const skillId = loadout[slot];
   if (!isFilledSkillSlot(skillId)) return false;
   return listUnlockedSkillIds(save).includes(skillId);
 }
+
+export { coerceEquippedSkills, emptyEquippedSkills };

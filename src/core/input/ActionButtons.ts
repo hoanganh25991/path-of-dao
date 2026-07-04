@@ -5,19 +5,25 @@ import { isAncientCombatActive } from '@/progression/AncientCombatMode';
 import { canCastEquippedSkill } from '@/progression/SkillLoadout';
 import { cooldownReadyPct } from '@/progression/SkillCooldown';
 import {
+  SKILL_SLOT_INDICES,
+  coerceEquippedSkills,
+  skillActionId,
+  skillSlotFromAction,
+  type SkillActionId,
+  type SkillCooldownState,
+  type SkillSlotIndex,
+} from '@/progression/SkillSlots';
+import {
   isAwakenedSkillId,
   renderSkillButtonHtml,
   skillButtonAriaLabel,
-  type SkillSlotId,
 } from '@/ui/skills/SkillIcon';
 
 export type ActionButtonId =
   | 'attack'
   | 'dodge'
   | 'health'
-  | 'skillPrimary'
-  | 'skillSecondary'
-  | 'skillUltimate';
+  | SkillActionId;
 
 export interface ActionButtonSnapshot {
   held: boolean;
@@ -25,48 +31,43 @@ export interface ActionButtonSnapshot {
   released: boolean;
 }
 
-interface ButtonLayout {
-  id: ActionButtonId;
-  className: string;
-  slot?: SkillSlotId;
-  iconHtml: string;
-  ariaLabel: string;
-}
-
-const STATIC_BUTTONS: Omit<ButtonLayout, 'slot'>[] = [
+const STATIC_BUTTONS = [
   {
-    id: 'attack',
+    id: 'attack' as const,
     className: 'action-btn--attack',
     iconHtml: '<span class="skill-btn__icon skill-btn__icon--attack">⚔</span>',
     ariaLabel: 'Attack',
   },
   {
-    id: 'health',
+    id: 'health' as const,
     className: 'action-btn--health',
     iconHtml:
       '<span class="skill-btn__icon skill-btn__icon--health" style="--skill-color:#286848;--skill-glow:#80ffb0">✦</span>',
     ariaLabel: 'Gather Qi',
   },
   {
-    id: 'dodge',
+    id: 'dodge' as const,
     className: 'action-btn--dodge',
     iconHtml: '<span class="skill-btn__icon skill-btn__icon--dodge">💨</span>',
     ariaLabel: 'Dodge',
   },
 ];
 
-/** Matches loadout picker slot order: primary → secondary → ultimate. */
-const SKILL_SLOTS: Array<{ id: ActionButtonId; slot: SkillSlotId; className: string }> = [
-  { id: 'skillPrimary', slot: 'primary', className: 'action-btn--skill-primary' },
-  { id: 'skillSecondary', slot: 'secondary', className: 'action-btn--skill-secondary' },
-  { id: 'skillUltimate', slot: 'ultimate', className: 'action-btn--skill-ultimate' },
-];
+const SKILL_BUTTONS = SKILL_SLOT_INDICES.map((slot) => ({
+  id: skillActionId(slot),
+  slot,
+}));
 
-const SLOT_BY_BUTTON: Partial<Record<ActionButtonId, SkillSlotId>> = {
-  skillPrimary: 'primary',
-  skillSecondary: 'secondary',
-  skillUltimate: 'ultimate',
-};
+/** Spread equipped skills evenly on the 98°–172° arc (inside the utility ring). */
+const SKILL_ARC_START_DEG = 172;
+const SKILL_ARC_END_DEG = 98;
+const SKILL_ARC_RADIUS = 'var(--arc-radius-skill)';
+
+function skillArcAngle(index: number, count: number): number {
+  if (count <= 1) return 135;
+  const step = (SKILL_ARC_START_DEG - SKILL_ARC_END_DEG) / (count - 1);
+  return SKILL_ARC_START_DEG - step * index;
+}
 
 export class ActionButtons {
   readonly element: HTMLElement;
@@ -80,7 +81,7 @@ export class ActionButtons {
       held: boolean;
       pressed: boolean;
       released: boolean;
-      slot?: SkillSlotId;
+      slot?: SkillSlotIndex;
     }
   >();
   private unsubscribers: Array<() => void> = [];
@@ -104,8 +105,8 @@ export class ActionButtons {
     });
     cluster.appendChild(swapBtn);
 
-    for (const { id, slot, className } of SKILL_SLOTS) {
-      this.mountSkillButton(cluster, id, slot, className);
+    for (const { id, slot } of SKILL_BUTTONS) {
+      this.mountSkillButton(cluster, id, slot);
     }
 
     for (const layout of STATIC_BUTTONS) {
@@ -145,20 +146,38 @@ export class ActionButtons {
     this.element.classList.toggle('action-buttons--ancient', isAncientCombatActive());
     if (!save) return;
 
-    for (const { id, slot } of SKILL_SLOTS) {
+    const loadout = coerceEquippedSkills(save.equippedSkills);
+    const active: Array<{ id: SkillActionId; slot: SkillSlotIndex; skillId: string }> = [];
+
+    for (const { id, slot } of SKILL_BUTTONS) {
       const state = this.buttons.get(id);
       if (!state) continue;
 
-      const skillId = save.equippedSkills[slot];
-      const active = canCastEquippedSkill(save, slot);
-      state.el.hidden = !active;
-      if (!active) continue;
+      const skillId = loadout[slot];
+      if (!canCastEquippedSkill(save, slot)) {
+        state.el.hidden = true;
+        state.el.style.removeProperty('--arc-angle');
+        state.el.style.removeProperty('--arc-radius');
+        continue;
+      }
+
+      active.push({ id, slot, skillId });
+    }
+
+    for (let i = 0; i < active.length; i++) {
+      const { id, skillId } = active[i]!;
+      const state = this.buttons.get(id)!;
+      const angle = skillArcAngle(i, active.length);
+
+      state.el.hidden = false;
+      state.el.style.setProperty('--arc-radius', SKILL_ARC_RADIUS);
+      state.el.style.setProperty('--arc-angle', `${angle}deg`);
 
       const iconWrap = state.el.querySelector('.action-btn__icon-wrap');
       if (iconWrap) {
         iconWrap.innerHTML = renderSkillButtonHtml(skillId);
       }
-      state.el.setAttribute('aria-label', skillButtonAriaLabel(skillId, slot));
+      state.el.setAttribute('aria-label', skillButtonAriaLabel(skillId));
       state.el.classList.toggle('action-btn--awakened', isAwakenedSkillId(skillId));
       state.el.dataset.skillId = skillId;
     }
@@ -198,14 +217,14 @@ export class ActionButtons {
 
   private mountSkillButton(
     parent: HTMLElement,
-    id: ActionButtonId,
-    slot: SkillSlotId,
-    className: string,
+    id: SkillActionId,
+    slot: SkillSlotIndex,
   ): void {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `action-btn action-btn--arc ${className}`;
+    button.className = 'action-btn action-btn--arc action-btn--skill';
     button.dataset.action = id;
+    button.hidden = true;
 
     const iconWrap = document.createElement('span');
     iconWrap.className = 'action-btn__icon-wrap';
@@ -228,7 +247,10 @@ export class ActionButtons {
     parent.appendChild(button);
   }
 
-  private mountButton(parent: HTMLElement, layout: ButtonLayout): void {
+  private mountButton(
+    parent: HTMLElement,
+    layout: (typeof STATIC_BUTTONS)[number],
+  ): void {
     const button = document.createElement('button');
     button.type = 'button';
     const arcClass = layout.id === 'attack' ? '' : ' action-btn--arc';
@@ -255,7 +277,6 @@ export class ActionButtons {
       held: false,
       pressed: false,
       released: false,
-      slot: layout.slot,
     });
     parent.appendChild(button);
   }
@@ -277,10 +298,9 @@ export class ActionButtons {
     const state = this.buttons.get(id);
     if (!state || state.held) return;
 
-    const slot = SLOT_BY_BUTTON[id];
     const onCooldown =
       state.cooldownEl.style.opacity !== '0' && state.el.classList.contains('action-btn--cooldown');
-    if (onCooldown && (slot || id === 'health')) {
+    if (onCooldown && (id.startsWith('skill') || id === 'health')) {
       return;
     }
 
@@ -300,21 +320,10 @@ export class ActionButtons {
     state.el.classList.remove('action-btn--pressed');
   }
 
-  private applySkillCooldowns(state: {
-    primary: { remainingMs: number; totalMs: number };
-    secondary: { remainingMs: number; totalMs: number };
-    ultimate: { remainingMs: number; totalMs: number };
-  }): void {
-    const map: Record<SkillSlotId, ActionButtonId> = {
-      primary: 'skillPrimary',
-      secondary: 'skillSecondary',
-      ultimate: 'skillUltimate',
-    };
-
-    for (const slot of ['primary', 'secondary', 'ultimate'] as const) {
-      const btnId = map[slot];
-      const btn = this.buttons.get(btnId);
-      if (!btn) continue;
+  private applySkillCooldowns(state: SkillCooldownState): void {
+    for (const slot of SKILL_SLOT_INDICES) {
+      const btn = this.buttons.get(skillActionId(slot));
+      if (!btn || btn.el.hidden) continue;
 
       const { remainingMs, totalMs } = state[slot];
       const ready = cooldownReadyPct(remainingMs, totalMs);
@@ -346,3 +355,9 @@ export class ActionButtons {
     }
   }
 }
+
+export function isSkillActionId(id: ActionButtonId): id is SkillActionId {
+  return id.startsWith('skill');
+}
+
+export { skillSlotFromAction };

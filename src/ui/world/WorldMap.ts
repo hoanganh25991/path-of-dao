@@ -12,7 +12,7 @@ import {
   getSealingBarrierStage,
   isPhongTonLoreUnlocked,
 } from '@/progression/SealingBarrierProgression';
-import { canEnter, getJourneyHomeMapId, getMapTravelState } from '@/progression/WorldProgression';
+import { getJourneyHomeMapId, getMapTravelState } from '@/progression/WorldProgression';
 import { getWorldMapData, listWorldRegions } from '@/progression/WorldMapLoader';
 import {
   createWorldMapViewport,
@@ -50,16 +50,11 @@ function closeWorldMap(): void {
   activeOverlay = null;
 }
 
-/** Enter combat on a world-map node (persists current map + autosave). */
+/** Enter combat on a world-map node (persists current map + autosave).
+ *  Map Portal bypasses sequential unlock — travel anywhere, die if too weak. */
 export async function enterMapCombat(mapId: string, options?: { skipIntro?: boolean }): Promise<void> {
   const save = gameStore.getState().save;
   if (!save) return;
-
-  const check = canEnter(mapId, save);
-  if (!check.ok) {
-    showToast(I18nManager.t(check.reasonKey ?? 'world.lock.unknown'));
-    return;
-  }
 
   gameStore.getState().patch({
     progress: { ...save.progress, currentMapId: mapId },
@@ -103,7 +98,6 @@ function renderDetailSheet(mapId: string, host: HTMLElement): void {
   }
 
   const state = getMapTravelState(mapId, save);
-  const check = canEnter(mapId, save);
   const playerCp = computeCombatPowerFromSave(save);
   const tier = getDifficultyTier(playerCp, config.recommendedCp);
 
@@ -147,17 +141,9 @@ function renderDetailSheet(mapId: string, host: HTMLElement): void {
   enterBtn.type = 'button';
   enterBtn.className = 'world-map-detail__enter';
   enterBtn.textContent = I18nManager.t('world.enter');
-  enterBtn.disabled = !check.ok;
   enterBtn.addEventListener('click', () => enterMapCombat(mapId));
 
-  if (!check.ok && check.reasonKey) {
-    const reason = document.createElement('p');
-    reason.className = 'world-map-detail__lock';
-    reason.textContent = I18nManager.t(check.reasonKey);
-    sheet.append(meta, reason, enterBtn);
-  } else {
-    sheet.append(meta, enterBtn);
-  }
+  sheet.append(meta, enterBtn);
 
   const stage = getSealingBarrierStage(save);
   appendBarrierHint(sheet, stage);

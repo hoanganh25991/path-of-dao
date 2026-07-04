@@ -1,0 +1,47 @@
+{
+  "id": "encounter.destiny_cave",
+  "displayNameKey": "encounter.destiny_cave.title",
+  "flavorKey": "encounter.destiny_cave.flavor",
+  "theme": "cave",
+  "illustration": "assets/encounters/hidden_cave.png",
+  "trigger": "mapEnter",
+  "unique": false,
+  "rate": 0.04,
+  "reward": {
+    "type": "destiny_choice",
+    "options": [
+      {
+        "key": "dharma",
+        "labelKey": "destiny.option.dharma.label",
+        "descKey": "destiny.option.dharma.desc",
+        "icon": "\u26A1",
+        "reward": {
+          "kind": "dharma",
+          "itemIds": ["item.spirit.jade", "item.ring.speed"],
+          "gold": 50
+        }
+      },
+      {
+        "key": "divine",
+        "labelKey": "destiny.option.divine.label",
+        "descKey": "destiny.option.divine.desc",
+        "icon": "\u2728",
+        "reward": {
+          "kind": "divine",
+          "skillId": "skill.flame.bolt"
+        }
+      },
+      {
+        "key": "intent",
+        "labelKey": "destiny.option.intent.label",
+        "descKey": "destiny.option.intent.desc",
+        "icon": "\u300C",
+        "reward": {
+          "kind": "intent",
+          "intentId": "void",
+          "xpGain": 25
+        }
+      }
+    ]
+  }
+}

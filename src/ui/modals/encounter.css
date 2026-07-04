@@ -91,6 +91,14 @@
   color: rgba(220, 228, 255, 0.82);
 }
 
+.encounter-modal__preview {
+  margin: 0;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--dao-gold, #c9a227);
+  opacity: 0.85;
+}
+
 .encounter-modal__confirm {
   margin-top: 0.5rem;
   padding: 0.75rem 1.5rem;

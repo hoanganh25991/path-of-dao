@@ -1,28 +1,36 @@
+import {
+  MAX_SKILL_SLOTS,
+  type SkillSlotIndex,
+} from '@/progression/SkillSlots';
+
 export interface Vec2 {
   x: number;
   y: number;
 }
 
 export interface ButtonState {
-  /** True on the frame the button was pressed down. */
   pressed: boolean;
-  /** True while the button is held down. */
   held: boolean;
-  /** True on the frame the button was released. */
   released: boolean;
 }
 
-export type SkillSlot = 'primary' | 'secondary' | 'ultimate';
+export type SkillSlot = SkillSlotIndex;
+
+export type SkillButtonStates = [
+  ButtonState,
+  ButtonState,
+  ButtonState,
+  ButtonState,
+  ButtonState,
+  ButtonState,
+];
 
 export interface InputState {
-  /** Normalized -1..1 move vector; deadzone applied. Up = negative y. */
   move: Vec2;
   attack: ButtonState;
   dodge: ButtonState;
   health: ButtonState;
-  skillPrimary: ButtonState;
-  skillSecondary: ButtonState;
-  skillUltimate: ButtonState;
+  skills: SkillButtonStates;
 }
 
 export interface InputFrame {
@@ -30,19 +38,21 @@ export interface InputFrame {
   timestamp: number;
 }
 
-export function createEmptyButtonState(): ButtonState {
+function emptyButton(): ButtonState {
   return { pressed: false, held: false, released: false };
+}
+
+export function createEmptySkillButtonStates(): SkillButtonStates {
+  return Array.from({ length: MAX_SKILL_SLOTS }, emptyButton) as SkillButtonStates;
 }
 
 export function createEmptyInputState(): InputState {
   return {
     move: { x: 0, y: 0 },
-    attack: createEmptyButtonState(),
-    dodge: createEmptyButtonState(),
-    health: createEmptyButtonState(),
-    skillPrimary: createEmptyButtonState(),
-    skillSecondary: createEmptyButtonState(),
-    skillUltimate: createEmptyButtonState(),
+    attack: emptyButton(),
+    dodge: emptyButton(),
+    health: emptyButton(),
+    skills: createEmptySkillButtonStates(),
   };
 }
 
@@ -52,8 +62,6 @@ export function cloneInputState(state: InputState): InputState {
     attack: { ...state.attack },
     dodge: { ...state.dodge },
     health: { ...state.health },
-    skillPrimary: { ...state.skillPrimary },
-    skillSecondary: { ...state.skillSecondary },
-    skillUltimate: { ...state.skillUltimate },
+    skills: state.skills.map((entry) => ({ ...entry })) as SkillButtonStates,
   };
 }

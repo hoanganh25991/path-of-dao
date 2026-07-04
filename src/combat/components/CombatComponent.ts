@@ -10,6 +10,7 @@ import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/Skill
 import { canUseSwordIntent, isArmedAttackStyle } from '@/progression/WeaponProgression';
 import { isKickStrike } from '@/combat/art/stickyManStrikes';
 import { canCastEquippedSkill } from '@/progression/SkillLoadout';
+import { coerceEquippedSkills } from '@/progression/SkillSlots';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
 import { SkillExecutor } from '@/combat/skills/SkillExecutor';
@@ -71,7 +72,7 @@ export class CombatComponent {
     const save = gameStore.getState().save;
     if (!save || !canCastEquippedSkill(save, slot)) return false;
 
-    const equippedId = save.equippedSkills[slot];
+    const equippedId = coerceEquippedSkills(save.equippedSkills)[slot];
 
     this.player.meditate.cancel();
 

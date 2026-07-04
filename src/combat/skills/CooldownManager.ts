@@ -1,21 +1,25 @@
-import type { SkillSlot } from '@/core/input/InputState';
+import type { SkillDefinition } from '@/progression/SkillDefinition';
 import {
-  createEmptyCooldowns,
   getSkillCooldownMs,
   tickCooldowns,
-  type SkillSlotCooldowns,
 } from '@/progression/SkillCooldown';
-import type { SkillDefinition } from '@/progression/SkillDefinition';
+import {
+  createEmptySkillCooldowns,
+  createSkillCooldownState,
+  type SkillCooldownState,
+  type SkillSlotCooldowns,
+} from '@/progression/SkillSlots';
+import type { SkillSlot } from '@/core/input/InputState';
 
 export interface CooldownSnapshot {
   remainingMs: number;
   totalMs: number;
 }
 
-/** Per-slot skill cooldown tracking (sub-plan 19 §8). */
+/** Per-slot skill cooldown tracking. */
 export class CooldownManager {
-  private readonly remaining: SkillSlotCooldowns = createEmptyCooldowns();
-  private readonly totals: SkillSlotCooldowns = createEmptyCooldowns();
+  private readonly remaining: SkillSlotCooldowns = createEmptySkillCooldowns();
+  private readonly totals: SkillSlotCooldowns = createEmptySkillCooldowns();
 
   isReady(slot: SkillSlot): boolean {
     return this.remaining[slot] <= 0;
@@ -35,11 +39,14 @@ export class CooldownManager {
     tickCooldowns(this.remaining, dtMs);
   }
 
-  snapshot(): Record<SkillSlot, CooldownSnapshot> {
-    return {
-      primary: { remainingMs: this.remaining.primary, totalMs: this.totals.primary },
-      secondary: { remainingMs: this.remaining.secondary, totalMs: this.totals.secondary },
-      ultimate: { remainingMs: this.remaining.ultimate, totalMs: this.totals.ultimate },
-    };
+  snapshot(): SkillCooldownState {
+    const state = createSkillCooldownState();
+    for (const slot of [0, 1, 2, 3, 4, 5] as const) {
+      state[slot] = {
+        remainingMs: this.remaining[slot],
+        totalMs: this.totals[slot],
+      };
+    }
+    return state;
   }
 }

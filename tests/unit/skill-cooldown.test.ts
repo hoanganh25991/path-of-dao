@@ -12,11 +12,11 @@ describe('SkillCooldown', () => {
 
   it('ticks cooldowns down to zero', () => {
     const cds = createEmptyCooldowns();
-    cds.primary = 500;
+    cds[0] = 500;
     tickCooldowns(cds, 200);
-    expect(cds.primary).toBe(300);
+    expect(cds[0]).toBe(300);
     tickCooldowns(cds, 400);
-    expect(cds.primary).toBe(0);
+    expect(cds[0]).toBe(0);
   });
 
   it('god mode reduces cooldown', () => {

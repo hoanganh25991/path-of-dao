@@ -133,6 +133,7 @@ export function applyEncounterReward(
   encounter: EncounterDefinition,
   save: PlayerSaveV1,
   poiKey?: string,
+  choiceKey?: string,
 ): Partial<PlayerSaveV1> {
   const foundId = poiKey ? poiFoundKey(encounter.id, poiKey) : encounter.id;
   const encountersFound = save.progress.encountersFound.includes(foundId)
@@ -147,6 +148,7 @@ export function applyEncounterReward(
   let equipped = save.equipped;
   let progress = save.progress;
   let unlockedSkills = save.unlockedSkills;
+  let destinyPoints = save.destinyPoints ?? { dharma: 0, divine: 0, intent: 0 };
 
   switch (encounter.reward.type) {
     case 'item': {
@@ -197,6 +199,53 @@ export function applyEncounterReward(
       equippedSkills = equipLearnedSkill(equippedSkills, skillId);
       break;
     }
+    case 'destiny_choice': {
+      if (!choiceKey || choiceKey === '__skip__') break;
+      const chosen = encounter.reward.options.find((o) => o.key === choiceKey);
+      if (!chosen) break;
+      const r = chosen.reward;
+      switch (r.kind) {
+        case 'dharma': {
+          destinyPoints = { ...destinyPoints, dharma: destinyPoints.dharma + 1 };
+          if (r.itemIds && r.itemIds.length > 0) {
+            const itemId = pickRandomItem(r.itemIds);
+            inventory = {
+              ...inventory,
+              items: addInventoryItem(inventory.items, itemId),
+            };
+          }
+          if (r.gold) {
+            inventory = { ...inventory, gold: inventory.gold + r.gold };
+          }
+          break;
+        }
+        case 'divine': {
+          destinyPoints = { ...destinyPoints, divine: destinyPoints.divine + 1 };
+          if (r.skillId) {
+            unlockedSkills = unlockSkillIds({ ...save, unlockedSkills }, [r.skillId]).unlockedSkills;
+            equippedSkills = equipLearnedSkill(equippedSkills, r.skillId);
+          }
+          break;
+        }
+        case 'intent': {
+          destinyPoints = { ...destinyPoints, intent: destinyPoints.intent + 1 };
+          if (r.intentId && r.xpGain) {
+            const prev = save.insights[r.intentId] ?? { xp: 0, awakened: false, totalUses: 0 };
+            if (!prev.awakened) {
+              insights = {
+                ...save.insights,
+                [r.intentId]: {
+                  ...prev,
+                  xp: Math.min(200, prev.xp + r.xpGain),
+                },
+              };
+            }
+          }
+          break;
+        }
+      }
+      break;
+    }
   }
 
   EventBus.emit('encounter:completed', { encounterId: encounter.id, poiKey });
@@ -212,6 +261,7 @@ export function applyEncounterReward(
     equippedSkills,
     equipped,
     unlockedSkills,
+    destinyPoints,
     progress: {
       ...progress,
       encountersFound,
@@ -235,12 +285,12 @@ export class FortuitousEncounterManager {
   static wasPoiFound = wasPoiFound;
   static getPoiEncounter = getPoiEncounter;
 
-  static apply(encounter: EncounterDefinition, poiKey?: string): void {
+  static apply(encounter: EncounterDefinition, poiKey?: string, choiceKey?: string): void {
     const store = gameStore.getState();
     const save = store.save;
     if (!save) return;
 
-    const patch = applyEncounterReward(encounter, save, poiKey);
+    const patch = applyEncounterReward(encounter, save, poiKey, choiceKey);
     store.patch(patch);
     void store.persist();
     SaveManager.autosaveNow();
@@ -250,8 +300,9 @@ export class FortuitousEncounterManager {
     encounter: EncounterDefinition,
     save: PlayerSaveV1,
     poiKey?: string,
+    choiceKey?: string,
   ): PlayerSaveV1 {
-    const patch = applyEncounterReward(encounter, save, poiKey);
+    const patch = applyEncounterReward(encounter, save, poiKey, choiceKey);
     return { ...save, ...patch };
   }
 }

@@ -49,7 +49,7 @@ describe('CombatHUD', () => {
     expect(uiRoot.querySelector('.action-btn--health')?.classList.contains('action-btn--arc')).toBe(
       true,
     );
-    expect(uiRoot.querySelector('.action-btn--skill-primary')?.classList.contains('action-btn--arc')).toBe(
+    expect(uiRoot.querySelector('.action-btn--skill')?.classList.contains('action-btn--arc')).toBe(
       true,
     );
     expect(uiRoot.querySelector('.action-btn--swap-skills')?.classList.contains('action-btn--arc')).toBe(

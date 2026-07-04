@@ -9,7 +9,8 @@ import { INSIGHT_XP_TO_FULL, listInsightIntentIds } from '@/progression/InsightD
 import { stopPathWalk } from '@/progression/PathWalkManager';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
-import { normalizeLoadout } from '@/progression/SkillLoadout';
+import { normalizeLoadout, SKILL_SLOTS } from '@/progression/SkillLoadout';
+import { coerceEquippedSkills } from '@/progression/SkillSlots';
 import { buildPlayerStats } from '@/progression/playerStats';
 import {
   ancientsFileSchema,
@@ -76,7 +77,7 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
     xp: template.level * 100,
     realm,
     insights,
-    equippedSkills: normalizeLoadout({ ...template.equippedSkills }, profile.unlockedSkills),
+    equippedSkills: normalizeLoadout(coerceEquippedSkills(template.equippedSkills), profile.unlockedSkills),
     unlockedSkills: [...profile.unlockedSkills],
     inventory: {
       gold: template.gold,
@@ -232,7 +233,10 @@ export async function enterAncientDemo(
     mutated = true;
   }
   if (equippedSkills) {
-    demoSave.equippedSkills = normalizeLoadout(equippedSkills, profileById(ancientId).unlockedSkills);
+    demoSave.equippedSkills = normalizeLoadout(
+      coerceEquippedSkills(equippedSkills),
+      profileById(ancientId).unlockedSkills,
+    );
     mutated = true;
   }
   if (mutated) {

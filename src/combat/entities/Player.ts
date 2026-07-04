@@ -130,14 +130,11 @@ export class Player extends EntityBase implements HurtboxEntity {
       if (input.health.pressed) this.meditate.tryToggle();
       if (input.attack.pressed || input.attack.held) this.combat.tryAttack();
 
-      if (input.skillPrimary.pressed) this.combat.trySkillPressed('primary');
-      else if (input.skillPrimary.held) this.combat.trySkill('primary');
-
-      if (input.skillSecondary.pressed) this.combat.trySkillPressed('secondary');
-      else if (input.skillSecondary.held) this.combat.trySkill('secondary');
-
-      if (input.skillUltimate.pressed) this.combat.trySkillPressed('ultimate');
-      else if (input.skillUltimate.held) this.combat.trySkill('ultimate');
+      for (const slot of [0, 1, 2, 3, 4, 5] as const) {
+        const btn = input.skills[slot];
+        if (btn.pressed) this.combat.trySkillPressed(slot);
+        else if (btn.held) this.combat.trySkill(slot);
+      }
     }
 
     this.movement.update(move);

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { coerceEquippedSkills, emptyEquippedSkills } from '@/progression/SkillSlots';
 
 export const SAVE_VERSION = 1 as const;
 
@@ -54,16 +55,16 @@ export const playerSaveV1Schema = z.object({
     }),
   ),
   equippedSkills: z
-    .object({
-      primary: z.string(),
-      secondary: z.string(),
-      ultimate: z.string(),
-    })
-    .default({
-      primary: '',
-      secondary: '',
-      ultimate: '',
-    }),
+    .union([
+      z.tuple([z.string(), z.string(), z.string(), z.string(), z.string(), z.string()]),
+      z.object({
+        primary: z.string(),
+        secondary: z.string(),
+        ultimate: z.string(),
+      }),
+    ])
+    .transform(coerceEquippedSkills)
+    .default(emptyEquippedSkills()),
   unlockedSkills: z.array(z.string()).default([]),
   inventory: z.object({
     items: z.array(z.object({ id: z.string(), qty: z.number().int().min(0) })),
@@ -89,6 +90,14 @@ export const playerSaveV1Schema = z.object({
     currentMapId: z.string().nullable(),
     weaponMilestone: z.enum(['none', 'ancient_sword']).default('none'),
   }),
+  destinyPoints: z
+    .object({
+      dharma: z.number().int().min(0).default(0),
+      divine: z.number().int().min(0).default(0),
+      intent: z.number().int().min(0).default(0),
+      unspent: z.number().int().min(0).default(0),
+    })
+    .default({ dharma: 0, divine: 0, intent: 0, unspent: 0 }),
   cosmetics: z
     .object({
       pet: z.string().nullable(),

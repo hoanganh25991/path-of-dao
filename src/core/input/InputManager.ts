@@ -1,12 +1,21 @@
-import { ActionButtons } from '@/core/input/ActionButtons';
+import {
+  ActionButtons,
+  isSkillActionId,
+  skillSlotFromAction,
+  type ActionButtonId,
+} from '@/core/input/ActionButtons';
 import {
   cloneInputState,
   createEmptyInputState,
   type InputFrame,
   type InputState,
-  type SkillSlot,
 } from '@/core/input/InputState';
 import { VirtualJoystick } from '@/core/input/VirtualJoystick';
+import {
+  SKILL_SLOT_INDICES,
+  skillActionId,
+  type SkillActionId,
+} from '@/progression/SkillSlots';
 
 function isKeyboardInputEnabled(): boolean {
   if (import.meta.env.DEV) return true;
@@ -15,13 +24,22 @@ function isKeyboardInputEnabled(): boolean {
   return true;
 }
 
-type CombatAction =
-  | 'attack'
-  | 'dodge'
-  | 'health'
-  | 'skillPrimary'
-  | 'skillSecondary'
-  | 'skillUltimate';
+type StaticCombatAction = 'attack' | 'dodge' | 'health';
+type CombatAction = StaticCombatAction | SkillActionId;
+
+const STATIC_ACTIONS: StaticCombatAction[] = ['attack', 'dodge', 'health'];
+const SKILL_ACTIONS = SKILL_SLOT_INDICES.map(skillActionId);
+const ALL_ACTIONS: CombatAction[] = [...STATIC_ACTIONS, ...SKILL_ACTIONS];
+
+function emptyActionRecord(): Record<CombatAction, boolean> {
+  return ALL_ACTIONS.reduce(
+    (acc, key) => {
+      acc[key] = false;
+      return acc;
+    },
+    {} as Record<CombatAction, boolean>,
+  );
+}
 
 /** Singleton input hub — engine-agnostic; consumed by Phaser in sub-plan 07. */
 export class InputManager {
@@ -31,30 +49,9 @@ export class InputManager {
   private static rafId: number | null = null;
   private static currentState = createEmptyInputState();
   private static keyboardMove = { x: 0, y: 0 };
-  private static keyboardHeld: Record<CombatAction, boolean> = {
-    attack: false,
-    dodge: false,
-    health: false,
-    skillPrimary: false,
-    skillSecondary: false,
-    skillUltimate: false,
-  };
-  private static keyboardPressed: Record<CombatAction, boolean> = {
-    attack: false,
-    dodge: false,
-    health: false,
-    skillPrimary: false,
-    skillSecondary: false,
-    skillUltimate: false,
-  };
-  private static keyboardReleased: Record<CombatAction, boolean> = {
-    attack: false,
-    dodge: false,
-    health: false,
-    skillPrimary: false,
-    skillSecondary: false,
-    skillUltimate: false,
-  };
+  private static keyboardHeld = emptyActionRecord();
+  private static keyboardPressed = emptyActionRecord();
+  private static keyboardReleased = emptyActionRecord();
   private static keyboardBound = false;
 
   static mount(container: HTMLElement): void {
@@ -94,14 +91,16 @@ export class InputManager {
       ? InputManager.readMoveVector()
       : { x: 0, y: 0 };
 
+    const skills = SKILL_SLOT_INDICES.map((slot) =>
+      InputManager.readButtonState(skillActionId(slot)),
+    ) as InputState['skills'];
+
     InputManager.currentState = {
       move,
       attack: InputManager.readButtonState('attack'),
       dodge: InputManager.readButtonState('dodge'),
       health: InputManager.readButtonState('health'),
-      skillPrimary: InputManager.readButtonState('skillPrimary'),
-      skillSecondary: InputManager.readButtonState('skillSecondary'),
-      skillUltimate: InputManager.readButtonState('skillUltimate'),
+      skills,
     };
 
     return {
@@ -118,22 +117,20 @@ export class InputManager {
     InputManager.buttons?.clearEdgeFlags();
     InputManager.clearKeyboardEdgeFlags();
 
-    for (const key of [
-      'attack',
-      'dodge',
-      'health',
-      'skillPrimary',
-      'skillSecondary',
-      'skillUltimate',
-    ] as const) {
-      InputManager.currentState[key].pressed = false;
-      InputManager.currentState[key].released = false;
+    InputManager.currentState.attack.pressed = false;
+    InputManager.currentState.attack.released = false;
+    InputManager.currentState.dodge.pressed = false;
+    InputManager.currentState.dodge.released = false;
+    InputManager.currentState.health.pressed = false;
+    InputManager.currentState.health.released = false;
+    for (const slot of SKILL_SLOT_INDICES) {
+      InputManager.currentState.skills[slot].pressed = false;
+      InputManager.currentState.skills[slot].released = false;
     }
 
     return snapshot;
   }
 
-  /** @internal Exposed for unit tests. */
   static resetForTests(): void {
     InputManager.stopPollLoop();
     InputManager.enabled = false;
@@ -147,12 +144,22 @@ export class InputManager {
     return { ...InputManager.keyboardMove };
   }
 
-  private static readButtonState(action: CombatAction) {
+  private static readButtonState(action: ActionButtonId) {
     const fromButtons = InputManager.buttons?.getSnapshot(action);
-    const held = (fromButtons?.held ?? false) || InputManager.keyboardHeld[action];
-    const pressed = (fromButtons?.pressed ?? false) || InputManager.keyboardPressed[action];
-    const released = (fromButtons?.released ?? false) || InputManager.keyboardReleased[action];
+    const held =
+      (fromButtons?.held ?? false) ||
+      (InputManager.isCombatAction(action) ? InputManager.keyboardHeld[action] : false);
+    const pressed =
+      (fromButtons?.pressed ?? false) ||
+      (InputManager.isCombatAction(action) ? InputManager.keyboardPressed[action] : false);
+    const released =
+      (fromButtons?.released ?? false) ||
+      (InputManager.isCombatAction(action) ? InputManager.keyboardReleased[action] : false);
     return { held, pressed, released };
+  }
+
+  private static isCombatAction(action: ActionButtonId): action is CombatAction {
+    return ALL_ACTIONS.includes(action as CombatAction);
   }
 
   private static startPollLoop(): void {
@@ -191,48 +198,45 @@ export class InputManager {
     window.removeEventListener('blur', InputManager.onWindowBlur);
   }
 
+  private static skillKeyBindings: Record<string, SkillActionId> = {
+    Digit1: 'skill0',
+    Digit2: 'skill1',
+    Digit3: 'skill2',
+    Digit4: 'skill3',
+    Digit5: 'skill4',
+    Digit6: 'skill5',
+  };
+
   private static onKeyDown = (event: KeyboardEvent): void => {
     if (!InputManager.enabled || event.repeat) return;
 
+    const skillAction = InputManager.skillKeyBindings[event.code];
+    if (skillAction) {
+      InputManager.pressKeyboardAction(skillAction);
+      event.preventDefault();
+      return;
+    }
+
     switch (event.code) {
-      case 'KeyW':
       case 'ArrowUp':
         InputManager.keyboardMove.y = -1;
         break;
-      case 'KeyS':
       case 'ArrowDown':
         InputManager.keyboardMove.y = 1;
         break;
-      case 'KeyA':
       case 'ArrowLeft':
         InputManager.keyboardMove.x = -1;
         break;
-      case 'KeyD':
       case 'ArrowRight':
         InputManager.keyboardMove.x = 1;
         break;
-      case 'KeyJ':
-      case 'KeyZ':
+      case 'KeyA':
         InputManager.pressKeyboardAction('attack');
         break;
-      case 'KeyK':
-      case 'KeyX':
-        InputManager.pressKeyboardAction('skillPrimary');
-        break;
-      case 'KeyE':
-      case 'Digit2':
-        InputManager.pressKeyboardAction('skillSecondary');
-        break;
-      case 'KeyR':
-      case 'Digit3':
-        InputManager.pressKeyboardAction('skillUltimate');
-        break;
-      case 'KeyL':
-      case 'KeyC':
+      case 'KeyD':
         InputManager.pressKeyboardAction('dodge');
         break;
-      case 'KeyH':
-      case 'KeyV':
+      case 'KeyS':
         InputManager.pressKeyboardAction('health');
         break;
       default:
@@ -245,45 +249,33 @@ export class InputManager {
   private static onKeyUp = (event: KeyboardEvent): void => {
     if (!InputManager.enabled) return;
 
+    const skillAction = InputManager.skillKeyBindings[event.code];
+    if (skillAction) {
+      InputManager.releaseKeyboardAction(skillAction);
+      event.preventDefault();
+      return;
+    }
+
     switch (event.code) {
-      case 'KeyW':
       case 'ArrowUp':
         if (InputManager.keyboardMove.y < 0) InputManager.keyboardMove.y = 0;
         break;
-      case 'KeyS':
       case 'ArrowDown':
         if (InputManager.keyboardMove.y > 0) InputManager.keyboardMove.y = 0;
         break;
-      case 'KeyA':
       case 'ArrowLeft':
         if (InputManager.keyboardMove.x < 0) InputManager.keyboardMove.x = 0;
         break;
-      case 'KeyD':
       case 'ArrowRight':
         if (InputManager.keyboardMove.x > 0) InputManager.keyboardMove.x = 0;
         break;
-      case 'KeyJ':
-      case 'KeyZ':
+      case 'KeyA':
         InputManager.releaseKeyboardAction('attack');
         break;
-      case 'KeyK':
-      case 'KeyX':
-        InputManager.releaseKeyboardAction('skillPrimary');
-        break;
-      case 'KeyE':
-      case 'Digit2':
-        InputManager.releaseKeyboardAction('skillSecondary');
-        break;
-      case 'KeyR':
-      case 'Digit3':
-        InputManager.releaseKeyboardAction('skillUltimate');
-        break;
-      case 'KeyL':
-      case 'KeyC':
+      case 'KeyD':
         InputManager.releaseKeyboardAction('dodge');
         break;
-      case 'KeyH':
-      case 'KeyV':
+      case 'KeyS':
         InputManager.releaseKeyboardAction('health');
         break;
       default:
@@ -311,7 +303,7 @@ export class InputManager {
   }
 
   private static clearKeyboardEdgeFlags(): void {
-    for (const key of Object.keys(InputManager.keyboardPressed) as CombatAction[]) {
+    for (const key of ALL_ACTIONS) {
       InputManager.keyboardPressed[key] = false;
       InputManager.keyboardReleased[key] = false;
     }
@@ -319,23 +311,11 @@ export class InputManager {
 
   private static resetKeyboardState(): void {
     InputManager.keyboardMove = { x: 0, y: 0 };
-    for (const key of Object.keys(InputManager.keyboardHeld) as CombatAction[]) {
+    for (const key of ALL_ACTIONS) {
       InputManager.keyboardHeld[key] = false;
     }
     InputManager.clearKeyboardEdgeFlags();
   }
 }
 
-/** Map input skill buttons to equipped save slots. */
-export function inputSkillSlotFromButton(
-  button: 'skillPrimary' | 'skillSecondary' | 'skillUltimate',
-): SkillSlot {
-  switch (button) {
-    case 'skillPrimary':
-      return 'primary';
-    case 'skillSecondary':
-      return 'secondary';
-    case 'skillUltimate':
-      return 'ultimate';
-  }
-}
+export { isSkillActionId, skillSlotFromAction };

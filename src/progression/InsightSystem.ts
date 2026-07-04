@@ -132,8 +132,8 @@ export class InsightSystem {
     const state = getInsightState(save, intentId);
     const awakenedSkillId = config.awakenedSkillId;
 
-    const equippedSkills = { ...save.equippedSkills };
-    for (const slot of ['primary', 'secondary', 'ultimate'] as const) {
+    const equippedSkills = [...save.equippedSkills] as typeof save.equippedSkills;
+    for (const slot of [0, 1, 2, 3, 4, 5] as const) {
       const current = equippedSkills[slot];
       const currentIntent = current ? getIntentForSkillId(current) : null;
       if (currentIntent === intentId || current === config.baseSkillId) {

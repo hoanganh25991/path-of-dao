@@ -4,6 +4,7 @@ import { checksumOf } from '@/core/save/checksum';
 import { migrate } from '@/core/save/SaveMigration';
 import { SAVE_VERSION, type PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { DB_NAME, DB_VERSION, DEFAULT_SLOT, STORE_NAME, slotKey } from '@/core/save/SaveSlot';
+import { emptyEquippedSkills } from '@/progression/SkillSlots';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { buildPlayerStats } from '@/progression/playerStats';
 
@@ -94,11 +95,7 @@ export class SaveManager {
       xp: 0,
       realm: { id: 'mortal_body', tier: 'early', breakthroughReady: false },
       insights: seedDefaultInsights(),
-      equippedSkills: {
-        primary: '',
-        secondary: '',
-        ultimate: '',
-      },
+      equippedSkills: emptyEquippedSkills(),
       unlockedSkills: [],
       inventory: {
         items: [
@@ -128,6 +125,7 @@ export class SaveManager {
       cosmetics: { pet: null },
       settings: { locale: 'system', quality: 'auto', sfxVolume: 1, musicVolume: 1, fullscreen: true },
       meta: { totalPlaySeconds: 0, createdAt: now, updatedAt: now },
+      destinyPoints: { dharma: 0, divine: 0, intent: 0, unspent: 0 },
     };
 
     save.checksum = checksumOf(save);

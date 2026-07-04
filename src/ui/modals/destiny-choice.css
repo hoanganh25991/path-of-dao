@@ -1,0 +1,125 @@
+.destiny-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.destiny-modal--active {
+  opacity: 1;
+}
+
+.destiny-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 200, 80, 0.1), rgba(0, 0, 0, 0.9));
+}
+
+.destiny-modal__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1.25rem;
+  max-width: 24rem;
+  width: calc(100% - 2rem);
+  text-align: center;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 1rem;
+  background: rgba(12, 16, 24, 0.94);
+  box-shadow: 0 0 40px rgba(201, 162, 39, 0.15), 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+.destiny-modal__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dao-gold, #c9a227);
+}
+
+.destiny-modal__flavor {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(220, 228, 255, 0.75);
+}
+
+.destiny-modal__prompt {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--dao-muted, rgba(232, 230, 227, 0.65));
+  font-style: italic;
+}
+
+.destiny-modal__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.destiny-modal__choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--dao-text, #e8e6e3);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease, transform 120ms ease;
+  text-align: center;
+}
+
+.destiny-modal__choice:hover,
+.destiny-modal__choice:focus-visible {
+  border-color: var(--dao-gold, #c9a227);
+  background: rgba(201, 162, 39, 0.12);
+  transform: scale(1.02);
+  outline: none;
+}
+
+.destiny-modal__choice-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.destiny-modal__choice-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dao-gold, #c9a227);
+}
+
+.destiny-modal__choice-desc {
+  font-size: 0.7rem;
+  color: var(--dao-muted, rgba(232, 230, 227, 0.65));
+  line-height: 1.4;
+}
+
+.destiny-modal__skip {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: rgba(220, 228, 255, 0.45);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.destiny-modal__skip:hover {
+  color: rgba(220, 228, 255, 0.75);
+}

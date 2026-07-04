@@ -72,7 +72,7 @@ export function showAncientDemoModal(
     const profile = getAncientProfile(options.ancientId);
     const path = getAncientPath(options.ancientId);
     const loadout = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
-    const skillIds = SKILL_SLOTS.map((slot) => loadout[slot]);
+    const skillIds = SKILL_SLOTS.map((slot) => loadout[slot]).filter(Boolean);
     let activeSkillId = skillIds[0] ?? profile.unlockedSkills[0] ?? 'skill.void.slash';
 
     const overlay = document.createElement('div');

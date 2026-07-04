@@ -12,6 +12,7 @@ import {
   listReadyAwakeningIntents,
   seedDefaultInsights,
 } from '@/progression/InsightSystem';
+import { coerceEquippedSkills } from '@/progression/SkillSlots';
 import { buildPlayerStats } from '@/progression/playerStats';
 import { gameStore } from '@/core/store/gameStore';
 
@@ -21,7 +22,7 @@ function makeSave(overrides: Partial<PlayerSaveV1> = {}): PlayerSaveV1 {
     ...base,
     ...overrides,
     insights: { ...base.insights, ...(overrides.insights ?? {}) },
-    equippedSkills: { ...base.equippedSkills, ...(overrides.equippedSkills ?? {}) },
+    equippedSkills: coerceEquippedSkills(overrides.equippedSkills ?? base.equippedSkills),
   };
 }
 
@@ -91,11 +92,14 @@ describe('InsightSystem', () => {
     const save = makeSave({
       stats: buildPlayerStats('hero.wanderer', 12, 'foundation_establishment'),
       realm: { id: 'foundation_establishment', tier: 'early', breakthroughReady: false },
-      equippedSkills: {
-        primary: 'skill.void.slash',
-        secondary: 'skill.sword.slash',
-        ultimate: 'skill.time.slow',
-      },
+      equippedSkills: [
+        'skill.void.slash',
+        'skill.sword.slash',
+        'skill.time.slow',
+        '',
+        '',
+        '',
+      ],
       insights: {
         ...seedDefaultInsights(),
         void: { xp: 200, awakened: false, totalUses: 50 },
@@ -109,7 +113,7 @@ describe('InsightSystem', () => {
 
     expect(awakenedId).toBe(getInsightIntentConfig('void').awakenedSkillId);
     expect(next?.insights.void?.awakened).toBe(true);
-    expect(next?.equippedSkills.primary).toBe('skill.void.slash.awakened');
+    expect(next?.equippedSkills[0]).toBe('skill.void.slash.awakened');
   });
 
   it('lists intents ready for awakening ceremony', () => {
