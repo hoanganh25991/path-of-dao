@@ -1,0 +1,99 @@
+.top-right-hud {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: max(0.75rem, env(safe-area-inset-right));
+  z-index: 12;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.fps-counter {
+  pointer-events: none;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 2px solid rgba(143, 212, 196, 0.35);
+  background: rgba(10, 10, 18, 0.88);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #8fd4c4;
+  line-height: 1;
+}
+
+.fps-counter[data-tier='good'] {
+  color: #8fd4c4;
+  border-color: rgba(143, 212, 196, 0.45);
+}
+
+.fps-counter[data-tier='mid'] {
+  color: #e8c84a;
+  border-color: rgba(232, 200, 74, 0.45);
+}
+
+.fps-counter[data-tier='low'] {
+  color: #e08a6a;
+  border-color: rgba(224, 138, 106, 0.45);
+}
+
+.scene-indicator {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+.scene-indicator__chip {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid rgba(143, 212, 196, 0.2);
+  background: rgba(10, 10, 18, 0.72);
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.45;
+  transition:
+    opacity 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.scene-indicator__chip--active {
+  opacity: 1;
+  border-color: rgba(143, 212, 196, 0.55);
+  background: rgba(10, 10, 18, 0.92);
+  box-shadow: 0 0 10px rgba(143, 212, 196, 0.15);
+}
+
+.scene-indicator__pause-slot {
+  display: none;
+  width: 44px;
+  height: 44px;
+}
+
+.scene-indicator__pause-slot--visible {
+  display: block;
+}
+
+.scene-indicator__pause-slot .combat-pause-btn {
+  position: static;
+  width: 44px;
+  height: 44px;
+}
+
+html.landscape-layout .top-right-hud {
+  top: max(0.65rem, env(safe-area-inset-top, 0px));
+  right: max(0.65rem, env(safe-area-inset-right, 0px));
+}

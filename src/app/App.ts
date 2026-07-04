@@ -14,6 +14,7 @@ import { buildPlayerStats } from '@/progression/playerStats';
 import { initDevControls } from '@/app/DevControls';
 import { seedRoadProgress, seedBossClearPendingStory, seedReadyForOrdeal, devEnterStory, devRequestMapExit, devEnterMapCombat, devShowEncounter, devSimulateMapClear } from '@/dev/DevSaveSeeds';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
+import { TopRightHud } from '@/ui/hud/TopRightHud';
 import { HomeUI } from '@/ui/home/HomeUI';
 import { AudioManager } from '@/core/audio/AudioManager';
 import { AudioDirector } from '@/core/audio/AudioDirector';
@@ -45,6 +46,7 @@ export class App {
     const elements = GameShell.mount(root);
     AudioUnlock.mount(root);
     mountUiSounds(root);
+    TopRightHud.init(elements.uiRoot);
     CombatHUD.init(elements.uiRoot);
     HomeUI.init(elements.uiRoot);
     App.mountDevControls(elements.uiRoot);

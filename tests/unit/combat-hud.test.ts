@@ -4,6 +4,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { EventBus } from '@/core/EventBus';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
+import { TopRightHud } from '@/ui/hud/TopRightHud';
 
 describe('CombatHUD', () => {
   beforeEach(() => {
@@ -13,11 +14,13 @@ describe('CombatHUD', () => {
   afterEach(() => {
     EventBus.clear();
     CombatHUD.resetForTests();
+    TopRightHud.resetForTests();
     document.body.innerHTML = '';
   });
 
   it('shows controls only in combat scene', () => {
     const uiRoot = document.getElementById('ui-root')!;
+    TopRightHud.init(uiRoot);
     CombatHUD.init(uiRoot);
 
     const hud = uiRoot.querySelector<HTMLElement>('.combat-hud');

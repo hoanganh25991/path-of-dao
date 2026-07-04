@@ -16,13 +16,26 @@ import {
   ANIM,
 } from '@/combat/art/stickyManAssets';
 import type { StickPalette } from '@/combat/art/stickyManPalette';
-import { FRAME_H, FRAME_W } from '@/combat/art/stickyManPalette';
+import { DISPLAY_SCALE, FRAME_H, FRAME_W } from '@/combat/art/stickyManPalette';
 import { VFX_TEXTURE_KEYS } from '@/combat/art/pixelVfxDraw';
 import type { AncientProfile } from '@/shared/schemas/ancient-demo';
 
-/** Floating tag Y offsets from sprite feet (origin 0.5, 1 — larger = lower on screen). */
-const ANCIENT_NAME_TAG_Y = 64;
-const ANCIENT_EPITHET_TAG_Y = 42;
+/** Gap between stacked name/epithet tags (world px). */
+const ANCIENT_TAG_GAP = 4;
+/** Crown hair ~12px from frame top; feet anchor at frame bottom (origin 0.5, 1). */
+const STICKY_HEAD_TOP_FROM_FEET = (FRAME_H - 12) * DISPLAY_SCALE;
+/** Epithet anchor Y offset from sprite feet — sits just above the head. */
+const ANCIENT_EPITHET_TAG_Y = STICKY_HEAD_TOP_FROM_FEET + ANCIENT_TAG_GAP;
+
+function layoutAncientNameTags(
+  nameTag: Phaser.GameObjects.Text,
+  titleTag: Phaser.GameObjects.Text,
+  x: number,
+  y: number,
+): void {
+  titleTag.setPosition(x, y - ANCIENT_EPITHET_TAG_Y);
+  nameTag.setPosition(x, titleTag.y - titleTag.displayHeight - ANCIENT_TAG_GAP);
+}
 
 const ANCIENT_PALETTES: Record<string, StickPalette> = {
   void: {
@@ -224,7 +237,7 @@ export function applyAncientHeroVisual(
   });
 
   const nameTag = scene.add
-    .text(sprite.x, sprite.y - ANCIENT_NAME_TAG_Y, name, {
+    .text(sprite.x, 0, name, {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '13px',
       fontStyle: 'bold',
@@ -236,7 +249,7 @@ export function applyAncientHeroVisual(
     .setDepth(sprite.depth + 2);
 
   const titleTag = scene.add
-    .text(sprite.x, sprite.y - ANCIENT_EPITHET_TAG_Y, epithet, {
+    .text(sprite.x, 0, epithet, {
       fontFamily: 'system-ui, sans-serif',
       fontSize: '9px',
       color: '#2dd4a8',
@@ -245,6 +258,8 @@ export function applyAncientHeroVisual(
     })
     .setOrigin(0.5, 1)
     .setDepth(sprite.depth + 2);
+
+  layoutAncientNameTags(nameTag, titleTag, sprite.x, sprite.y);
 
   return { aura, nameTag, titleTag };
 }
@@ -255,8 +270,7 @@ export function tickAncientCombatFx(
   y: number,
 ): void {
   fx.aura.setPosition(x, y - 24);
-  fx.nameTag.setPosition(x, y - ANCIENT_NAME_TAG_Y);
-  fx.titleTag.setPosition(x, y - ANCIENT_EPITHET_TAG_Y);
+  layoutAncientNameTags(fx.nameTag, fx.titleTag, x, y);
 }
 
 /** Map ancient anim keys onto standard hero anim controller keys when needed. */

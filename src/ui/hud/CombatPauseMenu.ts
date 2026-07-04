@@ -28,16 +28,6 @@ export class CombatPauseMenu {
   static init(parent: HTMLElement): void {
     if (CombatPauseMenu.mounted) return;
 
-    const pauseBtn = document.createElement('button');
-    pauseBtn.type = 'button';
-    pauseBtn.className = 'combat-pause-btn';
-    pauseBtn.dataset.testid = 'combat-pause-btn';
-    pauseBtn.setAttribute('aria-label', I18nManager.t('combat.pause.open'));
-    pauseBtn.textContent = '⏸';
-    pauseBtn.addEventListener('click', () => CombatPauseMenu.show());
-    parent.appendChild(pauseBtn);
-    CombatPauseMenu.pauseBtn = pauseBtn;
-
     const overlay = document.createElement('div');
     overlay.className = 'combat-pause-menu';
     overlay.dataset.testid = 'combat-pause-menu';
@@ -94,12 +84,31 @@ export class CombatPauseMenu {
     CombatPauseMenu.mounted = true;
   }
 
+  /** Mount pause control into the top-right scene row (TopRightHud). */
+  static mountPauseButton(container: HTMLElement): void {
+    if (CombatPauseMenu.pauseBtn) return;
+
+    const pauseBtn = document.createElement('button');
+    pauseBtn.type = 'button';
+    pauseBtn.className = 'combat-pause-btn';
+    pauseBtn.dataset.testid = 'combat-pause-btn';
+    pauseBtn.setAttribute('aria-label', I18nManager.t('combat.pause.open'));
+    pauseBtn.textContent = '⏸';
+    pauseBtn.addEventListener('click', () => CombatPauseMenu.show());
+    container.appendChild(pauseBtn);
+    CombatPauseMenu.pauseBtn = pauseBtn;
+  }
+
+  static unmountPauseButton(): void {
+    CombatPauseMenu.pauseBtn?.remove();
+    CombatPauseMenu.pauseBtn = null;
+  }
+
   static destroy(): void {
     CombatPauseMenu.unsubscribeScene?.();
     CombatPauseMenu.unsubscribeScene = null;
     CombatPauseMenu.close();
-    CombatPauseMenu.pauseBtn?.remove();
-    CombatPauseMenu.pauseBtn = null;
+    CombatPauseMenu.unmountPauseButton();
     CombatPauseMenu.overlay?.remove();
     CombatPauseMenu.overlay = null;
     CombatPauseMenu.mounted = false;
@@ -133,6 +142,8 @@ export class CombatPauseMenu {
   }
 
   private static isCombatScene(): boolean {
-    return !CombatPauseMenu.pauseBtn?.closest('.combat-hud')?.hasAttribute('hidden');
+    return Boolean(
+      document.querySelector('.scene-indicator__pause-slot--visible [data-testid="combat-pause-btn"]'),
+    );
   }
 }

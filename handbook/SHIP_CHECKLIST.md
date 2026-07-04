@@ -41,7 +41,7 @@ Manual QA script for [plans/index.md §12](../plans/index.md). Run on a mid-rang
 ## Performance & quality
 
 - [ ] Low quality setting disables combat hit-stop / shake
-- [ ] ≥ 30 FPS combat on mid-range Android (Snapdragon 6xx class)
+- [ ] ≥ 60 FPS combat on mid-range Android (up to 120 on high-refresh displays)
 - [ ] Scene switch Home ↔ combat < 1 s
 - [ ] 10-minute playthrough without console errors
 

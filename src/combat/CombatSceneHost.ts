@@ -33,6 +33,11 @@ export class CombatSceneHost implements SceneHost {
         canvas,
         width,
         height,
+        fps: {
+          target: 60,
+          limit: 0,
+          smoothStep: true,
+        },
         backgroundColor: '#0d1117',
         scale: {
           // NONE — RESIZE reads getBoundingClientRect which is viewport-aligned
