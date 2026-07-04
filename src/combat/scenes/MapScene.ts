@@ -125,6 +125,8 @@ export class MapScene extends Phaser.Scene {
     }
     this.physics.add.collider(this.player.sprite, collision);
 
+    this.spawnEnvironmentDecorations(config);
+
     if (isAncientCombatActive()) {
       const ancientId = getActiveAncientId();
       if (ancientId && save) {
@@ -279,6 +281,58 @@ export class MapScene extends Phaser.Scene {
       return { x: marker.x, y: marker.y };
     }
     return { x: config.bounds.width / 2, y: config.bounds.height / 2 };
+  }
+
+  /** Scatter decorative environment props (trees, rocks, lanterns) across the map. */
+  private spawnEnvironmentDecorations(config: MapConfig): void {
+    const W = config.bounds.width;
+    const H = config.bounds.height;
+    const margin = 160;
+    const treeCount = Math.floor((W * H) / 1200000) + 8;
+    const rockCount = Math.floor((W * H) / 2400000) + 6;
+    const lanternCount = Math.max(3, Math.floor((W * H) / 4000000));
+
+    const seeded: Record<string, true> = {};
+    const rng = (): number => {
+      const v = Math.sin(this.time.now * 1.371 + Object.keys(seeded).length * 7.31);
+      return v - Math.floor(v);
+    };
+    const posKey = (x: number, y: number): string => `${Math.round(x / 64)},${Math.round(y / 64)}`;
+
+    for (let i = 0; i < treeCount; i++) {
+      const x = margin + rng() * (W - margin * 2);
+      const y = margin + rng() * (H - margin * 2);
+      if (seeded[posKey(x, y)]) continue;
+      seeded[posKey(x, y)] = true;
+      const shade = Phaser.Display.Color.HSLToColor(0.28, 0.3, 0.12 + rng() * 0.1).color;
+      this.add.rectangle(x, y, 6, 18, 0x503a28, 0.85).setDepth(1);
+      this.add.circle(x, y - 12, 14 + rng() * 6, shade, 0.7).setDepth(2);
+    }
+
+    for (let i = 0; i < rockCount; i++) {
+      const x = margin + rng() * (W - margin * 2);
+      const y = margin + rng() * (H - margin * 2);
+      if (seeded[posKey(x, y)]) continue;
+      seeded[posKey(x, y)] = true;
+      const shade = Phaser.Display.Color.HSLToColor(0.08, 0.05, 0.25 + rng() * 0.12).color;
+      this.add.ellipse(x, y, 12 + rng() * 8, 6 + rng() * 4, shade, 0.8).setDepth(2);
+    }
+
+    for (let i = 0; i < lanternCount; i++) {
+      const x = 200 + rng() * (W - 400);
+      const y = 200 + rng() * (H - 400);
+      if (seeded[posKey(x, y)]) continue;
+      seeded[posKey(x, y)] = true;
+      this.add.rectangle(x, y + 6, 3, 24, 0x6b5433, 0.9).setDepth(1);
+      const glow = this.add.circle(x, y - 6, 5, 0xd4a840, 0.6).setDepth(3);
+      this.tweens.add({
+        targets: glow,
+        alpha: { from: 0.3, to: 0.7 },
+        duration: 1200 + rng() * 800,
+        yoyo: true,
+        repeat: -1,
+      });
+    }
   }
 
   /** Depart portal — hidden until the ordeal is cleared; use pause to retreat early. */

@@ -3,36 +3,39 @@
  * capped by the map's level-design ceiling (recommendedRealmOrder).
  *
  * rank = 0 (weakest vanilla) … N (capped by maxRank).
- * Each rank adds 25 % stat multiplier and better visual polish.
+ * Each rank adds 30 % stat multiplier and better visual polish.
+ *
+ * Scaling thresholds are tighter than default so cultivators grow stronger
+ * faster as the player explores deeper on the map.
  */
 export interface RoamingRankConfig {
   /** Maximum rank the map allows. Derived from recommendedRealmOrder. */
   maxRank: number;
-  /** Pixels from player spawn to advance one rank. Default 1500. */
+  /** Pixels from player spawn to advance one rank. Default 800. */
   distPerRank: number;
-  /** Seconds elapsed in map to advance one rank. Default 90. */
+  /** Seconds elapsed in map to advance one rank. Default 45. */
   secPerRank: number;
 }
 
 export interface RoamingRankResult {
   /** 0 = vanilla, 1+ = scaled */
   rank: number;
-  /** 1 + rank * 0.25 */
+  /** 1 + rank * 0.30 */
   statMultiplier: number;
 }
 
-const DEFAULT_DIST_PER_RANK = 1500;
-const DEFAULT_SEC_PER_RANK = 90;
+const DEFAULT_DIST_PER_RANK = 800;
+const DEFAULT_SEC_PER_RANK = 45;
 
 /**
- * Max rank from realm order: realm 1 = maxRank 3, realm 2 = maxRank 4, etc.
+ * Max rank from realm order: realm 1 = maxRank 5, realm 2 = maxRank 6, etc.
  * Allows maps with higher recRealmOrder to naturally have stronger enemies.
  */
 function maxRankForRealmOrder(order: number): number {
-  if (order <= 1) return 3; // fallen village caps at R3
-  if (order === 2) return 4;
-  if (order === 3) return 5;
-  return 6;
+  if (order <= 1) return 5;
+  if (order === 2) return 6;
+  if (order === 3) return 7;
+  return 8;
 }
 
 export function buildRoamingRankConfig(
@@ -61,6 +64,6 @@ export function computeRoamingRank(
   const distRank = Math.max(0, Math.floor(distPx / config.distPerRank));
   const timeRank = Math.max(0, Math.floor(elapsedSec / config.secPerRank));
   const rank = Math.min(config.maxRank, distRank + timeRank);
-  const statMultiplier = 1 + rank * 0.25;
+  const statMultiplier = 1 + rank * 0.30;
   return { rank, statMultiplier };
 }

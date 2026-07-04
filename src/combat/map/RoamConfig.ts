@@ -8,7 +8,7 @@ export const roamSpawnSchema = z.object({
   enemyPool: z.array(z.string().min(1)).optional(),
   x: z.number(),
   y: z.number(),
-  respawnMs: z.number().int().min(3000).default(18000),
+  respawnMs: z.number().int().min(3000).default(54000),
   patrolRadius: z.number().min(0).default(64),
 });
 

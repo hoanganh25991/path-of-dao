@@ -17,7 +17,7 @@ describe('RoamLoader', () => {
     expect(listRoamIds()).toContain('roam.fallen_village.01');
     const roam = getRoamConfig('roam.fallen_village.01');
     expect(roam.spawns.length).toBeGreaterThanOrEqual(4);
-    expect(roam.spawns[0]?.enemyId).toBeTruthy();
+    expect(roam.spawns[0]?.enemyId || roam.spawns[0]?.enemyPool).toBeTruthy();
   });
 
   it('loads east sub-zone roam spawns', () => {
