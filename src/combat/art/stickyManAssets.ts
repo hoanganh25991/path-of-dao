@@ -20,6 +20,7 @@ import {
   POSES_ATTACK_2_SMOOTH,
   POSES_ATTACK_3_SMOOTH,
   POSES_HIT,
+  POSES_SIT,
   POSES_SLIME_IDLE,
   POSES_SLIME_WALK,
   POSES_TOTEM_ATTACK,
@@ -42,13 +43,17 @@ export const ANIM = {
   heroAttack2: 'hero_sticky_attack_2',
   heroAttack3: 'hero_sticky_attack_3',
   heroHit: 'hero_sticky_hit',
+  heroSit: 'hero_sticky_sit',
   slimeIdle: 'enemy_slime_idle',
   slimeWalk: 'enemy_slime_walk',
+  slimeSit: 'enemy_slime_sit',
   archerIdle: 'enemy_archer_idle',
   archerWalk: 'enemy_archer_walk',
   archerAttack: 'enemy_archer_attack',
+  archerSit: 'enemy_archer_sit',
   totemIdle: 'enemy_totem_idle',
   totemAttack: 'enemy_totem_attack',
+  totemSit: 'enemy_totem_sit',
 } as const;
 
 const HERO_ANIM_KEYS = [
@@ -162,6 +167,7 @@ export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle
   createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset(combatStyle, 'hit'), POSES_HIT.length, 10, 0, {
     0: 70,
   });
+  createAnim(scene, ANIM.heroSit, heroKey, heroFrameOffset(combatStyle, 'sit'), POSES_SIT.length, 3);
 
   if (combatStyle === 'unarmed') {
     registerUnarmedStrikes(scene, heroKey);
@@ -211,7 +217,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     POSES_SLIME_IDLE,
     POSES_SLIME_WALK,
     null,
-    { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk },
+    { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk, sit: ANIM.slimeSit },
     'slime',
   );
 
@@ -226,6 +232,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
       idle: ANIM.archerIdle,
       walk: ANIM.archerWalk,
       attack: ANIM.archerAttack,
+      sit: ANIM.archerSit,
     },
     'archer',
     { 2: 100 },
@@ -241,11 +248,13 @@ function registerEnemySheet(
   idle: typeof POSES_SLIME_IDLE,
   walk: typeof POSES_SLIME_WALK,
   attack: typeof POSES_ARCHER_ATTACK | null,
-  animKeys: { idle: string; walk: string; attack?: string },
+  animKeys: { idle: string; walk: string; attack?: string; sit?: string },
   variant: 'slime' | 'archer',
   attackHolds?: Record<number, number>,
 ): void {
-  const frames = attack ? [...idle, ...walk, ...attack] : [...idle, ...walk];
+  const frames = attack
+    ? [...idle, ...walk, ...POSES_SIT, ...attack]
+    : [...idle, ...walk, ...POSES_SIT];
   const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, palette, NORMAL, variant);
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
@@ -254,6 +263,10 @@ function registerEnemySheet(
   offset += idle.length;
   createAnim(scene, animKeys.walk, key, offset, walk.length, 10);
   offset += walk.length;
+  if (animKeys.sit) {
+    createAnim(scene, animKeys.sit, key, offset, POSES_SIT.length, 3);
+    offset += POSES_SIT.length;
+  }
   if (attack && animKeys.attack) {
     createAnim(scene, animKeys.attack, key, offset, attack.length, 10, 0, attackHolds);
   }
@@ -261,12 +274,16 @@ function registerEnemySheet(
 
 function registerBossSheet(scene: Phaser.Scene): void {
   const key = 'enemy_totem';
-  const frames = [...POSES_TOTEM_IDLE, ...POSES_TOTEM_ATTACK];
+  const frames = [...POSES_TOTEM_IDLE, ...POSES_SIT, ...POSES_TOTEM_ATTACK];
   const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, PALETTE_TOTEM, NORMAL, 'boss');
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
-  createAnim(scene, ANIM.totemIdle, key, 0, POSES_TOTEM_IDLE.length, 4);
-  createAnim(scene, ANIM.totemAttack, key, POSES_TOTEM_IDLE.length, POSES_TOTEM_ATTACK.length, 9, 0, {
+  let offset = 0;
+  createAnim(scene, ANIM.totemIdle, key, offset, POSES_TOTEM_IDLE.length, 4);
+  offset += POSES_TOTEM_IDLE.length;
+  createAnim(scene, ANIM.totemSit, key, offset, POSES_SIT.length, 3);
+  offset += POSES_SIT.length;
+  createAnim(scene, ANIM.totemAttack, key, offset, POSES_TOTEM_ATTACK.length, 9, 0, {
     2: 130,
   });
 }
@@ -286,22 +303,36 @@ export function applyStickyManSprite(sprite: Phaser.Physics.Arcade.Sprite): void
   configureStickyManBody(sprite);
 }
 
-export function enemyAnimKeys(spriteKey: string): {
+export function cultivatorAnimKeys(spriteKey: string): {
   idle: string;
   walk: string;
   attack?: string;
+  sit?: string;
 } {
   switch (spriteKey) {
     case 'enemy_slime':
-      return { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk };
+      return { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk, sit: ANIM.slimeSit };
     case 'enemy_archer':
-      return { idle: ANIM.archerIdle, walk: ANIM.archerWalk, attack: ANIM.archerAttack };
+      return {
+        idle: ANIM.archerIdle,
+        walk: ANIM.archerWalk,
+        attack: ANIM.archerAttack,
+        sit: ANIM.archerSit,
+      };
     case 'enemy_totem':
-      return { idle: ANIM.totemIdle, walk: ANIM.totemIdle, attack: ANIM.totemAttack };
+      return {
+        idle: ANIM.totemIdle,
+        walk: ANIM.totemIdle,
+        attack: ANIM.totemAttack,
+        sit: ANIM.totemSit,
+      };
     default:
-      return { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk };
+      return { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk, sit: ANIM.slimeSit };
   }
 }
+
+/** @deprecated Use cultivatorAnimKeys */
+export const enemyAnimKeys = cultivatorAnimKeys;
 
 export function isBossSpriteKey(spriteKey: string): boolean {
   return spriteKey === 'enemy_totem';

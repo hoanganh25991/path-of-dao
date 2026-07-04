@@ -81,7 +81,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": "22c6d055c8eb33e7729fcea60da5efd8"
   }, {
     "url": "/path-of-dao/index.html",
-    "revision": "0.idto6sc7ci8"
+    "revision": "0.5962pcdccvo"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/path-of-dao/index.html"), {

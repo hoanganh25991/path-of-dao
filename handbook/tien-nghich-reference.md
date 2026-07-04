@@ -53,6 +53,8 @@ When authoring **maps**, **story JSON**, **encounters**, or **combat**:
 | Fortuitous inheritance | POIs gate major rewards; sword is a **destiny** | Sword in tutorial chest |
 | The sword | `item.sword.ancient` mid-journey; Sword Intent gated (T2–T3, T7) | Sword from minute one |
 | Retreat & return | CP badges; rematch on lower maps | Hard gate with no fallback |
+| Non-lethal duels | Tu Sĩ at 0 HP sit and meditate at spawn — recover, fight again | Permanent death / despawn on roaming maps |
+| Horde fantasy | Over-leveled return visits spawn squads → hordes → mass (1v10/100/500) | Flat 1v1 everywhere |
 | Story tone | Perseverance, cost, quiet resolve — cultivation diary | Early quips, chosen-one swagger |
 
 ---
@@ -63,7 +65,7 @@ Path of Dao maps *Tiên Nghịch* cultivation onto a **level + realm** ladder th
 
 | Concept | *Tiên Nghịch* feel | Path of Dao |
 |---------|-------------------|-------------|
-| **Combat XP** | Killing beasts and enduring ordeals slowly refines qi | Third HUD bar fills on enemy kills; levels within the current realm |
+| **Combat XP** | Defeating rivals and enduring ordeals slowly refines qi | Third HUD bar fills when cultivators lose the exchange; levels within the current realm |
 | **Realm (cảnh giới)** | Mortal → Qi → Foundation → Core → Nascent → Void → True Dao | Seven realms in `content/progression/realms.json`; Home + combat toasts use vi keys (Phàm Thể, Ngưng Khí, Trúc Cơ…) |
 | **Sub-tier (kỳ)** | Sơ / Trung / Hậu / Viên Mãn within each realm | Auto every 3 levels; level-up toast: *Đột phá — Ngưng Khí · Trung Kỳ* |
 | **Realm breakthrough (đột phá cảnh giới)** | Major gate — spirit full, sometimes precious jade | Home **Tu Luyện / Đột Phá** when level + spirit + boss + **Tiên Ngọc** (Immortal Jade) met |

@@ -3,12 +3,12 @@ import { EventBus } from '@/core/EventBus';
 import { AudioDirector } from '@/core/audio/AudioDirector';
 import { gameStore } from '@/core/store/gameStore';
 import type { Player } from '@/combat/entities/Player';
-import { Enemy, STRIKE_MS } from '@/combat/entities/Enemy';
+import { Cultivator, STRIKE_MS } from '@/combat/entities/Cultivator';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
-import { getEncounterConfig, getEnemyConfig } from '@/combat/enemies/EnemyLoader';
-import type { EncounterConfig } from '@/combat/enemies/EnemyConfig';
-import { EnemyPool } from '@/combat/systems/EnemyPool';
+import { getEncounterConfig, getCultivatorConfig } from '@/combat/cultivators/CultivatorLoader';
+import type { EncounterConfig } from '@/combat/cultivators/CultivatorConfig';
+import { CultivatorPool } from '@/combat/systems/CultivatorPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvents';
@@ -37,7 +37,7 @@ const PICKUP_MAGNET_SPEED = 280;
 const PICKUP_COLLECT_RADIUS = 18;
 
 interface QueuedSpawn {
-  enemyId: string;
+  cultivatorId: string;
   x: number;
   y: number;
 }
@@ -55,11 +55,11 @@ interface GoldPickup {
 }
 
 /**
- * Owns the map's encounter: wave spawning (max 8 alive, queue overflow),
- * enemy strike hitboxes, arrows, gold pickups, and kill rewards.
+ * Owns the map's encounter: wave spawning (scaled live cap, queue overflow),
+ * cultivator strike hitboxes, arrows, gold pickups, and defeat rewards.
  */
 export class SpawnManager {
-  private readonly pool: EnemyPool;
+  private readonly pool: CultivatorPool;
   private readonly encounter: EncounterConfig;
   private readonly encounterScale: EncounterScale;
   private maxAlive: number;
@@ -94,21 +94,21 @@ export class SpawnManager {
     this.encounter = scaleEncounterForPower(baseEncounter, this.encounterScale);
     this.maxAlive = this.encounterScale.maxAlive;
 
-    this.pool = new EnemyPool((enemyId) => {
-      const enemy = new Enemy(scene, getEnemyConfig(enemyId), {
-        onStrike: (e) => this.resolveStrike(e),
-        onDefeated: (e) => this.grantDefeatRewards(e),
-        onDefeatHoldComplete: (e) => this.onDefeatHoldComplete(e),
-        onBossPhaseSpawns: (e, adds) => this.queueBossAdds(e, adds),
+    this.pool = new CultivatorPool((cultivatorId) => {
+      const cultivator = new Cultivator(scene, getCultivatorConfig(cultivatorId), {
+        onStrike: (c) => this.resolveStrike(c),
+        onDefeated: (c) => this.grantDefeatRewards(c),
+        onDefeatHoldComplete: (c) => this.onDefeatHoldComplete(c),
+        onBossPhaseSpawns: (c, adds) => this.queueBossAdds(c, adds),
       });
-      scene.physics.add.collider(enemy.sprite, walls);
-      return enemy;
+      scene.physics.add.collider(cultivator.sprite, walls);
+      return cultivator;
     });
 
-    const enemyIds = [
+    const cultivatorIds = [
       ...new Set(this.encounter.waves.flatMap((w) => w.enemies.map((e) => e.id))),
     ];
-    this.pool.prewarm(enemyIds);
+    this.pool.prewarm(cultivatorIds);
 
     this.unsubPlayerDied = EventBus.on('player:died', () => this.onPlayerDied());
   }
@@ -124,20 +124,20 @@ export class SpawnManager {
       alive: this.player.sm.state !== 'dead',
     };
 
-    for (const enemy of [...this.pool.aliveEnemies]) {
-      enemy.update(dtMs, playerState);
+    for (const cultivator of [...this.pool.aliveCultivators]) {
+      cultivator.update(dtMs, playerState);
     }
 
     this.updateArrows(dtMs);
     this.updatePickups(dtMs);
   }
 
-  /** Alive enemies registered as hurtbox targets each frame. */
+  /** Alive cultivators registered as hurtbox targets each frame. */
   getHurtboxTargets(): HurtboxEntity[] {
-    return this.pool.combatReadyEnemies;
+    return this.pool.combatReadyCultivators;
   }
 
-  /** Combat-ready enemies — for camera zoom director. */
+  /** Combat-ready cultivators — for camera zoom director. */
   get combatReadyCount(): number {
     return this.pool.combatReadyCount;
   }
@@ -187,7 +187,7 @@ export class SpawnManager {
     for (const group of wave.enemies) {
       for (let i = 0; i < group.count; i++) {
         this.queue.push({
-          enemyId: group.id,
+          cultivatorId: group.id,
           x: this.center.x + (Math.random() * 2 - 1) * group.spread,
           y: this.center.y + (Math.random() * 2 - 1) * group.spread,
         });
@@ -201,21 +201,21 @@ export class SpawnManager {
     while (this.queue.length > 0 && this.pool.combatReadyCount < this.maxAlive) {
       const next = this.queue.shift();
       if (!next) break;
-      this.pool.acquire(next.enemyId, next.x, next.y);
+      this.pool.acquire(next.cultivatorId, next.x, next.y);
     }
   }
 
-  private onDefeatHoldComplete(enemy: Enemy): void {
+  private onDefeatHoldComplete(cultivator: Cultivator): void {
     if (this.destroyed || !this.waveActive) return;
 
     if (this.queue.length > 0) {
-      this.pool.release(enemy);
+      this.pool.release(cultivator);
       this.fillFromQueue();
     } else if (this.isWaveFullyDefeated()) {
       this.finishWave();
       return;
     } else {
-      enemy.beginRecovery();
+      cultivator.beginRecovery();
       return;
     }
 
@@ -224,8 +224,8 @@ export class SpawnManager {
 
   private isWaveFullyDefeated(): boolean {
     if (this.queue.length > 0) return false;
-    const active = [...this.pool.aliveEnemies];
-    return active.length > 0 && active.every((e) => e.defeated);
+    const active = [...this.pool.aliveCultivators];
+    return active.length > 0 && active.every((c) => c.defeated);
   }
 
   private checkWaveProgress(): void {
@@ -236,8 +236,8 @@ export class SpawnManager {
   private finishWave(): void {
     if (!this.waveActive) return;
     this.waveActive = false;
-    for (const enemy of [...this.pool.aliveEnemies]) {
-      this.pool.release(enemy);
+    for (const cultivator of [...this.pool.aliveCultivators]) {
+      this.pool.release(cultivator);
     }
 
     EventBus.emit('map:wave-cleared', {
@@ -267,27 +267,27 @@ export class SpawnManager {
 
   // --- combat resolution ---
 
-  private resolveStrike(enemy: Enemy): void {
-    if (enemy.config.archetype === 'ranged_kiter') {
-      this.spawnArrow(enemy);
+  private resolveStrike(cultivator: Cultivator): void {
+    if (cultivator.config.archetype === 'ranged_kiter') {
+      this.spawnArrow(cultivator);
       return;
     }
 
-    if (enemy.config.archetype === 'stationary') {
-      this.flashAoeRing(enemy);
+    if (cultivator.config.archetype === 'stationary') {
+      this.flashAoeRing(cultivator);
     }
 
     this.hitboxes.spawn({
-      ownerId: enemy.id,
-      team: 'enemy',
+      ownerId: cultivator.id,
+      team: 'cultivator',
       shape: {
         kind: 'circle',
-        radius: enemy.config.attackRange * MELEE_HIT_SLACK,
-        x: enemy.x,
-        y: enemy.y,
+        radius: cultivator.config.attackRange * MELEE_HIT_SLACK,
+        x: cultivator.x,
+        y: cultivator.y,
       },
       damage: {
-        attacker: enemy.stats.resolved,
+        attacker: cultivator.stats.resolved,
         skillMultiplier: 1,
         damageType: 'physical',
       },
@@ -296,21 +296,21 @@ export class SpawnManager {
     });
   }
 
-  private spawnArrow(enemy: Enemy): void {
+  private spawnArrow(cultivator: Cultivator): void {
     const img = this.scene.physics.add
-      .image(enemy.x, enemy.y - 4, TEXTURE_KEYS.arrow)
+      .image(cultivator.x, cultivator.y - 4, TEXTURE_KEYS.arrow)
       .setDepth(11);
 
-    const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.player.x, this.player.y);
+    const angle = Phaser.Math.Angle.Between(cultivator.x, cultivator.y, this.player.x, this.player.y);
     img.setRotation(angle);
     this.scene.physics.velocityFromRotation(angle, ARROW_SPEED, img.body!.velocity);
 
     const hitbox = this.hitboxes.spawn({
-      ownerId: enemy.id,
-      team: 'enemy',
+      ownerId: cultivator.id,
+      team: 'cultivator',
       shape: { kind: 'circle', radius: ARROW_HIT_RADIUS, x: img.x, y: img.y },
       damage: {
-        attacker: enemy.stats.resolved,
+        attacker: cultivator.stats.resolved,
         skillMultiplier: 1,
         damageType: 'physical',
       },
@@ -345,37 +345,37 @@ export class SpawnManager {
 
   // --- rewards ---
 
-  private queueBossAdds(enemy: Enemy, adds: { id: string; count: number }[]): void {
+  private queueBossAdds(cultivator: Cultivator, adds: { id: string; count: number }[]): void {
     for (const group of adds) {
       for (let i = 0; i < group.count; i++) {
         const angle = (Math.PI * 2 * i) / Math.max(1, group.count);
         const dist = 48 + Math.random() * 24;
         this.queue.push({
-          enemyId: group.id,
-          x: enemy.x + Math.cos(angle) * dist,
-          y: enemy.y + Math.sin(angle) * dist,
+          cultivatorId: group.id,
+          x: cultivator.x + Math.cos(angle) * dist,
+          y: cultivator.y + Math.sin(angle) * dist,
         });
       }
     }
     this.fillFromQueue();
   }
 
-  private grantDefeatRewards(enemy: Enemy): void {
+  private grantDefeatRewards(cultivator: Cultivator): void {
     const store = gameStore.getState();
     const save = store.save;
     if (!save) return;
 
-    const bossClearId = enemy.config.bossClearId;
+    const bossClearId = cultivator.config.bossClearId;
     const wasRematch = Boolean(
       bossClearId && save.progress.clearedBosses.includes(bossClearId),
     );
     const isBoss = Boolean(bossClearId);
 
-    const rewards = computeKillRewards(save, enemy.config);
+    const rewards = computeKillRewards(save, cultivator.config);
     const xpBefore = save.xp;
 
     store.patch((current) => {
-      const bossClearId = enemy.config.bossClearId;
+      const bossClearId = cultivator.config.bossClearId;
       const clearedBosses =
         bossClearId && !current.progress.clearedBosses.includes(bossClearId)
           ? [...current.progress.clearedBosses, bossClearId]
@@ -442,17 +442,17 @@ export class SpawnManager {
     emitKillProgressionEvents(rewards, xpBefore, gameStore.getState().save?.realm.id ?? save.realm.id);
 
     if (rewards.gold > 0) {
-      this.spawnGoldPickup(enemy.x, enemy.y, rewards.gold);
+      this.spawnGoldPickup(cultivator.x, cultivator.y, rewards.gold);
     }
 
-    EventBus.emit('map:enemy-defeated', {
-      enemyId: enemy.config.id,
+    EventBus.emit('map:cultivator-defeated', {
+      cultivatorId: cultivator.config.id,
       isBoss,
       wasRematch,
     });
     // Back-compat for audio / juice listeners during migration.
     EventBus.emit('map:enemy-killed', {
-      enemyId: enemy.config.id,
+      enemyId: cultivator.config.id,
       isBoss,
       wasRematch,
     });
@@ -506,9 +506,9 @@ export class SpawnManager {
     AudioDirector.playLootPickup();
   }
 
-  private flashAoeRing(enemy: Enemy): void {
+  private flashAoeRing(cultivator: Cultivator): void {
     const ring = this.scene.add
-      .circle(enemy.x, enemy.y, enemy.config.attackRange)
+      .circle(cultivator.x, cultivator.y, cultivator.config.attackRange)
       .setStrokeStyle(3, 0xd94a3a, 0.8)
       .setDepth(8);
     this.scene.tweens.add({

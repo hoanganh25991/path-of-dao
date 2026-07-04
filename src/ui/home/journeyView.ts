@@ -3,7 +3,7 @@ import { I18nManager } from '@/core/i18n/I18nManager';
 import { formatCombatPower } from '@/progression/CombatPower';
 import { getChapterByStoryScene } from '@/progression/ChapterLoader';
 import { getEncounterDefinition } from '@/progression/EncounterLoader';
-import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getEnemyConfig } from '@/combat/cultivators/CultivatorLoader';
 import { findWorldMapNode } from '@/progression/WorldMapLoader';
 
 export interface JourneyView {

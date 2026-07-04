@@ -4,7 +4,7 @@ import { gameStore } from '@/core/store/gameStore';
 import { getActiveAncientId } from '@/progression/AncientDemoManager';
 import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
 import { listReadyAwakeningIntents } from '@/progression/InsightSystem';
-import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getEnemyConfig } from '@/combat/cultivators/CultivatorLoader';
 import { getChapter } from '@/progression/ChapterLoader';
 import { getSkillDefinition } from '@/progression/SkillLoader';
 

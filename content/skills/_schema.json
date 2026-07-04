@@ -8,7 +8,7 @@
     "id": { "type": "string" },
     "intent": { "enum": ["sword", "void", "flame", "lightning", "time", "life"] },
     "nameKey": { "type": "string" },
-    "kind": { "enum": ["arc", "bolt", "heal"] },
+    "kind": { "enum": ["arc", "bolt", "heal", "meditate"] },
     "manaCost": { "type": "integer", "minimum": 0 },
     "skillMultiplier": { "type": "number", "exclusiveMinimum": 0 },
     "cooldownMs": { "type": "integer", "minimum": 1 },

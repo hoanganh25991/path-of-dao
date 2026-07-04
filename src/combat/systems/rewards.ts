@@ -2,32 +2,32 @@ import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import type { BaseStats } from '@/progression/types';
 import { levelFromTotalXp } from '@/progression/LevelCurve';
 import { buildPlayerStats } from '@/progression/playerStats';
-import type { EnemyConfig } from '@/combat/enemies/EnemyConfig';
+import type { CultivatorConfig } from '@/combat/cultivators/CultivatorConfig';
 
 export interface KillRewards {
   /** New total XP for the save. */
   xpTotal: number;
   /** Level after the XP grant. */
   level: number;
-  /** New base stats — only set when the kill caused a level up. */
+  /** New base stats — only set when the defeat caused a level up. */
   statsAfterLevelUp: BaseStats | null;
-  /** Gold rolled from the enemy's [min,max] range (paid out via pickup). */
+  /** Gold rolled from the cultivator's [min,max] range (paid out via pickup). */
   gold: number;
-  /** Enemy id to append to progress.bestiary, or null if already recorded. */
+  /** Cultivator id to append to progress.bestiary, or null if already recorded. */
   bestiaryAdd: string | null;
 }
 
-/** Pure kill-reward resolution (sub-plan 08 §9/§10) — testable, no side effects. */
+/** Pure defeat-reward resolution (sub-plan 08 §9/§10) — testable, no side effects. */
 export function computeKillRewards(
   save: PlayerSaveV1,
-  enemy: EnemyConfig,
+  cultivator: CultivatorConfig,
   random: () => number = Math.random,
 ): KillRewards {
-  const xpTotal = save.xp + enemy.xpReward;
+  const xpTotal = save.xp + cultivator.xpReward;
   const level = levelFromTotalXp(xpTotal).level;
   const leveledUp = level > save.stats.level;
 
-  const [goldMin, goldMax] = enemy.goldReward;
+  const [goldMin, goldMax] = cultivator.goldReward;
   const gold = goldMin + Math.floor(random() * (goldMax - goldMin + 1));
 
   return {
@@ -35,6 +35,6 @@ export function computeKillRewards(
     level,
     statsAfterLevelUp: leveledUp ? buildPlayerStats(save.heroId, level, save.realm.id) : null,
     gold,
-    bestiaryAdd: save.progress.bestiary.includes(enemy.id) ? null : enemy.id,
+    bestiaryAdd: save.progress.bestiary.includes(cultivator.id) ? null : cultivator.id,
   };
 }

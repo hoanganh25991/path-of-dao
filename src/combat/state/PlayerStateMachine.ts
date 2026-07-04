@@ -5,6 +5,7 @@
  *   idle ←→ move
  *     ↓ attack pressed        → attack (combo 1→2→3, window 600ms)
  *     ↓ dodge pressed         → dodge (350ms, i-frames 250ms, cd 800ms)
+ *     ↓ meditate toggled      → meditate (held until move/attack/dodge/hit)
  *     ↓ damage (no i-frames)  → hitstun (150ms)
  *     ↓ hp <= 0               → dead
  */
@@ -15,7 +16,14 @@ import {
   type UnarmedStrikeKind,
 } from '@/combat/art/stickyManStrikes';
 
-export type PlayerStateId = 'idle' | 'move' | 'attack' | 'dodge' | 'hitstun' | 'dead';
+export type PlayerStateId =
+  | 'idle'
+  | 'move'
+  | 'attack'
+  | 'dodge'
+  | 'hitstun'
+  | 'dead'
+  | 'meditate';
 
 /** 8 / 10 / 18 frames at 60fps — step 3 is a held heavy finisher. */
 export const ATTACK_STEP_DURATIONS_MS = [140, 175, 320] as const;
@@ -83,6 +91,10 @@ export class PlayerStateMachine {
     this.dodgeCooldownMs = Math.max(0, this.dodgeCooldownMs - dtMs);
     this.stateElapsedMs += dtMs;
 
+    if (this.current === 'meditate') {
+      return;
+    }
+
     if (this.canAct) {
       this.comboWindowMs = Math.max(0, this.comboWindowMs - dtMs);
       if (this.comboWindowMs === 0) this.comboStep = 0;
@@ -142,9 +154,25 @@ export class PlayerStateMachine {
     return true;
   }
 
+  /** Enter seated meditation — fastest HP regen; cancel on move/attack/dodge/hit. */
+  tryMeditate(): boolean {
+    if (!this.canAct) return false;
+    this.setState('meditate');
+    return true;
+  }
+
+  cancelMeditate(): void {
+    if (this.current !== 'meditate') return;
+    this.setState('idle');
+  }
+
   /** Damage received. Returns true when it caused hitstun. */
   applyHit(): boolean {
     if (this.current === 'dead' || this.isInvulnerable) return false;
+    if (this.current === 'meditate') {
+      this.setState('hitstun');
+      return true;
+    }
     this.setState('hitstun');
     return true;
   }

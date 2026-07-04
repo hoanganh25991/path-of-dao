@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getEnemyConfig } from '@/combat/cultivators/CultivatorLoader';
 import { getMapConfig, resolveTiledUrl } from '@/combat/map/MapLoader';
 import { validateAllContent } from '@/shared/content/validateAll';
 

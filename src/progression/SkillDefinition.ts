@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const skillKindSchema = z.enum(['arc', 'bolt', 'heal']);
+export const skillKindSchema = z.enum(['arc', 'bolt', 'heal', 'meditate']);
 
 export const skillAwakenedOverridesSchema = z.object({
   arcHalfAngle: z.number().positive().optional(),

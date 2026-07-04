@@ -1,4 +1,4 @@
-import type { BossPhaseConfig } from '@/combat/enemies/EnemyConfig';
+import type { BossPhaseConfig } from '@/combat/cultivators/CultivatorConfig';
 
 /** Tracks boss HP thresholds and pending add spawns (sub-plan 23). */
 export class BossPhaseTracker {

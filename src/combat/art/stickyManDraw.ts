@@ -917,6 +917,30 @@ export const POSES_HIT: StickPose[] = [
   { bob: 2, lean: 8, limbs: { armBack: seg(48, 40), armFront: seg(52, 44), legBack: seg(24, 18), legFront: seg(-16, -10) } },
 ];
 
+/** Seated meditation — cultivator recovery after losing an exchange. */
+export const POSES_SIT: StickPose[] = [
+  {
+    bob: 0,
+    lean: 3,
+    limbs: {
+      armBack: seg(-28, -38),
+      armFront: seg(28, -38),
+      legBack: seg(-42, -18),
+      legFront: seg(42, -18),
+    },
+  },
+  {
+    bob: -0.5,
+    lean: 3,
+    limbs: {
+      armBack: seg(-27, -37),
+      armFront: seg(27, -37),
+      legBack: seg(-41, -17),
+      legFront: seg(41, -17),
+    },
+  },
+];
+
 export const POSES_SLIME_IDLE: StickPose[] = [
   { bob: 0, limbs: { armBack: seg(-38, -28), armFront: seg(38, 28), legBack: seg(-16, -12), legFront: seg(16, 12) } },
   { bob: 2, limbs: { armBack: seg(-42, -32), armFront: seg(42, 32), legBack: seg(-20, -16), legFront: seg(20, 16) } },
@@ -1070,8 +1094,12 @@ export function applyWeaponProp(poses: StickPose[], prop: 'sword' | 'lance' | 's
 
 export function heroFrameOffset(
   style: HeroCombatStyle,
-  group: 'idle' | 'walk' | 'attack1' | 'attack2' | 'attack3' | 'hit',
+  group: 'idle' | 'walk' | 'attack1' | 'attack2' | 'attack3' | 'hit' | 'sit',
 ): number {
+  if (group === 'sit') {
+    return buildHeroFrames(style).length - POSES_SIT.length;
+  }
+
   let o = 0;
   if (group === 'idle') return o;
   o += POSES_IDLE.length;
@@ -1096,7 +1124,12 @@ export function heroFrameOffset(
 export function buildHeroFrames(style: HeroCombatStyle = 'unarmed'): StickPose[] {
   const base = [...POSES_IDLE, ...POSES_WALK];
   if (style === 'unarmed') {
-    return [...base, ...POSES_HIT, ...UNARMED_STRIKE_KINDS.flatMap((kind) => STRIKE_POSES[kind])];
+    return [
+      ...base,
+      ...POSES_HIT,
+      ...UNARMED_STRIKE_KINDS.flatMap((kind) => STRIKE_POSES[kind]),
+      ...POSES_SIT,
+    ];
   }
   return [
     ...base,
@@ -1104,6 +1137,7 @@ export function buildHeroFrames(style: HeroCombatStyle = 'unarmed'): StickPose[]
     ...applyWeaponProp(POSES_ATTACK_2_SMOOTH, style),
     ...applyWeaponProp(POSES_ATTACK_3_SMOOTH, style),
     ...POSES_HIT,
+    ...POSES_SIT,
   ];
 }
 

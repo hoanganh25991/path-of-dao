@@ -1,7 +1,7 @@
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { I18nManager } from '@/core/i18n/I18nManager';
-import { listUnlockedSkillIds } from '@/progression/SkillLoadout';
+import { listAssignableSkillPool } from '@/progression/SkillLoadout';
 import { createLoadoutPickerElement } from '@/ui/skills/SkillLoadoutPicker';
 import '@/ui/hud/combat-skill-picker.css';
 
@@ -54,7 +54,7 @@ export class CombatSkillPicker {
     CombatSkillPicker.root.hidden = false;
     requestAnimationFrame(() => CombatSkillPicker.root?.classList.add('combat-skill-picker--open'));
 
-    const pool = listUnlockedSkillIds(save);
+    const pool = listAssignableSkillPool(save);
     const picker = createLoadoutPickerElement(save.equippedSkills, pool, (loadout) => {
       gameStore.getState().patch({ equippedSkills: loadout });
       EventBus.emit('loadout:changed', { equippedSkills: loadout });

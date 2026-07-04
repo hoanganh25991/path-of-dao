@@ -10,10 +10,15 @@ import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/Skill
 import { canUseSwordIntent, isArmedAttackStyle } from '@/progression/WeaponProgression';
 import { isKickStrike } from '@/combat/art/stickyManStrikes';
 import { canCastEquippedSkill } from '@/progression/SkillLoadout';
+import { isMeditateSkillId } from '@/progression/BuiltinSkills';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
 import { SkillExecutor } from '@/combat/skills/SkillExecutor';
 import { buildMeleeArcShape } from '@/combat/combat/geometry';
+import {
+  computeBasicAttackAoeScale,
+  scaledMeleeHalfArc,
+} from '@/combat/combat/AoeScaling';
 
 export interface SkillCooldownSnapshot {
   remainingMs: number;
@@ -67,7 +72,12 @@ export class CombatComponent {
     const save = gameStore.getState().save;
     if (!save || !canCastEquippedSkill(save, slot)) return false;
 
-    const skillId = resolveEffectiveSkillId(save.equippedSkills[slot], save.insights);
+    const equippedId = save.equippedSkills[slot];
+    if (isMeditateSkillId(equippedId)) return false;
+
+    this.player.meditate.cancel();
+
+    const skillId = resolveEffectiveSkillId(equippedId, save.insights);
     const skill = getSkillDefinition(skillId);
 
     if (skill.intent === 'sword' && !canUseSwordIntent(save)) return false;
@@ -86,6 +96,19 @@ export class CombatComponent {
     }
 
     return true;
+  }
+
+  /** Press-edge handler — meditate toggles; other skills fall through to held cast. */
+  trySkillPressed(slot: SkillSlot): boolean {
+    const save = gameStore.getState().save;
+    if (!save || !canCastEquippedSkill(save, slot)) return false;
+
+    const equippedId = save.equippedSkills[slot];
+    if (isMeditateSkillId(equippedId)) {
+      return this.player.meditate.tryToggleSlot(slot);
+    }
+
+    return this.trySkill(slot);
   }
 
   getCooldownSnapshot(): Record<SkillSlot, SkillCooldownSnapshot> {
@@ -111,8 +134,12 @@ export class CombatComponent {
 
   private spawnAttackHitbox(step: number): void {
     const { facing } = this.player;
-    const reach = this.reachForStep(step);
-    const halfArc = isArmedAttackStyle(this.player.attackStyle) ? SLASH_HALF_ARC : PALM_HALF_ARC;
+    const realmOrder = this.player.attackerRealmOrder;
+    const level = this.player.stats.resolved.level;
+    const aoeScale = computeBasicAttackAoeScale(realmOrder, level);
+    const reach = Math.round(this.reachForStep(step) * aoeScale);
+    const baseHalfArc = isArmedAttackStyle(this.player.attackStyle) ? SLASH_HALF_ARC : PALM_HALF_ARC;
+    const halfArc = scaledMeleeHalfArc(baseHalfArc, aoeScale);
 
     this.hitboxes.spawn({
       ownerId: this.player.id,

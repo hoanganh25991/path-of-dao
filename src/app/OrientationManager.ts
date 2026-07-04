@@ -5,6 +5,7 @@ import {
   getLayoutDimensions,
   isPortraitViewport,
 } from '@/app/orientation/layoutCoords';
+import { syncGameCanvasDisplay } from '@/app/orientation/syncGameCanvasDisplay';
 
 const ROOT_CLASS = 'portrait-rotate';
 const LAYOUT_CLASS = 'landscape-layout';
@@ -111,7 +112,19 @@ export class OrientationManager {
     root.style.setProperty('--layout-w', `${width}px`);
     root.style.setProperty('--layout-h', `${height}px`);
 
+    OrientationManager.syncCanvasDisplays();
+
     EventBus.emit('layout:changed', { width, height, portraitRotate: OrientationManager.portraitRotate });
+  }
+
+  /** Keep shared canvases filling #game-shell after Phaser or resize drift. */
+  private static syncCanvasDisplays(): void {
+    for (const id of ['canvas-2d', 'canvas-3d'] as const) {
+      const canvas = document.getElementById(id);
+      if (canvas instanceof HTMLCanvasElement) {
+        syncGameCanvasDisplay(canvas);
+      }
+    }
   }
 
   private static async lockLandscape(): Promise<void> {

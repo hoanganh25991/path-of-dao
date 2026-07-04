@@ -69,7 +69,7 @@ export class AudioDirector {
         AudioManager.duckMusic(0.5, 550);
       }),
       EventBus.on('combat:hit-landed', (payload) => {
-        if (payload.attackerTeam === 'player' && payload.victimTeam === 'enemy') {
+        if (payload.attackerTeam === 'player' && payload.victimTeam === 'cultivator') {
           if (payload.isCrit) {
             AudioManager.playSfx('combat.hit.crit');
             AudioManager.duckMusic(0.62, 180);

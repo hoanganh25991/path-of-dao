@@ -20,6 +20,8 @@ export type GameEvents = {
   'insight:ready-to-awaken': { intentId: string };
   'insight:awakened': { intentId: string; skillId: string };
   'encounter:completed': { encounterId: string; poiKey?: string };
+  'map:cultivator-defeated': { cultivatorId: string; isBoss: boolean; wasRematch: boolean };
+  /** @deprecated Back-compat alias — prefer map:cultivator-defeated */
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
   'boss:defeated': { bossId: string };
   'combat:hit-landed': {
@@ -28,11 +30,13 @@ export type GameEvents = {
     skillMultiplier: number;
     x: number;
     y: number;
-    attackerTeam: 'player' | 'enemy';
-    victimTeam: 'player' | 'enemy';
+    attackerTeam: 'player' | 'cultivator';
+    victimTeam: 'player' | 'cultivator';
   };
   'player:attack-started': { step: 1 | 2 | 3 };
   'player:dodge-started': undefined;
+  'player:meditate-started': undefined;
+  'player:meditate-ended': undefined;
   'skill:cast': { intent: string };
   'progression:xp-gained': { xpTotal: number; xpGained: number; level: number };
   'progression:level-up': { level: number; realmId: string; tier: PlayerSaveV1['realm']['tier'] };

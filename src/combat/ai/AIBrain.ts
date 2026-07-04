@@ -1,5 +1,5 @@
 import type { AIDecider } from '@/combat/ai/AITypes';
-import type { EnemyArchetype } from '@/combat/enemies/EnemyConfig';
+import type { CultivatorArchetype } from '@/combat/cultivators/CultivatorConfig';
 import { MeleeChaserAI } from '@/combat/ai/MeleeChaserAI';
 import { RangedKiterAI } from '@/combat/ai/RangedKiterAI';
 import { PatrolAI } from '@/combat/ai/PatrolAI';
@@ -9,7 +9,7 @@ import { StationaryAI } from '@/combat/ai/StationaryAI';
  * Archetype dispatcher. Deciders may hold per-enemy state (PatrolAI), so a
  * fresh instance is created per enemy spawn.
  */
-export function createDecider(archetype: EnemyArchetype): AIDecider {
+export function createDecider(archetype: CultivatorArchetype): AIDecider {
   switch (archetype) {
     case 'melee_chaser':
       return new MeleeChaserAI();

@@ -60,7 +60,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | 05 | Save system foundation | 1 | `[x]` | [track](./05-save-system-foundation.md) | [plan](../plans/05-save-system-foundation.md) |
 | 06 | Phaser map scene base & camera | 2 | `[x]` | [track](./06-phaser-map-scene-base.md) | [plan](../plans/06-phaser-map-scene-base.md) |
 | 07 | Player controller & basic combat | 2 | `[x]`* | [track](./07-player-controller-combat.md) | [plan](../plans/07-player-controller-combat.md) |
-| 08 | Enemy system & AI archetypes | 2 | `[x]` | [track](./08-enemy-system-ai.md) | [plan](../plans/08-enemy-system-ai.md) |
+| 08 | Cultivator system & AI archetypes | 2 | `[x]` | [track](./08-enemy-system-ai.md) | [plan](../plans/08-enemy-system-ai.md) |
 | 09 | Hitboxes, damage, i-frames | 2 | `[x]` | [track](./09-hitbox-damage-combat-math.md) | [plan](../plans/09-hitbox-damage-combat-math.md) |
 | 10 | Three.js home scene & hero viewer | 3 | `[x]`* | [track](./10-threejs-home-scene.md) | [plan](../plans/10-threejs-home-scene.md) |
 | 11 | Equipment slots & 3D preview | 3 | `[x]`* | [track](./11-equipment-3d-preview.md) | [plan](../plans/11-equipment-3d-preview.md) |
@@ -245,7 +245,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | Web Audio buses; **26 procedural SFX**, **6 BGM** with mood profiles | Replace with real OGG assets |
 | Preset synthesis (impacts, skills, stings, loot); crit + duck mix | File playback in AudioManager |
 | First-visit unlock overlay; silent resume on return | Boss telegraph SFX (no event yet) |
-| BGM crossfade; per-map BGM (Fallen Village melancholy) | Low-end juice disable profile (26) |
+| BGM crossfade; per-map BGM (Fallen Village melancholy); **home/story calm sine pad** (startup buzz fix) | Low-end juice disable profile (26) |
 | Hit-stop, camera shake, crit flash | Boss phase screen darken (visual) |
 | `ui.panel_open` + `loot.pickup` wired; UI bus tier | Dedicated UI volume slider |
 | Home aura pulse Core Formation+ | `player.land` (no jump mechanic) |

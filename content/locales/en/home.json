@@ -58,7 +58,7 @@
   "home.awakening_ready": "{skill} is ready to awaken — open Skills to begin the ceremony.",
   "home.chapter_unlocked": "The road opens: {chapter}",
   "home.fortune_received": "Fortune found: {name}",
-  "home.boss_defeated": "Boss fallen: {boss}",
+  "home.boss_defeated": "Boss lost the exchange: {boss}",
   "home.echoes_travel": "Echoes of the Ancients",
   "home.echoes_travel_hint": "Walk as legendary cultivators who already conquered the path — preview realms, skills, and fortune.",
   "home.coming_soon": "World map arrives in a future update.",

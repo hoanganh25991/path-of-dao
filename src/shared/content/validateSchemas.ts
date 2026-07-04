@@ -2,7 +2,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import type { ZodType } from 'zod';
 import { mapConfigSchema } from '@/combat/map/MapConfig';
-import { enemyConfigSchema, encounterConfigSchema } from '@/combat/enemies/EnemyConfig';
+import { cultivatorConfigSchema, encounterConfigSchema } from '@/combat/cultivators/CultivatorConfig';
 import { skillDefinitionSchema } from '@/progression/SkillDefinition';
 import { itemDefinitionSchema } from '@/progression/ItemDefinition';
 import { chaptersIndexSchema } from '@/shared/schemas/chapter';
@@ -128,7 +128,7 @@ export function validateSchemas(index: ContentIndex): ValidationReport {
   const report = createReport();
 
   validateMap(report, 'maps', index.maps, mapConfigSchema);
-  validateMap(report, 'enemies', index.enemies, enemyConfigSchema);
+  validateMap(report, 'enemies', index.enemies, cultivatorConfigSchema);
   validateMap(report, 'skills', index.skills, skillDefinitionSchema);
   validateMap(report, 'items', index.items, itemDefinitionSchema);
   validateMap(report, 'story', index.stories, storySceneSchema);

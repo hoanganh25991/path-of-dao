@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { EnemyPool } from '@/combat/systems/EnemyPool';
-import type { Enemy } from '@/combat/entities/Enemy';
+import { CultivatorPool } from '@/combat/systems/CultivatorPool';
+import type { Cultivator } from '@/combat/entities/Cultivator';
 
-/** Minimal stand-in for the Phaser-backed Enemy. */
-function makeFakeEnemy(enemyId: string) {
+/** Minimal stand-in for the Phaser-backed Cultivator. */
+function makeFakeCultivator(cultivatorId: string) {
   return {
-    config: { id: enemyId },
+    config: { id: cultivatorId },
+    isCombatReady: true,
     spawned: [] as Array<{ x: number; y: number }>,
     deactivated: 0,
     destroyed: 0,
@@ -21,19 +22,19 @@ function makeFakeEnemy(enemyId: string) {
   };
 }
 
-type FakeEnemy = ReturnType<typeof makeFakeEnemy>;
+type FakeCultivator = ReturnType<typeof makeFakeCultivator>;
 
 function makePool() {
-  const created: FakeEnemy[] = [];
-  const pool = new EnemyPool((id) => {
-    const fake = makeFakeEnemy(id);
+  const created: FakeCultivator[] = [];
+  const pool = new CultivatorPool((id) => {
+    const fake = makeFakeCultivator(id);
     created.push(fake);
-    return fake as unknown as Enemy;
+    return fake as unknown as Cultivator;
   });
   return { pool, created };
 }
 
-describe('EnemyPool', () => {
+describe('CultivatorPool', () => {
   it('reuses the same instance after release', () => {
     const { pool, created } = makePool();
 
@@ -43,8 +44,8 @@ describe('EnemyPool', () => {
 
     expect(second).toBe(first);
     expect(created).toHaveLength(1);
-    expect((first as unknown as FakeEnemy).deactivated).toBe(1);
-    expect((first as unknown as FakeEnemy).spawned).toEqual([
+    expect((first as unknown as FakeCultivator).deactivated).toBe(1);
+    expect((first as unknown as FakeCultivator).spawned).toEqual([
       { x: 10, y: 20 },
       { x: 30, y: 40 },
     ]);
@@ -54,15 +55,26 @@ describe('EnemyPool', () => {
     const { pool, created } = makePool();
     pool.prewarm(['enemy.slime', 'enemy.archer']);
 
-    expect(created).toHaveLength(20); // 10 per type
+    expect(created).toHaveLength(40); // 20 per type
     expect(pool.aliveCount).toBe(0);
 
     pool.acquire('enemy.slime', 0, 0);
-    expect(created).toHaveLength(20); // reused, not newly created
+    expect(created).toHaveLength(40);
     expect(pool.aliveCount).toBe(1);
   });
 
-  it('tracks alive enemies and releases them all', () => {
+  it('tracks combat-ready cultivators separately from defeated', () => {
+    const { pool, created } = makePool();
+    const c = pool.acquire('enemy.slime', 0, 0) as unknown as FakeCultivator;
+    expect(pool.combatReadyCount).toBe(1);
+
+    c.isCombatReady = false;
+    expect(pool.combatReadyCount).toBe(0);
+    expect(pool.aliveCount).toBe(1);
+    expect(created).toHaveLength(1);
+  });
+
+  it('tracks alive cultivators and releases them all', () => {
     const { pool } = makePool();
     pool.acquire('enemy.slime', 0, 0);
     pool.acquire('enemy.slime', 1, 1);
@@ -74,10 +86,10 @@ describe('EnemyPool', () => {
 
   it('destroys pooled game objects on teardown', () => {
     const { pool, created } = makePool();
-    const enemy = pool.acquire('enemy.slime', 0, 0);
-    pool.release(enemy);
+    const cultivator = pool.acquire('enemy.slime', 0, 0);
+    pool.release(cultivator);
     pool.destroy();
 
-    expect(created.every((e) => e.destroyed === 1)).toBe(true);
+    expect(created.every((c) => c.destroyed === 1)).toBe(true);
   });
 });

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { EventBus } from '@/core/EventBus';
 import { SaveManager } from '@/core/save/SaveManager';
-import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getEnemyConfig } from '@/combat/cultivators/CultivatorLoader';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvents';
 import { xpForLevel } from '@/progression/LevelCurve';

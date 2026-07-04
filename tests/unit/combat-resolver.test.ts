@@ -44,7 +44,7 @@ function mockTarget(overrides: Partial<HurtboxEntity> & { stats?: BaseStats }): 
 
   return {
     id: overrides.id ?? 'target_1',
-    team: overrides.team ?? 'enemy',
+    team: overrides.team ?? 'cultivator',
     sprite: { active: true, setTint: vi.fn(), setTintMode: vi.fn(), clearTint: vi.fn(), tintTopLeft: 0xffffff } as unknown as HurtboxEntity['sprite'],
     x: overrides.x ?? 0,
     y: overrides.y ?? 0,

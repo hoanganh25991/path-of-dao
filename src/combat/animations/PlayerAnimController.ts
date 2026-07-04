@@ -39,6 +39,9 @@ export class PlayerAnimController {
 
     if (state === 'hitstun') {
       this.playOnce(this.player.resolveAnim(ANIM.heroHit));
+    } else if (state === 'meditate') {
+      this.playLoop(this.player.resolveAnim(ANIM.heroSit));
+      sprite.anims.timeScale = 1;
     } else if (state === 'attack') {
       const step = sm.attackStep;
       const strikeAnim = isArmedAttackStyle(this.player.attackStyle)

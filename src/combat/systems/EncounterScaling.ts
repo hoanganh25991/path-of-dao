@@ -1,4 +1,4 @@
-import type { EncounterConfig } from '@/combat/enemies/EnemyConfig';
+import type { EncounterConfig } from '@/combat/cultivators/CultivatorConfig';
 
 /** Encounter density tier — drives spawn counts and combat camera zoom. */
 export type EncounterTier = 'solo' | 'squad' | 'horde' | 'mass';
@@ -85,15 +85,15 @@ export function scaleEncounterForPower(
 ): EncounterConfig {
   if (encounter.waves.length === 0) return encounter;
 
-  const baseWave = encounter.waves[0];
+  const baseWave = encounter.waves[0]!;
   const baseTotal = countWaveEnemies(baseWave);
   if (baseTotal <= 0 || scale.targetCount <= baseTotal) {
     return encounter;
   }
 
   const ratio = scale.targetCount / baseTotal;
-  const scaledFirst = {
-    ...baseWave,
+  const scaledFirst: EncounterConfig['waves'][number] = {
+    trigger: baseWave.trigger,
     enemies: baseWave.enemies.map((group) => ({
       ...group,
       count: Math.max(1, Math.round(group.count * ratio)),
@@ -103,7 +103,7 @@ export function scaleEncounterForPower(
   // Snap total to target (rounding drift).
   let scaledTotal = countWaveEnemies(scaledFirst);
   if (scaledTotal < scale.targetCount && scaledFirst.enemies.length > 0) {
-    const head = scaledFirst.enemies[0];
+    const head = scaledFirst.enemies[0]!;
     scaledFirst.enemies = [
       { ...head, count: head.count + (scale.targetCount - scaledTotal) },
       ...scaledFirst.enemies.slice(1),

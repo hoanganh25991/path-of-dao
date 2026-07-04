@@ -2,7 +2,8 @@ import { EventBus } from '@/core/EventBus';
 import type { Player } from '@/combat/entities/Player';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import type { SkillDefinition } from '@/progression/SkillDefinition';
-import { burstAncientSkill, getAncientSkillAmp } from '@/combat/vfx/AncientSkillVfx';
+import { getAncientSkillAmp, burstAncientSkill } from '@/combat/vfx/AncientSkillVfx';
+import { computeAoeScale } from '@/combat/combat/AoeScaling';
 import {
   executeSkillEffects,
   tickSkillBolts,
@@ -44,6 +45,7 @@ export class SkillExecutor {
   /** Run resolved effects after mana/cooldown checks (caller spends mana + starts CD). */
   cast(skill: SkillDefinition): void {
     const amp = getAncientSkillAmp(this.player.stats.isGodMode);
+    const aoeScale = computeAoeScale(this.player.attackerRealmOrder, this.player.stats.resolved.level);
     if (this.player.stats.isGodMode) {
       burstAncientSkill(this.player.scene, this.player.x, this.player.y, skill.intent, skill.kind);
     }
@@ -55,6 +57,7 @@ export class SkillExecutor {
       hitboxes: this.hitboxes,
       skill,
       amp,
+      aoeScale,
       bolts: this.bolts,
     };
     executeSkillEffects(ctx);

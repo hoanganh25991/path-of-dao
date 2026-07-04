@@ -1,5 +1,5 @@
 import { getMapConfig, listMapIds } from '@/combat/map/MapLoader';
-import { getEnemyConfig, listEnemyIds } from '@/combat/enemies/EnemyLoader';
+import { getCultivatorConfig, listCultivatorIds } from '@/combat/cultivators/CultivatorLoader';
 import { getSkillDefinition, listSkillIds } from '@/progression/SkillLoader';
 import { getItemDefinition, listItemIds } from '@/progression/ItemLoader';
 import { getStoryScene, listStorySceneIds } from '@/progression/StoryLoader';
@@ -16,12 +16,22 @@ export class ContentLoader {
     return getMapConfig(id);
   }
 
-  static listEnemies(): string[] {
-    return listEnemyIds();
+  static listCultivators(): string[] {
+    return listCultivatorIds();
   }
 
+  static getCultivator(id: string) {
+    return getCultivatorConfig(id);
+  }
+
+  /** @deprecated Use listCultivators */
+  static listEnemies(): string[] {
+    return listCultivatorIds();
+  }
+
+  /** @deprecated Use getCultivator */
   static getEnemy(id: string) {
-    return getEnemyConfig(id);
+    return getCultivatorConfig(id);
   }
 
   static listSkills(): string[] {

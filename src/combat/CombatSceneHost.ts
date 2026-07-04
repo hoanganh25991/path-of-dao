@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import type { SceneHost } from '@/app/SceneHost';
 import { OrientationManager } from '@/app/OrientationManager';
+import { syncGameCanvasDisplay } from '@/app/orientation/syncGameCanvasDisplay';
 import { EventBus } from '@/core/EventBus';
 import { BootScene } from '@/combat/scenes/BootScene';
 import { MapScene } from '@/combat/scenes/MapScene';
@@ -11,15 +12,23 @@ export class CombatSceneHost implements SceneHost {
   readonly id = 'combat' as const;
 
   private game: Phaser.Game | null = null;
+  private canvas: HTMLCanvasElement | null = null;
   private unsubscribeLayout: (() => void) | null = null;
 
   constructor(private readonly mapId: string) {}
+
+  private resizeCanvas(width: number, height: number): void {
+    this.game?.scale.resize(width, height);
+    if (this.canvas) syncGameCanvasDisplay(this.canvas);
+  }
 
   async mount(container: HTMLElement): Promise<void> {
     const canvas = container.querySelector<HTMLCanvasElement>('#canvas-2d');
     if (!canvas) {
       throw new Error('CombatSceneHost: #canvas-2d not found');
     }
+    this.canvas = canvas;
+    syncGameCanvasDisplay(canvas);
 
     const mapId = this.mapId;
     const { width, height } = OrientationManager.getLayoutSize();
@@ -68,10 +77,10 @@ export class CombatSceneHost implements SceneHost {
 
     const game = this.game;
     if (!game) throw new Error('CombatSceneHost: Phaser game failed to boot');
-    game.scale.resize(width, height);
+    this.resizeCanvas(width, height);
 
     this.unsubscribeLayout = EventBus.on('layout:changed', ({ width: w, height: h }) => {
-      this.game?.scale.resize(w, h);
+      this.resizeCanvas(w, h);
     });
 
     if (import.meta.env.DEV) {
@@ -91,6 +100,7 @@ export class CombatSceneHost implements SceneHost {
       this.game.destroy(false);
       this.game = null;
     }
+    this.canvas = null;
   }
 
   pause(): void {

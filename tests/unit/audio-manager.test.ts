@@ -53,6 +53,15 @@ describe('AudioManager', () => {
     expect(() => AudioManager.playSfx('enemy.hit')).not.toThrow();
     vi.unstubAllGlobals();
   });
+
+  it('plays calm home bgm after unlock without error', async () => {
+    vi.stubGlobal('AudioContext', createMockAudioContext());
+    AudioManager.init(SaveManager.createNew());
+    await AudioManager.unlock();
+    expect(() => AudioManager.playBgm('bgm.home')).not.toThrow();
+    expect(() => AudioManager.playBgm('bgm.story')).not.toThrow();
+    vi.unstubAllGlobals();
+  });
 });
 
 function createMockAudioContext(): typeof AudioContext {

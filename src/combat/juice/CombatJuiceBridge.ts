@@ -17,12 +17,16 @@ export class CombatJuiceBridge {
     this.unsubs.push(
       EventBus.on('combat:hit-landed', (payload) => {
         if (!this.active) return;
-        if (payload.attackerTeam !== 'player' || payload.victimTeam !== 'enemy') return;
+        if (payload.attackerTeam !== 'player' || payload.victimTeam !== 'cultivator') return;
         this.juice.applyHitJuice({
           isCrit: payload.isCrit,
           finalDamage: payload.finalDamage,
           skillMultiplier: payload.skillMultiplier,
         });
+      }),
+      EventBus.on('map:cultivator-defeated', ({ isBoss }) => {
+        if (!this.active || !isBoss) return;
+        this.juice.applyBossPhaseJuice();
       }),
       EventBus.on('map:enemy-killed', ({ isBoss }) => {
         if (!this.active || !isBoss) return;

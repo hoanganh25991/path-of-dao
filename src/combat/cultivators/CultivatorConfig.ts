@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ENEMY_ARCHETYPES = [
+export const CULTIVATOR_ARCHETYPES = [
   'melee_chaser',
   'ranged_kiter',
   'stationary',
@@ -8,7 +8,12 @@ export const ENEMY_ARCHETYPES = [
   'boss',
 ] as const;
 
-export type EnemyArchetype = (typeof ENEMY_ARCHETYPES)[number];
+export type CultivatorArchetype = (typeof CULTIVATOR_ARCHETYPES)[number];
+
+/** @deprecated Use CULTIVATOR_ARCHETYPES — content JSON still validates against this alias. */
+export const ENEMY_ARCHETYPES = CULTIVATOR_ARCHETYPES;
+/** @deprecated Use CultivatorArchetype */
+export type EnemyArchetype = CultivatorArchetype;
 
 const bossPhaseSchema = z.object({
   hpThreshold: z.number().min(0).max(1),
@@ -20,11 +25,11 @@ const bossPhaseSchema = z.object({
 
 export type BossPhaseConfig = z.infer<typeof bossPhaseSchema>;
 
-/** Validates content/enemies/{enemyId}.json at load (sub-plan 08 §4). */
-export const enemyConfigSchema = z.object({
+/** Validates content/enemies/{id}.json at load (sub-plan 08 §4). */
+export const cultivatorConfigSchema = z.object({
   id: z.string().min(1),
   displayNameKey: z.string().min(1),
-  archetype: z.enum(ENEMY_ARCHETYPES),
+  archetype: z.enum(CULTIVATOR_ARCHETYPES),
   category: z.enum(['grunt', 'elite', 'boss']).optional(),
   stats: z.object({
     hpMax: z.number().positive(),
@@ -42,7 +47,7 @@ export const enemyConfigSchema = z.object({
   goldReward: z.tuple([z.number().int().min(0), z.number().int().min(0)]),
   lootTable: z.string().nullable(),
   spriteKey: z.string().min(1),
-  /** When set, killing this enemy appends the id to progress.clearedBosses. */
+  /** When set, defeating this cultivator appends the id to progress.clearedBosses. */
   bossClearId: z.string().nullable().optional(),
   phases: z.array(bossPhaseSchema).optional(),
   bestiaryKey: z.string().optional(),
@@ -50,7 +55,12 @@ export const enemyConfigSchema = z.object({
   resistance: z.string().optional(),
 });
 
-export type EnemyConfig = z.infer<typeof enemyConfigSchema>;
+export type CultivatorConfig = z.infer<typeof cultivatorConfigSchema>;
+
+/** @deprecated Use cultivatorConfigSchema */
+export const enemyConfigSchema = cultivatorConfigSchema;
+/** @deprecated Use CultivatorConfig */
+export type EnemyConfig = CultivatorConfig;
 
 export const encounterConfigSchema = z.object({
   id: z.string().min(1),

@@ -17,5 +17,7 @@
   "combat.death.title": "You Have Fallen",
   "combat.death.flavor": "The dao path is long. Retreat, cultivate, and return when you are ready.",
   "combat.death.retry": "Try Again",
-  "combat.death.return_home": "Return Home"
+  "combat.death.return_home": "Return Home",
+  "combat.cultivator.label": "Cultivator",
+  "combat.cultivator.defeated": "Cultivator lost the exchange"
 }

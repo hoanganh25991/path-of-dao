@@ -28,6 +28,10 @@ describe('layoutCoords', () => {
     expect(clientToLayout(120, 80, 844, 390, false)).toEqual({ x: 120, y: 80 });
   });
 
+  it('uses full viewport on wide landscape desktop', () => {
+    expect(getLayoutDimensions(1920, 1080, false)).toEqual({ width: 1920, height: 1080 });
+  });
+
   it('maps pointer coords through HUD bounds in native landscape', () => {
     const hudRect = { left: 0, top: 0, width: 844, height: 390 } as DOMRect;
     expect(

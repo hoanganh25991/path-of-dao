@@ -51,7 +51,8 @@ export class EncounterTrigger {
 
     this.unsubscribers.push(
       EventBus.on('map:wave-cleared', () => this.onWaveCleared()),
-      EventBus.on('map:enemy-killed', (payload) => this.onEnemyKilled(payload)),
+      EventBus.on('map:cultivator-defeated', (payload) => this.onCultivatorDefeated(payload)),
+      EventBus.on('map:enemy-killed', (payload) => this.onCultivatorDefeated(payload)),
     );
 
     scene.time.delayedCall(800, () => this.tryMapEnterRoll());
@@ -108,8 +109,9 @@ export class EncounterTrigger {
     if (encounter) void this.presentEncounter(encounter);
   }
 
-  private onEnemyKilled(payload: {
-    enemyId: string;
+  private onCultivatorDefeated(payload: {
+    enemyId?: string;
+    cultivatorId?: string;
     isBoss: boolean;
     wasRematch: boolean;
   }): void {

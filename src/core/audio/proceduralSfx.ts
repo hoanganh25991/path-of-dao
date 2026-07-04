@@ -969,6 +969,73 @@ function playVictorySting(
   };
 }
 
+/** Soft sine drones for home/story — avoids arp/air layers that read as buzzing on mobile. */
+function startCalmPadBgm(
+  ctx: AudioContext,
+  destination: AudioNode,
+  entry: ProceduralBgm,
+  fadeInSec: number,
+): BgmVoice {
+  const peak = entry.gain ?? 0.06;
+  const freqs =
+    entry.frequencies.length >= 2
+      ? entry.frequencies
+      : pentatonicFromRoot(entry.frequencies[0] ?? 110).slice(0, 3);
+
+  const master = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 1400;
+  filter.Q.value = 0.35;
+  const t0 = ctx.currentTime;
+  master.gain.setValueAtTime(0.0001, t0);
+  master.gain.linearRampToValueAtTime(peak, t0 + fadeInSec);
+  master.connect(filter);
+  filter.connect(destination);
+
+  const oscillators: OscillatorNode[] = [];
+  const voiceGains: GainNode[] = [];
+  freqs.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const voiceGain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    osc.detune.value = [-4, 0, 4, -2, 2][i % 5] ?? 0;
+    const weight = i === 0 ? 1 : 0.45 / Math.max(1, i);
+    voiceGain.gain.value = weight;
+    osc.connect(voiceGain);
+    voiceGain.connect(master);
+    osc.start();
+    oscillators.push(osc);
+    voiceGains.push(voiceGain);
+  });
+
+  const stopAll = (): void => {
+    for (const osc of oscillators) {
+      try {
+        osc.stop();
+      } catch {
+        /* noop */
+      }
+      osc.disconnect();
+    }
+    for (const gain of voiceGains) gain.disconnect();
+    filter.disconnect();
+    master.disconnect();
+  };
+
+  return {
+    stop: stopAll,
+    fadeOut: (sec: number) => {
+      const fadeT = ctx.currentTime;
+      master.gain.cancelScheduledValues(fadeT);
+      master.gain.setValueAtTime(master.gain.value, fadeT);
+      master.gain.linearRampToValueAtTime(0.0001, fadeT + sec);
+      setTimeout(() => stopAll(), sec * 1000 + 80);
+    },
+  };
+}
+
 export function startProceduralBgm(
   ctx: AudioContext,
   destination: AudioNode,
@@ -980,6 +1047,10 @@ export function startProceduralBgm(
   }
 
   const mood = resolveBgmMood(entry);
+  if (mood === 'home' || mood === 'story') {
+    return startCalmPadBgm(ctx, destination, entry, fadeInSec);
+  }
+
   const root = entry.frequencies[0] ?? 110;
   const padFreqs = entry.frequencies.length >= 2 ? entry.frequencies : [root, root * 3 / 2, root * 2];
   const arpNotes = pentatonicFromRoot(root);

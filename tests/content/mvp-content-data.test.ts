@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getEnemyConfig, listEnemyIds } from '@/combat/enemies/EnemyLoader';
+import { getEnemyConfig, listEnemyIds } from '@/combat/cultivators/CultivatorLoader';
 import { listSkillIds } from '@/progression/SkillLoader';
 import { getLootTable, listLootTableIds } from '@/progression/LootLoader';
 import {

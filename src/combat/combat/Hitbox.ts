@@ -17,7 +17,7 @@ export interface DamagePayload {
 
 export interface HitboxConfig {
   ownerId: string;
-  team: 'player' | 'enemy';
+  team: 'player' | 'cultivator';
   shape: HitboxShape;
   damage: DamagePayload;
   lifetimeMs: number;
@@ -37,7 +37,7 @@ let nextHitboxId = 1;
 export class Hitbox {
   readonly id: string;
   readonly ownerId: string;
-  readonly team: 'player' | 'enemy';
+  readonly team: 'player' | 'cultivator';
   shape: HitboxShape;
   readonly damage: DamagePayload;
   readonly knockback?: number;

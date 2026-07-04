@@ -6,15 +6,16 @@ import type { DamageResult } from '@/progression/types';
 import { EntityBase } from '@/combat/entities/EntityBase';
 import { createDecider } from '@/combat/ai/AIBrain';
 import type { AIDecider, AIPlayerState } from '@/combat/ai/AITypes';
-import type { EnemyConfig } from '@/combat/enemies/EnemyConfig';
+import type { CultivatorConfig } from '@/combat/cultivators/CultivatorConfig';
 import type { HurtboxEntity, CombatTeam } from '@/combat/combat/Hurtbox';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 import { startKnockback, tickKnockback, type KnockbackState } from '@/combat/combat/Knockback';
 import { clearHitFlash } from '@/combat/combat/HitFlash';
+import { computeHealthRegenPerSec } from '@/combat/combat/HealthRegen';
 import {
   applyStickyManSprite,
   configureStickyManBody,
-  enemyAnimKeys,
+  cultivatorAnimKeys,
 } from '@/combat/art/stickyManAssets';
 import { BossPhaseTracker } from '@/combat/ai/BossPhaseTracker';
 import { PatrolAI } from '@/combat/ai/PatrolAI';
@@ -30,18 +31,18 @@ const HP_BAR_HEIGHT = 3;
 
 type AttackPhase = 'none' | 'telegraph' | 'strike';
 
-export interface EnemyCallbacks {
+export interface CultivatorCallbacks {
   /** Attack lands (strike frame). Owner resolves damage/projectiles. */
-  onStrike(enemy: Enemy): void;
-  /** HP reached 0 — enemy lost the exchange (non-lethal). */
-  onDefeated(enemy: Enemy): void;
+  onStrike(cultivator: Cultivator): void;
+  /** HP reached 0 — cultivator lost the exchange (non-lethal). */
+  onDefeated(cultivator: Cultivator): void;
   /** Defeat pose finished — owner may release, queue refill, or schedule recovery. */
-  onDefeatHoldComplete(enemy: Enemy): void;
+  onDefeatHoldComplete(cultivator: Cultivator): void;
   /** Boss phase crossed — queue add spawns. */
-  onBossPhaseSpawns?(enemy: Enemy, adds: { id: string; count: number }[]): void;
+  onBossPhaseSpawns?(cultivator: Cultivator, adds: { id: string; count: number }[]): void;
 }
 
-function toBaseStats(config: EnemyConfig): BaseStats {
+function toBaseStats(config: CultivatorConfig): BaseStats {
   return {
     level: 1,
     hpMax: config.stats.hpMax,
@@ -55,10 +56,10 @@ function toBaseStats(config: EnemyConfig): BaseStats {
   };
 }
 
-/** Poolable enemy entity: AI-driven movement + telegraphed attacks. */
-export class Enemy extends EntityBase implements HurtboxEntity {
-  readonly team: CombatTeam = 'enemy';
-  readonly config: EnemyConfig;
+/** Poolable cultivator entity: AI-driven movement + telegraphed attacks. */
+export class Cultivator extends EntityBase implements HurtboxEntity {
+  readonly team: CombatTeam = 'cultivator';
+  readonly config: CultivatorConfig;
 
   alive = false;
   /** Lost the fight — HP at zero, recovering or awaiting pool release. */
@@ -76,19 +77,19 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   private recovering = false;
   private defeatHoldDispatched = false;
   private knockback: KnockbackState | null = null;
-  private animKeys!: ReturnType<typeof enemyAnimKeys>;
+  private animKeys!: ReturnType<typeof cultivatorAnimKeys>;
   private readonly hpBarBg: Phaser.GameObjects.Rectangle;
   private readonly hpBarFill: Phaser.GameObjects.Rectangle;
   private bossPhases: BossPhaseTracker | null = null;
 
   constructor(
     scene: Phaser.Scene,
-    config: EnemyConfig,
-    private readonly callbacks: EnemyCallbacks,
+    config: CultivatorConfig,
+    private readonly callbacks: CultivatorCallbacks,
   ) {
     super(scene, -1000, -1000, config.spriteKey, new StatSheet(toBaseStats(config)));
     this.config = config;
-    this.animKeys = enemyAnimKeys(config.spriteKey);
+    this.animKeys = cultivatorAnimKeys(config.spriteKey);
     this.brain = createDecider(config.archetype);
     this.bossPhases = config.phases?.length ? new BossPhaseTracker(config.phases) : null;
     this.sprite.setDepth(9);
@@ -136,7 +137,6 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.recoveryMs = 0;
     this.recovering = false;
     this.defeatHoldDispatched = false;
-    this.defeatHoldDispatched = false;
     this.knockback = null;
     this.brain = createDecider(this.config.archetype);
     this.bossPhases = this.config.phases?.length ? new BossPhaseTracker(this.config.phases) : null;
@@ -161,7 +161,6 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.brain = new PatrolAI(offsets);
   }
 
-  /** Hide + disable (pool release). Does not destroy the GameObject. */
   /** Milliseconds until full HP after defeat (roaming spawns set per slot). */
   setRecoveryDuration(ms: number): void {
     this.recoveryDurationMs = Math.max(500, ms);
@@ -171,7 +170,6 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.alive = false;
     this.defeated = false;
     this.recovering = false;
-    this.defeatHoldDispatched = false;
     this.defeatHoldDispatched = false;
     this.knockback = null;
     clearHitFlash(this.sprite);
@@ -190,9 +188,20 @@ export class Enemy extends EntityBase implements HurtboxEntity {
       this.defeatMs += dtMs;
       if (this.recovering) {
         this.recoveryMs += dtMs;
+        const regen = computeHealthRegenPerSec({
+          realmOrder: 1,
+          level: this.stats.resolved.level,
+          state: 'meditate',
+        });
+        const healed = regen * (dtMs / 1000);
+        if (healed > 0) {
+          this.stats.heal(healed);
+          this.updateHpBar();
+        }
         const t = Math.min(1, this.recoveryMs / this.recoveryDurationMs);
         this.sprite.setAlpha(0.55 + t * 0.45);
-        if (this.recoveryMs >= this.recoveryDurationMs) {
+        const atFullHp = this.stats.runtime.hp >= this.stats.resolved.hpMax;
+        if (atFullHp || this.recoveryMs >= this.recoveryDurationMs) {
           this.recoverFromDefeat();
         }
       } else if (!this.defeatHoldDispatched && this.defeatMs >= DEFEAT_STAGGER_MS) {
@@ -282,6 +291,9 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.recovering = true;
     this.recoveryMs = 0;
     this.sprite.setAlpha(0.55);
+    if (this.animKeys.sit) {
+      this.sprite.play(this.animKeys.sit);
+    }
   }
 
   recoverFromDefeat(): void {
@@ -343,15 +355,18 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.recoveryMs = 0;
     this.recovering = false;
     this.defeatHoldDispatched = false;
-    this.defeatHoldDispatched = false;
     this.knockback = null;
     this.attackPhase = 'none';
     this.body.enable = false;
     this.body.stop();
+    this.sprite.setPosition(this.spawnX, this.spawnY);
     clearHitFlash(this.sprite);
     this.sprite.setTint(0x9a9a9a);
     this.sprite.setAlpha(0.75);
     this.updateHpBar();
+    if (this.animKeys.sit) {
+      this.sprite.play(this.animKeys.sit);
+    }
     this.callbacks.onDefeated(this);
   }
 
@@ -377,3 +392,8 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     }
   }
 }
+
+/** @deprecated Use Cultivator */
+export const Enemy = Cultivator;
+/** @deprecated Use CultivatorCallbacks */
+export type EnemyCallbacks = CultivatorCallbacks;

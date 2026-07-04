@@ -3,7 +3,7 @@ import type { BaseStats } from '@/progression/types';
 import type { DamageResult } from '@/progression/types';
 import type { Hitbox } from '@/combat/combat/Hitbox';
 
-export type CombatTeam = 'player' | 'enemy';
+export type CombatTeam = 'player' | 'cultivator';
 
 /** Entity that can receive hits from the opposing team. */
 export interface HurtboxEntity {

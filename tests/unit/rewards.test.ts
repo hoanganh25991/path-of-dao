@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SaveManager } from '@/core/save/SaveManager';
 import { xpForLevel } from '@/progression/LevelCurve';
-import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getEnemyConfig } from '@/combat/cultivators/CultivatorLoader';
 import { computeKillRewards } from '@/combat/systems/rewards';
 
 const slime = getEnemyConfig('enemy.slime');

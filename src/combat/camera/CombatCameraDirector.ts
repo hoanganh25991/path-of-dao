@@ -1,4 +1,4 @@
-import type Phaser from 'phaser';
+import Phaser from 'phaser';
 import { zoomForActiveEnemies } from '@/combat/systems/EncounterScaling';
 
 const ZOOM_LERP = 0.06;
@@ -6,7 +6,7 @@ const COMBAT_ZOOM_FLOOR = 0.52;
 const COMBAT_ZOOM_CEIL = 1.12;
 
 /**
- * Smooth combat zoom from live enemy count — close for duels, wide for horde AOE reads.
+ * Smooth combat zoom from live cultivator count — close for duels, wide for horde AOE reads.
  */
 export class CombatCameraDirector {
   private targetZoom = 0.88;
@@ -20,9 +20,9 @@ export class CombatCameraDirector {
     this.targetZoom = baseZoom;
   }
 
-  /** Call each frame with count of enemies that can still fight (not defeated). */
-  update(activeEnemyCount: number, dtMs: number): void {
-    const tierZoom = zoomForActiveEnemies(Math.max(1, activeEnemyCount));
+  /** Call each frame with count of cultivators that can still fight (not defeated). */
+  update(activeCultivatorCount: number, dtMs: number): void {
+    const tierZoom = zoomForActiveEnemies(Math.max(1, activeCultivatorCount));
     this.targetZoom = Phaser.Math.Clamp(tierZoom, COMBAT_ZOOM_FLOOR, COMBAT_ZOOM_CEIL);
 
     const t = Math.min(1, (dtMs / 1000) * (ZOOM_LERP * 60));

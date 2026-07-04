@@ -24,7 +24,7 @@ export interface CombatResolverDeps {
 }
 
 function applyInsightHitRewards(hitbox: Hitbox, target: HurtboxEntity, result: DamageResult): void {
-  if (!hitbox.insightIntent || target.team !== 'enemy') return;
+  if (!hitbox.insightIntent || target.team !== 'cultivator') return;
 
   const save = gameStore.getState().save;
   if (!save) return;

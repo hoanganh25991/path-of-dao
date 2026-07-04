@@ -8,7 +8,12 @@ import { PlayerStateMachine } from '@/combat/state/PlayerStateMachine';
 import { MovementComponent, normalizeMove } from '@/combat/components/MovementComponent';
 import { CombatComponent } from '@/combat/components/CombatComponent';
 import { DodgeComponent } from '@/combat/components/DodgeComponent';
+import { MeditationComponent } from '@/combat/components/MeditationComponent';
 import { PlayerAnimController } from '@/combat/animations/PlayerAnimController';
+import {
+  computeHealthRegenPerSec,
+  regenStateFromPlayerState,
+} from '@/combat/combat/HealthRegen';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 import { applyStickyManSprite } from '@/combat/art/stickyManAssets';
 import {
@@ -32,6 +37,7 @@ export class Player extends EntityBase implements HurtboxEntity {
   readonly team: CombatTeam = 'player';
   readonly sm = new PlayerStateMachine();
   readonly combat: CombatComponent;
+  readonly meditate: MeditationComponent;
 
   private readonly movement: MovementComponent;
   private readonly dodge: DodgeComponent;
@@ -67,6 +73,7 @@ export class Player extends EntityBase implements HurtboxEntity {
     this.movement = new MovementComponent(this);
     this.combat = new CombatComponent(this, hitboxes);
     this.dodge = new DodgeComponent(this);
+    this.meditate = new MeditationComponent(this);
     this.anim = new PlayerAnimController(this);
 
     this.emitStatsChanged();
@@ -114,16 +121,29 @@ export class Player extends EntityBase implements HurtboxEntity {
         this.facing = move.x > 0 ? 1 : -1;
         this.sprite.setFlipX(this.facing < 0);
       }
+
+      if (moving || input.attack.pressed || input.dodge.pressed) {
+        this.meditate.cancel();
+      }
+
       if (input.dodge.pressed) this.dodge.tryStart(move);
       if (input.attack.pressed) this.combat.tryAttack();
-      if (input.skillPrimary.held) this.combat.trySkill('primary');
-      if (input.skillSecondary.held) this.combat.trySkill('secondary');
-      if (input.skillUltimate.held) this.combat.trySkill('ultimate');
+
+      if (input.skillPrimary.pressed) this.combat.trySkillPressed('primary');
+      else if (input.skillPrimary.held) this.combat.trySkill('primary');
+
+      if (input.skillSecondary.pressed) this.combat.trySkillPressed('secondary');
+      else if (input.skillSecondary.held) this.combat.trySkill('secondary');
+
+      if (input.skillUltimate.pressed) this.combat.trySkillPressed('ultimate');
+      else if (input.skillUltimate.held) this.combat.trySkill('ultimate');
     }
 
     this.movement.update(move);
     this.dodge.update(dtMs);
+    this.meditate.update(dtMs);
     this.combat.update(dtMs);
+    this.applyPassiveRegen(dtMs);
     EventBus.emit('skill:cooldown-state', this.combat.getCooldownSnapshot());
     this.applyKnockback(dtMs);
     this.anim.update();
@@ -168,6 +188,7 @@ export class Player extends EntityBase implements HurtboxEntity {
     this.ancientFx?.nameTag.destroy();
     this.ancientFx?.titleTag.destroy();
     this.ancientFx = null;
+    this.meditate.destroy();
     clearHitFlash(this.sprite);
     this.anim.destroy();
     super.destroy();
@@ -209,5 +230,24 @@ export class Player extends EntityBase implements HurtboxEntity {
     if (!this.knockback) return;
     this.body.setVelocity(this.knockback.vx, this.knockback.vy);
     this.knockback = tickKnockback(this.knockback, dtMs);
+  }
+
+  private applyPassiveRegen(dtMs: number): void {
+    if (this.sm.state === 'dead' || this.respawning) return;
+    const regenState = regenStateFromPlayerState(this.sm.state);
+    if (!regenState) return;
+
+    const { hp, hpMax } = this.stats.runtime;
+    if (hp >= hpMax) return;
+
+    const rate = computeHealthRegenPerSec({
+      realmOrder: this.attackerRealmOrder,
+      level: this.stats.resolved.level,
+      state: regenState,
+    });
+    const amount = rate * (dtMs / 1000);
+    if (amount <= 0) return;
+
+    this.heal(amount);
   }
 }

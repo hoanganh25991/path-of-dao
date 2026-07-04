@@ -5,6 +5,7 @@ import type { SkillDefinition, SkillEffect } from '@/progression/SkillDefinition
 import { resolveSkillEffects } from '@/combat/skills/resolveSkillEffects';
 import { VFXLibrary, playSkillCastVfx } from '@/combat/skills/VFXLibrary';
 import { buildMeleeArcShape } from '@/combat/combat/geometry';
+import { scaledMeleeHalfArc } from '@/combat/combat/AoeScaling';
 
 const SLASH_OFFSET_PX = 26;
 const SLASH_HIT_MS = 80;
@@ -22,6 +23,7 @@ export interface EffectRunnerContext {
   hitboxes: HitboxManager;
   skill: SkillDefinition;
   amp: number;
+  aoeScale: number;
   bolts: SkillBolt[];
 }
 
@@ -37,9 +39,10 @@ function damagePayload(ctx: EffectRunnerContext, multiplier: number, damageType:
 }
 
 export function runMeleeArc(effect: Extract<SkillEffect, { type: 'melee_arc' }>, ctx: EffectRunnerContext): void {
-  const { player, hitboxes, skill, amp } = ctx;
-  const halfArc = ((effect.halfAngleDeg * Math.PI) / 180 / 2) * (amp > 1 ? 1.35 : 1);
-  const reach = (effect.reach + effect.reachBonus) * amp;
+  const { player, hitboxes, skill, amp, aoeScale } = ctx;
+  const baseHalfArc = (effect.halfAngleDeg * Math.PI) / 180 / 2;
+  const halfArc = scaledMeleeHalfArc(baseHalfArc, aoeScale) * (amp > 1 ? 1.15 : 1);
+  const reach = (effect.reach + effect.reachBonus) * amp * aoeScale;
   const { facing } = player;
   const vfxCx = player.x + facing * SLASH_OFFSET_PX;
   const vfxCy = player.y;
@@ -67,11 +70,11 @@ export function runMeleeArc(effect: Extract<SkillEffect, { type: 'melee_arc' }>,
 }
 
 export function runProjectile(effect: Extract<SkillEffect, { type: 'projectile' }>, ctx: EffectRunnerContext): void {
-  const { player, hitboxes, skill, amp, bolts } = ctx;
+  const { player, hitboxes, skill, amp, aoeScale, bolts } = ctx;
   const { scene, sprite, facing } = player;
   const speed = effect.speed * amp;
-  const rangePx = effect.rangePx * amp;
-  const hitRadius = effect.hitRadius * amp;
+  const rangePx = effect.rangePx * amp * aoeScale;
+  const hitRadius = effect.hitRadius * amp * aoeScale;
 
   const bolt = VFXLibrary.spiritBolt(
     scene,
@@ -108,15 +111,15 @@ export function runHeal(effect: Extract<SkillEffect, { type: 'heal' }>, ctx: Eff
 }
 
 export function runPullField(effect: Extract<SkillEffect, { type: 'pull_field' }>, ctx: EffectRunnerContext): void {
-  const { player, hitboxes, skill, amp } = ctx;
-  VFXLibrary.voidCrack(player.scene, player.x, player.y, effect.radius * amp);
+  const { player, hitboxes, skill, amp, aoeScale } = ctx;
+  VFXLibrary.voidCrack(player.scene, player.x, player.y, effect.radius * amp * aoeScale);
 
   hitboxes.spawn({
     ownerId: player.id,
     team: 'player',
     shape: {
       kind: 'circle',
-      radius: effect.radius * amp,
+      radius: effect.radius * amp * aoeScale,
       x: player.x,
       y: player.y,
     },
@@ -129,8 +132,8 @@ export function runPullField(effect: Extract<SkillEffect, { type: 'pull_field' }
 }
 
 export function runAoeCircle(effect: Extract<SkillEffect, { type: 'aoe_circle' }>, ctx: EffectRunnerContext): void {
-  const { player, hitboxes, skill, amp } = ctx;
-  const radius = effect.radius * amp;
+  const { player, hitboxes, skill, amp, aoeScale } = ctx;
+  const radius = effect.radius * amp * aoeScale;
 
   const spawnTick = (delayMs: number): void => {
     player.scene.time.delayedCall(delayMs, () => {

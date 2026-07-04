@@ -31,6 +31,7 @@ import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 import { getQualitySettingsFromSave } from '@/app/QualityProfile';
 import { CombatJuiceBridge } from '@/combat/juice/CombatJuiceBridge';
 import { JuiceController } from '@/combat/juice/JuiceController';
+import { CombatCameraDirector } from '@/combat/camera/CombatCameraDirector';
 
 const CAMERA_LERP = 0.08;
 const CAMERA_DEADZONE = 100;
@@ -59,6 +60,7 @@ export class MapScene extends Phaser.Scene {
   private exiting = false;
   private runtimePersisted = false;
   private juiceBridge: CombatJuiceBridge | null = null;
+  private cameraDirector: CombatCameraDirector | null = null;
   private unsubscribeCombatEvents: (() => void) | null = null;
   private exitPortalRevealed = false;
   private exitZone: Phaser.GameObjects.Zone | null = null;
@@ -79,6 +81,7 @@ export class MapScene extends Phaser.Scene {
     this.unsubscribeCombatEvents = null;
     this.juiceBridge?.destroy();
     this.juiceBridge = null;
+    this.cameraDirector = null;
 
     const config = getMapConfig(this.mapId);
     this.exiting = false;
@@ -137,9 +140,11 @@ export class MapScene extends Phaser.Scene {
     const camera = this.cameras.main;
     camera.roundPixels = true;
     camera.setBounds(0, 0, config.bounds.width, config.bounds.height);
-    camera.setZoom(isAncientCombatActive() ? ANCIENT_COMBAT_ZOOM : COMBAT_ZOOM);
+    const baseZoom = isAncientCombatActive() ? ANCIENT_COMBAT_ZOOM : COMBAT_ZOOM;
+    camera.setZoom(baseZoom);
     camera.startFollow(this.player.sprite, true, CAMERA_LERP, CAMERA_LERP);
     camera.setDeadzone(CAMERA_DEADZONE, CAMERA_DEADZONE);
+    this.cameraDirector = new CombatCameraDirector(camera, baseZoom);
 
     this.createExitZone(map);
     this.subscribeCombatEvents();
@@ -195,6 +200,7 @@ export class MapScene extends Phaser.Scene {
     this.player.update(delta);
     this.spawnManager?.update(delta);
     this.hitboxManager.update(delta);
+    this.cameraDirector?.update(this.spawnManager?.combatReadyCount ?? 0, delta);
     this.syncExitPortal();
   }
 
@@ -224,6 +230,7 @@ export class MapScene extends Phaser.Scene {
     this.persistRuntime();
     this.juiceBridge?.destroy();
     this.juiceBridge = null;
+    this.cameraDirector = null;
     this.encounterTrigger?.destroy();
     this.encounterTrigger = null;
     this.zonePortalManager?.destroy();

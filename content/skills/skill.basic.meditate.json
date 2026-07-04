@@ -1,0 +1,9 @@
+{
+  "id": "skill.basic.meditate",
+  "intent": "life",
+  "nameKey": "skill.basic.meditate.name",
+  "kind": "meditate",
+  "manaCost": 0,
+  "skillMultiplier": 1,
+  "cooldownMs": 400
+}

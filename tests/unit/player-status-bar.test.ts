@@ -8,7 +8,7 @@ import { EventBus } from '@/core/EventBus';
 import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
-import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getEnemyConfig } from '@/combat/cultivators/CultivatorLoader';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvents';
 

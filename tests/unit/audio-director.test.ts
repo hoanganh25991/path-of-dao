@@ -46,7 +46,7 @@ describe('AudioDirector', () => {
         x: 0,
         y: 0,
         attackerTeam: 'player',
-        victimTeam: 'enemy',
+        victimTeam: 'cultivator',
       }),
     ).not.toThrow();
   });
@@ -62,7 +62,7 @@ describe('AudioDirector', () => {
         x: 0,
         y: 0,
         attackerTeam: 'player',
-        victimTeam: 'enemy',
+        victimTeam: 'cultivator',
       }),
     ).not.toThrow();
   });

@@ -1,6 +1,7 @@
 import { PerspectiveCamera, WebGLRenderer } from 'three';
 import type { SceneHost } from '@/app/SceneHost';
 import { OrientationManager } from '@/app/OrientationManager';
+import { syncGameCanvasDisplay } from '@/app/orientation/syncGameCanvasDisplay';
 import { EventBus } from '@/core/EventBus';
 import { GameClock } from '@/core/GameClock';
 import { gameStore } from '@/core/store/gameStore';
@@ -40,6 +41,7 @@ export class HomeSceneHost implements SceneHost {
       width,
       height,
     );
+    syncGameCanvasDisplay(this.renderer.domElement);
   }
 
   private readonly onDoubleTap = (event: PointerEvent): void => {
@@ -66,6 +68,7 @@ export class HomeSceneHost implements SceneHost {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     const { width, height } = OrientationManager.getLayoutSize();
     this.renderer.setSize(width, height, false);
+    syncGameCanvasDisplay(canvas);
 
     this.homeScene = new HomeScene();
     await this.homeScene.build(this.renderer, canvas, save);

@@ -14,11 +14,11 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 
 | Layer | Mood | Keys / behavior |
 |-------|------|-----------------|
-| **Home BGM** | Warm pentatonic pluck + soft pad | `bgm.home` · mood `home` · slow arp (~4.2s) |
+| **Home BGM** | Warm sine pad drone (no arp/air) | `bgm.home` · mood `home` · calm pad path |
 | **Explore BGM** | Melancholic wind, sparse notes | `bgm.combat.fallen_village` · mood `melancholy` |
 | **Combat BGM** | Low tense drone, faster arp | `bgm.combat.generic` · mood `combat` |
 | **Boss BGM** | Dark pulse, saw pad | `bgm.combat.boss` · mood `boss` |
-| **Story BGM** | Contemplative mid-tempo | `bgm.story` · mood `story` |
+| **Story BGM** | Contemplative sine pad | `bgm.story` · mood `story` · calm pad path |
 | **Victory sting** | 5-note ascending chord | `bgm.victory` + `map.clear` · ducks music |
 
 **SFX presets** (`proceduralSfx.ts`): `impact-light` · `impact-heavy` · `impact-crit` · `skill-cast` · `death-dissolve` · `ui-blip` · `ui-panel` · `ui-sting` · `loot-spark`
@@ -49,6 +49,7 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 - Scene music restarts immediately after unlock (no wait for scene change)
 - Improved procedural synthesis: soft clipping, filters, impact noise layer, BGM fade-in
 - **BGM ambient rewrite:** mood profiles (home / explore / combat / boss / story / melancholy) — pentatonic arp + pad + air + filter breathing
+- **Home/story calm pad fix:** `home` + `story` moods use sine-only drone (no arp/air/filter breath) — fixes startup “buzzing” report on mobile
 - **BGM crossfade** (~800ms) when switching scenes or boss track
 - **Combat SFX wired:** attack combo (1–3), dodge, skill cast (all intents), hit impacts, **crit** (`combat.hit.crit`)
 - **UI tap sound** on buttons/tabs/action controls via global click bridge

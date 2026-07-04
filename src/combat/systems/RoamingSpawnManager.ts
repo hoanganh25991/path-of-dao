@@ -3,12 +3,12 @@ import { EventBus } from '@/core/EventBus';
 import { AudioDirector } from '@/core/audio/AudioDirector';
 import { gameStore } from '@/core/store/gameStore';
 import type { Player } from '@/combat/entities/Player';
-import { Enemy, STRIKE_MS } from '@/combat/entities/Enemy';
+import { Cultivator, STRIKE_MS } from '@/combat/entities/Cultivator';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
-import { getEnemyConfig } from '@/combat/enemies/EnemyLoader';
+import { getCultivatorConfig } from '@/combat/cultivators/CultivatorLoader';
 import type { RoamConfig } from '@/combat/map/RoamConfig';
-import { EnemyPool } from '@/combat/systems/EnemyPool';
+import { CultivatorPool } from '@/combat/systems/CultivatorPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvents';
@@ -26,12 +26,12 @@ const PICKUP_MAGNET_SPEED = 280;
 const PICKUP_COLLECT_RADIUS = 18;
 
 interface RoamSlot {
-  enemyId: string;
+  cultivatorId: string;
   x: number;
   y: number;
   respawnMs: number;
   patrolRadius: number;
-  enemy: Enemy | null;
+  cultivator: Cultivator | null;
   respawnTimer: Phaser.Time.TimerEvent | null;
 }
 
@@ -47,9 +47,9 @@ interface GoldPickup {
   ageMs: number;
 }
 
-/** Placed roaming enemies with respawn — explore Tu Chân Tinh sub-zones. */
+/** Placed roaming cultivators with in-place recovery — explore Tu Chân Tinh sub-zones. */
 export class RoamingSpawnManager {
-  private readonly pool: EnemyPool;
+  private readonly pool: CultivatorPool;
   private readonly slots: RoamSlot[] = [];
   private arrows: Arrow[] = [];
   private pickups: GoldPickup[] = [];
@@ -62,26 +62,26 @@ export class RoamingSpawnManager {
     walls: Phaser.Tilemaps.TilemapLayer,
     private readonly hitboxes: HitboxManager,
   ) {
-    const enemyIds = [...new Set(roam.spawns.map((s) => s.enemyId))];
-    this.pool = new EnemyPool((enemyId) => {
-      const enemy = new Enemy(scene, getEnemyConfig(enemyId), {
-        onStrike: (e) => this.resolveStrike(e),
-        onDefeated: (e) => this.grantDefeatRewards(e),
-        onDefeatHoldComplete: (e) => this.onDefeatHoldComplete(e),
+    const cultivatorIds = [...new Set(roam.spawns.map((s) => s.enemyId))];
+    this.pool = new CultivatorPool((cultivatorId) => {
+      const cultivator = new Cultivator(scene, getCultivatorConfig(cultivatorId), {
+        onStrike: (c) => this.resolveStrike(c),
+        onDefeated: (c) => this.grantDefeatRewards(c),
+        onDefeatHoldComplete: (c) => this.onDefeatHoldComplete(c),
       });
-      scene.physics.add.collider(enemy.sprite, walls);
-      return enemy;
+      scene.physics.add.collider(cultivator.sprite, walls);
+      return cultivator;
     });
-    this.pool.prewarm(enemyIds);
+    this.pool.prewarm(cultivatorIds);
 
     for (const spawn of roam.spawns) {
       this.slots.push({
-        enemyId: spawn.enemyId,
+        cultivatorId: spawn.enemyId,
         x: spawn.x,
         y: spawn.y,
         respawnMs: spawn.respawnMs,
         patrolRadius: spawn.patrolRadius,
-        enemy: null,
+        cultivator: null,
         respawnTimer: null,
       });
     }
@@ -98,8 +98,8 @@ export class RoamingSpawnManager {
       alive: this.player.sm.state !== 'dead',
     };
 
-    for (const enemy of [...this.pool.aliveEnemies]) {
-      enemy.update(dtMs, playerState);
+    for (const cultivator of [...this.pool.aliveCultivators]) {
+      cultivator.update(dtMs, playerState);
     }
 
     this.updateArrows(dtMs);
@@ -107,7 +107,7 @@ export class RoamingSpawnManager {
   }
 
   getHurtboxTargets(): HurtboxEntity[] {
-    return this.pool.combatReadyEnemies;
+    return this.pool.combatReadyCultivators;
   }
 
   get combatReadyCount(): number {
@@ -137,43 +137,43 @@ export class RoamingSpawnManager {
     slot.respawnTimer?.remove(false);
     slot.respawnTimer = null;
 
-    const enemy = this.pool.acquire(slot.enemyId, slot.x, slot.y);
-    enemy.setRecoveryDuration(slot.respawnMs);
+    const cultivator = this.pool.acquire(slot.cultivatorId, slot.x, slot.y);
+    cultivator.setRecoveryDuration(slot.respawnMs);
     if (slot.patrolRadius > 0) {
       const r = slot.patrolRadius;
-      enemy.setPatrolWaypoints([
+      cultivator.setPatrolWaypoints([
         { x: 0, y: 0 },
         { x: r, y: 0 },
         { x: r, y: r * 0.6 },
         { x: 0, y: r * 0.6 },
       ]);
     }
-    slot.enemy = enemy;
+    slot.cultivator = cultivator;
   }
 
-  private onDefeatHoldComplete(enemy: Enemy): void {
-    const slot = this.slots.find((s) => s.enemy === enemy);
+  private onDefeatHoldComplete(cultivator: Cultivator): void {
+    const slot = this.slots.find((s) => s.cultivator === cultivator);
     if (!slot || this.destroyed) return;
-    enemy.beginRecovery();
+    cultivator.beginRecovery();
   }
 
-  private grantDefeatRewards(enemy: Enemy): void {
-    if (enemy.config.archetype === 'ranged_kiter') {
-      this.spawnArrow(enemy);
+  private resolveStrike(cultivator: Cultivator): void {
+    if (cultivator.config.archetype === 'ranged_kiter') {
+      this.spawnArrow(cultivator);
       return;
     }
 
     this.hitboxes.spawn({
-      ownerId: enemy.id,
-      team: 'enemy',
+      ownerId: cultivator.id,
+      team: 'cultivator',
       shape: {
         kind: 'circle',
-        radius: enemy.config.attackRange * MELEE_HIT_SLACK,
-        x: enemy.x,
-        y: enemy.y,
+        radius: cultivator.config.attackRange * MELEE_HIT_SLACK,
+        x: cultivator.x,
+        y: cultivator.y,
       },
       damage: {
-        attacker: enemy.stats.resolved,
+        attacker: cultivator.stats.resolved,
         skillMultiplier: 1,
         damageType: 'physical',
       },
@@ -182,21 +182,21 @@ export class RoamingSpawnManager {
     });
   }
 
-  private spawnArrow(enemy: Enemy): void {
+  private spawnArrow(cultivator: Cultivator): void {
     const img = this.scene.physics.add
-      .image(enemy.x, enemy.y - 4, TEXTURE_KEYS.arrow)
+      .image(cultivator.x, cultivator.y - 4, TEXTURE_KEYS.arrow)
       .setDepth(11);
 
-    const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.player.x, this.player.y);
+    const angle = Phaser.Math.Angle.Between(cultivator.x, cultivator.y, this.player.x, this.player.y);
     img.setRotation(angle);
     this.scene.physics.velocityFromRotation(angle, ARROW_SPEED, img.body!.velocity);
 
     const hitbox = this.hitboxes.spawn({
-      ownerId: enemy.id,
-      team: 'enemy',
+      ownerId: cultivator.id,
+      team: 'cultivator',
       shape: { kind: 'circle', radius: ARROW_HIT_RADIUS, x: img.x, y: img.y },
       damage: {
-        attacker: enemy.stats.resolved,
+        attacker: cultivator.stats.resolved,
         skillMultiplier: 1,
         damageType: 'physical',
       },
@@ -229,17 +229,17 @@ export class RoamingSpawnManager {
     });
   }
 
-  private grantKillRewards(enemy: Enemy): void {
+  private grantDefeatRewards(cultivator: Cultivator): void {
     const store = gameStore.getState();
     const save = store.save;
     if (!save) return;
 
-    const bossClearId = enemy.config.bossClearId;
+    const bossClearId = cultivator.config.bossClearId;
     const wasRematch = Boolean(
       bossClearId && save.progress.clearedBosses.includes(bossClearId),
     );
     const isBoss = Boolean(bossClearId);
-    const rewards = computeKillRewards(save, enemy.config);
+    const rewards = computeKillRewards(save, cultivator.config);
     const xpBefore = save.xp;
 
     store.patch((current) => {
@@ -309,11 +309,16 @@ export class RoamingSpawnManager {
     emitKillProgressionEvents(rewards, xpBefore, gameStore.getState().save?.realm.id ?? save.realm.id);
 
     if (rewards.gold > 0) {
-      this.spawnGoldPickup(enemy.x, enemy.y, rewards.gold);
+      this.spawnGoldPickup(cultivator.x, cultivator.y, rewards.gold);
     }
 
+    EventBus.emit('map:cultivator-defeated', {
+      cultivatorId: cultivator.config.id,
+      isBoss,
+      wasRematch,
+    });
     EventBus.emit('map:enemy-killed', {
-      enemyId: enemy.config.id,
+      enemyId: cultivator.config.id,
       isBoss,
       wasRematch,
     });

@@ -1,5 +1,5 @@
 import { mapConfigSchema } from '@/combat/map/MapConfig';
-import { encounterConfigSchema, enemyConfigSchema } from '@/combat/enemies/EnemyConfig';
+import { encounterConfigSchema, cultivatorConfigSchema } from '@/combat/cultivators/CultivatorConfig';
 import { skillDefinitionSchema } from '@/progression/SkillDefinition';
 import { itemDefinitionSchema } from '@/progression/ItemDefinition';
 import { chaptersIndexSchema } from '@/shared/schemas/chapter';
@@ -206,7 +206,7 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
   }
 
   for (const [fileId, raw] of index.enemies) {
-    const parsed = enemyConfigSchema.safeParse(raw);
+    const parsed = cultivatorConfigSchema.safeParse(raw);
     if (!parsed.success) continue;
     const enemy = parsed.data;
     if (enemy.lootTable && !lootIds.has(enemy.lootTable)) {
