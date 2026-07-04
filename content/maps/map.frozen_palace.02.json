@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/frozen_palace-02.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 3520,
+    "y": 5280
   },
   "bounds": {
-    "width": 1600,
-    "height": 1216
+    "width": 17600,
+    "height": 13376
   },
   "connections": [],
   "encounterTable": "encounter.frozen_palace.02",

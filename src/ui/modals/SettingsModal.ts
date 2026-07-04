@@ -1,6 +1,7 @@
 import '@/ui/modals/settings.css';
 import { AudioDirector } from '@/core/audio/AudioDirector';
 import { EventBus } from '@/core/EventBus';
+import { FullscreenManager } from '@/app/FullscreenManager';
 import { I18nManager, type LocalePreference } from '@/core/i18n/I18nManager';
 import type { QualityPreference } from '@/app/QualityProfile';
 import { SceneRouter } from '@/app/SceneRouter';
@@ -18,7 +19,7 @@ function qualityLabelKey(preference: QualityPreference): string {
   return `home.settings.quality.${preference}`;
 }
 
-/** Settings overlay — language, performance, version. */
+/** Settings overlay — language, performance, fullscreen, version. */
 export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
   return new Promise((resolve) => {
     const save = gameStore.getState().save;
@@ -29,6 +30,7 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
 
     let selectedLocale = save.settings.locale;
     let selectedQuality = save.settings.quality;
+    let selectedFullscreen = save.settings.fullscreen;
 
     const overlay = document.createElement('div');
     overlay.className = 'settings-modal';
@@ -73,6 +75,15 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     qualityOptions.setAttribute('role', 'radiogroup');
     qualityOptions.setAttribute('aria-label', I18nManager.t('home.settings.quality'));
 
+    const fullscreenTitle = document.createElement('p');
+    fullscreenTitle.className = 'settings-modal__section-title';
+    fullscreenTitle.textContent = I18nManager.t('home.settings.fullscreen');
+
+    const fullscreenOptions = document.createElement('div');
+    fullscreenOptions.className = 'settings-modal__options';
+    fullscreenOptions.setAttribute('role', 'radiogroup');
+    fullscreenOptions.setAttribute('aria-label', I18nManager.t('home.settings.fullscreen'));
+
     const version = document.createElement('p');
     version.className = 'settings-modal__version';
     version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
@@ -116,6 +127,7 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
 
     const localeButtons: HTMLLabelElement[] = [];
     const qualityButtons: HTMLLabelElement[] = [];
+    const fullscreenButtons: HTMLLabelElement[] = [];
 
     const syncLocaleSelection = (): void => {
       for (const label of localeButtons) {
@@ -137,6 +149,16 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       }
     };
 
+    const syncFullscreenSelection = (): void => {
+      for (const label of fullscreenButtons) {
+        const value = label.dataset.value === 'true';
+        const input = label.querySelector('input');
+        const active = value === selectedFullscreen;
+        label.classList.toggle('settings-modal__option--selected', active);
+        if (input instanceof HTMLInputElement) input.checked = active;
+      }
+    };
+
     const refreshModalCopy = (): void => {
       title.textContent = I18nManager.t('home.settings.title');
       closeBtn.setAttribute('aria-label', I18nManager.t('home.settings.close'));
@@ -144,6 +166,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       localeOptions.setAttribute('aria-label', I18nManager.t('home.settings.language'));
       qualityTitle.textContent = I18nManager.t('home.settings.quality');
       qualityOptions.setAttribute('aria-label', I18nManager.t('home.settings.quality'));
+      fullscreenTitle.textContent = I18nManager.t('home.settings.fullscreen');
+      fullscreenOptions.setAttribute('aria-label', I18nManager.t('home.settings.fullscreen'));
       version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
       progressTitle.textContent = I18nManager.t('home.settings.progress');
       resetBtn.textContent = I18nManager.t('home.settings.reset');
@@ -160,6 +184,13 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
         const value = label.dataset.value as QualityPreference;
         const text = label.querySelector('span');
         if (text) text.textContent = I18nManager.t(qualityLabelKey(value));
+      }
+      for (const label of fullscreenButtons) {
+        const isOn = label.dataset.value === 'true';
+        const text = label.querySelector('span');
+        if (text) {
+          text.textContent = I18nManager.t(isOn ? 'home.settings.fullscreen.on' : 'home.settings.fullscreen.off');
+        }
       }
     };
 
@@ -213,12 +244,39 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       qualityOptions.appendChild(label);
     }
 
+    for (const value of [true, false]) {
+      const label = document.createElement('label');
+      label.className = 'settings-modal__option';
+      label.dataset.value = String(value);
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'fullscreen-preference';
+      input.value = String(value);
+
+      const text = document.createElement('span');
+      text.textContent = I18nManager.t(value ? 'home.settings.fullscreen.on' : 'home.settings.fullscreen.off');
+
+      label.append(input, text);
+      label.addEventListener('click', () => {
+        if (selectedFullscreen === value) return;
+        selectedFullscreen = value;
+        syncFullscreenSelection();
+        void applyFullscreenPreference(value);
+      });
+
+      fullscreenButtons.push(label);
+      fullscreenOptions.appendChild(label);
+    }
+
     card.append(
       header,
       localeTitle,
       localeOptions,
       qualityTitle,
       qualityOptions,
+      fullscreenTitle,
+      fullscreenOptions,
       progressTitle,
       resetBtn,
       confirmPanel,
@@ -248,6 +306,7 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
 
     syncLocaleSelection();
     syncQualitySelection();
+    syncFullscreenSelection();
     requestAnimationFrame(() => overlay.classList.add('settings-modal--active'));
 
     const cleanup = (): void => {
@@ -296,4 +355,22 @@ async function applyQualityPreference(preference: QualityPreference): Promise<vo
   await gameStore.getState().persist();
 
   EventBus.emit('settings:quality-changed', { preference });
+}
+
+async function applyFullscreenPreference(enabled: boolean): Promise<void> {
+  const current = gameStore.getState().save;
+  if (!current || current.settings.fullscreen === enabled) return;
+
+  gameStore.getState().patch((save) => ({
+    settings: { ...save.settings, fullscreen: enabled },
+  }));
+  await gameStore.getState().persist();
+
+  EventBus.emit('settings:fullscreen-changed', { enabled });
+
+  // Clear the transient opt-out so re-enabling takes effect immediately.
+  if (enabled) {
+    FullscreenManager.clearOptOut();
+    void FullscreenManager.requestOnPlay();
+  }
 }

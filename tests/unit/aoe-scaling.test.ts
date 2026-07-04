@@ -25,7 +25,7 @@ describe('AoeScaling', () => {
   it('caps melee arc widening', () => {
     const base = Math.PI / 3;
     const widened = scaledMeleeHalfArc(base, computeAoeScale(7, 20));
-    expect(widened).toBeLessThanOrEqual(Math.PI * 0.67);
+    expect(widened).toBeLessThanOrEqual(Math.PI * 0.75);
     expect(widened).toBeGreaterThan(base * 0.85);
   });
 });

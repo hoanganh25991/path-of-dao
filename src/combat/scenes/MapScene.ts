@@ -163,6 +163,8 @@ export class MapScene extends Phaser.Scene {
         roam,
         collision,
         this.hitboxManager,
+        { x: config.spawn.x, y: config.spawn.y },
+        config.recommendedRealmOrder,
       );
     } else if (config.encounterTable) {
       this.spawnManager = new SpawnManager(
@@ -224,9 +226,6 @@ export class MapScene extends Phaser.Scene {
   private teardown(): void {
     this.unsubscribeCombatEvents?.();
     this.unsubscribeCombatEvents = null;
-    if (this.scene.isPaused()) {
-      this.scene.resume();
-    }
     this.persistRuntime();
     this.juiceBridge?.destroy();
     this.juiceBridge = null;
@@ -351,8 +350,8 @@ export class MapScene extends Phaser.Scene {
       this.player.respawn();
     });
     const offPause = EventBus.on('combat:pause-changed', ({ paused }) => {
-      if (paused) this.scene.pause();
-      else if (this.scene.isPaused()) this.scene.resume();
+      if (paused) this.scene?.pause();
+      else if (this.scene?.isPaused()) this.scene?.resume();
     });
     const offAttack = EventBus.on('player:attack-started', () => pulseCamera('attack'));
     const offSkill = EventBus.on('skill:cast', () => pulseCamera('skill'));

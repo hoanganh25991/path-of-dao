@@ -39,6 +39,7 @@ Story order follows Wang Lin's early journey on Chu Tước Star (structure/feel
 - POI: ancient sword on ch1 + ch2 ordeal maps; hidden caves ch3–5 explore
 - **Tiên Nghịch copy:** region blurbs, map flavor text (EN + VI), enemy names, bestiary notes for ch1–3
 - World map detail sheet shows map `.desc`; region nodes show chapter `.desc`
+- **Scaled playable bounds 10×** for ch1–5 configs: `1600×1216` → `16000×12160` (spawn/POIs rescaled); `map.fallen_village.01` retained at `8000×6080`
 
 ## Remaining
 

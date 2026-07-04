@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/void_throne-02.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 4480,
+    "y": 6720
   },
   "bounds": {
-    "width": 1792,
-    "height": 1344
+    "width": 22400,
+    "height": 17024
   },
   "connections": [],
   "encounterTable": "encounter.void_throne.02",

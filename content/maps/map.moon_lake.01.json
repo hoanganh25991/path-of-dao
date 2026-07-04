@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/moon_lake-01.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 2560,
+    "y": 3840
   },
   "bounds": {
-    "width": 1600,
-    "height": 1216
+    "width": 12800,
+    "height": 9728
   },
   "connections": [],
   "encounterTable": "encounter.moon_lake.01",
@@ -18,9 +18,9 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 480,
-      "y": 720,
-      "radius": 40,
+      "x": 3840,
+      "y": 5760,
+      "radius": 320,
       "id": "cave.moon_lake"
     }
   ],

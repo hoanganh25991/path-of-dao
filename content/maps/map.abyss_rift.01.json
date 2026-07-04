@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/abyss_rift-01.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 3840,
+    "y": 5760
   },
   "bounds": {
-    "width": 1600,
-    "height": 1216
+    "width": 19200,
+    "height": 14592
   },
   "connections": [],
   "encounterTable": "encounter.abyss_rift.01",
@@ -18,9 +18,9 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 560,
-      "y": 640,
-      "radius": 40,
+      "x": 6720,
+      "y": 7680,
+      "radius": 480,
       "id": "cave.abyss_rift"
     }
   ],

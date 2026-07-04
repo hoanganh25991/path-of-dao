@@ -8,14 +8,14 @@ describe('SkillCombatStats', () => {
     expect(stats.tier).toBe('base');
     expect(stats.damageText).toBe('×1.6');
     expect(stats.manaCost).toBe(20);
-    expect(stats.aoeText).toBe('120°');
+    expect(stats.aoeText).toBe('150°');
     expect(stats.rangeText).toBe('52px');
   });
 
   it('builds wider arc for awakened sword', () => {
     const stats = buildSkillDisplayStats('skill.sword.slash.awakened');
     expect(stats.tier).toBe('awakened');
-    expect(stats.aoeText).toBe('180°');
+    expect(stats.aoeText).toBe('225°');
     expect(stats.rangeText).toBe('76px');
     expect(stats.difficultyStars).toBe(4);
   });

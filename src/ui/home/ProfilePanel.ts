@@ -9,6 +9,34 @@ import {
   yearsCultivated,
 } from '@/progression/CombatPower';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
+import { EquipmentManager } from '@/progression/EquipmentManager';
+import {
+  EQUIPMENT_SLOTS,
+  type EquipmentSlot,
+  type ItemDefinition,
+} from '@/progression/ItemDefinition';
+import { getItemDefinition } from '@/progression/ItemLoader';
+import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
+import {
+  checkAwakeningReady,
+  getInsightState,
+  insightDisplayPct,
+} from '@/progression/InsightSystem';
+import { listDiscoveredIntentIds } from '@/progression/SkillLoadout';
+import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
+
+export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent';
+
+const SIGNATURE_INTENT_ICONS: Record<string, string> = {
+  sword: '⚔',
+  void: '◈',
+  flame: '🔥',
+  lightning: '⚡',
+  time: '⏳',
+  life: '✦',
+};
+
+const ALL_INTENT_IDS = ['sword', 'void', 'flame', 'lightning', 'time', 'life'];
 
 export interface ProfilePanelHandles {
   root: HTMLElement;
@@ -34,113 +62,492 @@ function formatMultiplier(value: number): string {
   return `${value.toFixed(2)}×`;
 }
 
-function addStatRow(
-  grid: HTMLElement,
-  labelKey: string,
-  value: string,
-): void {
-  const row = document.createElement('div');
-  row.className = 'home-profile-panel__row';
-
-  const label = document.createElement('span');
-  label.className = 'home-profile-panel__label';
-  label.textContent = I18nManager.t(labelKey);
-
-  const val = document.createElement('span');
-  val.className = 'home-profile-panel__value';
-  val.textContent = value;
-
-  row.append(label, val);
-  grid.append(row);
+function itemInitial(def: ItemDefinition): string {
+  const name = I18nManager.t(def.displayNameKey);
+  return name.charAt(0).toUpperCase();
 }
 
-export function createProfilePanel(onClose: () => void): ProfilePanelHandles {
+function isEquipped(save: PlayerSaveV1, itemId: string): boolean {
+  return EQUIPMENT_SLOTS.some((slot) => save.equipped[slot] === itemId);
+}
+
+function equippedSlot(save: PlayerSaveV1, itemId: string): EquipmentSlot | null {
+  for (const slot of EQUIPMENT_SLOTS) {
+    if (save.equipped[slot] === itemId) return slot;
+  }
+  return null;
+}
+
+function slotLabelKey(slot: EquipmentSlot): string {
+  return `home.slot.${slot}`;
+}
+
+export function createProfilePanel(): ProfilePanelHandles {
   const root = document.createElement('div');
-  root.className = 'home-profile-panel home-ui__interactive';
-  root.dataset.testid = 'home-profile-panel';
+  root.className = 'home-panel home-profile';
+  root.dataset.panel = 'profile';
 
-  root.addEventListener('click', (event) => {
-    if (event.target === root) onClose();
-  });
+  // Sub-tab bar
+  const subTabs = document.createElement('div');
+  subTabs.className = 'home-profile__sub-tabs';
+  const subTabDefs: { id: ProfileSubTab; key: string }[] = [
+    { id: 'stats', key: 'home.profile.title' },
+    { id: 'dharma', key: 'home.nav.dharma' },
+    { id: 'divine', key: 'home.nav.divine_abilities' },
+    { id: 'intent', key: 'home.nav.intents' },
+  ];
+  const subTabButtons: HTMLElement[] = [];
+  for (const { id, key } of subTabDefs) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'home-profile__sub-tab';
+    btn.dataset.subTab = id;
+    btn.textContent = I18nManager.t(key);
+    subTabs.appendChild(btn);
+    subTabButtons.push(btn);
+  }
 
-  const card = document.createElement('div');
-  card.className = 'home-profile-panel__card';
+  // Content area
+  const content = document.createElement('div');
+  content.className = 'home-profile__content';
 
-  const header = document.createElement('div');
-  header.className = 'home-profile-panel__header';
+  // Stats content
+  const statsRoot = document.createElement('div');
+  statsRoot.className = 'home-stats-section';
+  const statsGrid = document.createElement('div');
+  statsGrid.className = 'home-stats-section__grid';
+  statsRoot.appendChild(statsGrid);
 
-  const title = document.createElement('h2');
-  title.className = 'home-profile-panel__title';
-  title.textContent = I18nManager.t('home.profile.title');
+  // Dharma content
+  const dharmaRoot = document.createElement('div');
+  dharmaRoot.className = 'home-dharma-section';
+  const dharmaSlotsRow = document.createElement('div');
+  dharmaSlotsRow.className = 'home-dharma__slots';
+  const dharmaGrid = document.createElement('div');
+  dharmaGrid.className = 'home-dharma__grid';
+  dharmaRoot.append(dharmaSlotsRow, dharmaGrid);
 
-  const closeBtn = document.createElement('button');
-  closeBtn.type = 'button';
-  closeBtn.className = 'home-profile-panel__close';
-  closeBtn.setAttribute('aria-label', I18nManager.t('home.profile.close'));
-  closeBtn.textContent = '×';
-  closeBtn.addEventListener('click', onClose);
+  // Divine content
+  const divineRoot = document.createElement('div');
+  divineRoot.className = 'home-divine-section';
+  const divineTitle = document.createElement('h2');
+  divineTitle.className = 'home-panel__title';
+  divineTitle.textContent = I18nManager.t('home.nav.divine_abilities');
+  const divineIntro = document.createElement('p');
+  divineIntro.className = 'home-divine-section__intro';
+  divineIntro.textContent = I18nManager.t('home.divine.intro');
+  const divineList = document.createElement('div');
+  divineList.className = 'home-divine-section__list';
+  const divineEmpty = document.createElement('p');
+  divineEmpty.className = 'home-divine-section__empty';
+  divineEmpty.hidden = true;
+  divineEmpty.textContent = I18nManager.t('home.divine.empty');
+  divineRoot.append(divineTitle, divineIntro, divineList, divineEmpty);
 
-  header.append(title, closeBtn);
+  // Intent content
+  const intentRoot = document.createElement('div');
+  intentRoot.className = 'home-intent-section';
+  const intentTitle = document.createElement('h2');
+  intentTitle.className = 'home-panel__title';
+  intentTitle.textContent = I18nManager.t('home.nav.intents');
+  const intentIntro = document.createElement('p');
+  intentIntro.className = 'home-intent-section__intro';
+  intentIntro.textContent = I18nManager.t('home.intent.intro');
+  const intentList = document.createElement('div');
+  intentList.className = 'home-intent-section__list';
+  const intentEmpty = document.createElement('p');
+  intentEmpty.className = 'home-intent-section__empty';
+  intentEmpty.hidden = true;
+  intentEmpty.textContent = I18nManager.t('home.intent.semantics.empty');
+  intentRoot.append(intentTitle, intentIntro, intentList, intentEmpty);
 
-  const grid = document.createElement('div');
-  grid.className = 'home-profile-panel__grid';
+  content.append(statsRoot, dharmaRoot, divineRoot, intentRoot);
+  root.append(subTabs, content);
 
-  card.append(header, grid);
-  root.append(card);
+  let activeSubTab: ProfileSubTab = 'stats';
+  let detailOverlay: HTMLElement | null = null;
+  let ceremonyActive = false;
 
-  const refresh = (): void => {
+  function switchSubTab(id: ProfileSubTab): void {
+    activeSubTab = id;
+    for (const btn of subTabButtons) {
+      btn.classList.toggle('home-profile__sub-tab--active', btn.dataset.subTab === id);
+    }
+    statsRoot.hidden = id !== 'stats';
+    dharmaRoot.hidden = id !== 'dharma';
+    divineRoot.hidden = id !== 'divine';
+    intentRoot.hidden = id !== 'intent';
+    render();
+  }
+
+  function addStatRow(labelKey: string, value: string): void {
+    const row = document.createElement('div');
+    row.className = 'home-stats-section__row';
+    const label = document.createElement('span');
+    label.className = 'home-stats-section__label';
+    label.textContent = I18nManager.t(labelKey);
+    const val = document.createElement('span');
+    val.className = 'home-stats-section__value';
+    val.textContent = value;
+    row.append(label, val);
+    statsGrid.append(row);
+  }
+
+  function renderStats(): void {
     const save = gameStore.getState().save;
     if (!save) return;
-
-    grid.replaceChildren();
+    statsGrid.replaceChildren();
 
     const resolved = resolveStatsForCombatPower(save);
     const realmOrder = getRealmOrder(save.realm.id);
     const cp = computeCombatPowerFromSave(save);
     const awakenedCount = Object.values(save.insights).filter((i) => i.awakened).length;
 
-    addStatRow(grid, 'home.profile.level', String(save.stats.level));
-    addStatRow(grid, 'home.profile.realm', I18nManager.t(realmLabelKey(save)));
-    addStatRow(grid, 'home.combat_power', formatCombatPower(cp, I18nManager.locale));
-    addStatRow(
-      grid,
-      'home.profile.hp',
-      `${save.runtime.hp} / ${resolved.hpMax}`,
-    );
-    addStatRow(
-      grid,
-      'home.profile.mana',
-      `${save.runtime.mana} / ${resolved.manaMax}`,
-    );
-    addStatRow(grid, 'home.profile.atk', String(resolved.atk));
-    addStatRow(grid, 'home.profile.def', String(resolved.def));
-    addStatRow(grid, 'home.profile.crit', formatPercent(resolved.crit));
-    addStatRow(grid, 'home.profile.crit_dmg', formatMultiplier(resolved.critDmg));
-    addStatRow(grid, 'home.profile.speed', String(resolved.speed));
-    addStatRow(grid, 'home.profile.spirit', String(resolved.spirit));
-    addStatRow(grid, 'home.profile.play_time', formatPlayTime(save.meta.totalPlaySeconds));
-    addStatRow(grid, 'home.profile.maps_cleared', String(save.progress.clearedMaps.length));
-    addStatRow(grid, 'home.profile.bosses_defeated', String(save.progress.clearedBosses.length));
-    addStatRow(
-      grid,
-      'home.years_cultivated',
-      I18nManager.t('home.profile.years_value', {
-        years: String(yearsCultivated(save.meta.totalPlaySeconds, realmOrder)),
-      }),
-    );
-    addStatRow(grid, 'home.profile.awakenings', String(awakenedCount));
-  };
+    addStatRow('home.profile.level', String(save.stats.level));
+    addStatRow('home.profile.realm', I18nManager.t(realmLabelKey(save)));
+    addStatRow('home.combat_power', formatCombatPower(cp, I18nManager.locale));
+    addStatRow('home.profile.hp', `${save.runtime.hp} / ${resolved.hpMax}`);
+    addStatRow('home.profile.mana', `${save.runtime.mana} / ${resolved.manaMax}`);
+    addStatRow('home.profile.atk', String(resolved.atk));
+    addStatRow('home.profile.def', String(resolved.def));
+    addStatRow('home.profile.crit', formatPercent(resolved.crit));
+    addStatRow('home.profile.crit_dmg', formatMultiplier(resolved.critDmg));
+    addStatRow('home.profile.speed', String(resolved.speed));
+    addStatRow('home.profile.spirit', String(resolved.spirit));
+    addStatRow('home.profile.play_time', formatPlayTime(save.meta.totalPlaySeconds));
+    addStatRow('home.profile.maps_cleared', String(save.progress.clearedMaps.length));
+    addStatRow('home.profile.bosses_defeated', String(save.progress.clearedBosses.length));
+    addStatRow('home.years_cultivated', I18nManager.t('home.profile.years_value', {
+      years: String(yearsCultivated(save.meta.totalPlaySeconds, realmOrder)),
+    }));
+    addStatRow('home.profile.awakenings', String(awakenedCount));
+  }
 
-  refresh();
+  function closeDetail(): void {
+    detailOverlay?.remove();
+    detailOverlay = null;
+  }
+
+  function openDharmaDetail(itemId: string): void {
+    closeDetail();
+    const save = gameStore.getState().save;
+    if (!save) return;
+
+    let def: ItemDefinition;
+    try { def = getItemDefinition(itemId); } catch { return; }
+
+    const slot = equippedSlot(save, itemId);
+    const equipped = slot !== null;
+
+    detailOverlay = document.createElement('div');
+    detailOverlay.className = 'home-item-detail home-ui__interactive';
+    detailOverlay.addEventListener('click', (event) => {
+      if (event.target === detailOverlay) closeDetail();
+    });
+
+    const card = document.createElement('div');
+    card.className = 'home-item-detail__card';
+
+    const name = document.createElement('h3');
+    name.className = 'home-item-detail__name';
+    name.textContent = I18nManager.t(def.displayNameKey);
+
+    const desc = document.createElement('p');
+    desc.className = 'home-item-detail__desc';
+    desc.textContent = I18nManager.t(def.descriptionKey);
+
+    const mods = document.createElement('ul');
+    mods.className = 'home-item-detail__mods';
+    for (const mod of def.modifiers) {
+      const li = document.createElement('li');
+      const sign = mod.value >= 0 ? '+' : '';
+      const suffix = mod.kind === 'percent' ? '%' : '';
+      li.textContent = `${mod.stat.toUpperCase()} ${sign}${mod.value}${suffix}`;
+      mods.appendChild(li);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'home-item-detail__actions';
+
+    const primary = document.createElement('button');
+    primary.type = 'button';
+    primary.className = 'home-item-detail__btn home-item-detail__btn--primary';
+    primary.dataset.action = equipped ? 'unequip' : 'equip';
+    primary.dataset.itemId = itemId;
+    primary.textContent = equipped
+      ? I18nManager.t('home.dharma.unequip')
+      : I18nManager.t('home.dharma.equip');
+
+    primary.addEventListener('click', () => {
+      if (equipped && slot) { EquipmentManager.unequip(slot); }
+      else { EquipmentManager.equip(itemId); }
+      closeDetail();
+      renderDharma();
+    });
+
+    const secondary = document.createElement('button');
+    secondary.type = 'button';
+    secondary.className = 'home-item-detail__btn home-item-detail__btn--secondary';
+    secondary.textContent = '✕';
+    secondary.setAttribute('aria-label', 'Close');
+    secondary.addEventListener('click', closeDetail);
+
+    actions.append(primary, secondary);
+    card.append(name, desc, mods, actions);
+    detailOverlay.appendChild(card);
+    document.body.appendChild(detailOverlay);
+  }
+
+  function renderDharma(): void {
+    const save = gameStore.getState().save;
+    if (!save) return;
+
+    dharmaSlotsRow.replaceChildren();
+    for (const slot of EQUIPMENT_SLOTS) {
+      const itemId = save.equipped[slot];
+      const slotEl = document.createElement('div');
+      slotEl.className = 'home-dharma__slot';
+
+      const icon = document.createElement('div');
+      icon.className = 'home-dharma__slot-icon';
+
+      if (itemId) {
+        slotEl.classList.add('home-dharma__slot--filled');
+        const def = getItemDefinition(itemId);
+        icon.textContent = itemInitial(def);
+        slotEl.title = I18nManager.t(def.displayNameKey);
+      } else {
+        icon.textContent = '·';
+      }
+
+      const label = document.createElement('span');
+      label.textContent = I18nManager.t(slotLabelKey(slot));
+      slotEl.append(icon, label);
+      dharmaSlotsRow.appendChild(slotEl);
+    }
+
+    dharmaGrid.replaceChildren();
+
+    const inventoryIds = save.inventory.items
+      .filter((entry) => entry.qty > 0)
+      .map((entry) => entry.id);
+    const equippedIds = EQUIPMENT_SLOTS
+      .map((s) => save.equipped[s])
+      .filter((id): id is string => id !== null);
+    const allIds = [...new Set([...inventoryIds, ...equippedIds])];
+
+    if (allIds.length === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'home-panel__empty';
+      empty.textContent = I18nManager.t('home.dharma.empty');
+      dharmaGrid.appendChild(empty);
+      return;
+    }
+
+    for (const itemId of allIds) {
+      let def: ItemDefinition;
+      try { def = getItemDefinition(itemId); } catch { continue; }
+
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'home-dharma__card';
+      card.dataset.itemId = itemId;
+      if (isEquipped(save, itemId)) card.classList.add('home-dharma__card--equipped');
+
+      const initial = document.createElement('span');
+      initial.textContent = itemInitial(def);
+
+      card.appendChild(initial);
+      card.addEventListener('click', () => openDharmaDetail(itemId));
+      dharmaGrid.appendChild(card);
+    }
+  }
+
+  function renderDivine(): void {
+    const save = gameStore.getState().save;
+    if (!save) return;
+
+    divineList.replaceChildren();
+
+    const discovered = listDiscoveredIntentIds(save);
+    divineEmpty.hidden = discovered.length > 0;
+
+    for (const intentId of discovered) {
+      const config = getInsightIntentConfig(intentId);
+      const iconChar = SIGNATURE_INTENT_ICONS[intentId] ?? '✦';
+      const state = getInsightState(save, intentId);
+      const progress = state ? (state.awakened ? 100 : insightDisplayPct(state.xp)) : 0;
+      const ready = checkAwakeningReady(save, intentId);
+
+      const row = document.createElement('div');
+      row.className = 'home-divine-section__row';
+      row.dataset.testid = `home-divine-intent-${intentId}`;
+      if (state?.awakened) row.classList.add('home-divine-section__row--awakened');
+      if (ready) row.classList.add('home-divine-section__row--ready');
+
+      const icon = document.createElement('div');
+      icon.className = 'home-divine-section__icon';
+      icon.textContent = iconChar;
+      icon.setAttribute('aria-hidden', 'true');
+
+      const info = document.createElement('div');
+      info.className = 'home-divine-section__info';
+
+      const name = document.createElement('p');
+      name.className = 'home-divine-section__name';
+      name.textContent = I18nManager.t(`${config.baseSkillId}.name`);
+      if (state?.awakened) {
+        name.textContent = I18nManager.t(`${config.awakenedSkillId}.name`);
+      }
+
+      const bar = document.createElement('div');
+      bar.className = 'home-divine-section__bar';
+      bar.setAttribute('role', 'progressbar');
+      bar.setAttribute('aria-valuemin', '0');
+      bar.setAttribute('aria-valuemax', '100');
+      bar.setAttribute('aria-valuenow', String(progress));
+
+      const fill = document.createElement('div');
+      fill.className = 'home-divine-section__bar-fill';
+      fill.style.width = `${progress}%`;
+      bar.appendChild(fill);
+
+      info.append(name, bar);
+
+      if (ready) {
+        const awakenBtn = document.createElement('button');
+        awakenBtn.type = 'button';
+        awakenBtn.className = 'home-divine-section__awaken';
+        awakenBtn.textContent = I18nManager.t('home.intent.awaken');
+        awakenBtn.addEventListener('click', () => {
+          if (ceremonyActive) return;
+          const uiRoot = document.getElementById('ui-root');
+          if (!uiRoot) return;
+          ceremonyActive = true;
+          void showAwakeningModal(uiRoot, { intentId }).finally(() => {
+            ceremonyActive = false;
+            renderDivine();
+          });
+        });
+        row.append(icon, info, awakenBtn);
+      } else {
+        row.append(icon, info);
+      }
+
+      divineList.appendChild(row);
+    }
+  }
+
+  function renderIntent(): void {
+    const save = gameStore.getState().save;
+    if (!save) return;
+
+    intentList.replaceChildren();
+
+    let anyDiscovered = false;
+    for (const intentId of ALL_INTENT_IDS) {
+      const config = getInsightIntentConfig(intentId);
+      const iconChar = SIGNATURE_INTENT_ICONS[intentId] ?? '✦';
+      const discovered = save.insights[intentId]?.discovered ?? false;
+      if (discovered) anyDiscovered = true;
+      const state = save.insights[intentId] ?? null;
+      const progress = state ? (state.awakened ? 100 : insightDisplayPct(state.xp || 0)) : 0;
+      const ready = state ? checkAwakeningReady(save, intentId) : false;
+
+      const row = document.createElement('div');
+      row.className = 'home-intent-section__row';
+      if (discovered) row.classList.add('home-intent-section__row--discovered');
+      if (state?.awakened) row.classList.add('home-intent-section__row--awakened');
+      if (ready) row.classList.add('home-intent-section__row--ready');
+
+      const icon = document.createElement('div');
+      icon.className = 'home-intent-section__icon';
+      icon.textContent = iconChar;
+      icon.setAttribute('aria-hidden', 'true');
+
+      const info = document.createElement('div');
+      info.className = 'home-intent-section__info';
+
+      const name = document.createElement('p');
+      name.className = 'home-intent-section__name';
+      name.textContent = I18nManager.t(`intent.${intentId}`);
+
+      const desc = document.createElement('p');
+      desc.className = 'home-intent-section__desc';
+      desc.textContent = I18nManager.t(`intent.${intentId}.desc`);
+
+      if (discovered) {
+        const bar = document.createElement('div');
+        bar.className = 'home-intent-section__bar';
+        bar.setAttribute('role', 'progressbar');
+        bar.setAttribute('aria-valuemin', '0');
+        bar.setAttribute('aria-valuemax', '100');
+        bar.setAttribute('aria-valuenow', String(progress));
+
+        const fill = document.createElement('div');
+        fill.className = 'home-intent-section__bar-fill';
+        fill.style.width = `${progress}%`;
+        bar.appendChild(fill);
+
+        info.append(name, desc, bar);
+
+        if (ready) {
+          const awakenBtn = document.createElement('button');
+          awakenBtn.type = 'button';
+          awakenBtn.className = 'home-intent-section__awaken';
+          awakenBtn.textContent = I18nManager.t('home.intent.awaken');
+          awakenBtn.addEventListener('click', () => {
+            const uiRoot = document.getElementById('ui-root');
+            if (!uiRoot) return;
+            void showAwakeningModal(uiRoot, { intentId });
+          });
+          info.appendChild(awakenBtn);
+        }
+      } else {
+        info.append(name);
+      }
+
+      row.append(icon, info);
+      intentList.appendChild(row);
+    }
+
+    intentEmpty.hidden = anyDiscovered;
+  }
+
+  function render(): void {
+    switch (activeSubTab) {
+      case 'stats': renderStats(); break;
+      case 'dharma': renderDharma(); break;
+      case 'divine': renderDivine(); break;
+      case 'intent': renderIntent(); break;
+    }
+  }
+
+  // Event subscriptions
+  for (const btn of subTabButtons) {
+    btn.addEventListener('click', () => {
+      const tabId = btn.dataset.subTab as ProfileSubTab;
+      switchSubTab(tabId);
+    });
+  }
+
+  const unsubscribeEquipment = EventBus.on('equipment:changed', () => {
+    if (activeSubTab === 'dharma') renderDharma();
+  });
 
   const unsubscribeCp = EventBus.on('cp:changed', () => {
-    refresh();
+    if (activeSubTab === 'stats') renderStats();
   });
+
+  // Initial render
+  switchSubTab('stats');
 
   return {
     root,
-    refresh,
+    refresh: render,
     destroy() {
+      closeDetail();
+      unsubscribeEquipment();
       unsubscribeCp();
       root.remove();
     },

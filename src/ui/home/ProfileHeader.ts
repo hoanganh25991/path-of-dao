@@ -16,7 +16,6 @@ import { CultivationRealm } from '@/progression/CultivationRealm';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { showBreakthroughModal } from '@/ui/modals/BreakthroughModal';
 import { showSettingsModal } from '@/ui/modals/SettingsModal';
-import { createProfilePanel } from '@/ui/home/ProfilePanel';
 
 function showToast(message: string): void {
   const toast = document.createElement('div');
@@ -111,27 +110,16 @@ export function createProfileHeader(): ProfileHeaderHandles {
   root.append(topRow, realmRow, statsRow);
 
   let ceremonyActive = false;
-  let profilePanel: ReturnType<typeof createProfilePanel> | null = null;
   let wasBreakthroughReady = false;
   let wasJadeBlocked = false;
 
-  const closeProfilePanel = (): void => {
-    profilePanel?.destroy();
-    profilePanel = null;
-  };
-
-  const openProfilePanel = (): void => {
-    const uiRoot = document.getElementById('ui-root');
-    if (!uiRoot || profilePanel) return;
-    profilePanel = createProfilePanel(closeProfilePanel);
-    uiRoot.appendChild(profilePanel.root);
-  };
-
-  statsRow.addEventListener('click', openProfilePanel);
+  statsRow.addEventListener('click', () => {
+    EventBus.emit('home:open-tab', { tab: 'profile' });
+  });
   statsRow.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      openProfilePanel();
+      EventBus.emit('home:open-tab', { tab: 'profile' });
     }
   });
 
@@ -180,9 +168,14 @@ export function createProfileHeader(): ProfileHeaderHandles {
     }
 
     realmEl.textContent = I18nManager.t(realmLabelKey(save));
-    cpValue.textContent = formatCombatPower(computeCombatPowerFromSave(save), I18nManager.locale);
+    cpValue.textContent = formatCombatPower(
+      computeCombatPowerFromSave(save),
+      I18nManager.locale,
+    );
     const realmOrder = getRealmOrder(save.realm.id);
-    yearsValue.textContent = String(yearsCultivated(save.meta.totalPlaySeconds, realmOrder));
+    yearsValue.textContent = String(
+      yearsCultivated(save.meta.totalPlaySeconds, realmOrder),
+    );
 
     const ready = save.realm.breakthroughReady && !activeAncientId;
     cultivateBtn.hidden = !ready;
@@ -200,7 +193,9 @@ export function createProfileHeader(): ProfileHeaderHandles {
 
     if (onlyJadeMissing && !wasJadeBlocked) {
       showToast(
-        I18nManager.t('progression.breakthrough.need_jade', { count: blockers.jadeShortfall }),
+        I18nManager.t('progression.breakthrough.need_jade', {
+          count: blockers.jadeShortfall,
+        }),
       );
     }
     wasJadeBlocked = onlyJadeMissing;
@@ -209,8 +204,6 @@ export function createProfileHeader(): ProfileHeaderHandles {
       showToast(I18nManager.t('home.breakthrough_ready'));
     }
     wasBreakthroughReady = ready;
-
-    profilePanel?.refresh();
   };
 
   refresh();
@@ -223,9 +216,12 @@ export function createProfileHeader(): ProfileHeaderHandles {
     refresh();
   });
 
-  const unsubscribeBreakthrough = EventBus.on('realm:breakthrough-ready', () => {
-    refresh();
-  });
+  const unsubscribeBreakthrough = EventBus.on(
+    'realm:breakthrough-ready',
+    () => {
+      refresh();
+    },
+  );
 
   return {
     root,
@@ -234,7 +230,6 @@ export function createProfileHeader(): ProfileHeaderHandles {
       unsubscribeStore();
       unsubscribeCp();
       unsubscribeBreakthrough();
-      closeProfilePanel();
       root.remove();
     },
   };

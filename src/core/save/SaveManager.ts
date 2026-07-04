@@ -126,7 +126,7 @@ export class SaveManager {
         weaponMilestone: 'none',
       },
       cosmetics: { pet: null },
-      settings: { locale: 'system', quality: 'auto', sfxVolume: 1, musicVolume: 1 },
+      settings: { locale: 'system', quality: 'auto', sfxVolume: 1, musicVolume: 1, fullscreen: true },
       meta: { totalPlaySeconds: 0, createdAt: now, updatedAt: now },
     };
 

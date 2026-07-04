@@ -70,13 +70,6 @@ html.landscape-layout .home-panel-sheet__inner {
   max-height: 100%;
 }
 
-html.landscape-layout .home-toast {
-  left: auto;
-  right: calc(min(36vw, 400px) / 2);
-  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
-  transform: translateX(50%);
-}
-
 html.landscape-layout .home-item-detail {
   padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
   align-items: center;
@@ -89,8 +82,8 @@ html.landscape-layout .joystick-zone {
 }
 
 html.landscape-layout .action-buttons {
-  --btn-size: 50px;
-  --btn-lg: 68px;
+  --btn-size: 48px;
+  --btn-lg: 64px;
   --arc-radius: 118px;
   right: max(1.25rem, env(safe-area-inset-right, 0px));
   bottom: max(1rem, env(safe-area-inset-bottom, 0px));

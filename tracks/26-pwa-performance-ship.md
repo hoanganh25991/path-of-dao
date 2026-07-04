@@ -2,7 +2,7 @@
 
 **Status:** `[~]` E2E smoke landed — manual sign-off pending  
 **Plan:** [plans/26-pwa-performance-ship.md](../plans/26-pwa-performance-ship.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-04 (fullscreen On/Off setting)
 
 ## Summary
 
@@ -12,9 +12,10 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 
 - **QualityProfile** — `auto` / `low` / `mid` / `high`; device heuristic; low tier disables combat juice
 - **Fullscreen** — `FullscreenManager` targets `#app` (canvas + HUD); boot attempt on audio-unlock tap; play taps (Journey, world-map Enter, ancient echo confirm); 24h opt-out after manual exit; skipped in standalone PWA; iOS Safari has no element Fullscreen API
+- **Fullscreen setting** — `settings.fullscreen` (Zod `.default(true)`) in save schema; toggle in settings modal (On/Off); `FullscreenManager.request()` checks save setting; re-enabling immediately requests fullscreen
 - **Home aura** — particle count scaled by quality; disabled on low tier
 - **Save settings** — `settings.quality` (back-compat default `auto`)
-- **Settings modal** — performance picker + version row (`0.1.0-mvp`)
+- **Settings modal** — performance picker + fullscreen toggle (On/Off) + version row (`0.1.0-mvp`)
 - **PWA** — `vite-plugin-pwa`, `public/manifest.json`, SW precache; **GitHub Pages base** `/path-of-dao/`; **landscape** orientation
 - **App icons** — unarmed cultivator jab pose (no sword — matches T1 mortal start); regen via `python3 tools/gen-app-icon.py`
 - **Build** — manual chunks (`phaser`, `three`, `vendor`); build + SW generation green

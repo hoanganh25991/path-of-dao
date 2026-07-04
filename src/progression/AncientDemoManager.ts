@@ -77,6 +77,7 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
     realm,
     insights,
     equippedSkills: normalizeLoadout({ ...template.equippedSkills }, profile.unlockedSkills),
+    unlockedSkills: [...profile.unlockedSkills],
     inventory: {
       gold: template.gold,
       items: template.inventoryItemIds.map((id) => ({ id, qty: 1 })),
@@ -239,6 +240,7 @@ export async function enterAncientDemo(
   }
   store.patch(demoSave);
 
+  EventBus.emit('loadout:changed', { equippedSkills: demoSave.equippedSkills });
   EventBus.emit('demo:entered', { ancientId });
 }
 
@@ -257,10 +259,12 @@ export async function exitAncientDemo(): Promise<void> {
   if (backup) {
     store.patch(backup);
     await store.persist();
+    EventBus.emit('loadout:changed', { equippedSkills: backup.equippedSkills });
   } else {
     const fresh = SaveManager.createNew();
     store.patch(fresh);
     await store.persist();
+    EventBus.emit('loadout:changed', { equippedSkills: fresh.equippedSkills });
   }
 
   EventBus.emit('demo:exited', undefined);

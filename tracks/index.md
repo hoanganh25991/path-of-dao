@@ -2,7 +2,7 @@
 
 > **Spec:** [plans/index.md](../plans/index.md)  
 > **Detail notes:** [tracks/](./) (one file per sub-plan)  
-> **Last updated:** 2026-07-04 (Gather Qi health button + HP regen; encounter shutdown-race fix)
+> **Last updated:** 2026-07-04 (fullscreen On/Off setting + save integration)
 
 This is the **master progress index**. Each sub-plan has a detailed track file under `tracks/` with done/remaining items, verification notes, and Tiên Nghịch gaps where relevant.
 
@@ -15,7 +15,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | Sub-plans done | **18 / 28** (64%) |
 | In progress | **9** (incl. 26 — PWA foundation) |
 | Pending | **0** |
-| Cross-cutting | Tiên Nghịch alignment **7 / 8 done** (T5–T6 landed 2026-07-04) |
+| Cross-cutting | Tiên Nghịch alignment **8 / 8 done** |
 | Active thread | **Base flow `[x]`** — 37 E2E automated sign-off · cultivation HUD + map intro (13) |
 
 ### By phase
@@ -144,7 +144,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | World map portal | fresh save → Fallen Village node unlocked |
 | World map lock | ch2 region shows chapter gate + disabled Enter |
 | Save reload | ch1 explore clear → reload → Void Slash + Continue Journey |
-| Settings version | `0.1.0-mvp` in settings modal |
+| Settings version + fullscreen toggle | `0.1.0-mvp` in settings modal · fullscreen On/Off |
 | MVP smoke | boot → combat → vi locale |
 
 - **384 unit tests** · **37 E2E tests** (`pnpm test:e2e`); 3 seeded ch6–7 cases deferred

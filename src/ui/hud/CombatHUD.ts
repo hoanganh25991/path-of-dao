@@ -15,6 +15,7 @@ export class CombatHUD {
   private static mounted = false;
   private static root: HTMLElement | null = null;
   private static unsubscribe: (() => void) | null = null;
+  private static unsubscribeDemo: Array<() => void> = [];
 
   static init(uiRoot: HTMLElement): void {
     if (CombatHUD.mounted) return;
@@ -32,9 +33,21 @@ export class CombatHUD {
     CombatDeathOverlay.init(CombatHUD.root);
     CultivationToast.init();
 
+    const syncAncientHud = (): void => {
+      if (!CombatHUD.root) return;
+      const inCombat = !CombatHUD.root.hidden;
+      AncientEchoBanner.syncVisible(inCombat);
+      PlayerStatusBar.setAncientMode(inCombat && isAncientCombatActive());
+    };
+
     CombatHUD.unsubscribe = EventBus.on('scene:changed', ({ id }) => {
       CombatHUD.applyScene(id);
     });
+
+    CombatHUD.unsubscribeDemo.push(
+      EventBus.on('demo:entered', syncAncientHud),
+      EventBus.on('demo:exited', syncAncientHud),
+    );
 
     CombatHUD.mounted = true;
   }
@@ -42,6 +55,8 @@ export class CombatHUD {
   static destroy(): void {
     CombatHUD.unsubscribe?.();
     CombatHUD.unsubscribe = null;
+    for (const unsub of CombatHUD.unsubscribeDemo) unsub();
+    CombatHUD.unsubscribeDemo = [];
     PlayerStatusBar.destroy();
     AncientEchoBanner.destroy();
     CombatSkillPicker.destroy();

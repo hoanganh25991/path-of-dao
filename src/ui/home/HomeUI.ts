@@ -7,10 +7,9 @@ import {
   initHomeProgressionNudges,
   resetHomeProgressionNudgesForTests,
 } from '@/ui/home/HomeProgressionNudges';
-import { createInventoryPanel } from '@/ui/home/panels/InventoryPanel';
+import { createProfilePanel } from '@/ui/home/ProfilePanel';
 import { createEchoesPanel } from '@/ui/home/panels/EchoesPanel';
 import { createPlayPanel } from '@/ui/home/panels/PlayPanel';
-import { createSkillsPanel } from '@/ui/home/panels/SkillsPanel';
 import { createStoryPanel } from '@/ui/home/panels/StoryPanel';
 import type { HomeTab } from '@/ui/home/types';
 import '@/ui/home/home.css';
@@ -106,8 +105,7 @@ export class HomeUI {
     const panels: Record<HomeTab, PanelHandles> = {
       play: createPlayPanel(),
       echoes: createEchoesPanel(),
-      inventory: createInventoryPanel(),
-      skills: createSkillsPanel(),
+      profile: createProfilePanel(),
       story: createStoryPanel(),
     };
     HomeUI.panels = panels;

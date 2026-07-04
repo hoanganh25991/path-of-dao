@@ -1,8 +1,8 @@
 /** Cultivation-driven AOE growth — skills and basic attacks widen as realm/level rise. */
 
-const REALM_STEP = 0.32;
-const LEVEL_STEP = 0.06;
-const BASIC_ATTACK_REALM_BONUS = 0.22;
+const REALM_STEP = 0.38;
+const LEVEL_STEP = 0.08;
+const BASIC_ATTACK_REALM_BONUS = 0.35;
 
 /** General skill / effect radius multiplier from cultivation progress. */
 export function computeAoeScale(realmOrder: number, level: number): number {
@@ -20,8 +20,8 @@ export function computeBasicAttackAoeScale(realmOrder: number, level: number): n
   return base * (1 + (realm - 1) * BASIC_ATTACK_REALM_BONUS);
 }
 
-/** Widen melee arc in radians from scale (caps to ~240°). */
+/** Widen melee arc in radians from scale (caps to ~270°). */
 export function scaledMeleeHalfArc(baseHalfArc: number, aoeScale: number): number {
-  const widened = baseHalfArc * (0.85 + aoeScale * 0.35);
-  return Math.min(Math.PI * 0.67, widened);
+  const widened = baseHalfArc * (0.8 + aoeScale * 0.45);
+  return Math.min(Math.PI * 0.75, widened);
 }

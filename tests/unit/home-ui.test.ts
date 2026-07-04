@@ -61,23 +61,20 @@ describe('HomeUI', () => {
     expect(HomeUI.getActiveTab()).toBe('play');
     expect(uiRoot.querySelector('[data-panel="play"]')).toBeTruthy();
 
-    HomeUI.openTab('inventory');
-    expect(HomeUI.getActiveTab()).toBe('inventory');
-    expect(uiRoot.querySelector('[data-panel="inventory"]')).toBeTruthy();
+    HomeUI.openTab('profile');
+    expect(HomeUI.getActiveTab()).toBe('profile');
+    expect(uiRoot.querySelector('[data-panel="profile"]')).toBeTruthy();
     expect(uiRoot.querySelector('[data-panel="play"]')).toBeNull();
 
     HomeUI.openTab('echoes');
     expect(HomeUI.getActiveTab()).toBe('echoes');
     expect(uiRoot.querySelector('[data-testid="home-echoes"]')).toBeTruthy();
 
-    HomeUI.openTab('skills');
-    expect(uiRoot.querySelector('[data-panel="skills"]')).toBeTruthy();
-
     HomeUI.openTab('story');
     expect(uiRoot.querySelector('[data-panel="story"]')).toBeTruthy();
   });
 
-  it('inventory equip button calls EquipmentManager', () => {
+  it('profile Dharma Treasures equip button calls EquipmentManager', () => {
     gameStore.getState().patch({
       inventory: {
         items: [{ id: 'item.sword.iron', qty: 1 }],
@@ -90,9 +87,14 @@ describe('HomeUI', () => {
     const uiRoot = document.getElementById('ui-root')!;
     HomeUI.init(uiRoot);
     EventBus.emit('scene:changed', { id: 'home', payload: undefined });
-    HomeUI.openTab('inventory');
+    HomeUI.openTab('profile');
 
-    const ironCard = uiRoot.querySelector<HTMLButtonElement>('[data-item-id="item.sword.iron"]');
+    // Switch to Dharma sub-tab
+    const dharmaTab = uiRoot.querySelector<HTMLButtonElement>('.home-profile__sub-tab[data-sub-tab="dharma"]');
+    expect(dharmaTab).toBeTruthy();
+    dharmaTab!.click();
+
+    const ironCard = uiRoot.querySelector<HTMLButtonElement>('.home-dharma__card[data-item-id="item.sword.iron"]');
     expect(ironCard).toBeTruthy();
     ironCard!.click();
 

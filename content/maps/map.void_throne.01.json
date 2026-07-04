@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/void_throne-01.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 4480,
+    "y": 6720
   },
   "bounds": {
-    "width": 1792,
-    "height": 1344
+    "width": 22400,
+    "height": 17024
   },
   "connections": [],
   "encounterTable": "encounter.void_throne.01",
@@ -18,9 +18,9 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 1120,
-      "y": 400,
-      "radius": 44,
+      "x": 15680,
+      "y": 5600,
+      "radius": 616,
       "id": "cave.void_throne"
     }
   ],

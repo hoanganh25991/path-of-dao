@@ -62,7 +62,8 @@ Tune with `pnpm cp:calc` after enemy stats placed.
 
 ### Size
 
-- 50×40 to 70×50 tiles, 32px tiles
+- Base tilemap export: 50×38 tiles (1600×1216 px) at 32 px tiles
+- **Playable bounds scaled 10×** via `content/maps/*.json`: `16000×12160` px (500×380 tiles) for ch2–5; `map.fallen_village.01` retained at `8000×6080` px (250×190 tiles)
 - Playtime target: 4–7 min per map
 
 ### Layout

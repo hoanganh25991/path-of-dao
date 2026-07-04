@@ -15,6 +15,11 @@ import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvent
 import { recordJourney } from '@/progression/JourneyLog';
 import { unlockSkillForBoss, unlockSkillsForLevel } from '@/progression/SkillUnlockManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import {
+  buildRoamingRankConfig,
+  computeRoamingRank,
+  type RoamingRankConfig,
+} from '@/combat/systems/RoamingRankScaler';
 
 const MELEE_HIT_SLACK = 1.3;
 const ARROW_SPEED = 300;
@@ -33,6 +38,8 @@ interface RoamSlot {
   patrolRadius: number;
   cultivator: Cultivator | null;
   respawnTimer: Phaser.Time.TimerEvent | null;
+  /** Random pool — optional variety. */
+  enemyPool: string[] | null;
 }
 
 interface Arrow {
@@ -54,6 +61,10 @@ export class RoamingSpawnManager {
   private arrows: Arrow[] = [];
   private pickups: GoldPickup[] = [];
   private destroyed = false;
+  private readonly rankConfig: RoamingRankConfig;
+  private readonly mapStartTimeMs: number;
+  private readonly playerSpawnX: number;
+  private readonly playerSpawnY: number;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -61,8 +72,21 @@ export class RoamingSpawnManager {
     roam: RoamConfig,
     walls: Phaser.Tilemaps.TilemapLayer,
     private readonly hitboxes: HitboxManager,
+    /** Player's spawn point on the map — used for distance-based rank scaling. */
+    playerSpawn: { x: number; y: number },
+    recommendedRealmOrder = 1,
   ) {
-    const cultivatorIds = [...new Set(roam.spawns.map((s) => s.enemyId))];
+    this.rankConfig = buildRoamingRankConfig(recommendedRealmOrder);
+    this.mapStartTimeMs = scene.time.now;
+    this.playerSpawnX = playerSpawn.x;
+    this.playerSpawnY = playerSpawn.y;
+
+    const prewarmIds = new Set<string>();
+    for (const spawn of roam.spawns) {
+      const ids = spawn.enemyPool?.length ? spawn.enemyPool : spawn.enemyId ? [spawn.enemyId] : [];
+      for (const id of ids) prewarmIds.add(id);
+    }
+
     this.pool = new CultivatorPool((cultivatorId) => {
       const cultivator = new Cultivator(scene, getCultivatorConfig(cultivatorId), {
         onStrike: (c) => this.resolveStrike(c),
@@ -72,17 +96,19 @@ export class RoamingSpawnManager {
       scene.physics.add.collider(cultivator.sprite, walls);
       return cultivator;
     });
-    this.pool.prewarm(cultivatorIds);
+    this.pool.prewarm([...prewarmIds]);
 
     for (const spawn of roam.spawns) {
+      const id = spawn.enemyId ?? spawn.enemyPool?.[0] ?? '';
       this.slots.push({
-        cultivatorId: spawn.enemyId,
+        cultivatorId: id,
         x: spawn.x,
         y: spawn.y,
         respawnMs: spawn.respawnMs,
         patrolRadius: spawn.patrolRadius,
         cultivator: null,
         respawnTimer: null,
+        enemyPool: spawn.enemyPool ?? null,
       });
     }
 
@@ -137,7 +163,18 @@ export class RoamingSpawnManager {
     slot.respawnTimer?.remove(false);
     slot.respawnTimer = null;
 
-    const cultivator = this.pool.acquire(slot.cultivatorId, slot.x, slot.y);
+    // Pick from enemy pool if available — biased toward higher index at higher rank
+    const elapsedSec = (this.scene.time.now - this.mapStartTimeMs) / 1000;
+    const distPx = Phaser.Math.Distance.Between(this.playerSpawnX, this.playerSpawnY, slot.x, slot.y);
+    const rankResult = computeRoamingRank(distPx, elapsedSec, this.rankConfig);
+
+    let pickId = slot.cultivatorId;
+    if (slot.enemyPool && slot.enemyPool.length > 0) {
+      const bias = Math.min(rankResult.rank, slot.enemyPool.length - 1);
+      pickId = slot.enemyPool[bias] ?? slot.cultivatorId;
+    }
+
+    const cultivator = this.pool.acquire(pickId, slot.x, slot.y);
     cultivator.setRecoveryDuration(slot.respawnMs);
     if (slot.patrolRadius > 0) {
       const r = slot.patrolRadius;
@@ -149,6 +186,10 @@ export class RoamingSpawnManager {
       ]);
     }
     slot.cultivator = cultivator;
+
+    if (rankResult.rank > 0) {
+      cultivator.setRank(rankResult);
+    }
   }
 
   private onDefeatHoldComplete(cultivator: Cultivator): void {

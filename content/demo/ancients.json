@@ -139,7 +139,7 @@
         "equippedSkills": {
           "primary": "skill.sword.slash.awakened",
           "secondary": "skill.lightning.strike.awakened",
-          "ultimate": "skill.flame.bolt"
+          "ultimate": "skill.flame.bolt.awakened"
         },
         "equipped": {
           "weapon": "item.sword.iron",

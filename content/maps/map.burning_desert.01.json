@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/burning_desert-01.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 2880,
+    "y": 4320
   },
   "bounds": {
-    "width": 1600,
-    "height": 1216
+    "width": 14400,
+    "height": 10944
   },
   "connections": [],
   "encounterTable": "encounter.burning_desert.01",
@@ -18,9 +18,9 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 960,
-      "y": 480,
-      "radius": 40,
+      "x": 8640,
+      "y": 4320,
+      "radius": 360,
       "id": "cave.burning_desert"
     }
   ],

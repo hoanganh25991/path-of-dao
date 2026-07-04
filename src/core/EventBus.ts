@@ -53,6 +53,7 @@ export type GameEvents = {
   'home:open-tab': { tab: HomeTab };
   'settings:locale-changed': { preference: LocalePreference; locale: Locale };
   'settings:quality-changed': { preference: QualityPreference };
+  'settings:fullscreen-changed': { enabled: boolean };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
   'cp:changed': { cp: number };
   'skill:learned': { skillIds: string[] };

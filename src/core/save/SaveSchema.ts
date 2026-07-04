@@ -99,6 +99,7 @@ export const playerSaveV1Schema = z.object({
     quality: z.enum(['auto', 'low', 'mid', 'high']).default('auto'),
     sfxVolume: z.number().min(0).max(1),
     musicVolume: z.number().min(0).max(1),
+    fullscreen: z.boolean().default(true),
   }),
   meta: z.object({
     totalPlaySeconds: z.number().min(0),

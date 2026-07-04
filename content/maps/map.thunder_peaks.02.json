@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/thunder_peaks-02.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 3200,
+    "y": 4800
   },
   "bounds": {
-    "width": 1600,
-    "height": 1216
+    "width": 16000,
+    "height": 12160
   },
   "connections": [],
   "encounterTable": "encounter.thunder_peaks.02",

@@ -5,12 +5,12 @@
   "tiledPath": "assets/maps/fallen_village-02.json",
   "tilesetName": "grove",
   "spawn": {
-    "x": 320,
-    "y": 480
+    "x": 1600,
+    "y": 2400
   },
   "bounds": {
-    "width": 1600,
-    "height": 1216
+    "width": 8000,
+    "height": 6080
   },
   "connections": [],
   "encounterTable": "encounter.fallen_village.02",
@@ -18,9 +18,9 @@
   "pois": [
     {
       "type": "ancient_sword",
-      "x": 720,
-      "y": 560,
-      "radius": 36,
+      "x": 3600,
+      "y": 2800,
+      "radius": 180,
       "id": "sword.fallen_village"
     }
   ],

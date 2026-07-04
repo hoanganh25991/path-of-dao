@@ -27,8 +27,8 @@ const TIER_MAX_ALIVE: Record<EncounterTier, number> = {
 
 /** Camera zoom targets per tier (Phaser zoom — higher = closer). */
 export const ENCOUNTER_ZOOM: Record<EncounterTier, number> = {
-  solo: 1.05,
-  squad: 0.88,
+  solo: 1.3,
+  squad: 1.0,
   horde: 0.72,
   mass: 0.58,
 };
@@ -73,9 +73,9 @@ export function zoomForActiveEnemies(count: number): number {
 
 /** Max temporary zoom-in from attacks/skills — smaller when many cultivators are active. */
 export function engagementBoostCap(activeCultivatorCount: number): number {
-  if (activeCultivatorCount <= 1) return 0.14;
-  if (activeCultivatorCount <= 10) return 0.1;
-  if (activeCultivatorCount <= 100) return 0.04;
+  if (activeCultivatorCount <= 1) return 0.6;
+  if (activeCultivatorCount <= 10) return 0.4;
+  if (activeCultivatorCount <= 100) return 0.15;
   return 0;
 }
 

@@ -33,7 +33,7 @@ function syncAwakeningNudges(): void {
     const config = getInsightIntentConfig(intentId);
     const skillName = I18nManager.t(`${config.baseSkillId}.name`);
     showToast(I18nManager.t('home.awakening_ready', { skill: skillName }), () => {
-      EventBus.emit('home:open-tab', { tab: 'skills' });
+      EventBus.emit('home:open-tab', { tab: 'profile' });
     });
     break;
   }
@@ -65,7 +65,7 @@ export function initHomeProgressionNudges(): () => void {
     try {
       const name = I18nManager.t(getSkillDefinition(skillId).nameKey);
       showToast(I18nManager.t('home.skill_learned', { skill: name }), () => {
-        EventBus.emit('home:open-tab', { tab: 'skills' });
+        EventBus.emit('home:open-tab', { tab: 'profile' });
       });
     } catch {
       // unknown skill — skip toast

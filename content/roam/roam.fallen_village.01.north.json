@@ -2,40 +2,60 @@
   "id": "roam.fallen_village.01.north",
   "spawns": [
     {
-      "enemyId": "enemy.village.scavenger",
-      "x": 2200,
-      "y": 3200,
-      "patrolRadius": 80
+      "enemyPool": [
+        "enemy.village.scavenger",
+        "enemy.wolf"
+      ],
+      "x": 22000,
+      "y": 32000,
+      "patrolRadius": 800
     },
     {
-      "enemyId": "enemy.village.scavenger",
-      "x": 4000,
-      "y": 2800,
-      "patrolRadius": 75
+      "enemyPool": [
+        "enemy.village.scavenger",
+        "enemy.wolf",
+        "enemy.village.spirit_pest"
+      ],
+      "x": 40000,
+      "y": 28000,
+      "patrolRadius": 750
     },
     {
-      "enemyId": "enemy.wolf",
-      "x": 5600,
-      "y": 3600,
-      "patrolRadius": 85
+      "enemyPool": [
+        "enemy.wolf",
+        "enemy.bandit.thug"
+      ],
+      "x": 56000,
+      "y": 36000,
+      "patrolRadius": 850
     },
     {
-      "enemyId": "enemy.village.scavenger",
-      "x": 3400,
-      "y": 4600,
-      "patrolRadius": 70
+      "enemyPool": [
+        "enemy.village.scavenger",
+        "enemy.bandit.thug"
+      ],
+      "x": 34000,
+      "y": 46000,
+      "patrolRadius": 700
     },
     {
-      "enemyId": "enemy.village.spirit_pest",
-      "x": 6200,
-      "y": 4800,
-      "patrolRadius": 60
+      "enemyPool": [
+        "enemy.village.spirit_pest",
+        "enemy.bandit.thug",
+        "enemy.heng_yue.disciple"
+      ],
+      "x": 62000,
+      "y": 48000,
+      "patrolRadius": 600
     },
     {
-      "enemyId": "enemy.slime",
-      "x": 4800,
-      "y": 5200,
-      "patrolRadius": 55
+      "enemyPool": [
+        "enemy.slime",
+        "enemy.village.scavenger"
+      ],
+      "x": 48000,
+      "y": 52000,
+      "patrolRadius": 550
     }
   ]
 }

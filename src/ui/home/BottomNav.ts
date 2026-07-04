@@ -16,8 +16,7 @@ export function createBottomNav(onSelect: (tab: HomeTab) => void): BottomNavHand
   const tabs: { id: HomeTab; labelKey: string }[] = [
     { id: 'play', labelKey: 'home.nav.play' },
     { id: 'echoes', labelKey: 'home.nav.echoes' },
-    { id: 'inventory', labelKey: 'home.nav.inventory' },
-    { id: 'skills', labelKey: 'home.nav.skills' },
+    { id: 'profile', labelKey: 'home.nav.profile' },
     { id: 'story', labelKey: 'home.nav.story' },
   ];
 

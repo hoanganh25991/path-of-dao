@@ -139,7 +139,7 @@ describe('gameStore', () => {
     await gameStore.getState().load();
     gameStore.getState().patch({
       xp: 500,
-      settings: { locale: 'vi', quality: 'high', sfxVolume: 0.4, musicVolume: 0.6 },
+      settings: { locale: 'vi', quality: 'high', sfxVolume: 0.4, musicVolume: 0.6, fullscreen: true },
     });
     await gameStore.getState().persist();
 
@@ -152,6 +152,7 @@ describe('gameStore', () => {
       quality: 'high',
       sfxVolume: 0.4,
       musicVolume: 0.6,
+      fullscreen: true,
     });
 
     const loaded = await SaveManager.load();

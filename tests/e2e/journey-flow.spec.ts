@@ -406,7 +406,7 @@ test.describe('Journey base flow', () => {
     await expect(page.getByTestId('continue-journey-hint')).toContainText('Foggy Trail');
   });
 
-  test('explore clear via depart unlocks Void Slash on Skills tab', async ({ page }) => {
+  test('explore clear via depart unlocks Void Slash on Profile > Divine Abilities', async ({ page }) => {
     await page.goto('/');
     await dismissAudioUnlock(page);
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
@@ -418,9 +418,12 @@ test.describe('Journey base flow', () => {
     await departClearedMap(page, 'map.fallen_village.01');
 
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
-    await page.getByRole('tab', { name: 'Skills' }).click();
-    await expect(page.getByTestId('home-skills-intent-void')).toBeVisible();
-    await expect(page.getByTestId('home-skills-intent-void')).toContainText('Void Slash');
+    await page.getByRole('tab', { name: 'Profile' }).click();
+    const divineTab = page.locator('.home-profile__sub-tab[data-sub-tab="divine"]');
+    await expect(divineTab).toBeVisible({ timeout: 5_000 });
+    await divineTab.click();
+    await expect(page.getByTestId('home-divine-intent-void')).toBeVisible();
+    await expect(page.getByTestId('home-divine-intent-void')).toContainText('Void Slash');
 
     await page.getByRole('tab', { name: 'Path' }).click();
     await expect(page.getByTestId('home-path-row-map_clear-map.fallen_village.01')).toBeVisible();
@@ -450,9 +453,12 @@ test.describe('Journey base flow', () => {
     await departClearedMap(page, 'map.mist_forest.01');
 
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
-    await page.getByRole('tab', { name: 'Skills' }).click();
-    await expect(page.getByTestId('home-skills-intent-sword')).toBeVisible();
-    await expect(page.getByTestId('home-skills-intent-sword')).toContainText('Sword Slash');
+    await page.getByRole('tab', { name: 'Profile' }).click();
+    const divineTab2 = page.locator('.home-profile__sub-tab[data-sub-tab="divine"]');
+    await expect(divineTab2).toBeVisible({ timeout: 5_000 });
+    await divineTab2.click();
+    await expect(page.getByTestId('home-divine-intent-sword')).toBeVisible();
+    await expect(page.getByTestId('home-divine-intent-sword')).toContainText('Sword Slash');
   });
 
   test('ancient sword encounter sets weapon milestone', async ({ page }) => {
@@ -472,8 +478,11 @@ test.describe('Journey base flow', () => {
     });
     expect(milestone).toBe('ancient_sword');
 
-    await page.getByRole('tab', { name: 'Skills' }).click();
-    await expect(page.getByTestId('home-skills-intent-sword')).toBeVisible();
+    await page.getByRole('tab', { name: 'Profile' }).click();
+    const divineTab3 = page.locator('.home-profile__sub-tab[data-sub-tab="divine"]');
+    await expect(divineTab3).toBeVisible({ timeout: 5_000 });
+    await divineTab3.click();
+    await expect(page.getByTestId('home-divine-intent-sword')).toBeVisible();
   });
 });
 
@@ -513,8 +522,11 @@ test.describe('Multi-chapter road', () => {
 
       await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
       await expectSkillUnlocked(page, skillId);
-      await page.getByRole('tab', { name: 'Skills' }).click();
-      await expect(page.getByTestId(`home-skills-intent-${intent}`)).toBeVisible();
+      await page.getByRole('tab', { name: 'Profile' }).click();
+      const divineTabLoop = page.locator('.home-profile__sub-tab[data-sub-tab="divine"]');
+      await expect(divineTabLoop).toBeVisible({ timeout: 5_000 });
+      await divineTabLoop.click();
+      await expect(page.getByTestId(`home-divine-intent-${intent}`)).toBeVisible();
     });
   }
 

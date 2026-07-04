@@ -20,6 +20,7 @@ import {
 import { BossPhaseTracker } from '@/combat/ai/BossPhaseTracker';
 import { PatrolAI } from '@/combat/ai/PatrolAI';
 import { DISPLAY_SCALE } from '@/combat/art/stickyManPalette';
+import { type RoamingRankResult } from '@/combat/systems/RoamingRankScaler';
 
 export const TELEGRAPH_MS = 300;
 export const STRIKE_MS = 100;
@@ -81,6 +82,20 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
   private readonly hpBarBg: Phaser.GameObjects.Rectangle;
   private readonly hpBarFill: Phaser.GameObjects.Rectangle;
   private bossPhases: BossPhaseTracker | null = null;
+
+  /** Visual rank — aura ring, orbit sparkles, HP bar color. */
+  private rank = 0;
+  private rankAuraRing: Phaser.GameObjects.Ellipse | null = null;
+  private rankOrbits: Phaser.GameObjects.Arc[] = [];
+  private readonly RANK_HP_COLORS = [
+    0xd94a3a, // rank 0 red
+    0xd98c3a, // rank 1 orange
+    0xd4c840, // rank 2 gold
+    0x68c850, // rank 3 green
+    0x40a8d4, // rank 4 blue
+    0x8040d4, // rank 5 purple
+    0xd44090, // rank 6 magenta
+  ] as const;
 
   constructor(
     scene: Phaser.Scene,
@@ -154,6 +169,10 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     this.hpBarFill.setVisible(true).setScale(1, 1);
     this.updateHpBar();
     this.sprite.play(this.animKeys.idle);
+    this.rank = 0;
+    this.stats.setModifiers([]);
+    this.destroyRankVisuals();
+    this.hpBarFill.setFillStyle(0xd94a3a);
   }
 
   /** Override patrol loop for roaming map spawns. */
@@ -164,6 +183,80 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
   /** Milliseconds until full HP after defeat (roaming spawns set per slot). */
   setRecoveryDuration(ms: number): void {
     this.recoveryDurationMs = Math.max(500, ms);
+  }
+
+  /**
+   * Apply rank scaling: stat multiplier + visuals (aura ring, orbit sparkles, HP bar color).
+   * Call after spawnAt() so visuals layer correctly.
+   */
+  setRank(rankResult: RoamingRankResult): void {
+    this.rank = rankResult.rank;
+
+    if (rankResult.statMultiplier !== 1) {
+      this.stats.setModifiers([
+        { id: 'roaming_rank_hp', stat: 'hpMax', kind: 'percent', value: rankResult.statMultiplier - 1 },
+        { id: 'roaming_rank_atk', stat: 'atk', kind: 'percent', value: rankResult.statMultiplier - 1 },
+        { id: 'roaming_rank_def', stat: 'def', kind: 'percent', value: rankResult.statMultiplier - 1 },
+        { id: 'roaming_rank_spd', stat: 'speed', kind: 'percent', value: rankResult.statMultiplier - 1 },
+      ]);
+      this.stats.refill();
+      this.updateHpBar();
+    }
+
+    this.renderRankVisuals();
+  }
+
+  /** Build or update rank aura ring + orbit sparkles. */
+  private renderRankVisuals(): void {
+    this.destroyRankVisuals();
+    if (this.rank <= 0) return;
+    const scene = this.sprite.scene;
+    const r = 18 + this.rank * 2;
+    const color = this.rankColor;
+
+    // Aura ring at feet with alpha
+    this.rankAuraRing = scene.add
+      .ellipse(this.x, this.y + 6, r * 2, r * 0.8, color, 0.12 + this.rank * 0.04)
+      .setDepth(7);
+
+    // Orbit sparkles — small circles that orbit the cultivator
+    const orbitCount = Math.min(this.rank + 1, 6);
+    for (let i = 0; i < orbitCount; i++) {
+      const orbit = scene.add
+        .circle(this.x, this.y + 2, 2, color, 0.7 + Math.random() * 0.3)
+        .setDepth(11);
+      this.rankOrbits.push(orbit);
+    }
+  }
+
+  private destroyRankVisuals(): void {
+    this.rankAuraRing?.destroy();
+    this.rankAuraRing = null;
+    for (const o of this.rankOrbits) o.destroy();
+    this.rankOrbits = [];
+  }
+
+  /** Animate orbit sparkles and update aura ring position each frame. */
+  private updateRankTween(_dtMs: number): void {
+    if (this.rank <= 0) return;
+    const time = this.sprite.scene.time.now;
+    const orbitR = 22 + this.rank * 3;
+    if (this.rankAuraRing) {
+      this.rankAuraRing.setPosition(this.x, this.y + 6);
+    }
+    for (let i = 0; i < this.rankOrbits.length; i++) {
+      const angle = ((time / 1200) * Math.PI * 2 + (Math.PI * 2 * i) / this.rankOrbits.length) % (Math.PI * 2);
+      const wave = Math.sin(angle * 1.5) * 2;
+      this.rankOrbits[i]!.setPosition(
+        this.x + Math.cos(angle) * orbitR,
+        this.y + Math.sin(angle) * orbitR * 0.5 + wave,
+      );
+    }
+  }
+
+  private get rankColor(): number {
+    const idx = Math.min(this.rank, this.RANK_HP_COLORS.length - 1);
+    return this.RANK_HP_COLORS[idx] ?? 0xd94a3a;
   }
 
   deactivate(): void {
@@ -181,6 +274,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     }
     this.hpBarBg.setVisible(false);
     this.hpBarFill.setVisible(false);
+    this.destroyRankVisuals();
   }
 
   update(dtMs: number, player: AIPlayerState): void {
@@ -256,6 +350,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     }
 
     this.trackHpBar();
+    this.updateRankTween(dtMs);
   }
 
   receiveHit(result: DamageResult, hitbox: Hitbox): void {
@@ -310,6 +405,8 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     this.sprite.setAlpha(1);
     this.sprite.setScale(DISPLAY_SCALE);
     this.updateHpBar();
+    this.hpBarFill.setVisible(true);
+    this.hpBarBg.setVisible(true);
     this.sprite.play(this.animKeys.idle);
   }
 
@@ -321,6 +418,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     clearHitFlash(this.sprite);
     this.hpBarBg.destroy();
     this.hpBarFill.destroy();
+    this.destroyRankVisuals();
     super.destroy();
   }
 
@@ -364,6 +462,9 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     this.sprite.setTint(0x9a9a9a);
     this.sprite.setAlpha(0.75);
     this.updateHpBar();
+    this.hpBarFill.setScale(0, 1);
+    this.hpBarFill.setVisible(false);
+    this.hpBarBg.setVisible(false);
     if (this.animKeys.sit) {
       this.sprite.play(this.animKeys.sit);
     }
@@ -373,6 +474,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
   private updateHpBar(): void {
     const { hp, hpMax } = this.stats.runtime;
     this.hpBarFill.setScale(Math.max(0, hp / hpMax), 1);
+    this.hpBarFill.setFillStyle(this.rank > 0 ? this.rankColor : 0xd94a3a);
   }
 
   private trackHpBar(): void {

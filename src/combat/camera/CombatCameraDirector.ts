@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { engagementBoostCap, zoomForActiveEnemies } from '@/combat/systems/EncounterScaling';
 
-const ZOOM_LERP = 0.06;
-const COMBAT_ZOOM_FLOOR = 0.52;
-const COMBAT_ZOOM_CEIL = 1.12;
-const ENGAGEMENT_DECAY_PER_SEC = 0.22;
+const ZOOM_LERP = 0.10;
+const COMBAT_ZOOM_FLOOR = 0.50;
+const COMBAT_ZOOM_CEIL = 1.75;
+const ENGAGEMENT_DECAY_PER_SEC = 0.08;
 
 export type CombatEngagementKind = 'attack' | 'skill';
 
@@ -32,7 +32,7 @@ export class CombatCameraDirector {
   notifyEngagement(activeCultivatorCount: number, kind: CombatEngagementKind): void {
     const cap = engagementBoostCap(activeCultivatorCount);
     if (cap <= 0) return;
-    const step = kind === 'skill' ? cap * 0.65 : cap * 0.45;
+    const step = kind === 'skill' ? cap * 0.95 : cap * 0.75;
     this.engagementBoost = Math.min(cap, this.engagementBoost + step);
   }
 

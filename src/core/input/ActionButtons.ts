@@ -118,6 +118,7 @@ export class ActionButtons {
     this.unsubscribers.push(
       EventBus.on('scene:changed', () => this.syncFromSave()),
       EventBus.on('demo:entered', () => this.syncFromSave()),
+      EventBus.on('demo:exited', () => this.syncFromSave()),
       EventBus.on('loadout:changed', () => this.syncFromSave()),
       EventBus.on('skill:cooldown-state', (state) => this.applySkillCooldowns(state)),
       EventBus.on('health:cooldown-state', (state) => this.applyHealthCooldown(state)),

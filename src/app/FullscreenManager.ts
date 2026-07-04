@@ -1,5 +1,7 @@
 /** Fullscreen API — request on play taps; boot gesture via AudioUnlock. */
 
+import { gameStore } from '@/core/store/gameStore';
+
 const STORAGE_KEY = 'pod.fullscreen.dismissedAt';
 const OPT_OUT_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -47,6 +49,18 @@ export class FullscreenManager {
     void FullscreenManager.request();
   }
 
+  /** Whether fullscreen is disabled in the player's save settings. */
+  static isDisabledBySetting(): boolean {
+    const save = gameStore.getState().save;
+    if (!save) return false;
+    return save.settings.fullscreen === false;
+  }
+
+  /** Clear the saved setting so fullscreen requests will fire again. */
+  static clearOptOut(): void {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
   static isSupported(): boolean {
     if (FullscreenManager.isStandalonePwa()) return false;
     const el = FullscreenManager.target;
@@ -82,6 +96,7 @@ export class FullscreenManager {
     if (!FullscreenManager.isSupported()) return;
     if (FullscreenManager.isActive()) return;
     if (FullscreenManager.isOptedOut()) return;
+    if (FullscreenManager.isDisabledBySetting()) return;
 
     const el = FullscreenManager.target;
     if (!el) return;

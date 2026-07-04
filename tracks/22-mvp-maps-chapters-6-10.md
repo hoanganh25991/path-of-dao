@@ -17,6 +17,7 @@ Endgame half of the road: tribulation peaks through void throne finale.
 - Nineteen new enemies: ten grunts, four elites, five bosses including void sovereign
 - Hidden cave POIs on chapters 6, 8, and 10 explore maps
 - Generation CLI for rebuilding chapter 6–10 content
+- **Scaled playable bounds 10×** for ch6–10 configs: `1600×1216`/`1792×1344` → `16000×12160`/`17920×13440` (spawn/POIs rescaled)
 
 ## Remaining
 

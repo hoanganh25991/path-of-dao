@@ -68,7 +68,7 @@ describe('SettingsModal', () => {
       xp: 900,
       realm: { id: 'qi_condensation', tier: 'late', breakthroughReady: false },
       meta: { ...gameStore.getState().save!.meta, totalPlaySeconds: 86_400 * 12 },
-      settings: { locale: 'vi', quality: 'low', sfxVolume: 0.25, musicVolume: 0.75 },
+      settings: { locale: 'vi', quality: 'low', sfxVolume: 0.25, musicVolume: 0.75, fullscreen: true },
     });
     await gameStore.getState().persist();
 
@@ -95,6 +95,7 @@ describe('SettingsModal', () => {
       quality: 'low',
       sfxVolume: 0.25,
       musicVolume: 0.75,
+      fullscreen: true,
     });
     expect(save.meta.totalPlaySeconds).toBe(0);
     expect(save.realm.id).toBe('mortal_body');
