@@ -16,9 +16,12 @@ import {
   PALETTE_ICE,
   PALETTE_LIGHTNING,
   PALETTE_MIST_SPIRIT,
+  PALETTE_MOON_SPIRIT,
   PALETTE_RIFT_SPAWN,
   PALETTE_SAND_DEMON,
+  PALETTE_SCORPION,
   PALETTE_SLIME,
+  PALETTE_SPIRIT_FOX,
   PALETTE_STORM_HAWK,
   PALETTE_TOTEM,
   PALETTE_TRIBULATION,
@@ -360,7 +363,16 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
   );
 
   // Ch2 — Spirit fox (beast variant, white)
-  // Reuses enemy_wolf_beast sprite key since same visual type, different stats
+  registerEnemySheet(
+    scene,
+    'enemy_spirit_fox',
+    PALETTE_SPIRIT_FOX,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    null,
+    { idle: ANIM.beastIdle, walk: ANIM.beastWalk, sit: ANIM.beastSit },
+    'beast',
+  );
 
   // Ch3 — Bandit thug (warrior variant, brown leather)
   registerEnemySheet(
@@ -388,7 +400,17 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 100 },
   );
 
-  // Ch4 — Water spirit (ghost variant, blue-green) — reuses enemy_spirit_moth visual
+  // Ch4 — Water spirit (ghost variant, blue-green)
+  registerEnemySheet(
+    scene,
+    'enemy_water_sprite',
+    PALETTE_MOON_SPIRIT,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    null,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, sit: ANIM.ghostSit },
+    'ghost',
+  );
   // Ch4 — Ancient guardian (warrior variant, deep blue-green)
   registerEnemySheet(
     scene,
@@ -402,7 +424,17 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 120 },
   );
 
-  // Ch5 — Fire scorpion (beast variant, red-orange) — reuses enemy_wolf_beast visual
+  // Ch5 — Fire scorpion (beast variant, red-orange)
+  registerEnemySheet(
+    scene,
+    'enemy_scorpion',
+    PALETTE_SCORPION,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    null,
+    { idle: ANIM.beastIdle, walk: ANIM.beastWalk, sit: ANIM.beastSit },
+    'beast',
+  );
   // Ch5 — Sand demon (demon variant, fiery)
   registerEnemySheet(
     scene,
@@ -723,6 +755,8 @@ export function cultivatorAnimKeys(spriteKey: string): {
       };
     case 'enemy_wolf_beast':
     case 'enemy_storm_hawk':
+    case 'enemy_spirit_fox':
+    case 'enemy_scorpion':
       return {
         idle: ANIM.beastIdle,
         walk: ANIM.beastWalk,
@@ -734,6 +768,7 @@ export function cultivatorAnimKeys(spriteKey: string): {
     case 'enemy_lightning_spirit':
     case 'enemy_frost_shade':
     case 'enemy_void_shade':
+    case 'enemy_water_sprite':
       return {
         idle: ANIM.ghostIdle,
         walk: ANIM.ghostWalk,

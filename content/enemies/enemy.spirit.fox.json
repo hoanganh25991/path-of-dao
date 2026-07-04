@@ -20,7 +20,7 @@
     0
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_wolf_beast",
+  "spriteKey": "enemy_spirit_fox",
   "bestiaryKey": "bestiary.enemy_spirit_fox.desc",
   "weakness": "spirit",
   "resistance": "none"

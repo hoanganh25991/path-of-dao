@@ -18,7 +18,7 @@
     15
   ],
   "lootTable": "loot.tier.rare",
-  "spriteKey": "enemy_sand_demon",
+  "spriteKey": "enemy_desert_spirit",
   "archetype": "stationary",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_sand_spirit.desc",

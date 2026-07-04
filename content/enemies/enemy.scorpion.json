@@ -18,7 +18,7 @@
     15
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_wolf_beast",
+  "spriteKey": "enemy_scorpion",
   "archetype": "melee_chaser",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_scorpion.desc",

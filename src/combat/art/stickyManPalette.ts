@@ -108,6 +108,16 @@ export const PALETTE_WISP: StickPalette = {
   highlight: '#d8f0ff',
 };
 
+/** Ch2 — Spirit fox (white beast, pure white fur) */
+export const PALETTE_SPIRIT_FOX: StickPalette = {
+  outline: '#181820',
+  skin: '#c8c8d8',
+  fill: '#e8e8f0',
+  shadow: '#a0a0b0',
+  accent: '#f8f8ff',
+  highlight: '#ffffff',
+};
+
 /** Ch3 — Stone Canyon / bandit (brown leather) */
 export const PALETTE_BANDIT: StickPalette = {
   outline: '#1c1410',
@@ -248,14 +258,14 @@ export const PALETTE_VOID_WEAVER: StickPalette = {
   highlight: '#a090e0',
 };
 
-/** Ch6 — Tribulation elite (storm grey + lightning gold) */
+/** Ch6 — Tribulation elite (storm gold, heavenly tribulation glow) */
 export const PALETTE_TRIBULATION: StickPalette = {
-  outline: '#141020',
-  skin: '#8890a8',
-  fill: '#586878',
-  shadow: '#384858',
-  accent: '#d4c840',
-  highlight: '#fff8d0',
+  outline: '#181008',
+  skin: '#c8a060',
+  fill: '#a08840',
+  shadow: '#685828',
+  accent: '#ffd860',
+  highlight: '#fff0a0',
 };
 
 /** Ch4 — Moon Lake / ancient guardian (deep blue-green) */
@@ -266,6 +276,16 @@ export const PALETTE_ANCIENT_GUARDIAN: StickPalette = {
   shadow: '#204848',
   accent: '#60c0c0',
   highlight: '#a0e8e8',
+};
+
+/** Ch4 — Moon Lake spirit (ghostly blue-green, ethereal water) */
+export const PALETTE_MOON_SPIRIT: StickPalette = {
+  outline: '#081818',
+  skin: '#60a8a8',
+  fill: '#389098',
+  shadow: '#206068',
+  accent: '#88e8e0',
+  highlight: '#c8fff8',
 };
 
 export const FRAME_W = 32;
