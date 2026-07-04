@@ -84,7 +84,7 @@ export class CombatPauseMenu {
     CombatPauseMenu.mounted = true;
   }
 
-  /** Mount pause control into the top-right scene row (TopRightHud). */
+  /** Mount pause control into the top-right HUD (TopRightHud). */
   static mountPauseButton(container: HTMLElement): void {
     if (CombatPauseMenu.pauseBtn) return;
 
@@ -143,7 +143,7 @@ export class CombatPauseMenu {
 
   private static isCombatScene(): boolean {
     return Boolean(
-      document.querySelector('.scene-indicator__pause-slot--visible [data-testid="combat-pause-btn"]'),
+      document.querySelector('.top-right-hud__pause-slot--visible [data-testid="combat-pause-btn"]'),
     );
   }
 }

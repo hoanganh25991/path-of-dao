@@ -120,74 +120,320 @@ export function playProceduralTone(
   return connectTone(ctx, destination, tone, ctx.currentTime);
 }
 
-export function startProceduralBgm(
+/** Just-intonation pentatonic — reads as gentle cultivation ambience. */
+const PENTATONIC_RATIOS = [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3, 2];
+
+type BgmVoice = { stop: () => void; fadeOut: (sec: number) => void };
+
+type ArpProfile = {
+  intervalMs: number;
+  noteMs: number;
+  gain: number;
+  pattern: number[];
+};
+
+function pentatonicFromRoot(root: number): number[] {
+  return PENTATONIC_RATIOS.map((ratio) => root * ratio);
+}
+
+function createPadLayer(
   ctx: AudioContext,
-  destination: AudioNode,
-  entry: ProceduralBgm,
-): { stop: () => void } {
-  const master = ctx.createGain();
-  const filter = ctx.createBiquadFilter();
-  filter.type = 'lowpass';
-  filter.frequency.value = 1400;
-  filter.Q.value = 0.6;
-
-  const peak = entry.gain ?? 0.05;
-  master.gain.setValueAtTime(0.0001, ctx.currentTime);
-  master.gain.linearRampToValueAtTime(peak, ctx.currentTime + 0.8);
-  master.connect(filter);
-  filter.connect(destination);
-
-  const lfo = ctx.createOscillator();
-  const lfoGain = ctx.createGain();
-  lfo.frequency.value = 0.08;
-  lfoGain.gain.value = peak * 0.12;
-  lfo.connect(lfoGain);
-  lfoGain.connect(master.gain);
-  lfo.start();
-
+  mix: GainNode,
+  freqs: number[],
+  padGain: number,
+): { nodes: AudioNode[]; stop: () => void } {
+  const nodes: AudioNode[] = [];
   const oscillators: OscillatorNode[] = [];
-  const detuneSpread = [-7, 0, 7, -4, 4];
-  entry.frequencies.forEach((freq, i) => {
+  const detuneSpread = [-5, 0, 5, -3, 3];
+
+  freqs.forEach((freq, i) => {
     const osc = ctx.createOscillator();
+    const voiceGain = ctx.createGain();
     osc.type = i === 0 ? 'triangle' : 'sine';
     osc.frequency.value = freq;
     osc.detune.value = detuneSpread[i % detuneSpread.length] ?? 0;
-    osc.connect(master);
+    voiceGain.gain.value = padGain * (i === 0 ? 1 : 0.55 / Math.max(1, i));
+    osc.connect(voiceGain);
+    voiceGain.connect(mix);
     osc.start();
     oscillators.push(osc);
+    nodes.push(osc, voiceGain);
   });
 
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  if (!entry.loop && entry.durationMs) {
-    timeout = setTimeout(() => {
-      const fadeOut = ctx.currentTime;
-      master.gain.cancelScheduledValues(fadeOut);
-      master.gain.setValueAtTime(master.gain.value, fadeOut);
-      master.gain.linearRampToValueAtTime(0.0001, fadeOut + 0.4);
-      setTimeout(() => stopAll(), 450);
-    }, entry.durationMs);
-  }
+  return {
+    nodes,
+    stop: () => {
+      for (const osc of oscillators) {
+        try {
+          osc.stop();
+        } catch {
+          /* noop */
+        }
+        osc.disconnect();
+      }
+    },
+  };
+}
 
-  const stopAll = (): void => {
-    if (timeout) clearTimeout(timeout);
-    try {
-      lfo.stop();
-    } catch {
-      /* noop */
+function createFilterBreath(
+  ctx: AudioContext,
+  filter: BiquadFilterNode,
+  baseHz: number,
+): { nodes: AudioNode[]; stop: () => void } {
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.type = 'sine';
+  lfo.frequency.value = 0.035;
+  lfoGain.gain.value = baseHz * 0.18;
+  filter.frequency.value = baseHz;
+  filter.Q.value = 0.45;
+  lfo.connect(lfoGain);
+  lfoGain.connect(filter.frequency);
+  lfo.start();
+  return {
+    nodes: [lfo, lfoGain],
+    stop: () => {
+      try {
+        lfo.stop();
+      } catch {
+        /* noop */
+      }
+      lfo.disconnect();
+      lfoGain.disconnect();
+    },
+  };
+}
+
+function createAirLayer(ctx: AudioContext, mix: GainNode, gain: number): { nodes: AudioNode[]; stop: () => void } {
+  const noise = ctx.createBufferSource();
+  noise.buffer = createNoiseBuffer(ctx, 4);
+  noise.loop = true;
+  const noiseGain = ctx.createGain();
+  const noiseFilter = ctx.createBiquadFilter();
+  noiseFilter.type = 'bandpass';
+  noiseFilter.frequency.value = 680;
+  noiseFilter.Q.value = 0.35;
+  noiseGain.gain.value = gain;
+  noise.connect(noiseFilter);
+  noiseFilter.connect(noiseGain);
+  noiseGain.connect(mix);
+  noise.start();
+  return {
+    nodes: [noise, noiseFilter, noiseGain],
+    stop: () => {
+      try {
+        noise.stop();
+      } catch {
+        /* noop */
+      }
+      noise.disconnect();
+      noiseFilter.disconnect();
+      noiseGain.disconnect();
+    },
+  };
+}
+
+function createArpeggiator(
+  ctx: AudioContext,
+  mix: GainNode,
+  notes: number[],
+  profile: ArpProfile,
+): { stop: () => void } {
+  let running = true;
+  let step = 0;
+  const active: OscillatorNode[] = [];
+
+  const playStep = (): void => {
+    if (!running) return;
+    const noteIndex = profile.pattern[step % profile.pattern.length] ?? 0;
+    step += 1;
+    const freq = notes[noteIndex % notes.length] ?? notes[0];
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const noteFilter = ctx.createBiquadFilter();
+    noteFilter.type = 'lowpass';
+    noteFilter.frequency.value = Math.min(freq * 3.5, 2800);
+    noteFilter.Q.value = 0.5;
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    const t = ctx.currentTime;
+    const noteSec = profile.noteMs / 1000;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(profile.gain, t + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + noteSec);
+    osc.connect(noteFilter);
+    noteFilter.connect(gain);
+    gain.connect(mix);
+    osc.start(t);
+    osc.stop(t + noteSec + 0.05);
+    active.push(osc);
+    if (active.length > 12) {
+      const old = active.shift();
+      try {
+        old?.stop();
+      } catch {
+        /* noop */
+      }
+      old?.disconnect();
     }
-    lfo.disconnect();
-    lfoGain.disconnect();
-    for (const osc of oscillators) {
+  };
+
+  playStep();
+  const timer = setInterval(playStep, profile.intervalMs);
+  return {
+    stop: () => {
+      running = false;
+      clearInterval(timer);
+      for (const osc of active) {
+        try {
+          osc.stop();
+        } catch {
+          /* noop */
+        }
+        osc.disconnect();
+      }
+    },
+  };
+}
+
+function arpProfileForEntry(entry: ProceduralBgm): ArpProfile {
+  const root = entry.frequencies[0] ?? 110;
+  if (!entry.loop) {
+    return {
+      intervalMs: 280,
+      noteMs: 520,
+      gain: (entry.gain ?? 0.1) * 0.85,
+      pattern: [0, 1, 2, 3, 4, 5],
+    };
+  }
+  if (root <= 70) {
+    return { intervalMs: 3200, noteMs: 1400, gain: (entry.gain ?? 0.08) * 0.42, pattern: [0, 2, 1, 3, 2, 4, 3, 1] };
+  }
+  if (root <= 95) {
+    return { intervalMs: 2800, noteMs: 1200, gain: (entry.gain ?? 0.08) * 0.48, pattern: [0, 2, 4, 2, 3, 1, 4, 3] };
+  }
+  return { intervalMs: 3600, noteMs: 1600, gain: (entry.gain ?? 0.07) * 0.45, pattern: [0, 2, 4, 3, 1, 2, 4, 1] };
+}
+
+function playVictorySting(
+  ctx: AudioContext,
+  destination: AudioNode,
+  entry: ProceduralBgm,
+  fadeInSec: number,
+): BgmVoice {
+  const master = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 3200;
+  filter.Q.value = 0.5;
+  const peak = entry.gain ?? 0.1;
+  const t0 = ctx.currentTime;
+  master.gain.setValueAtTime(0.0001, t0);
+  master.gain.linearRampToValueAtTime(peak, t0 + fadeInSec);
+  master.connect(filter);
+  filter.connect(destination);
+
+  const notes = entry.frequencies.length > 0 ? entry.frequencies : pentatonicFromRoot(262);
+  const stoppers: Array<() => void> = [];
+  notes.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+    const start = t0 + i * 0.32;
+    const end = start + 0.55;
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.linearRampToValueAtTime(peak * 0.55, start + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.0001, end);
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(start);
+    osc.stop(end + 0.05);
+    stoppers.push(() => {
       try {
         osc.stop();
       } catch {
         /* noop */
       }
       osc.disconnect();
-    }
+      gain.disconnect();
+    });
+  });
+
+  const durationMs = entry.durationMs ?? 3000;
+  const timeout = setTimeout(() => {
+    const fadeT = ctx.currentTime;
+    master.gain.cancelScheduledValues(fadeT);
+    master.gain.setValueAtTime(master.gain.value, fadeT);
+    master.gain.linearRampToValueAtTime(0.0001, fadeT + 0.5);
+    setTimeout(() => stopAll(), 520);
+  }, durationMs);
+
+  const stopAll = (): void => {
+    clearTimeout(timeout);
+    for (const stop of stoppers) stop();
     filter.disconnect();
     master.disconnect();
   };
 
-  return { stop: stopAll };
+  return {
+    stop: stopAll,
+    fadeOut: (sec: number) => {
+      const fadeT = ctx.currentTime;
+      master.gain.cancelScheduledValues(fadeT);
+      master.gain.setValueAtTime(master.gain.value, fadeT);
+      master.gain.linearRampToValueAtTime(0.0001, fadeT + sec);
+      setTimeout(() => stopAll(), sec * 1000 + 50);
+    },
+  };
+}
+
+export function startProceduralBgm(
+  ctx: AudioContext,
+  destination: AudioNode,
+  entry: ProceduralBgm,
+  fadeInSec = 0.8,
+): BgmVoice {
+  if (!entry.loop) {
+    return playVictorySting(ctx, destination, entry, fadeInSec);
+  }
+
+  const root = entry.frequencies[0] ?? 110;
+  const padFreqs = entry.frequencies.length >= 2 ? entry.frequencies : [root, root * 3 / 2, root * 2];
+  const arpNotes = pentatonicFromRoot(root);
+  const peak = entry.gain ?? 0.06;
+
+  const master = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  const t0 = ctx.currentTime;
+  master.gain.setValueAtTime(0.0001, t0);
+  master.gain.linearRampToValueAtTime(peak, t0 + fadeInSec);
+  master.connect(filter);
+  filter.connect(destination);
+
+  const pad = createPadLayer(ctx, master, padFreqs, 0.38);
+  const breath = createFilterBreath(ctx, filter, root <= 80 ? 1100 : 1500);
+  const air = createAirLayer(ctx, master, peak * 0.04);
+  const arp = createArpeggiator(ctx, master, arpNotes, arpProfileForEntry(entry));
+
+  const stopAll = (): void => {
+    arp.stop();
+    pad.stop();
+    breath.stop();
+    air.stop();
+    filter.disconnect();
+    master.disconnect();
+  };
+
+  return {
+    stop: stopAll,
+    fadeOut: (sec: number) => {
+      const fadeT = ctx.currentTime;
+      master.gain.cancelScheduledValues(fadeT);
+      master.gain.setValueAtTime(master.gain.value, fadeT);
+      master.gain.linearRampToValueAtTime(0.0001, fadeT + sec);
+      setTimeout(() => stopAll(), sec * 1000 + 80);
+    },
+  };
 }

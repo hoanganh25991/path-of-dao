@@ -7,6 +7,11 @@ import { computeCombatPowerFromSave, formatCombatPower } from '@/progression/Com
 import { canEnter, getMapTravelState } from '@/progression/WorldProgression';
 import { getWorldMapData, listWorldRegions } from '@/progression/WorldMapLoader';
 import {
+  createWorldMapViewport,
+  getMapNodeWorldPosition,
+  type WorldMapViewportController,
+} from '@/ui/world/WorldMapViewport';
+import {
   createDifficultyBadgeElement,
   difficultyTierLabelKey,
   getDifficultyTier,
@@ -117,55 +122,6 @@ function renderDetailSheet(mapId: string, host: HTMLElement): void {
   activeDetail = sheet;
 }
 
-function bindPanZoom(viewport: HTMLElement, canvas: HTMLElement): () => void {
-  let scale = 1;
-  const minScale = 0.8;
-  const maxScale = 2;
-
-  const applyScale = (): void => {
-    canvas.style.transform = `scale(${scale})`;
-    canvas.style.transformOrigin = '0 0';
-  };
-
-  const onWheel = (event: WheelEvent): void => {
-    event.preventDefault();
-    const delta = event.deltaY < 0 ? 0.08 : -0.08;
-    scale = Math.min(maxScale, Math.max(minScale, scale + delta));
-    applyScale();
-  };
-
-  viewport.addEventListener('wheel', onWheel, { passive: false });
-
-  let lastPinchDist = 0;
-  const onTouchMove = (event: TouchEvent): void => {
-    if (event.touches.length !== 2) return;
-    event.preventDefault();
-    const [a, b] = [event.touches[0]!, event.touches[1]!];
-    const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-    if (lastPinchDist > 0) {
-      const delta = (dist - lastPinchDist) * 0.004;
-      scale = Math.min(maxScale, Math.max(minScale, scale + delta));
-      applyScale();
-    }
-    lastPinchDist = dist;
-  };
-
-  const onTouchEnd = (): void => {
-    lastPinchDist = 0;
-  };
-
-  viewport.addEventListener('touchmove', onTouchMove, { passive: false });
-  viewport.addEventListener('touchend', onTouchEnd);
-  viewport.addEventListener('touchcancel', onTouchEnd);
-
-  return () => {
-    viewport.removeEventListener('wheel', onWheel);
-    viewport.removeEventListener('touchmove', onTouchMove);
-    viewport.removeEventListener('touchend', onTouchEnd);
-    viewport.removeEventListener('touchcancel', onTouchEnd);
-  };
-}
-
 export function showWorldMap(uiRoot: HTMLElement): void {
   if (activeOverlay) return;
 
@@ -192,7 +148,15 @@ export function showWorldMap(uiRoot: HTMLElement): void {
   closeBtn.textContent = '×';
   closeBtn.addEventListener('click', closeWorldMap);
 
-  header.append(title, closeBtn);
+  const locateBtn = document.createElement('button');
+  locateBtn.type = 'button';
+  locateBtn.className = 'world-map-overlay__locate home-ui__interactive';
+  locateBtn.dataset.testid = 'world-map-locate';
+  locateBtn.setAttribute('aria-label', I18nManager.t('world.locate'));
+  locateBtn.title = I18nManager.t('world.locate');
+  locateBtn.textContent = '◎';
+
+  header.append(title, locateBtn, closeBtn);
 
   const viewport = document.createElement('div');
   viewport.className = 'world-map-viewport';
@@ -252,12 +216,30 @@ export function showWorldMap(uiRoot: HTMLElement): void {
 
   canvas.append(svg, regionsLayer);
   viewport.append(canvas);
+
   overlay.append(header, viewport);
   uiRoot.append(overlay);
   activeOverlay = overlay;
 
-  const unbindPanZoom = bindPanZoom(viewport, canvas);
-  overlay.addEventListener('world-map:destroy', unbindPanZoom, { once: true });
+  const playerFocus = getMapNodeWorldPosition(save.progress.currentMapId)
+    ?? { x: data.width / 2, y: data.height / 2 };
+
+  let viewportController: WorldMapViewportController | null = createWorldMapViewport({
+    viewport,
+    canvas,
+    mapWidth: data.width,
+    mapHeight: data.height,
+    focusPoint: playerFocus,
+  });
+
+  locateBtn.addEventListener('click', () => {
+    viewportController?.centerOn(playerFocus);
+  });
+
+  overlay.addEventListener('world-map:destroy', () => {
+    viewportController?.destroy();
+    viewportController = null;
+  }, { once: true });
 
   overlay.addEventListener('click', (event) => {
     if (event.target === overlay) closeWorldMap();

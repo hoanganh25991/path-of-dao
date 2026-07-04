@@ -95,7 +95,7 @@ describe('VirtualJoystick', () => {
         pointerType: 'touch',
       }),
     );
-    joystick.element.dispatchEvent(
+    window.dispatchEvent(
       new PointerEvent('pointermove', {
         bubbles: true,
         clientX: 148,
@@ -128,7 +128,7 @@ describe('VirtualJoystick', () => {
         pointerType: 'touch',
       }),
     );
-    zone.dispatchEvent(
+    window.dispatchEvent(
       new PointerEvent('pointermove', {
         bubbles: true,
         clientX: 80,

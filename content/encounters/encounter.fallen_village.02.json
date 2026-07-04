@@ -5,9 +5,14 @@
       "trigger": "onEnter",
       "enemies": [
         {
-          "id": "enemy.bandit.thug",
-          "count": 4,
-          "spread": 140
+          "id": "enemy.heng_yue.disciple",
+          "count": 3,
+          "spread": 130
+        },
+        {
+          "id": "enemy.totem",
+          "count": 1,
+          "spread": 0
         }
       ]
     },

@@ -49,28 +49,21 @@ export function listUnlockedSkillIds(save: PlayerSaveV1): string[] {
   return filterSkillsForWeaponGate(save, [...ids].sort());
 }
 
-/** Pool for a slot — excludes skills already on the other two buttons. */
+/** Full skill pool for a slot — duplicates allowed across slots. */
 export function listAssignableSkills(
-  loadout: EquippedSkills,
-  slot: SkillSlotId,
+  _loadout: EquippedSkills,
+  _slot: SkillSlotId,
   pool: string[],
 ): string[] {
-  const taken = new Set(
-    SKILL_SLOTS.filter((s) => s !== slot).map((s) => loadout[s]).filter(isFilledSkillSlot),
-  );
-  return pool.filter((id) => !taken.has(id) || loadout[slot] === id);
+  return pool.filter(isFilledSkillSlot);
 }
 
-/** Assign without duplicates — swaps if the skill is already on another slot. */
+/** Assign a skill to a slot — duplicates across slots are allowed. */
 export function assignSkillToSlot(
   loadout: EquippedSkills,
   slot: SkillSlotId,
   skillId: string,
 ): EquippedSkills {
-  const otherSlot = SKILL_SLOTS.find((s) => s !== slot && loadout[s] === skillId);
-  if (otherSlot) {
-    return { ...loadout, [slot]: skillId, [otherSlot]: loadout[slot] };
-  }
   return { ...loadout, [slot]: skillId };
 }
 
@@ -85,24 +78,21 @@ export function equipLearnedSkill(loadout: EquippedSkills, skillId: string): Equ
   return loadout;
 }
 
-/** Ensure three unique skills — fills gaps from pool when template duplicates. */
+/** Ensure each slot has a valid pool skill — duplicates are kept. */
 export function normalizeLoadout(
   loadout: EquippedSkills,
   pool: string[],
 ): EquippedSkills {
+  const fallback = pool.find(isFilledSkillSlot) ?? '';
   const next = { ...loadout };
-  const used = new Set<string>();
 
   for (const slot of SKILL_SLOTS) {
     const id = next[slot];
-    if (isFilledSkillSlot(id) && !used.has(id) && pool.includes(id)) {
-      used.add(id);
-      continue;
+    if (!isFilledSkillSlot(id) || !pool.includes(id)) {
+      next[slot] = fallback;
     }
-    const replacement = pool.find((candidate) => !used.has(candidate));
-    next[slot] = replacement ?? '';
-    if (replacement) used.add(replacement);
   }
+
   return next;
 }
 

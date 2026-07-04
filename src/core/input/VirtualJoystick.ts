@@ -1,5 +1,6 @@
 import type { Vec2 } from '@/core/input/InputState';
 import { OrientationManager } from '@/app/OrientationManager';
+import { pointerEventToLayout } from '@/app/orientation/layoutCoords';
 import { EventBus } from '@/core/EventBus';
 
 export const JOYSTICK_BASE_RADIUS_PX = 48;
@@ -45,6 +46,7 @@ export class VirtualJoystick {
 
   private baseEl: HTMLElement;
   private thumbEl: HTMLElement;
+  private readonly hudContainer: HTMLElement;
   private enabled = false;
   /** Active pointer or touch identifier — zone hit-testing already limits to the left side. */
   private activePointerId: number | null = null;
@@ -53,6 +55,7 @@ export class VirtualJoystick {
   private moveVector: Vec2 = { x: 0, y: 0 };
   private layoutUnsub: (() => void) | null = null;
   private captureEl: HTMLElement | null = null;
+  private windowTracking = false;
   private readonly pointerTargets: HTMLElement[] = [];
 
   private readonly onPointerDown = (event: PointerEvent): void => {
@@ -62,34 +65,39 @@ export class VirtualJoystick {
     this.activePointerId = event.pointerId;
     this.captureEl = event.currentTarget as HTMLElement;
     this.captureEl.setPointerCapture?.(event.pointerId);
+    this.bindWindowPointerTracking();
     this.snapToAnchor();
 
-    const { x, y } = OrientationManager.toLayoutCoords(event.clientX, event.clientY);
-    this.updateFromTouch(x, y);
+    this.applyPointerPosition(event);
     this.element.classList.add('joystick--active');
     event.preventDefault();
   };
 
-  private readonly onPointerMove = (event: PointerEvent): void => {
+  private readonly onWindowPointerMove = (event: PointerEvent): void => {
     if (!this.enabled || this.activePointerId !== event.pointerId) return;
 
-    const { x, y } = OrientationManager.toLayoutCoords(event.clientX, event.clientY);
-    this.updateFromTouch(x, y);
+    const events = event.getCoalescedEvents?.().length ? event.getCoalescedEvents() : [event];
+    for (const coalesced of events) {
+      this.applyPointerPosition(coalesced);
+    }
     event.preventDefault();
   };
 
-  private readonly onPointerEnd = (event: PointerEvent): void => {
+  private readonly onWindowPointerEnd = (event: PointerEvent): void => {
     if (!this.enabled || this.activePointerId !== event.pointerId) return;
 
     if (this.captureEl?.hasPointerCapture?.(event.pointerId)) {
       this.captureEl.releasePointerCapture?.(event.pointerId);
     }
     this.captureEl = null;
+    this.unbindWindowPointerTracking();
     this.release();
     event.preventDefault();
   };
 
   constructor(container: HTMLElement) {
+    this.hudContainer = container;
+
     this.element = document.createElement('div');
     this.element.id = 'joystick';
     this.element.className = 'joystick hidden';
@@ -108,26 +116,51 @@ export class VirtualJoystick {
 
     container.append(this.zone, this.element);
 
-    this.bindPointerEvents(this.zone);
-    this.bindPointerEvents(this.element);
+    this.bindPointerDown(this.zone);
+    this.bindPointerDown(this.element);
   }
 
-  private bindPointerEvents(target: HTMLElement): void {
-    target.addEventListener('pointerdown', this.onPointerDown);
-    target.addEventListener('pointermove', this.onPointerMove);
-    target.addEventListener('pointerup', this.onPointerEnd);
-    target.addEventListener('pointercancel', this.onPointerEnd);
+  private bindPointerDown(target: HTMLElement): void {
+    target.addEventListener('pointerdown', this.onPointerDown, { passive: false });
     this.pointerTargets.push(target);
   }
 
-  private unbindPointerEvents(): void {
+  private unbindPointerDown(): void {
     for (const target of this.pointerTargets) {
       target.removeEventListener('pointerdown', this.onPointerDown);
-      target.removeEventListener('pointermove', this.onPointerMove);
-      target.removeEventListener('pointerup', this.onPointerEnd);
-      target.removeEventListener('pointercancel', this.onPointerEnd);
     }
     this.pointerTargets.length = 0;
+  }
+
+  private bindWindowPointerTracking(): void {
+    if (this.windowTracking) return;
+    this.windowTracking = true;
+    window.addEventListener('pointermove', this.onWindowPointerMove, { passive: false });
+    window.addEventListener('pointerup', this.onWindowPointerEnd, { passive: false });
+    window.addEventListener('pointercancel', this.onWindowPointerEnd, { passive: false });
+  }
+
+  private unbindWindowPointerTracking(): void {
+    if (!this.windowTracking) return;
+    this.windowTracking = false;
+    window.removeEventListener('pointermove', this.onWindowPointerMove);
+    window.removeEventListener('pointerup', this.onWindowPointerEnd);
+    window.removeEventListener('pointercancel', this.onWindowPointerEnd);
+  }
+
+  private applyPointerPosition(event: Pick<PointerEvent, 'clientX' | 'clientY'>): void {
+    const { width, height } = OrientationManager.getLayoutSize();
+    const { x, y } = pointerEventToLayout(
+      event.clientX,
+      event.clientY,
+      this.hudContainer.getBoundingClientRect(),
+      window.innerWidth,
+      window.innerHeight,
+      width,
+      height,
+      OrientationManager.isPortraitRotateActive(),
+    );
+    this.updateFromTouch(x, y);
   }
 
   setEnabled(enabled: boolean): void {
@@ -171,7 +204,8 @@ export class VirtualJoystick {
     this.layoutUnsub?.();
     this.layoutUnsub = null;
 
-    this.unbindPointerEvents();
+    this.unbindWindowPointerTracking();
+    this.unbindPointerDown();
     this.zone.remove();
     this.element.remove();
   }
@@ -206,6 +240,11 @@ export class VirtualJoystick {
   }
 
   private release(): void {
+    if (this.captureEl && this.activePointerId !== null) {
+      this.captureEl.releasePointerCapture?.(this.activePointerId);
+    }
+    this.captureEl = null;
+    this.unbindWindowPointerTracking();
     this.activePointerId = null;
     this.moveVector = { x: 0, y: 0 };
     this.element.classList.remove('joystick--active');

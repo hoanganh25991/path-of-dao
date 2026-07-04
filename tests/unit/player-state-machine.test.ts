@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   ATTACK_STEP_DURATIONS_MS,
   DODGE_COOLDOWN_MS,
+  DODGE_DISTANCE_PX,
   DODGE_DURATION_MS,
   DODGE_IFRAMES_MS,
+  DODGE_SPEED_PX_PER_SEC,
   HITSTUN_MS,
   PlayerStateMachine,
 } from '@/combat/state/PlayerStateMachine';
@@ -103,6 +105,11 @@ describe('PlayerStateMachine', () => {
 
     advance(DODGE_COOLDOWN_MS);
     expect(sm.tryDodge()).toBe(true);
+  });
+
+  it('covers 3× dash distance over the dodge duration', () => {
+    expect(DODGE_SPEED_PX_PER_SEC * (DODGE_DURATION_MS / 1000)).toBeCloseTo(DODGE_DISTANCE_PX, 1);
+    expect(DODGE_DISTANCE_PX).toBe(288);
   });
 
   it('cannot dodge mid-attack (no dodge cancel in MVP)', () => {

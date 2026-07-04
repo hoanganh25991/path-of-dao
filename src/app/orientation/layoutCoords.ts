@@ -43,3 +43,32 @@ export function clientToLayout(
     y: layoutCy + dx,
   };
 }
+
+/**
+ * Map a pointer event into landscape layout space.
+ * Native landscape uses HUD bounds (handles Android visual-viewport offsets).
+ * Portrait-rotated layout uses the inverse CSS rotation transform.
+ */
+export function pointerEventToLayout(
+  clientX: number,
+  clientY: number,
+  hudRect: DOMRect,
+  viewportWidth: number,
+  viewportHeight: number,
+  layoutWidth: number,
+  layoutHeight: number,
+  portraitRotate: boolean,
+): { x: number; y: number } {
+  if (portraitRotate) {
+    return clientToLayout(clientX, clientY, viewportWidth, viewportHeight, true);
+  }
+
+  if (hudRect.width <= 0 || hudRect.height <= 0) {
+    return { x: clientX, y: clientY };
+  }
+
+  return {
+    x: ((clientX - hudRect.left) / hudRect.width) * layoutWidth,
+    y: ((clientY - hudRect.top) / hudRect.height) * layoutHeight,
+  };
+}

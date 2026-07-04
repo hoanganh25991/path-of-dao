@@ -21,6 +21,10 @@ const worldMapNodeSchema = z.object({
 const worldRegionSchema = z.object({
   chapterId: z.string().min(1),
   displayNameKey: z.string().min(1),
+  /** Star domain layer — chân tinh groups within a tinh vực. */
+  domainId: z.string().min(1).optional(),
+  /** Shown once at the first chân tinh of a tinh vực on the world map. */
+  domainLabelKey: z.string().min(1).optional(),
   position: positionSchema,
   maps: z.array(worldMapNodeSchema).min(1),
 });

@@ -8,7 +8,7 @@ const MAX_SIMULTANEOUS_SFX = 8;
 const UNLOCK_STORAGE_KEY = 'pod.audio.unlocked';
 const manifest = manifestJson as AudioManifest;
 
-type ActiveVoice = { stop: () => void };
+type ActiveVoice = { stop: () => void; fadeOut?: (sec: number) => void };
 
 /** Web Audio facade — procedural placeholders until OGG assets land (sub-plan 25). */
 export class AudioManager {
@@ -66,21 +66,28 @@ export class AudioManager {
     this.applyBusVolumes();
   }
 
-  static playBgm(key: string, _crossfadeMs = 600): void {
+  static playBgm(key: string, crossfadeMs = 800): void {
     if (!this.unlocked) return;
     if (this.currentBgmKey === key) return;
 
     const entry = manifest.bgm[key];
     if (!entry) return;
 
-    this.stopBgm();
+    const fadeSec = crossfadeMs / 1000;
+    const outgoing = this.currentBgm;
+    this.currentBgm = null;
     this.currentBgmKey = key;
+
+    if (outgoing) {
+      if (outgoing.fadeOut) outgoing.fadeOut(fadeSec);
+      else outgoing.stop();
+    }
 
     const ctx = this.ensureContext();
     const bus = this.ensureBuses().music;
 
     if (entry.type === 'procedural') {
-      this.currentBgm = startProceduralBgm(ctx, bus.input, entry as ProceduralBgm);
+      this.currentBgm = startProceduralBgm(ctx, bus.input, entry as ProceduralBgm, fadeSec);
       return;
     }
 

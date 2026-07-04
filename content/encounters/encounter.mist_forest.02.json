@@ -8,6 +8,11 @@
           "id": "enemy.spirit.wisp",
           "count": 3,
           "spread": 120
+        },
+        {
+          "id": "enemy.elite.shadow",
+          "count": 1,
+          "spread": 80
         }
       ]
     },

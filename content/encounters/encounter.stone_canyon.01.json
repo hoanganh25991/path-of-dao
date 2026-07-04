@@ -6,8 +6,13 @@
       "enemies": [
         {
           "id": "enemy.guard.patrol",
-          "count": 5,
-          "spread": 150
+          "count": 3,
+          "spread": 140
+        },
+        {
+          "id": "enemy.bandit.thug",
+          "count": 2,
+          "spread": 120
         }
       ]
     }

@@ -29,7 +29,7 @@ describe('SkillLoadout', () => {
     'skill.lightning.strike',
   ];
 
-  it('normalizeLoadout fills three unique defaults', () => {
+  it('normalizeLoadout keeps duplicate assignments when valid', () => {
     const loadout = normalizeLoadout(
       {
         primary: 'skill.void.slash',
@@ -38,12 +38,12 @@ describe('SkillLoadout', () => {
       },
       pool,
     );
-    const values = Object.values(loadout);
-    expect(new Set(values).size).toBe(3);
-    expect(values.every((id) => pool.includes(id))).toBe(true);
+    expect(loadout.primary).toBe('skill.void.slash');
+    expect(loadout.secondary).toBe('skill.void.slash');
+    expect(loadout.ultimate).toBe('skill.flame.bolt');
   });
 
-  it('assignSkillToSlot swaps instead of duplicating', () => {
+  it('assignSkillToSlot allows duplicates across slots', () => {
     const next = assignSkillToSlot(
       {
         primary: 'skill.void.slash',
@@ -51,23 +51,19 @@ describe('SkillLoadout', () => {
         ultimate: 'skill.flame.bolt',
       },
       'ultimate',
-      'skill.sword.slash',
+      'skill.void.slash',
     );
-    expect(next.ultimate).toBe('skill.sword.slash');
-    expect(next.secondary).toBe('skill.flame.bolt');
-    expect(new Set(Object.values(next)).size).toBe(3);
+    expect(next.ultimate).toBe('skill.void.slash');
+    expect(next.secondary).toBe('skill.sword.slash');
+    expect(next.primary).toBe('skill.void.slash');
   });
 
-  it('listAssignableSkills hides skills on other slots', () => {
+  it('listAssignableSkills returns the full pool', () => {
     const loadout = {
       primary: 'skill.void.slash',
       secondary: 'skill.sword.slash',
       ultimate: 'skill.flame.bolt',
     };
-    const assignable = listAssignableSkills(loadout, 'primary', pool);
-    expect(assignable).toContain('skill.void.slash');
-    expect(assignable).toContain('skill.lightning.strike');
-    expect(assignable).not.toContain('skill.sword.slash');
-    expect(assignable).not.toContain('skill.flame.bolt');
+    expect(listAssignableSkills(loadout, 'primary', pool)).toEqual(pool);
   });
 });

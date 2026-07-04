@@ -2,7 +2,7 @@
 
 **Status:** `[~]` In progress  
 **Plan:** [plans/25-audio-vfx-polish.md](../plans/25-audio-vfx-polish.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 ## Summary
 
@@ -19,6 +19,9 @@ Game feel through audio, combat juice, and enhanced Home aura — player should 
 - Device remembers unlock; return visits resume audio silently on first tap
 - Scene music restarts immediately after unlock (no wait for scene change)
 - Improved procedural synthesis: soft clipping, filters, impact noise layer, BGM fade-in and pulse
+- **BGM ambient rewrite:** pentatonic arpeggio + soft pad + air layer; filter breathing instead of volume LFO (fixes weird drone/pump)
+- **BGM crossfade** (~800ms) when switching scenes or boss track
+- Manifest BGM roots retuned for clearer home/combat/boss/story moods; victory sting extended to 5-note ascent
 - **Combat SFX wired:** attack combo (1–3), dodge, skill cast (all intents incl. lightning/life), hit impacts
 - **UI tap sound** on buttons/tabs/action controls via global click bridge
 - Manifest gains boosted ~1.75× for mobile audibility
@@ -35,7 +38,7 @@ Game feel through audio, combat juice, and enhanced Home aura — player should 
 ## Remaining
 
 - Replace procedural placeholders with real OGG assets
-- BGM crossfade between Home and combat (currently hard switch)
+- ~~BGM crossfade between Home and combat (currently hard switch)~~ — crossfade shipped (800ms)
 - Boss phase sting + screen darken
 - Map ambience loops per region (optional)
 - Performance profile to disable juice on low-end devices (ties to 26)

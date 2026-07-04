@@ -71,7 +71,13 @@ describe('formatCombatPower', () => {
 describe('yearsCultivated', () => {
   it('combines play time and realm depth', () => {
     expect(yearsCultivated(0, 1)).toBe(17);
-    expect(yearsCultivated(240, 3)).toBe(53);
+    expect(yearsCultivated(86_400, 1)).toBe(18);
+    expect(yearsCultivated(86_400 * 2, 3)).toBe(53);
+  });
+
+  it('accrues one year per real day of play time', () => {
+    expect(yearsCultivated(86_400, 0)).toBe(1);
+    expect(yearsCultivated(86_399, 0)).toBe(0);
   });
 });
 

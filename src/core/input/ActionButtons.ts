@@ -47,9 +47,10 @@ const STATIC_BUTTONS: Omit<ButtonLayout, 'slot'>[] = [
   },
 ];
 
+/** Matches loadout picker slot order: primary → secondary → ultimate. */
 const SKILL_SLOTS: Array<{ id: ActionButtonId; slot: SkillSlotId; className: string }> = [
-  { id: 'skillSecondary', slot: 'secondary', className: 'action-btn--skill-secondary' },
   { id: 'skillPrimary', slot: 'primary', className: 'action-btn--skill-primary' },
+  { id: 'skillSecondary', slot: 'secondary', className: 'action-btn--skill-secondary' },
   { id: 'skillUltimate', slot: 'ultimate', className: 'action-btn--skill-ultimate' },
 ];
 
@@ -80,8 +81,8 @@ export class ActionButtons {
     this.element = document.createElement('div');
     this.element.className = 'action-buttons';
 
-    const toolbar = document.createElement('div');
-    toolbar.className = 'action-buttons__toolbar';
+    const cluster = document.createElement('div');
+    cluster.className = 'action-buttons__cluster';
 
     const swapBtn = document.createElement('button');
     swapBtn.type = 'button';
@@ -93,23 +94,17 @@ export class ActionButtons {
       if (!this.enabled) return;
       EventBus.emit('combat:open-skill-picker', {});
     });
-    toolbar.appendChild(swapBtn);
-
-    const skillsRow = document.createElement('div');
-    skillsRow.className = 'action-buttons__skills';
+    cluster.appendChild(swapBtn);
 
     for (const { id, slot, className } of SKILL_SLOTS) {
-      this.mountSkillButton(skillsRow, id, slot, className);
+      this.mountSkillButton(cluster, id, slot, className);
     }
-
-    const combatRow = document.createElement('div');
-    combatRow.className = 'action-buttons__combat';
 
     for (const layout of STATIC_BUTTONS) {
-      this.mountButton(combatRow, layout);
+      this.mountButton(cluster, layout);
     }
 
-    this.element.append(toolbar, skillsRow, combatRow);
+    this.element.appendChild(cluster);
     container.appendChild(this.element);
 
     this.unsubscribers.push(

@@ -4,19 +4,11 @@ import { FpsCounter } from '@/ui/hud/FpsCounter';
 import { CombatPauseMenu } from '@/ui/hud/CombatPauseMenu';
 import '@/ui/hud/top-right-hud.css';
 
-const SCENE_ICONS: Record<'home' | 'combat', string> = {
-  home: '🏠',
-  combat: '⚔',
-};
-
-/** Top-right row: FPS readout + scene indicator chips + combat pause. */
+/** Top-right row: FPS readout + combat pause (combat only). */
 export class TopRightHud {
   private static mounted = false;
   private static root: HTMLElement | null = null;
-  private static homeChip: HTMLElement | null = null;
-  private static combatChip: HTMLElement | null = null;
   private static pauseSlot: HTMLElement | null = null;
-  private static scene: SceneId = 'home';
   private static unsubscribeScene: (() => void) | null = null;
 
   static init(uiRoot: HTMLElement): void {
@@ -32,33 +24,14 @@ export class TopRightHud {
     fps.setAttribute('aria-label', 'Frames per second');
     fps.textContent = '—';
 
-    const sceneRow = document.createElement('div');
-    sceneRow.className = 'scene-indicator';
-    sceneRow.dataset.testid = 'scene-indicator';
-
-    const homeChip = document.createElement('span');
-    homeChip.className = 'scene-indicator__chip scene-indicator__chip--home';
-    homeChip.dataset.testid = 'scene-indicator-home';
-    homeChip.setAttribute('aria-hidden', 'true');
-    homeChip.textContent = SCENE_ICONS.home;
-
-    const combatChip = document.createElement('span');
-    combatChip.className = 'scene-indicator__chip scene-indicator__chip--combat';
-    combatChip.dataset.testid = 'scene-indicator-combat';
-    combatChip.setAttribute('aria-hidden', 'true');
-    combatChip.textContent = SCENE_ICONS.combat;
-
     const pauseSlot = document.createElement('div');
-    pauseSlot.className = 'scene-indicator__pause-slot';
-    pauseSlot.dataset.testid = 'scene-indicator-pause-slot';
+    pauseSlot.className = 'top-right-hud__pause-slot';
+    pauseSlot.dataset.testid = 'top-right-pause-slot';
 
-    sceneRow.append(homeChip, combatChip, pauseSlot);
-    root.append(fps, sceneRow);
+    root.append(fps, pauseSlot);
     uiRoot.appendChild(root);
 
     TopRightHud.root = root;
-    TopRightHud.homeChip = homeChip;
-    TopRightHud.combatChip = combatChip;
     TopRightHud.pauseSlot = pauseSlot;
 
     FpsCounter.mount(fps);
@@ -79,8 +52,6 @@ export class TopRightHud {
     FpsCounter.destroy();
     TopRightHud.root?.remove();
     TopRightHud.root = null;
-    TopRightHud.homeChip = null;
-    TopRightHud.combatChip = null;
     TopRightHud.pauseSlot = null;
     TopRightHud.mounted = false;
   }
@@ -91,9 +62,6 @@ export class TopRightHud {
   }
 
   private static applyScene(id: SceneId): void {
-    TopRightHud.scene = id;
-    TopRightHud.homeChip?.classList.toggle('scene-indicator__chip--active', id === 'home');
-    TopRightHud.combatChip?.classList.toggle('scene-indicator__chip--active', id === 'combat');
-    TopRightHud.pauseSlot?.classList.toggle('scene-indicator__pause-slot--visible', id === 'combat');
+    TopRightHud.pauseSlot?.classList.toggle('top-right-hud__pause-slot--visible', id === 'combat');
   }
 }

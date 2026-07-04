@@ -5,6 +5,8 @@
     {
       "chapterId": "chapter.01.fallen_village",
       "displayNameKey": "chapter.01.fallen_village.name",
+      "domainId": "domain.chu_tuoc",
+      "domainLabelKey": "world.domain.chu_tuoc",
       "position": { "x": 140, "y": 1140 },
       "maps": [
         {
@@ -22,6 +24,7 @@
     {
       "chapterId": "chapter.02.mist_forest",
       "displayNameKey": "chapter.02.mist_forest.name",
+      "domainId": "domain.chu_tuoc",
       "position": { "x": 300, "y": 1000 },
       "maps": [
         {
@@ -39,6 +42,7 @@
     {
       "chapterId": "chapter.03.stone_canyon",
       "displayNameKey": "chapter.03.stone_canyon.name",
+      "domainId": "domain.chu_tuoc",
       "position": { "x": 500, "y": 860 },
       "maps": [
         {
@@ -56,6 +60,7 @@
     {
       "chapterId": "chapter.04.moon_lake",
       "displayNameKey": "chapter.04.moon_lake.name",
+      "domainId": "domain.chu_tuoc",
       "position": { "x": 280, "y": 720 },
       "maps": [
         {
@@ -73,6 +78,8 @@
     {
       "chapterId": "chapter.05.burning_desert",
       "displayNameKey": "chapter.05.burning_desert.name",
+      "domainId": "domain.la_thien",
+      "domainLabelKey": "world.domain.la_thien",
       "position": { "x": 120, "y": 580 },
       "maps": [
         {
@@ -90,6 +97,7 @@
     {
       "chapterId": "chapter.06.thunder_peaks",
       "displayNameKey": "chapter.06.thunder_peaks.name",
+      "domainId": "domain.la_thien",
       "position": { "x": 340, "y": 440 },
       "maps": [
         {
@@ -107,6 +115,7 @@
     {
       "chapterId": "chapter.07.frozen_palace",
       "displayNameKey": "chapter.07.frozen_palace.name",
+      "domainId": "domain.la_thien",
       "position": { "x": 560, "y": 300 },
       "maps": [
         {
@@ -124,6 +133,8 @@
     {
       "chapterId": "chapter.08.abyss_rift",
       "displayNameKey": "chapter.08.abyss_rift.name",
+      "domainId": "domain.ngoai_gioi",
+      "domainLabelKey": "world.domain.ngoai_gioi",
       "position": { "x": 360, "y": 160 },
       "maps": [
         {
@@ -141,6 +152,7 @@
     {
       "chapterId": "chapter.09.heavenly_gate",
       "displayNameKey": "chapter.09.heavenly_gate.name",
+      "domainId": "domain.ngoai_gioi",
       "position": { "x": 160, "y": 40 },
       "maps": [
         {
@@ -158,6 +170,8 @@
     {
       "chapterId": "chapter.10.void_throne",
       "displayNameKey": "chapter.10.void_throne.name",
+      "domainId": "domain.loi_tien",
+      "domainLabelKey": "world.domain.loi_tien",
       "position": { "x": 480, "y": 20 },
       "maps": [
         {

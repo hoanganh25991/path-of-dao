@@ -3,6 +3,7 @@ import {
   clientToLayout,
   getLayoutDimensions,
   isPortraitViewport,
+  pointerEventToLayout,
 } from '@/app/orientation/layoutCoords';
 
 describe('layoutCoords', () => {
@@ -25,5 +26,19 @@ describe('layoutCoords', () => {
 
   it('passes through coords when not portrait-rotated', () => {
     expect(clientToLayout(120, 80, 844, 390, false)).toEqual({ x: 120, y: 80 });
+  });
+
+  it('maps pointer coords through HUD bounds in native landscape', () => {
+    const hudRect = { left: 0, top: 0, width: 844, height: 390 } as DOMRect;
+    expect(
+      pointerEventToLayout(120, 80, hudRect, 844, 390, 844, 390, false),
+    ).toEqual({ x: 120, y: 80 });
+  });
+
+  it('scales pointer coords when HUD bounds differ from layout size', () => {
+    const hudRect = { left: 10, top: 20, width: 400, height: 200 } as DOMRect;
+    const mapped = pointerEventToLayout(210, 120, hudRect, 844, 390, 844, 390, false);
+    expect(mapped.x).toBeCloseTo(422, 0);
+    expect(mapped.y).toBeCloseTo(195, 0);
   });
 });

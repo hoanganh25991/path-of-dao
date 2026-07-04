@@ -1,0 +1,24 @@
+{
+  "id": "enemy.heng_yue.disciple",
+  "displayNameKey": "enemy.heng_yue.disciple.name",
+  "stats": {
+    "hpMax": 52,
+    "atk": 11,
+    "def": 3,
+    "speed": 82,
+    "crit": 0.08,
+    "critDmg": 1.5
+  },
+  "aggroRange": 220,
+  "attackRange": 44,
+  "attackCooldownMs": 1150,
+  "xpReward": 18,
+  "goldReward": [2, 6],
+  "lootTable": "loot.tier.common",
+  "spriteKey": "enemy_archer",
+  "archetype": "patrol",
+  "category": "grunt",
+  "bestiaryKey": "bestiary.enemy_heng_yue_disciple.desc",
+  "weakness": "spirit",
+  "resistance": "none"
+}

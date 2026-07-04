@@ -1,11 +1,11 @@
 {
   "version": 1,
   "bgm": {
-    "bgm.home": { "type": "procedural", "loop": true, "frequencies": [110, 165, 220], "gain": 0.08 },
-    "bgm.combat.generic": { "type": "procedural", "loop": true, "frequencies": [82, 123, 98], "gain": 0.09 },
-    "bgm.combat.boss": { "type": "procedural", "loop": true, "frequencies": [65, 98, 131], "gain": 0.1 },
-    "bgm.story": { "type": "procedural", "loop": true, "frequencies": [98, 147, 196], "gain": 0.07 },
-    "bgm.victory": { "type": "procedural", "loop": false, "frequencies": [262, 330, 392], "gain": 0.12, "durationMs": 3000 }
+    "bgm.home": { "type": "procedural", "loop": true, "frequencies": [110, 165, 220], "gain": 0.1 },
+    "bgm.combat.generic": { "type": "procedural", "loop": true, "frequencies": [82.41, 123.47, 110], "gain": 0.11 },
+    "bgm.combat.boss": { "type": "procedural", "loop": true, "frequencies": [65.41, 98, 87.31], "gain": 0.12 },
+    "bgm.story": { "type": "procedural", "loop": true, "frequencies": [98, 147, 196], "gain": 0.09 },
+    "bgm.victory": { "type": "procedural", "loop": false, "frequencies": [262, 330, 392, 523, 659], "gain": 0.14, "durationMs": 3200 }
   },
   "sfx": {
     "ui.tap": { "type": "procedural", "frequency": 880, "durationMs": 45, "wave": "sine", "gain": 0.18 },

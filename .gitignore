@@ -11,3 +11,4 @@ playwright-report
 !.cursor/rules/
 !plans/
 !tracks/
+dev-dist/

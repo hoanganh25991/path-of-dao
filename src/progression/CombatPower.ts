@@ -53,9 +53,12 @@ export function formatCombatPower(value: number, locale: string = 'en'): string 
   return value.toLocaleString(locale === 'vi' ? 'vi-VN' : 'en-US');
 }
 
+/** Real seconds per +1 cultivation year from play time (1 real day = 1 year). */
+export const SECONDS_PER_CULTIVATION_YEAR = 86_400;
+
 /** Flavor stat — play time + realm depth (sub-plan 16 §5). */
 export function yearsCultivated(totalPlaySeconds: number, realmOrder: number): number {
-  return Math.floor(totalPlaySeconds / 120) + realmOrder * 17;
+  return Math.floor(totalPlaySeconds / SECONDS_PER_CULTIVATION_YEAR) + realmOrder * 17;
 }
 
 /** Over-level damage multiplier when revisiting lower-realm maps (sub-plan 13 / 16 §7). */

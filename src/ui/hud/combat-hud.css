@@ -70,31 +70,63 @@
 
 .action-buttons {
   --btn-size: 52px;
-  --btn-lg: 64px;
+  --btn-lg: 72px;
   --btn-gap: 10px;
+  --cluster-size: 184px;
 
   position: absolute;
   right: max(1rem, env(safe-area-inset-right));
   bottom: max(1.25rem, env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--btn-gap);
   z-index: 1;
+  pointer-events: none;
 }
 
-.action-buttons__skills,
-.action-buttons__combat {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: var(--btn-gap);
+.action-buttons__cluster {
+  position: relative;
+  width: var(--cluster-size);
+  height: var(--cluster-size);
+  pointer-events: none;
 }
 
-.action-buttons__toolbar {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
+.action-buttons__cluster > .action-btn {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.action-buttons__cluster .action-btn--attack {
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+}
+
+.action-buttons__cluster .action-btn--dodge {
+  right: calc(var(--btn-lg) + 8px);
+  bottom: calc(var(--btn-lg) - 6px);
+  z-index: 3;
+}
+
+.action-buttons__cluster .action-btn--skill-primary {
+  right: calc(var(--btn-lg) + 10px);
+  bottom: 0;
+  z-index: 3;
+}
+
+.action-buttons__cluster .action-btn--skill-secondary {
+  right: 0;
+  bottom: calc(var(--btn-lg) + 10px);
+  z-index: 3;
+}
+
+.action-buttons__cluster .action-btn--skill-ultimate {
+  right: calc(var(--btn-lg) + 52px);
+  bottom: calc(var(--btn-lg) + 2px);
+  z-index: 2;
+}
+
+.action-buttons__cluster .action-btn--swap-skills {
+  right: calc(var(--btn-lg) + 52px);
+  bottom: calc(var(--btn-lg) + 58px);
+  z-index: 2;
 }
 
 .action-btn--swap-skills {

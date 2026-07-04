@@ -25,10 +25,12 @@ export const COMBO_WINDOW_MS = 600;
 export const HEAVY_FINISHER_VARIANTS = 4;
 
 export const DODGE_DURATION_MS = 350;
-export const DODGE_IFRAMES_MS = 250;
+/** Full dash — i-frames last the entire burst so the roll cannot be interrupted. */
+export const DODGE_IFRAMES_MS = DODGE_DURATION_MS;
 export const DODGE_COOLDOWN_MS = 800;
-/** 96px total over the dodge duration. */
-export const DODGE_SPEED_PX_PER_SEC = 96 / (DODGE_DURATION_MS / 1000);
+/** 288px total over the dodge duration (3× base dash). */
+export const DODGE_DISTANCE_PX = 288;
+export const DODGE_SPEED_PX_PER_SEC = DODGE_DISTANCE_PX / (DODGE_DURATION_MS / 1000);
 
 export const HITSTUN_MS = 150;
 

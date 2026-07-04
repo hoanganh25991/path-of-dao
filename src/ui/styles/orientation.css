@@ -89,8 +89,9 @@ html.landscape-layout .joystick-zone {
 }
 
 html.landscape-layout .action-buttons {
-  --btn-size: 52px;
-  --btn-gap: 14px;
+  --btn-size: 50px;
+  --btn-lg: 68px;
+  --cluster-size: 176px;
   right: max(1.25rem, env(safe-area-inset-right, 0px));
   bottom: max(1rem, env(safe-area-inset-bottom, 0px));
 }

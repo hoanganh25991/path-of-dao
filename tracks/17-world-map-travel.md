@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/17-world-map-travel.md](../plans/17-world-map-travel.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 ## Summary
 
@@ -13,7 +13,7 @@ Non-linear world map with 20 destinations, unlock rules, and difficulty hints.
 - Ten region clusters, twenty map nodes on world map data
 - Unlock rules: default open, clear-map gate, chapter gate
 - Travel eligibility checked before Enter
-- World map overlay: pan, scroll, pinch/wheel zoom
+- World map overlay: drag-to-pan viewport with pinch/wheel zoom (focal-point), initial focus on current map, header **Locate** control to re-center
 - Region clear indicators and map detail sheet
 - Difficulty badge on each map from recommended CP vs player CP
 - Play → Map Portal opens world map; Enter launches combat on chosen map
@@ -28,4 +28,5 @@ Non-linear world map with 20 destinations, unlock rules, and difficulty hints.
 
 - Enter sets current map and switches to combat scene
 - Unlock rules and travel states unit tested
+- Viewport pan/zoom math and locate control unit tested
 - E2E: Map Portal → Mist Forest node after ch1 complete

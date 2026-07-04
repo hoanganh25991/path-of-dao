@@ -6,12 +6,17 @@
       "enemies": [
         {
           "id": "enemy.spirit.wisp",
-          "count": 4,
+          "count": 3,
           "spread": 130
         },
         {
+          "id": "enemy.wolf",
+          "count": 2,
+          "spread": 140
+        },
+        {
           "id": "enemy.spirit.moth",
-          "count": 3,
+          "count": 2,
           "spread": 160
         }
       ]

@@ -1,4 +1,5 @@
 import ancientsJson from '../../content/demo/ancients.json';
+import { SECONDS_PER_CULTIVATION_YEAR } from '@/progression/CombatPower';
 import { checksumOf } from '@/core/save/checksum';
 import { SaveManager } from '@/core/save/SaveManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
@@ -97,7 +98,7 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
     cosmetics: { pet: template.pet },
     meta: {
       ...base.meta,
-      totalPlaySeconds: template.yearsCultivated * 3600,
+      totalPlaySeconds: template.yearsCultivated * SECONDS_PER_CULTIVATION_YEAR,
     },
   };
 

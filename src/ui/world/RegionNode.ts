@@ -16,8 +16,20 @@ export function createRegionNode(options: RegionNodeOptions): HTMLElement {
   const root = document.createElement('div');
   root.className = 'world-region';
   root.dataset.chapterId = region.chapterId;
+  if (region.domainId) {
+    root.dataset.domainId = region.domainId;
+  }
   root.style.left = `${region.position.x}px`;
   root.style.top = `${region.position.y}px`;
+
+  const children: HTMLElement[] = [];
+
+  if (region.domainLabelKey) {
+    const domainBanner = document.createElement('div');
+    domainBanner.className = 'world-region__domain';
+    domainBanner.textContent = I18nManager.t(region.domainLabelKey);
+    children.push(domainBanner);
+  }
 
   const title = document.createElement('h3');
   title.className = 'world-region__title';
@@ -47,7 +59,7 @@ export function createRegionNode(options: RegionNodeOptions): HTMLElement {
     mapsLayer.append(mapEl);
   }
 
-  root.append(title, dots, mapsLayer);
+  root.append(...children, title, dots, mapsLayer);
   return root;
 }
 

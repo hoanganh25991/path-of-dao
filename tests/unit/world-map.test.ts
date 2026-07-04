@@ -58,4 +58,32 @@ describe('WorldMap UI', () => {
     expect(detail?.querySelector('.difficulty-badge')).toBeTruthy();
     expect(detail?.querySelector('.world-map-detail__enter')).toBeTruthy();
   });
+
+  it('uses drag viewport instead of scroll overflow', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    uiRoot.querySelector<HTMLButtonElement>('[data-testid="map-portal-btn"]')!.click();
+
+    const viewport = document.querySelector<HTMLElement>('.world-map-viewport');
+    expect(viewport).toBeTruthy();
+    expect(viewport?.className).toContain('world-map-viewport');
+
+    const canvas = document.querySelector<HTMLElement>('.world-map-canvas');
+    expect(canvas?.style.transform).toContain('translate');
+    expect(canvas?.style.transform).toContain('scale');
+  });
+
+  it('shows locate control in header', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    uiRoot.querySelector<HTMLButtonElement>('[data-testid="map-portal-btn"]')!.click();
+
+    const locate = document.querySelector<HTMLButtonElement>('[data-testid="world-map-locate"]');
+    expect(locate).toBeTruthy();
+    expect(locate?.getAttribute('aria-label')).toBe('Center on current location');
+  });
 });

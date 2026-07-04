@@ -111,13 +111,9 @@ export function createLoadoutPickerElement(
       pick.title = I18nManager.t(def.nameKey);
       pick.innerHTML = renderSkillButtonHtml(skillId);
 
-      const equipped = Object.values(loadout).includes(skillId);
-      const isActiveSlot = loadout[activeSlot] === skillId;
-      const isPreview = previewSkillId === skillId;
+      const assignedToActiveSlot = loadout[activeSlot] === skillId;
 
-      if (isActiveSlot) pick.classList.add('skill-loadout__pool-icon--active');
-      if (equipped && !isActiveSlot) pick.classList.add('skill-loadout__pool-icon--equipped');
-      if (isPreview && !isActiveSlot) pick.classList.add('skill-loadout__pool-icon--active');
+      if (assignedToActiveSlot) pick.classList.add('skill-loadout__pool-icon--active');
       if (isAwakenedSkillId(skillId)) pick.classList.add('skill-loadout__pool-icon--awakened');
 
       pick.addEventListener('click', () => {
