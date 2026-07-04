@@ -19,7 +19,7 @@
     55
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_mist_stalker",
   "bossClearId": "boss.mist_stalker",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_mist_stalker.desc",

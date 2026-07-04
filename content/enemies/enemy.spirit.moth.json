@@ -18,7 +18,7 @@
     6
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_archer",
+  "spriteKey": "enemy_spirit_moth",
   "archetype": "ranged_kiter",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_spirit_moth.desc",

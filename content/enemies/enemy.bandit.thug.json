@@ -18,7 +18,7 @@
     3
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_slime",
+  "spriteKey": "enemy_bandit_thug",
   "archetype": "melee_chaser",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_bandit_thug.desc",

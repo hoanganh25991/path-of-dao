@@ -19,7 +19,7 @@
     500
   ],
   "lootTable": "loot.boss.final",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_void_sovereign",
   "bossClearId": "boss.void_sovereign",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_void_sovereign.desc",

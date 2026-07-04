@@ -19,7 +19,7 @@
     260
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_frost_queen",
   "bossClearId": "boss.frost_queen",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_frost_queen.desc",

@@ -18,7 +18,7 @@
     56
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_archer",
+  "spriteKey": "enemy_frost_shade",
   "archetype": "ranged_kiter",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_frost_shade.desc",

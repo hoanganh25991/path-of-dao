@@ -19,7 +19,7 @@
     320
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_rift_horror",
   "bossClearId": "boss.rift_horror",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_rift_horror.desc",

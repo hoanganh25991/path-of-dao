@@ -20,7 +20,7 @@
     0
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_slime",
+  "spriteKey": "enemy_wolf_beast",
   "bestiaryKey": "bestiary.enemy_spirit_fox.desc",
   "weakness": "spirit",
   "resistance": "none"

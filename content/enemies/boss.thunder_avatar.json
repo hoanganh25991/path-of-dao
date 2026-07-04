@@ -19,7 +19,7 @@
     200
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_thunder_avatar",
   "bossClearId": "boss.thunder_avatar",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_thunder_avatar.desc",

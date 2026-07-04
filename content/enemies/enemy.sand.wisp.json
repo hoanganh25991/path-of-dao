@@ -18,7 +18,7 @@
     15
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_archer",
+  "spriteKey": "enemy_desert_spirit",
   "archetype": "ranged_kiter",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_sand_wisp.desc",

@@ -15,7 +15,7 @@
   "xpReward": 18,
   "goldReward": [2, 6],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_archer",
+  "spriteKey": "enemy_disciple",
   "archetype": "patrol",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_heng_yue_disciple.desc",

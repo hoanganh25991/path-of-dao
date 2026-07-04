@@ -20,7 +20,7 @@
     15
   ],
   "lootTable": "loot.tier.uncommon",
-  "spriteKey": "enemy_slime",
+  "spriteKey": "enemy_spirit_moth",
   "bestiaryKey": "bestiary.enemy_elite_shadow.desc",
   "weakness": "spirit",
   "resistance": "none"

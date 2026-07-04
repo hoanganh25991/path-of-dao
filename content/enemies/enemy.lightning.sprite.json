@@ -18,7 +18,7 @@
     48
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_slime",
+  "spriteKey": "enemy_lightning_spirit",
   "archetype": "melee_chaser",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_lightning_sprite.desc",

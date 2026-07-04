@@ -18,7 +18,7 @@
     56
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_slime",
+  "spriteKey": "enemy_ice_golem",
   "archetype": "melee_chaser",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_ice_golem.desc",

@@ -19,7 +19,7 @@
     100
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_seal_warden",
   "bossClearId": "boss.seal_warden",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_seal_warden.desc",

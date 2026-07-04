@@ -18,7 +18,6 @@ import {
   PALETTE_MIST_SPIRIT,
   PALETTE_RIFT_SPAWN,
   PALETTE_SAND_DEMON,
-  PALETTE_SCORPION,
   PALETTE_SLIME,
   PALETTE_STORM_HAWK,
   PALETTE_TOTEM,
@@ -283,6 +282,17 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
   );
 
   registerBossSheet(scene, 'enemy_totem', PALETTE_TOTEM);
+
+  // ── Unique boss sheets ──
+  registerBossSheet(scene, 'boss_bandit_lord', PALETTE_BANDIT);
+  registerBossSheet(scene, 'boss_mist_stalker', PALETTE_MIST_SPIRIT);
+  registerBossSheet(scene, 'boss_seal_warden', PALETTE_ANCIENT_GUARDIAN);
+  registerBossSheet(scene, 'boss_desert_sovereign', PALETTE_SAND_DEMON);
+  registerBossSheet(scene, 'boss_thunder_avatar', PALETTE_TRIBULATION);
+  registerBossSheet(scene, 'boss_frost_queen', PALETTE_ICE);
+  registerBossSheet(scene, 'boss_rift_horror', PALETTE_RIFT_SPAWN);
+  registerBossSheet(scene, 'boss_celestial_guardian', PALETTE_CELESTIAL);
+  registerBossSheet(scene, 'boss_void_sovereign', PALETTE_VOID_SHADE);
 
   // ── New map-specific variants ──
 
@@ -630,6 +640,15 @@ export function cultivatorAnimKeys(spriteKey: string): {
         sit: ANIM.archerSit,
       };
     case 'enemy_totem':
+    case 'boss_bandit_lord':
+    case 'boss_mist_stalker':
+    case 'boss_seal_warden':
+    case 'boss_desert_sovereign':
+    case 'boss_thunder_avatar':
+    case 'boss_frost_queen':
+    case 'boss_rift_horror':
+    case 'boss_celestial_guardian':
+    case 'boss_void_sovereign':
       return {
         idle: ANIM.totemIdle,
         walk: ANIM.totemIdle,

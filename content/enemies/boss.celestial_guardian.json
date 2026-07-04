@@ -19,7 +19,7 @@
     400
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_celestial_guardian",
   "bossClearId": "boss.celestial_guardian",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_celestial_guardian.desc",

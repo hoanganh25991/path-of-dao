@@ -19,7 +19,7 @@
     120
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_desert_sovereign",
   "bossClearId": "boss.desert_sovereign",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_desert_sovereign.desc",

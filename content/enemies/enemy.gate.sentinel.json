@@ -18,7 +18,7 @@
     72
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_archer",
+  "spriteKey": "enemy_gate_sentinel",
   "archetype": "patrol",
   "category": "grunt",
   "bestiaryKey": "bestiary.enemy_gate_sentinel.desc",

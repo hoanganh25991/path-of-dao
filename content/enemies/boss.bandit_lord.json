@@ -19,7 +19,7 @@
     80
   ],
   "lootTable": "loot.boss.standard",
-  "spriteKey": "enemy_totem",
+  "spriteKey": "boss_bandit_lord",
   "bossClearId": "boss.bandit_lord",
   "category": "boss",
   "bestiaryKey": "bestiary.boss_bandit_lord.desc",

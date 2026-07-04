@@ -18,7 +18,7 @@
     64
   ],
   "lootTable": "loot.tier.uncommon",
-  "spriteKey": "enemy_archer",
+  "spriteKey": "enemy_rift_spawn",
   "archetype": "ranged_kiter",
   "category": "elite",
   "bestiaryKey": "bestiary.enemy_elite_rift.desc",
