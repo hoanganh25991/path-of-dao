@@ -169,15 +169,19 @@ export class MapScene extends Phaser.Scene {
         config.recommendedRealmOrder,
       );
     } else if (config.encounterTable) {
-      this.spawnManager = new SpawnManager(
-        this,
-        this.player,
-        config.encounterTable,
-        this.resolveEncounterCenter(map, config),
-        collision,
-        this.hitboxManager,
-      );
-      this.spawnManager.start();
+      try {
+        this.spawnManager = new SpawnManager(
+          this,
+          this.player,
+          config.encounterTable,
+          this.resolveEncounterCenter(map, config),
+          collision,
+          this.hitboxManager,
+        );
+        this.spawnManager.start();
+      } catch (err) {
+        console.error(`MapScene: failed to init SpawnManager for "${this.mapId}":`, err);
+      }
     }
 
     if (config.bgm) {

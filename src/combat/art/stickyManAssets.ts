@@ -598,12 +598,16 @@ function registerBossSheet(scene: Phaser.Scene, key: string, palette: typeof PAL
   const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, palette, NORMAL, 'boss');
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
+  const idleKey = `${key}_idle`;
+  const sitKey = `${key}_sit`;
+  const atkKey = `${key}_attack`;
+
   let offset = 0;
-  createAnim(scene, ANIM.totemIdle, key, offset, POSES_TOTEM_IDLE.length, 4);
+  createAnim(scene, idleKey, key, offset, POSES_TOTEM_IDLE.length, 4);
   offset += POSES_TOTEM_IDLE.length;
-  createAnim(scene, ANIM.totemSit, key, offset, POSES_SIT.length, 3);
+  createAnim(scene, sitKey, key, offset, POSES_SIT.length, 3);
   offset += POSES_SIT.length;
-  createAnim(scene, ANIM.totemAttack, key, offset, POSES_TOTEM_ATTACK.length, 9, 0, {
+  createAnim(scene, atkKey, key, offset, POSES_TOTEM_ATTACK.length, 9, 0, {
     2: 130,
   });
 }
@@ -640,20 +644,74 @@ export function cultivatorAnimKeys(spriteKey: string): {
         sit: ANIM.archerSit,
       };
     case 'enemy_totem':
+      return {
+        idle: 'enemy_totem_idle',
+        walk: 'enemy_totem_idle',
+        attack: 'enemy_totem_attack',
+        sit: 'enemy_totem_sit',
+      };
     case 'boss_bandit_lord':
+      return {
+        idle: 'boss_bandit_lord_idle',
+        walk: 'boss_bandit_lord_idle',
+        attack: 'boss_bandit_lord_attack',
+        sit: 'boss_bandit_lord_sit',
+      };
     case 'boss_mist_stalker':
+      return {
+        idle: 'boss_mist_stalker_idle',
+        walk: 'boss_mist_stalker_idle',
+        attack: 'boss_mist_stalker_attack',
+        sit: 'boss_mist_stalker_sit',
+      };
     case 'boss_seal_warden':
+      return {
+        idle: 'boss_seal_warden_idle',
+        walk: 'boss_seal_warden_idle',
+        attack: 'boss_seal_warden_attack',
+        sit: 'boss_seal_warden_sit',
+      };
     case 'boss_desert_sovereign':
+      return {
+        idle: 'boss_desert_sovereign_idle',
+        walk: 'boss_desert_sovereign_idle',
+        attack: 'boss_desert_sovereign_attack',
+        sit: 'boss_desert_sovereign_sit',
+      };
     case 'boss_thunder_avatar':
+      return {
+        idle: 'boss_thunder_avatar_idle',
+        walk: 'boss_thunder_avatar_idle',
+        attack: 'boss_thunder_avatar_attack',
+        sit: 'boss_thunder_avatar_sit',
+      };
     case 'boss_frost_queen':
+      return {
+        idle: 'boss_frost_queen_idle',
+        walk: 'boss_frost_queen_idle',
+        attack: 'boss_frost_queen_attack',
+        sit: 'boss_frost_queen_sit',
+      };
     case 'boss_rift_horror':
+      return {
+        idle: 'boss_rift_horror_idle',
+        walk: 'boss_rift_horror_idle',
+        attack: 'boss_rift_horror_attack',
+        sit: 'boss_rift_horror_sit',
+      };
     case 'boss_celestial_guardian':
+      return {
+        idle: 'boss_celestial_guardian_idle',
+        walk: 'boss_celestial_guardian_idle',
+        attack: 'boss_celestial_guardian_attack',
+        sit: 'boss_celestial_guardian_sit',
+      };
     case 'boss_void_sovereign':
       return {
-        idle: ANIM.totemIdle,
-        walk: ANIM.totemIdle,
-        attack: ANIM.totemAttack,
-        sit: ANIM.totemSit,
+        idle: 'boss_void_sovereign_idle',
+        walk: 'boss_void_sovereign_idle',
+        attack: 'boss_void_sovereign_attack',
+        sit: 'boss_void_sovereign_sit',
       };
     case 'enemy_villager':
     case 'enemy_disciple':
