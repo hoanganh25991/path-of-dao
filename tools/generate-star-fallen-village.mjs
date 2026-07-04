@@ -6,7 +6,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildStarZoneMap, TILE } from './lib/tiled-map-builder.mjs';
+import { buildStarZoneMap, TILE, WALL_THICK } from './lib/tiled-map-builder.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assetsDir = join(root, 'assets', 'maps');
@@ -30,10 +30,18 @@ const PORTAL_H = 96;
 function edgePortal(id, edge, align = 0.5) {
   const along = (edge === 'east' || edge === 'west') ? H : W;
   const pos = Math.floor(along * align) * TILE;
-  if (edge === 'east') return { id, x: (W - 2) * TILE, y: pos, width: PORTAL_W, height: PORTAL_H };
-  if (edge === 'west') return { id, x: TILE, y: pos, width: PORTAL_W, height: PORTAL_H };
-  if (edge === 'north') return { id, x: pos, y: TILE, width: PORTAL_H, height: PORTAL_W };
-  return { id, x: pos, y: (H - 2) * TILE, width: PORTAL_H, height: PORTAL_W };
+  const portalSpan = (edge === 'east' || edge === 'west') ? PORTAL_H : PORTAL_W;
+  const portalBreadth = (edge === 'east' || edge === 'west') ? PORTAL_W : PORTAL_H;
+  if (edge === 'east') {
+    return { id, x: (W - WALL_THICK) * TILE, y: pos - Math.floor(portalSpan / 2), width: portalBreadth, height: portalSpan };
+  }
+  if (edge === 'west') {
+    return { id, x: WALL_THICK * TILE, y: pos - Math.floor(portalSpan / 2), width: portalBreadth, height: portalSpan };
+  }
+  if (edge === 'north') {
+    return { id, x: pos - Math.floor(portalSpan / 2), y: WALL_THICK * TILE, width: portalSpan, height: portalBreadth };
+  }
+  return { id, x: pos - Math.floor(portalSpan / 2), y: (H - WALL_THICK) * TILE, width: portalSpan, height: portalBreadth };
 }
 
 const ZONES = [
@@ -48,7 +56,7 @@ const ZONES = [
     ],
     includeExit: true,
     portalSpawns: {
-      'portal.west': { x: 3 * TILE, y: Math.floor(H * 0.48) * TILE },
+      'portal.west': { x: (WALL_THICK + 1) * TILE, y: Math.floor(H * 0.48) * TILE },
     },
     roamSpawns: [
       { enemyId: 'enemy.slime', x: 1200, y: 2800, patrolRadius: 72 },
@@ -75,8 +83,8 @@ const ZONES = [
       edgePortal('portal.north', 'north', 0.55),
     ],
     portalSpawns: {
-      'portal.west': { x: 3 * TILE, y: Math.floor(H * 0.48) * TILE },
-      'portal.south': { x: Math.floor(W * 0.55) * TILE, y: (H - 4) * TILE },
+      'portal.west': { x: (WALL_THICK + 1) * TILE, y: Math.floor(H * 0.48) * TILE },
+      'portal.south': { x: Math.floor(W * 0.55) * TILE, y: (H - WALL_THICK - 2) * TILE },
     },
     roamSpawns: [
       { enemyId: 'enemy.wolf', x: 2000, y: 3000, patrolRadius: 80 },
@@ -102,8 +110,8 @@ const ZONES = [
       edgePortal('portal.west', 'west', 0.4),
     ],
     portalSpawns: {
-      'portal.south': { x: Math.floor(W * 0.55) * TILE, y: (H - 4) * TILE },
-      'portal.east': { x: (W - 4) * TILE, y: Math.floor(H * 0.4) * TILE },
+      'portal.south': { x: Math.floor(W * 0.55) * TILE, y: (H - WALL_THICK - 2) * TILE },
+      'portal.west': { x: (WALL_THICK + 1) * TILE, y: Math.floor(H * 0.4) * TILE },
     },
     roamSpawns: [
       { enemyId: 'enemy.bandit.thug', x: 2200, y: 3200, patrolRadius: 80 },
@@ -128,8 +136,8 @@ const ZONES = [
       edgePortal('portal.east', 'east', 0.42),
     ],
     portalSpawns: {
-      'portal.north': { x: Math.floor(W * 0.35) * TILE, y: 3 * TILE },
-      'portal.west': { x: 3 * TILE, y: Math.floor(H * 0.42) * TILE },
+      'portal.north': { x: Math.floor(W * 0.35) * TILE, y: (WALL_THICK + 1) * TILE },
+      'portal.west': { x: (WALL_THICK + 1) * TILE, y: Math.floor(H * 0.42) * TILE },
     },
     roamSpawns: [
       { enemyId: 'enemy.slime', x: 1600, y: 3400, patrolRadius: 65 },

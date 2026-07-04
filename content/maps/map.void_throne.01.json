@@ -18,12 +18,12 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 15680,
-      "y": 5600,
+      "x": 3073248,
+      "y": 1097600,
       "radius": 616,
       "id": "cave.void_throne"
     }
   ],
-  "recommendedCp": 260000,
+  "recommendedCp": 500000,
   "recommendedRealmOrder": 7
 }

@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "ancient_sword",
-      "x": 4080,
-      "y": 3120,
+      "x": 146880,
+      "y": 112320,
       "radius": 216,
       "id": "sword.mist_forest"
     }

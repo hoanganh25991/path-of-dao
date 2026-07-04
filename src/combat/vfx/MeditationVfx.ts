@@ -5,7 +5,6 @@ const WISP_SPAWN_MS = 200;
 const WISP_TRAVEL_MS = 520;
 const WISP_COUNT_CAP = 6;
 const SPIRIT_TINT = 0x80ffb0;
-const AURA_TINT = 0x60c888;
 
 interface Wisp {
   sprite: Phaser.GameObjects.Image;
@@ -16,7 +15,6 @@ interface Wisp {
 export class MeditationVfx {
   private readonly wisps: Wisp[] = [];
   private spawnAccumulatorMs = 0;
-  private aura: Phaser.GameObjects.Image | null = null;
   private active = false;
 
   constructor(
@@ -28,31 +26,10 @@ export class MeditationVfx {
     if (this.active) return;
     this.active = true;
     this.spawnAccumulatorMs = 0;
-
-    this.aura = this.scene.add
-      .image(Math.round(x), Math.round(y - 18), VFX_TEXTURE_KEYS.ring)
-      .setOrigin(0.5)
-      .setScale(0.55)
-      .setTint(AURA_TINT)
-      .setAlpha(0.28)
-      .setDepth(this.depth - 1);
-
-    this.scene.tweens.add({
-      targets: this.aura,
-      scaleX: 0.72,
-      scaleY: 0.72,
-      alpha: 0.42,
-      duration: 900,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut',
-    });
   }
 
   stop(): void {
     this.active = false;
-    this.aura?.destroy();
-    this.aura = null;
     for (const wisp of this.wisps) wisp.sprite.destroy();
     this.wisps.length = 0;
     this.spawnAccumulatorMs = 0;
@@ -60,8 +37,6 @@ export class MeditationVfx {
 
   update(dtMs: number, x: number, y: number): void {
     if (!this.active) return;
-
-    this.aura?.setPosition(Math.round(x), Math.round(y - 18));
 
     this.spawnAccumulatorMs += dtMs;
     while (this.spawnAccumulatorMs >= WISP_SPAWN_MS && this.wisps.length < WISP_COUNT_CAP) {

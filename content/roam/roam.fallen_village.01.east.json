@@ -2,71 +2,46 @@
   "id": "roam.fallen_village.01.east",
   "spawns": [
     {
-      "enemyPool": [
-        "enemy.wolf",
-        "enemy.village.scavenger"
-      ],
-      "x": 20000,
-      "y": 30000,
-      "patrolRadius": 800
+      "enemyId": "enemy.wolf",
+      "x": 2000,
+      "y": 3000,
+      "patrolRadius": 80
     },
     {
-      "enemyPool": [
-        "enemy.wolf",
-        "enemy.village.spirit_pest"
-      ],
-      "x": 38000,
-      "y": 26000,
-      "patrolRadius": 750
+      "enemyId": "enemy.wolf",
+      "x": 3800,
+      "y": 2600,
+      "patrolRadius": 75
     },
     {
-      "enemyPool": [
-        "enemy.village.spirit_pest",
-        "enemy.wolf",
-        "enemy.bandit.thug"
-      ],
-      "x": 52000,
-      "y": 34000,
-      "patrolRadius": 650
+      "enemyId": "enemy.village.spirit_pest",
+      "x": 5200,
+      "y": 3400,
+      "patrolRadius": 65
     },
     {
-      "enemyPool": [
-        "enemy.village.scavenger",
-        "enemy.wolf",
-        "enemy.bandit.thug"
-      ],
-      "x": 64000,
-      "y": 42000,
-      "patrolRadius": 700
+      "enemyId": "enemy.bandit.thug",
+      "x": 6400,
+      "y": 4200,
+      "patrolRadius": 70
     },
     {
-      "enemyPool": [
-        "enemy.village.scavenger",
-        "enemy.wolf",
-        "enemy.bandit.thug"
-      ],
-      "x": 44000,
-      "y": 48000,
-      "patrolRadius": 720
+      "enemyId": "enemy.village.scavenger",
+      "x": 4400,
+      "y": 4800,
+      "patrolRadius": 72
     },
     {
-      "enemyPool": [
-        "enemy.slime",
-        "enemy.village.scavenger"
-      ],
-      "x": 28000,
-      "y": 44000,
-      "patrolRadius": 600
+      "enemyId": "enemy.slime",
+      "x": 2800,
+      "y": 4400,
+      "patrolRadius": 60
     },
     {
-      "enemyPool": [
-        "enemy.wolf",
-        "enemy.bandit.thug",
-        "enemy.heng_yue.disciple"
-      ],
-      "x": 70000,
-      "y": 30000,
-      "patrolRadius": 900
+      "enemyId": "enemy.wolf",
+      "x": 7000,
+      "y": 3000,
+      "patrolRadius": 90
     }
   ]
 }

@@ -4,7 +4,50 @@
  */
 
 const TILE = 32;
+/** Impassable outer rim — two tiles thick so the boundary reads clearly and blocks movement. */
+export const WALL_THICK = 2;
 const G = { GRASS: 1, GRASS_VAR: 2, DIRT: 3, ROCK: 4, BUSH: 5, TRUNK: 6, CANOPY: 7, WATER: 8 };
+const LEGACY_W = 50;
+const LEGACY_H = 38;
+
+function areaScale(width, height, baseW = LEGACY_W, baseH = LEGACY_H) {
+  return (width * height) / (baseW * baseH);
+}
+
+function scaledCount(base, width, height, baseW = LEGACY_W, baseH = LEGACY_H) {
+  if (base <= 0) return 0;
+  return Math.max(1, Math.round(base * areaScale(width, height, baseW, baseH)));
+}
+
+/** Tile coords covered by portal rectangles — carved out of the border wall. */
+function collectPortalTiles(portals, width, height) {
+  const portalTiles = new Set();
+  for (const portal of portals) {
+    const tx0 = Math.max(0, Math.floor(portal.x / TILE));
+    const ty0 = Math.max(0, Math.floor(portal.y / TILE));
+    const tx1 = Math.min(width - 1, Math.ceil((portal.x + portal.width) / TILE) - 1);
+    const ty1 = Math.min(height - 1, Math.ceil((portal.y + portal.height) / TILE) - 1);
+    for (let y = ty0; y <= ty1; y++) {
+      for (let x = tx0; x <= tx1; x++) {
+        portalTiles.add(`${x},${y}`);
+      }
+    }
+  }
+  return portalTiles;
+}
+
+function paintBorderWalls(collision, width, height, portalTiles = new Set(), wallThick = WALL_THICK) {
+  for (let t = 0; t < wallThick; t++) {
+    for (let x = 0; x < width; x++) {
+      if (!portalTiles.has(`${x},${t}`)) collision[idx(width, x, t)] = G.ROCK;
+      if (!portalTiles.has(`${x},${height - 1 - t}`)) collision[idx(width, x, height - 1 - t)] = G.ROCK;
+    }
+    for (let y = 0; y < height; y++) {
+      if (!portalTiles.has(`${t},${y}`)) collision[idx(width, t, y)] = G.ROCK;
+      if (!portalTiles.has(`${width - 1 - t},${y}`)) collision[idx(width, width - 1 - t, y)] = G.ROCK;
+    }
+  }
+}
 
 function mulberry32(seed) {
   return () => {
@@ -50,31 +93,31 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     }
   }
 
-  // Main path east from spawn (tile ~10,15)
-  for (let x = 6; x <= width - 10; x++) {
-    for (let y = 14; y <= 16; y++) ground[idx(width, x, y)] = G.DIRT;
+  const spawnTileX = Math.max(WALL_THICK + 2, Math.floor(width * 0.2));
+  const spawnTileY = Math.max(WALL_THICK + 2, Math.floor(height * 0.395));
+  const pathY0 = spawnTileY - 1;
+  const pathY1 = spawnTileY + 1;
+
+  // Main path east from spawn
+  for (let x = WALL_THICK + 2; x <= width - WALL_THICK - 4; x++) {
+    for (let y = pathY0; y <= pathY1; y++) ground[idx(width, x, y)] = G.DIRT;
   }
-  for (let y = 8; y <= 16; y++) {
-    for (let x = width - 15; x <= width - 13; x++) ground[idx(width, x, y)] = G.DIRT;
+  const branchY0 = Math.max(WALL_THICK + 2, Math.floor(height * 0.21));
+  for (let y = branchY0; y <= spawnTileY; y++) {
+    for (let x = width - WALL_THICK - 6; x <= width - WALL_THICK - 4; x++) {
+      ground[idx(width, x, y)] = G.DIRT;
+    }
   }
 
-  // Border walls
-  for (let x = 0; x < width; x++) {
-    collision[idx(width, x, 0)] = G.ROCK;
-    collision[idx(width, x, height - 1)] = G.ROCK;
-  }
-  for (let y = 0; y < height; y++) {
-    collision[idx(width, 0, y)] = G.ROCK;
-    collision[idx(width, width - 1, y)] = G.ROCK;
-  }
+  paintBorderWalls(collision, width, height);
 
   // Theme features
   if (theme === 'lake' || theme === 'forest' || theme === 'frozen') {
-    const cx = theme === 'lake' ? 12 : theme === 'frozen' ? 20 : 28;
-    const cy = theme === 'lake' ? 28 : theme === 'frozen' ? 24 : 22;
+    const cx = Math.floor(width * (theme === 'lake' ? 0.24 : theme === 'frozen' ? 0.4 : 0.56));
+    const cy = Math.floor(height * (theme === 'lake' ? 0.74 : theme === 'frozen' ? 0.63 : 0.58));
     for (let y = cy - 4; y <= cy + 4; y++) {
       for (let x = cx - 5; x <= cx + 5; x++) {
-        if (x < 1 || y < 1 || x >= width - 1 || y >= height - 1) continue;
+        if (x < WALL_THICK || y < WALL_THICK || x >= width - WALL_THICK || y >= height - WALL_THICK) continue;
         const oval = ((x - cx) / 5) ** 2 + ((y - cy) / 4) ** 2 <= 1;
         if (oval) {
           collision[idx(width, x, y)] = G.WATER;
@@ -85,11 +128,11 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
   }
 
   const rockThemes = { canyon: 8, desert: 4, thunder: 12, abyss: 6, void: 10, celestial: 2, frozen: 2 };
-  const rockCount = rockThemes[theme] ?? 0;
+  const rockCount = scaledCount(rockThemes[theme] ?? 0, width, height);
   if (rockCount > 0) {
     for (let i = 0; i < rockCount; i++) {
-      const rx = 8 + Math.floor(rand() * (width - 16));
-      const ry = 4 + Math.floor(rand() * (height - 12));
+      const rx = WALL_THICK + 2 + Math.floor(rand() * (width - (WALL_THICK + 2) * 2));
+      const ry = WALL_THICK + 2 + Math.floor(rand() * (height - (WALL_THICK + 2) * 2));
       const span = theme === 'void' ? 5 : 4;
       for (let dy = 0; dy < 3; dy++) {
         for (let dx = 0; dx < span; dx++) {
@@ -100,16 +143,21 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
   }
 
   if (theme === 'abyss' || theme === 'void') {
-    for (let i = 0; i < 6; i++) {
-      const x = 10 + Math.floor(rand() * (width - 20));
-      const y = 6 + Math.floor(rand() * (height - 14));
+    for (let i = 0; i < scaledCount(6, width, height); i++) {
+      const x = WALL_THICK + 2 + Math.floor(rand() * (width - (WALL_THICK + 2) * 2));
+      const y = WALL_THICK + 2 + Math.floor(rand() * (height - (WALL_THICK + 2) * 2));
       ground[idx(width, x, y)] = G.GRASS_VAR;
     }
   }
 
   if (bossArena) {
-    const enc = { x0: width - 18, y0: 4, x1: width - 6, y1: 12 };
-    const gapX = width - 14;
+    const enc = {
+      x0: width - Math.max(18, Math.floor(width * 0.36)),
+      y0: WALL_THICK + 2,
+      x1: width - WALL_THICK - 4,
+      y1: Math.max(WALL_THICK + 8, Math.floor(height * 0.32)),
+    };
+    const gapX = width - Math.max(14, Math.floor(width * 0.28));
     for (let x = enc.x0; x <= enc.x1; x++) {
       collision[idx(width, x, enc.y0)] = G.ROCK;
       if (x < gapX || x > gapX + 2) collision[idx(width, x, enc.y1)] = G.ROCK;
@@ -120,13 +168,17 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     }
   }
 
-  const treeCount = {
-    village: 8, forest: 14, canyon: 6, lake: 10, desert: 4,
-    thunder: 3, frozen: 6, abyss: 12, celestial: 7, void: 2,
-  }[theme] ?? 8;
+  const treeCount = scaledCount(
+    {
+      village: 8, forest: 14, canyon: 6, lake: 10, desert: 4,
+      thunder: 3, frozen: 6, abyss: 12, celestial: 7, void: 2,
+    }[theme] ?? 8,
+    width,
+    height,
+  );
   for (let i = 0; i < treeCount; i++) {
-    const tx = 3 + Math.floor(rand() * (width - 6));
-    const ty = 3 + Math.floor(rand() * (height - 6));
+    const tx = WALL_THICK + 1 + Math.floor(rand() * (width - (WALL_THICK + 1) * 2));
+    const ty = WALL_THICK + 1 + Math.floor(rand() * (height - (WALL_THICK + 1) * 2));
     if (ground[idx(width, tx, ty)] === G.DIRT) continue;
     if (collision[idx(width, tx, ty)] !== 0) continue;
     collision[idx(width, tx, ty)] = G.TRUNK;
@@ -136,17 +188,17 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     foreground[idx(width, tx, ty - 2)] = G.CANOPY;
   }
 
-  for (let i = 0; i < 50; i++) {
-    const x = 2 + Math.floor(rand() * (width - 4));
-    const y = 2 + Math.floor(rand() * (height - 4));
+  for (let i = 0; i < scaledCount(50, width, height); i++) {
+    const x = WALL_THICK + 1 + Math.floor(rand() * (width - (WALL_THICK + 1) * 2));
+    const y = WALL_THICK + 1 + Math.floor(rand() * (height - (WALL_THICK + 1) * 2));
     if (collision[idx(width, x, y)] === 0 && decoration[idx(width, x, y)] === 0) {
       decoration[idx(width, x, y)] = G.BUSH;
     }
   }
 
-  // Spawn safe zone (tile 10,15 → 320,480)
-  for (let y = 13; y <= 17; y++) {
-    for (let x = 8; x <= 13; x++) {
+  // Spawn safe zone
+  for (let y = spawnTileY - 2; y <= spawnTileY + 2; y++) {
+    for (let x = spawnTileX - 2; x <= spawnTileX + 3; x++) {
       collision[idx(width, x, y)] = 0;
       decoration[idx(width, x, y)] = 0;
       foreground[idx(width, x, y)] = 0;
@@ -157,12 +209,12 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     if (collision[i] !== 0) decoration[i] = collision[i];
   }
 
-  const spawnX = 10 * TILE;
-  const spawnY = 15 * TILE;
-  const exitX = (width - 6) * TILE;
-  const exitY = 14 * TILE;
+  const spawnX = spawnTileX * TILE;
+  const spawnY = spawnTileY * TILE;
+  const exitX = (width - WALL_THICK - 4) * TILE;
+  const exitY = pathY0 * TILE;
   const waveX = Math.floor(width * 0.5) * TILE;
-  const waveY = 15 * TILE;
+  const waveY = spawnTileY * TILE;
 
   return {
     type: 'map',
@@ -276,52 +328,40 @@ export function buildStarZoneMap({
   }
 
   // Wandering paths — horizontal + vertical meanders for peaceful exploration
-  for (let x = 8; x < width - 8; x++) {
+  for (let x = WALL_THICK + 4; x < width - WALL_THICK - 4; x++) {
     const pathY = Math.floor(height * 0.45 + Math.sin(x * 0.08) * 6);
     for (let dy = -1; dy <= 1; dy++) {
       const y = pathY + dy;
-      if (y > 0 && y < height - 1) ground[idx(width, x, y)] = G.DIRT;
+      if (y > WALL_THICK && y < height - WALL_THICK - 1) ground[idx(width, x, y)] = G.DIRT;
     }
   }
-  for (let y = 8; y < height - 8; y++) {
+  for (let y = WALL_THICK + 4; y < height - WALL_THICK - 4; y++) {
     const pathX = Math.floor(width * 0.35 + Math.cos(y * 0.06) * 8);
     for (let dx = -1; dx <= 1; dx++) {
       const x = pathX + dx;
-      if (x > 0 && x < width - 1) ground[idx(width, x, y)] = G.DIRT;
+      if (x > WALL_THICK && x < width - WALL_THICK - 1) ground[idx(width, x, y)] = G.DIRT;
     }
   }
 
-  // Border walls with portal gaps
-  const portalTiles = new Set();
-  for (const portal of portals) {
-    const tx0 = Math.floor(portal.x / TILE);
-    const ty0 = Math.floor(portal.y / TILE);
-    const tx1 = Math.ceil((portal.x + portal.width) / TILE);
-    const ty1 = Math.ceil((portal.y + portal.height) / TILE);
-    for (let y = ty0; y <= ty1; y++) {
-      for (let x = tx0; x <= tx1; x++) {
-        portalTiles.add(`${x},${y}`);
-      }
-    }
-  }
+  const portalTiles = collectPortalTiles(portals, width, height);
+  paintBorderWalls(collision, width, height, portalTiles);
 
-  for (let x = 0; x < width; x++) {
-    if (!portalTiles.has(`${x},0`)) collision[idx(width, x, 0)] = G.ROCK;
-    if (!portalTiles.has(`${x},${height - 1}`)) collision[idx(width, x, height - 1)] = G.ROCK;
-  }
-  for (let y = 0; y < height; y++) {
-    if (!portalTiles.has(`0,${y}`)) collision[idx(width, 0, y)] = G.ROCK;
-    if (!portalTiles.has(`${width - 1},${y}`)) collision[idx(width, width - 1, y)] = G.ROCK;
-  }
-
-  const treeCount = {
-    village: 28, forest: 48, canyon: 18, lake: 32, desert: 14,
-    thunder: 10, frozen: 22, abyss: 36, celestial: 20, void: 8,
-  }[theme] ?? 24;
+  const STAR_BASE_W = 250;
+  const STAR_BASE_H = 190;
+  const treeCount = scaledCount(
+    {
+      village: 28, forest: 48, canyon: 18, lake: 32, desert: 14,
+      thunder: 10, frozen: 22, abyss: 36, celestial: 20, void: 8,
+    }[theme] ?? 24,
+    width,
+    height,
+    STAR_BASE_W,
+    STAR_BASE_H,
+  );
 
   for (let i = 0; i < treeCount; i++) {
-    const tx = 4 + Math.floor(rand() * (width - 8));
-    const ty = 4 + Math.floor(rand() * (height - 8));
+    const tx = WALL_THICK + 2 + Math.floor(rand() * (width - (WALL_THICK + 2) * 2));
+    const ty = WALL_THICK + 2 + Math.floor(rand() * (height - (WALL_THICK + 2) * 2));
     if (ground[idx(width, tx, ty)] === G.DIRT) continue;
     if (collision[idx(width, tx, ty)] !== 0) continue;
     collision[idx(width, tx, ty)] = G.TRUNK;
@@ -331,9 +371,9 @@ export function buildStarZoneMap({
     foreground[idx(width, tx, ty - 2)] = G.CANOPY;
   }
 
-  for (let i = 0; i < 120; i++) {
-    const x = 3 + Math.floor(rand() * (width - 6));
-    const y = 3 + Math.floor(rand() * (height - 6));
+  for (let i = 0; i < scaledCount(120, width, height, STAR_BASE_W, STAR_BASE_H); i++) {
+    const x = WALL_THICK + 1 + Math.floor(rand() * (width - (WALL_THICK + 1) * 2));
+    const y = WALL_THICK + 1 + Math.floor(rand() * (height - (WALL_THICK + 1) * 2));
     if (collision[idx(width, x, y)] === 0 && decoration[idx(width, x, y)] === 0) {
       decoration[idx(width, x, y)] = G.BUSH;
     }
@@ -343,7 +383,7 @@ export function buildStarZoneMap({
   const spawnY = spawn?.y ?? Math.floor(height * 0.5) * TILE;
   for (let y = Math.floor(spawnY / TILE) - 2; y <= Math.floor(spawnY / TILE) + 2; y++) {
     for (let x = Math.floor(spawnX / TILE) - 2; x <= Math.floor(spawnX / TILE) + 2; x++) {
-      if (x < 1 || y < 1 || x >= width - 1 || y >= height - 1) continue;
+      if (x < WALL_THICK || y < WALL_THICK || x >= width - WALL_THICK || y >= height - WALL_THICK) continue;
       collision[idx(width, x, y)] = 0;
       decoration[idx(width, x, y)] = 0;
       foreground[idx(width, x, y)] = 0;
@@ -372,7 +412,7 @@ export function buildStarZoneMap({
   }
 
   if (includeExit) {
-    const exitX = (width - 10) * TILE;
+    const exitX = (width - WALL_THICK - 8) * TILE;
     const exitY = Math.floor(height * 0.48) * TILE;
     objects.push({
       id: nextId++,

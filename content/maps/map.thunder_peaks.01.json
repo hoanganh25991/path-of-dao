@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 8000,
-      "y": 5200,
+      "x": 800000,
+      "y": 520000,
       "radius": 400,
       "id": "cave.thunder_peaks"
     }

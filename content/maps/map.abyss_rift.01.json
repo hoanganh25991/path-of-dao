@@ -18,12 +18,12 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 6720,
-      "y": 7680,
+      "x": 967680,
+      "y": 1105920,
       "radius": 480,
       "id": "cave.abyss_rift"
     }
   ],
-  "recommendedCp": 120000,
+  "recommendedCp": 150000,
   "recommendedRealmOrder": 5
 }
