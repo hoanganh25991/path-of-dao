@@ -73,6 +73,8 @@
   "home.dharma.equip": "Trang Bị",
   "home.dharma.unequip": "Tháo",
   "home.dharma.equipped": "Đã Trang Bị",
+  "home.dharma.close": "Đóng",
+  "home.dharma.inventory": "Kho Đồ",
   "home.divine.empty": "Chưa có Thần Thông. Hãy bước vào bản đồ, nắm cơ duyên, và chọn điều gì mang theo.",
   "home.divine.intro": "Thần Thông bạn đã khai mở trên đường — kỹ thuật thâm sâu từ bản đồ và định mệnh.",
   "home.intent.empty": "Chưa có Ý Cảnh nào được đánh thức. Hãy vận {intent} ý để bắt đầu.",

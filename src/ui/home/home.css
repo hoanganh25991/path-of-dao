@@ -448,6 +448,16 @@ header.home-profile {
   margin-bottom: 0.75rem;
 }
 
+.home-dharma__inventory-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--dao-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.5rem 0;
+  padding: 0 0.1rem;
+}
+
 .home-dharma__slot {
   display: flex;
   flex-direction: column;
@@ -527,15 +537,18 @@ header.home-profile {
 }
 
 .home-dharma__card {
-  aspect-ratio: 1;
+  aspect-ratio: auto;
+  min-height: 3.2rem;
   border: 2px solid var(--dao-border);
   border-radius: 0.45rem;
   background: rgba(0, 0, 0, 0.25);
   padding: 0.35rem;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.15rem;
   font: inherit;
   font-size: 0.75rem;
   color: var(--dao-text);
@@ -563,9 +576,12 @@ header.home-profile {
   pointer-events: none;
 }
 
-.home-dharma__card--equipped {
-  border-color: var(--dao-gold);
-  box-shadow: 0 0 6px rgba(201, 162, 39, 0.25);
+.home-dharma__card-slot {
+  font-size: 0.5625rem;
+  font-weight: 500;
+  color: var(--dao-muted);
+  letter-spacing: 0.05em;
+  pointer-events: none;
 }
 
 /* Divine section */

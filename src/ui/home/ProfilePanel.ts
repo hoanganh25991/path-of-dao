@@ -82,10 +82,6 @@ function itemAbbrev(def: ItemDefinition, maxLen = 2): string {
   return name.slice(0, maxLen).toUpperCase();
 }
 
-function isEquipped(save: PlayerSaveV1, itemId: string): boolean {
-  return EQUIPMENT_SLOTS.some((slot) => save.equipped[slot] === itemId);
-}
-
 function equippedSlot(save: PlayerSaveV1, itemId: string): EquipmentSlot | null {
   for (const slot of EQUIPMENT_SLOTS) {
     if (save.equipped[slot] === itemId) return slot;
@@ -139,9 +135,12 @@ export function createProfilePanel(): ProfilePanelHandles {
   dharmaRoot.className = 'home-dharma-section';
   const dharmaSlotsRow = document.createElement('div');
   dharmaSlotsRow.className = 'home-dharma__slots';
+  const dharmaInventoryLabel = document.createElement('h3');
+  dharmaInventoryLabel.className = 'home-dharma__inventory-label';
+  dharmaInventoryLabel.textContent = I18nManager.t('home.dharma.inventory');
   const dharmaGrid = document.createElement('div');
   dharmaGrid.className = 'home-dharma__grid';
-  dharmaRoot.append(dharmaSlotsRow, dharmaGrid);
+  dharmaRoot.append(dharmaSlotsRow, dharmaInventoryLabel, dharmaGrid);
 
   // Divine content
   const divineRoot = document.createElement('div');
@@ -424,31 +423,31 @@ export function createProfilePanel(): ProfilePanelHandles {
       dharmaSlotsRow.appendChild(slotEl);
     }
 
+    dharmaInventoryLabel.hidden = true;
     dharmaGrid.replaceChildren();
 
     const inventoryIds = save.inventory.items
       .filter((entry) => entry.qty > 0)
       .map((entry) => entry.id);
-    const equippedIds = EQUIPMENT_SLOTS
-      .map((s) => save.equipped[s])
-      .filter((id): id is string => id !== null);
-    const allIds = [...new Set([...inventoryIds, ...equippedIds])];
 
     const visibleIds = dharmaSlotFilter
-      ? allIds.filter((id) => {
+      ? inventoryIds.filter((id) => {
           try { return getItemDefinition(id).slot === dharmaSlotFilter; } catch { return false; }
         })
-      : allIds;
+      : inventoryIds;
 
     if (visibleIds.length === 0) {
       const empty = document.createElement('p');
       empty.className = 'home-panel__empty';
+      empty.style.gridColumn = '1 / -1';
       empty.textContent = dharmaSlotFilter
         ? I18nManager.t('home.dharma.slot_empty', { slot: I18nManager.t(slotLabelKey(dharmaSlotFilter)) })
         : I18nManager.t('home.dharma.empty');
       dharmaGrid.appendChild(empty);
       return;
     }
+
+    dharmaInventoryLabel.hidden = false;
 
     for (const itemId of visibleIds) {
       let def: ItemDefinition;
@@ -459,7 +458,6 @@ export function createProfilePanel(): ProfilePanelHandles {
       card.className = 'home-dharma__card';
       card.dataset.itemId = itemId;
       card.dataset.testid = `dharma-card-${itemId}`;
-      if (isEquipped(save, itemId)) card.classList.add('home-dharma__card--equipped');
 
       const rarityColor = RARITY_COLORS[def.rarity] ?? 'var(--dao-text)';
       card.style.borderColor = rarityColor;
@@ -469,7 +467,11 @@ export function createProfilePanel(): ProfilePanelHandles {
       initial.textContent = itemAbbrev(def);
       initial.style.color = rarityColor;
 
-      card.appendChild(initial);
+      const slotBadge = document.createElement('span');
+      slotBadge.className = 'home-dharma__card-slot';
+      slotBadge.textContent = I18nManager.t(slotLabelKey(def.slot as EquipmentSlot));
+
+      card.append(initial, slotBadge);
       card.addEventListener('click', () => openDharmaDetail(itemId));
       dharmaGrid.appendChild(card);
     }
