@@ -9,7 +9,7 @@ import { INSIGHT_XP_TO_FULL, listInsightIntentIds } from '@/progression/InsightD
 import { stopPathWalk } from '@/progression/PathWalkManager';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
-import { normalizeLoadout, SKILL_SLOTS } from '@/progression/SkillLoadout';
+import { normalizeLoadout } from '@/progression/SkillLoadout';
 import { coerceEquippedSkills } from '@/progression/SkillSlots';
 import { buildPlayerStats } from '@/progression/playerStats';
 import {

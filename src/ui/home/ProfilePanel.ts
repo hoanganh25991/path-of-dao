@@ -24,7 +24,6 @@ import {
 } from '@/progression/InsightSystem';
 import { listDiscoveredIntentIds } from '@/progression/SkillLoadout';
 import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
-import type { EquipFailureReason } from '@/progression/EquipmentManager';
 
 export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent' | 'destiny';
 

@@ -3,7 +3,6 @@ import {
   createEmptySkillCooldowns,
   SKILL_SLOT_INDICES,
   type SkillSlotCooldowns,
-  type SkillSlotIndex,
 } from '@/progression/SkillSlots';
 
 export type { SkillSlotCooldowns };

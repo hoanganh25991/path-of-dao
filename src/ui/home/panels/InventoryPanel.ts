@@ -3,7 +3,6 @@ import { I18nManager } from '@/core/i18n/I18nManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { gameStore } from '@/core/store/gameStore';
 import { EquipmentManager } from '@/progression/EquipmentManager';
-import type { EquipFailureReason } from '@/progression/EquipmentManager';
 import {
   EQUIPMENT_SLOTS,
   type EquipmentSlot,
