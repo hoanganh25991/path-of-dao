@@ -28,7 +28,7 @@
 }
 
 /* Profile header — top overlay, does not block hero orbit area below */
-.home-profile {
+header.home-profile {
   position: absolute;
   top: max(0.75rem, var(--safe-top));
   left: max(0.75rem, env(safe-area-inset-left, 0px));
@@ -325,11 +325,24 @@
 }
 
 .home-panel-sheet__inner {
+  display: flex;
+  flex-direction: column;
   max-height: 40vh;
-  overflow-y: auto;
+  overflow: hidden;
   padding: 0.85rem max(0.85rem, env(safe-area-inset-left, 0px))
     0.85rem max(0.85rem, env(safe-area-inset-right, 0px));
   -webkit-overflow-scrolling: touch;
+}
+
+.home-panel-sheet__inner > .home-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-panel-sheet__inner > .home-panel:not(.home-profile) {
+  overflow-y: auto;
 }
 
 .home-panel__title {
@@ -348,8 +361,24 @@
 }
 
 /* Profile panel (sub-tabs inside bottom sheet) */
-.home-profile {
-  /* base */
+.home-panel.home-profile {
+  position: static;
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  gap: 0;
+  overflow: hidden;
+}
+
+.home-profile__content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .home-profile__sub-tabs {

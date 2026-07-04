@@ -44,7 +44,7 @@ html.landscape-layout .home-bottom-nav__tab {
   width: 100%;
 }
 
-html.landscape-layout .home-profile {
+html.landscape-layout header.home-profile {
   left: calc(4.25rem + max(0.75rem, env(safe-area-inset-left, 0px)));
   right: auto;
   max-width: min(18rem, 40vw);
@@ -67,6 +67,7 @@ html.landscape-layout .home-panel-sheet--open {
 }
 
 html.landscape-layout .home-panel-sheet__inner {
+  height: 100%;
   max-height: 100%;
 }
 

@@ -8,6 +8,7 @@ export const VFX_TEXTURE_KEYS = {
   arrow: 'vfx-arrow',
   coin: 'vfx-coin',
   spark: 'vfx-spark',
+  qiStream: 'vfx-qi-stream',
   ring: 'vfx-ring',
   aoeFlame: 'vfx-aoe-flame',
   voidCrack: 'vfx-void-crack',
@@ -179,6 +180,16 @@ export function drawSparkCanvas(): HTMLCanvasElement {
   });
 }
 
+/** Elongated qi streak — rotate toward target for inward airflow. */
+export function drawQiStreamCanvas(): HTMLCanvasElement {
+  return withCtx(10, 6, (ctx) => {
+    pixelLine(ctx, 0, 3, 6, 3, '#60c888', 1);
+    pixelLine(ctx, 4, 2, 8, 3, '#a0ffc0', 1);
+    px(ctx, 8, 3, '#ffffff', 2);
+    px(ctx, 9, 3, '#e8fff0');
+  });
+}
+
 /** Hollow ring for cast / heal expand. */
 export function drawRingCanvas(): HTMLCanvasElement {
   const size = 32;
@@ -273,6 +284,7 @@ export function registerPixelVfxAssets(scene: Phaser.Scene): void {
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.arrow, drawArrowCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.coin, drawCoinCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.spark, drawSparkCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.qiStream, drawQiStreamCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.ring, drawRingCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.aoeFlame, drawAoeFlameCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.voidCrack, drawVoidCrackCanvas());

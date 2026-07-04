@@ -649,7 +649,9 @@ export function drawStickyFrame(
   const shoulderCx = torsoCx + leanX;
   const hipCx = torsoCx + Math.round(lean * 0.22);
 
-  drawGroundShadow(ctx, torsoCx + Math.round(lean * 0.12), footY);
+  if (hipDrop <= 0) {
+    drawGroundShadow(ctx, torsoCx + Math.round(lean * 0.12), footY);
+  }
 
   const drawScale: DrawScale = { ...scale, upperLeg: LEG_UPPER, lowerLeg: LEG_LOWER };
 

@@ -239,7 +239,12 @@ export function createProfilePanel(): ProfilePanelHandles {
     }));
     addStatRow('home.profile.awakenings', String(awakenedCount));
     const dp = save.destinyPoints ?? { dharma: 0, divine: 0, intent: 0, unspent: 0 };
-    addStatRow('destiny.unspent_points', `${dp.unspent} (Pháp Bảo: ${dp.dharma} | Thần Thông: ${dp.divine} | Ý Cảnh: ${dp.intent})`);
+    addStatRow('destiny.unspent_points', I18nManager.t('destiny.summary', {
+      unspent: String(dp.unspent),
+      dharma: String(dp.dharma),
+      divine: String(dp.divine),
+      intent: String(dp.intent),
+    }));
   }
 
   function closeDetail(): void {
