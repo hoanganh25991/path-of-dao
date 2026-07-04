@@ -1103,15 +1103,7 @@ export function applyWeaponProp(poses: StickPose[], prop: 'sword' | 'lance' | 's
 
 export function heroFrameOffset(
   style: HeroCombatStyle,
-  group:
-    | 'idle'
-    | 'walk'
-    | 'hit'
-    | 'sit'
-    | 'attack1'
-    | 'attack2'
-    | 'attack3'
-    | WeaponStrikeKind,
+  group: 'idle' | 'walk' | 'hit' | 'sit' | WeaponStrikeKind,
 ): number {
   if (group === 'sit') {
     return buildHeroFrames(style).length - POSES_SIT.length;
@@ -1136,18 +1128,6 @@ export function heroFrameOffset(
 
   if (group === 'hit') return o;
   return o;
-}
-
-export function heroFrameOffsetForStep(
-  style: HeroCombatStyle,
-  step: 1 | 2 | 3,
-  strikeKind: WeaponStrikeKind,
-): number {
-  if (style === 'unarmed') {
-    return heroFrameOffset(style, 'hit');
-  }
-  // Step 1 and step 3 have multiple variants; step 2 has fewer. Simply return the requested kind.
-  return heroFrameOffset(style, strikeKind);
 }
 
 export function buildHeroFrames(style: HeroCombatStyle = 'unarmed'): StickPose[] {

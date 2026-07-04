@@ -144,6 +144,10 @@ export class EncounterTrigger {
     if (encounter) void this.presentEncounter(encounter);
   }
 
+  private isSceneActive(): boolean {
+    return this.scene.scene?.isActive(this.scene.scene.key) ?? false;
+  }
+
   private async presentEncounter(
     encounter: EncounterDefinition,
     poiKey?: string,
@@ -152,28 +156,36 @@ export class EncounterTrigger {
     this.presenting = true;
 
     const uiRoot = document.getElementById('ui-root');
-    if (!uiRoot) {
+    if (!uiRoot || !this.isSceneActive()) {
       this.presenting = false;
       return;
     }
 
     InputManager.setEnabled(false);
-    this.scene.physics.pause();
+    this.scene.physics?.world?.pause();
     const prevTimeScale = this.scene.time.timeScale;
     this.scene.time.timeScale = SLOWMO_SCALE;
 
     // Real-time beat — Phaser delayedCall is scaled by timeScale and would stretch ~3s here.
     await new Promise<void>((resolve) => {
       setTimeout(() => {
-        this.scene.time.timeScale = 0;
+        if (this.isSceneActive()) this.scene.time.timeScale = 0;
         resolve();
       }, SLOWMO_MS);
     });
 
+    if (this.destroyed || !this.isSceneActive()) {
+      this.scene.time.timeScale = prevTimeScale;
+      this.scene.physics?.world?.resume();
+      InputManager.setEnabled(true);
+      this.presenting = false;
+      return;
+    }
+
     await showEncounterModal(uiRoot, { encounter, poiKey });
 
     this.scene.time.timeScale = prevTimeScale;
-    this.scene.physics.resume();
+    this.scene.physics?.world?.resume();
     InputManager.setEnabled(true);
     this.presenting = false;
   }

@@ -2,7 +2,7 @@
 
 > **Spec:** [plans/index.md](../plans/index.md)  
 > **Detail notes:** [tracks/](./) (one file per sub-plan)  
-> **Last updated:** 2026-07-04 (Gather Qi health button + HP regen)
+> **Last updated:** 2026-07-04 (Gather Qi health button + HP regen; encounter shutdown-race fix)
 
 This is the **master progress index**. Each sub-plan has a detailed track file under `tracks/` with done/remaining items, verification notes, and Tiên Nghịch gaps where relevant.
 
@@ -164,6 +164,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | Six encounter types, roll tables, POI triggers | — |
 | Modal pause flow, rewards; ancient sword milestone | — |
 | My Path journey + fortune toast on claim | — |
+| Shutdown-race guard in `EncounterTrigger.presentEncounter` | — |
 
 → [full track](./15-fortuitous-encounters.md)
 

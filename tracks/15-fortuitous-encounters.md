@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/15-fortuitous-encounters.md](../plans/15-fortuitous-encounters.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 ## Summary
 
@@ -22,6 +22,7 @@ Random and POI-triggered cultivation encounters with rewards, lore, and cosmetic
 - **Ancient sword POI** sets `weaponMilestone` + equips blade (T2, T3)
 - **My Path:** `recordJourney('encounter', …)` on claim; localized titles in journey scroll
 - **Fortune toast** after accepting encounter reward
+- **Defensive pause/resume** in `EncounterTrigger.presentEncounter` — skips modal if scene shuts down and avoids crash on null `physics.world`
 
 ## Remaining
 
