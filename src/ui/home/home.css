@@ -459,11 +459,44 @@ header.home-profile {
   background: rgba(0, 0, 0, 0.2);
   font-size: 0.625rem;
   color: var(--dao-muted);
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease, transform 100ms ease;
+  font-family: inherit;
+  width: 100%;
+}
+
+.home-dharma__slot:hover {
+  border-color: rgba(201, 162, 39, 0.45);
+  background: rgba(201, 162, 39, 0.08);
+}
+
+.home-dharma__slot:active {
+  transform: scale(0.96);
+}
+
+.home-dharma__slot:focus-visible {
+  outline: 2px solid var(--dao-jade);
+  outline-offset: 1px;
 }
 
 .home-dharma__slot--filled {
   border-color: rgba(45, 212, 168, 0.35);
   color: var(--dao-jade);
+}
+
+.home-dharma__slot--active {
+  border-color: var(--dao-gold);
+  background: rgba(201, 162, 39, 0.15);
+  color: var(--dao-gold);
+}
+
+.home-dharma__slot--active.home-dharma__slot--filled {
+  border-color: var(--dao-gold);
+}
+
+.home-dharma__slot-label {
+  font-size: 0.625rem;
+  line-height: 1.2;
 }
 
 .home-dharma__slot-icon {
@@ -475,6 +508,16 @@ header.home-profile {
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
+  font-weight: 700;
+  transition: background 150ms ease;
+}
+
+.home-dharma__slot--filled .home-dharma__slot-icon {
+  background: rgba(45, 212, 168, 0.15);
+}
+
+.home-dharma__slot--active .home-dharma__slot-icon {
+  background: rgba(201, 162, 39, 0.25);
 }
 
 .home-dharma__grid {
@@ -485,7 +528,7 @@ header.home-profile {
 
 .home-dharma__card {
   aspect-ratio: 1;
-  border: 1px solid var(--dao-border);
+  border: 2px solid var(--dao-border);
   border-radius: 0.45rem;
   background: rgba(0, 0, 0, 0.25);
   padding: 0.35rem;
@@ -493,8 +536,19 @@ header.home-profile {
   display: flex;
   align-items: center;
   justify-content: center;
+  font: inherit;
   font-size: 0.75rem;
   color: var(--dao-text);
+  transition: border-color 150ms ease, background 150ms ease, transform 100ms ease;
+}
+
+.home-dharma__card:hover {
+  background: rgba(201, 162, 39, 0.08);
+  transform: scale(1.05);
+}
+
+.home-dharma__card:active {
+  transform: scale(0.95);
 }
 
 .home-dharma__card:focus-visible {
@@ -502,8 +556,16 @@ header.home-profile {
   outline-offset: 1px;
 }
 
+.home-dharma__card-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
 .home-dharma__card--equipped {
   border-color: var(--dao-gold);
+  box-shadow: 0 0 6px rgba(201, 162, 39, 0.25);
 }
 
 /* Divine section */
@@ -1035,28 +1097,95 @@ header.home-profile {
   background: rgba(0, 0, 0, 0.45);
   padding: 1rem;
   padding-bottom: calc(5rem + var(--safe-bottom));
+  animation: detail-fade-in 180ms ease;
+}
+
+@keyframes detail-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .home-item-detail__card {
   width: min(100%, 20rem);
-  padding: 1rem;
+  padding: 1.15rem;
   background: var(--dao-panel);
   border: 1px solid var(--dao-border);
   border-radius: 0.75rem;
   backdrop-filter: blur(8px);
+  animation: detail-slide-up 200ms ease;
+}
+
+@keyframes detail-slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.home-item-detail__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.home-item-detail__rarity {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
 .home-item-detail__name {
-  margin: 0 0 0.35rem;
+  margin: 0;
   font-size: 1rem;
   color: var(--dao-gold);
+}
+
+.home-item-detail__slot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.home-item-detail__slot-badge {
+  font-size: 0.65rem;
+  color: var(--dao-muted);
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--dao-border);
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.home-item-detail__level-req {
+  font-size: 0.7rem;
+  color: var(--dao-muted);
+}
+
+.home-item-detail__status {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--dao-muted);
+  margin-left: auto;
+}
+
+.home-item-detail__status--equipped {
+  color: var(--dao-jade);
 }
 
 .home-item-detail__desc {
   margin: 0 0 0.65rem;
   font-size: 0.8125rem;
   color: var(--dao-muted);
-  line-height: 1.4;
+  line-height: 1.45;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.45rem;
+  border-left: 3px solid var(--dao-border);
 }
 
 .home-item-detail__mods {
@@ -1064,10 +1193,17 @@ header.home-profile {
   padding: 0;
   list-style: none;
   font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .home-item-detail__mods li {
   color: var(--dao-jade);
+  padding: 0.2rem 0.4rem;
+  background: rgba(45, 212, 168, 0.06);
+  border-radius: 0.25rem;
+  font-weight: 500;
 }
 
 .home-item-detail__actions {
@@ -1082,18 +1218,29 @@ header.home-profile {
   font: inherit;
   font-size: 0.875rem;
   cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
 }
 
 .home-item-detail__btn--primary {
   border: 1px solid var(--dao-gold);
   background: rgba(201, 162, 39, 0.15);
   color: var(--dao-gold);
+  font-weight: 600;
+}
+
+.home-item-detail__btn--primary:hover {
+  background: rgba(201, 162, 39, 0.25);
 }
 
 .home-item-detail__btn--secondary {
   border: 1px solid var(--dao-border);
   background: transparent;
   color: var(--dao-muted);
+}
+
+.home-item-detail__btn--secondary:hover {
+  border-color: var(--dao-muted);
+  color: var(--dao-text);
 }
 
 /* Skills */

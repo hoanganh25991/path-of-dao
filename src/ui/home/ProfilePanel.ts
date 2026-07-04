@@ -62,9 +62,24 @@ function formatMultiplier(value: number): string {
   return `${value.toFixed(2)}×`;
 }
 
-function itemInitial(def: ItemDefinition): string {
+const RARITY_COLORS: Record<string, string> = {
+  common: '#9d9d9d',
+  uncommon: '#2dd4a8',
+  rare: '#4da6ff',
+  epic: '#c084fc',
+  legendary: '#fbbf24',
+};
+
+function itemAbbrev(def: ItemDefinition, maxLen = 2): string {
   const name = I18nManager.t(def.displayNameKey);
-  return name.charAt(0).toUpperCase();
+  const words = name.split(/\s+/);
+  if (words.length >= 2) {
+    return words
+      .slice(0, maxLen)
+      .map((w) => w.charAt(0).toUpperCase())
+      .join('');
+  }
+  return name.slice(0, maxLen).toUpperCase();
 }
 
 function isEquipped(save: PlayerSaveV1, itemId: string): boolean {
@@ -183,6 +198,7 @@ export function createProfilePanel(): ProfilePanelHandles {
   let activeSubTab: ProfileSubTab = 'stats';
   let detailOverlay: HTMLElement | null = null;
   let ceremonyActive = false;
+  let dharmaSlotFilter: EquipmentSlot | null = null;
 
   function switchSubTab(id: ProfileSubTab): void {
     activeSubTab = id;
@@ -262,6 +278,7 @@ export function createProfilePanel(): ProfilePanelHandles {
 
     const slot = equippedSlot(save, itemId);
     const equipped = slot !== null;
+    const rarityColor = RARITY_COLORS[def.rarity] ?? 'var(--dao-gold)';
 
     detailOverlay = document.createElement('div');
     detailOverlay.className = 'home-item-detail home-ui__interactive';
@@ -272,14 +289,50 @@ export function createProfilePanel(): ProfilePanelHandles {
     const card = document.createElement('div');
     card.className = 'home-item-detail__card';
 
+    // Header: rarity badge + name
+    const header = document.createElement('div');
+    header.className = 'home-item-detail__header';
+
+    const rarityBadge = document.createElement('span');
+    rarityBadge.className = 'home-item-detail__rarity';
+    rarityBadge.textContent = I18nManager.t(`dharma.tier.${def.rarity}`) || def.rarity.toUpperCase();
+    rarityBadge.style.color = rarityColor;
+    rarityBadge.style.borderColor = rarityColor;
+
     const name = document.createElement('h3');
     name.className = 'home-item-detail__name';
     name.textContent = I18nManager.t(def.displayNameKey);
 
+    header.append(rarityBadge, name);
+
+    // Slot info
+    const slotRow = document.createElement('div');
+    slotRow.className = 'home-item-detail__slot-row';
+
+    const slotIcon = document.createElement('span');
+    slotIcon.className = 'home-item-detail__slot-badge';
+    slotIcon.textContent = I18nManager.t(slotLabelKey(def.slot as EquipmentSlot));
+
+    const slotStatus = document.createElement('span');
+    slotStatus.className = equipped
+      ? 'home-item-detail__status home-item-detail__status--equipped'
+      : 'home-item-detail__status';
+    slotStatus.textContent = equipped
+      ? I18nManager.t('home.dharma.equipped')
+      : '';
+
+    const levelReq = document.createElement('span');
+    levelReq.className = 'home-item-detail__level-req';
+    levelReq.textContent = I18nManager.t('home.profile.level') + ' ' + def.requiredLevel;
+
+    slotRow.append(slotIcon, levelReq, slotStatus);
+
+    // Description
     const desc = document.createElement('p');
     desc.className = 'home-item-detail__desc';
     desc.textContent = I18nManager.t(def.descriptionKey);
 
+    // Modifiers
     const mods = document.createElement('ul');
     mods.className = 'home-item-detail__mods';
     for (const mod of def.modifiers) {
@@ -290,6 +343,7 @@ export function createProfilePanel(): ProfilePanelHandles {
       mods.appendChild(li);
     }
 
+    // Actions
     const actions = document.createElement('div');
     actions.className = 'home-item-detail__actions';
 
@@ -312,12 +366,11 @@ export function createProfilePanel(): ProfilePanelHandles {
     const secondary = document.createElement('button');
     secondary.type = 'button';
     secondary.className = 'home-item-detail__btn home-item-detail__btn--secondary';
-    secondary.textContent = '✕';
-    secondary.setAttribute('aria-label', 'Close');
+    secondary.textContent = I18nManager.t('home.dharma.close');
     secondary.addEventListener('click', closeDetail);
 
     actions.append(primary, secondary);
-    card.append(name, desc, mods, actions);
+    card.append(header, slotRow, desc, mods, actions);
     detailOverlay.appendChild(card);
     document.body.appendChild(detailOverlay);
   }
@@ -329,24 +382,45 @@ export function createProfilePanel(): ProfilePanelHandles {
     dharmaSlotsRow.replaceChildren();
     for (const slot of EQUIPMENT_SLOTS) {
       const itemId = save.equipped[slot];
-      const slotEl = document.createElement('div');
+      const slotEl = document.createElement('button');
+      slotEl.type = 'button';
       slotEl.className = 'home-dharma__slot';
+      if (dharmaSlotFilter === slot) slotEl.classList.add('home-dharma__slot--active');
 
       const icon = document.createElement('div');
       icon.className = 'home-dharma__slot-icon';
 
       if (itemId) {
         slotEl.classList.add('home-dharma__slot--filled');
-        const def = getItemDefinition(itemId);
-        icon.textContent = itemInitial(def);
-        slotEl.title = I18nManager.t(def.displayNameKey);
+        try {
+          const def = getItemDefinition(itemId);
+          icon.textContent = itemAbbrev(def);
+          icon.style.color = RARITY_COLORS[def.rarity] ?? 'var(--dao-jade)';
+          slotEl.title = `${I18nManager.t(def.displayNameKey)} — ${I18nManager.t('home.dharma.unequip')}`;
+        } catch {
+          icon.textContent = '?';
+        }
       } else {
         icon.textContent = '·';
+        slotEl.title = I18nManager.t('home.dharma.slot_click_to_filter');
       }
 
       const label = document.createElement('span');
+      label.className = 'home-dharma__slot-label';
       label.textContent = I18nManager.t(slotLabelKey(slot));
       slotEl.append(icon, label);
+
+      slotEl.addEventListener('click', () => {
+        if (itemId) {
+          EquipmentManager.unequip(slot);
+          if (dharmaSlotFilter === slot) dharmaSlotFilter = null;
+          renderDharma();
+        } else {
+          dharmaSlotFilter = dharmaSlotFilter === slot ? null : slot;
+          renderDharma();
+        }
+      });
+
       dharmaSlotsRow.appendChild(slotEl);
     }
 
@@ -360,15 +434,23 @@ export function createProfilePanel(): ProfilePanelHandles {
       .filter((id): id is string => id !== null);
     const allIds = [...new Set([...inventoryIds, ...equippedIds])];
 
-    if (allIds.length === 0) {
+    const visibleIds = dharmaSlotFilter
+      ? allIds.filter((id) => {
+          try { return getItemDefinition(id).slot === dharmaSlotFilter; } catch { return false; }
+        })
+      : allIds;
+
+    if (visibleIds.length === 0) {
       const empty = document.createElement('p');
       empty.className = 'home-panel__empty';
-      empty.textContent = I18nManager.t('home.dharma.empty');
+      empty.textContent = dharmaSlotFilter
+        ? I18nManager.t('home.dharma.slot_empty', { slot: I18nManager.t(slotLabelKey(dharmaSlotFilter)) })
+        : I18nManager.t('home.dharma.empty');
       dharmaGrid.appendChild(empty);
       return;
     }
 
-    for (const itemId of allIds) {
+    for (const itemId of visibleIds) {
       let def: ItemDefinition;
       try { def = getItemDefinition(itemId); } catch { continue; }
 
@@ -376,10 +458,16 @@ export function createProfilePanel(): ProfilePanelHandles {
       card.type = 'button';
       card.className = 'home-dharma__card';
       card.dataset.itemId = itemId;
+      card.dataset.testid = `dharma-card-${itemId}`;
       if (isEquipped(save, itemId)) card.classList.add('home-dharma__card--equipped');
 
+      const rarityColor = RARITY_COLORS[def.rarity] ?? 'var(--dao-text)';
+      card.style.borderColor = rarityColor;
+
       const initial = document.createElement('span');
-      initial.textContent = itemInitial(def);
+      initial.className = 'home-dharma__card-label';
+      initial.textContent = itemAbbrev(def);
+      initial.style.color = rarityColor;
 
       card.appendChild(initial);
       card.addEventListener('click', () => openDharmaDetail(itemId));
