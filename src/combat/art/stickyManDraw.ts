@@ -422,6 +422,119 @@ function drawBossStonePlate(
   }
 }
 
+/** Warrior — chest armor plate + shoulder pauldron dots */
+function drawWarriorArmor(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  shoulderY: number,
+  hipY: number,
+  palette: StickPalette,
+): void {
+  const top = Math.round(shoulderY + 2);
+  const bot = Math.round(hipY - 4);
+  // Steel chest plate over torso
+  for (let y = top; y <= bot; y++) {
+    for (let dx = -3; dx <= 3; dx++) {
+      const edge = Math.abs(dx) === 3;
+      const rivet = (dx === -2 || dx === 2) && (y === top + 2 || y === bot - 2);
+      if (rivet) {
+        px(ctx, cx + dx, y, palette.highlight ?? palette.accent);
+      } else if (edge) {
+        px(ctx, cx + dx, y, palette.outline);
+      } else if (dx <= -1) {
+        px(ctx, cx + dx, y, palette.shadow);
+      } else {
+        px(ctx, cx + dx, y, palette.fill);
+      }
+    }
+  }
+  // Shoulder pauldron dots
+  for (let dx = -5; dx <= 5; dx += 10) {
+    px(ctx, cx + dx, top, palette.accent);
+    px(ctx, cx + dx, top + 1, palette.outline);
+  }
+  // Belt at waist
+  for (let dx = -3; dx <= 3; dx++) {
+    px(ctx, cx + dx, bot + 1, palette.accent);
+  }
+}
+
+/** Beast — fur tufts along torso sides */
+function drawBeastFur(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  shoulderY: number,
+  hipY: number,
+  palette: StickPalette,
+): void {
+  const top = Math.round(shoulderY + 2);
+  const bot = Math.round(hipY - 2);
+  // Fur tufts on left side
+  for (let y = top + 2; y <= bot - 2; y += 3) {
+    px(ctx, cx - 4, y, palette.outline);
+    px(ctx, cx - 4, y + 1, palette.shadow);
+  }
+  // Fur tufts on right side
+  for (let y = top + 2; y <= bot - 2; y += 3) {
+    px(ctx, cx + 4, y, palette.outline);
+    px(ctx, cx + 4, y + 1, palette.shadow);
+  }
+  // Belly highlight
+  px(ctx, cx, top + 3, palette.highlight ?? palette.accent);
+  px(ctx, cx, top + 4, palette.highlight ?? palette.accent);
+}
+
+/** Ghost — wispy trail below the waist */
+function drawGhostTrail(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  hipY: number,
+  footY: number,
+  palette: StickPalette,
+): void {
+  const top = Math.round(hipY);
+  const bot = Math.round(footY);
+  for (let y = top; y <= bot; y++) {
+    const t = (y - top) / Math.max(1, bot - top);
+    const spread = Math.round(2 - t * 0.5);
+    for (let dx = -spread; dx <= spread; dx++) {
+      const dist = Math.abs(dx);
+      const fade = y > top + 4 && dx === 0 ? palette.accent : dist === spread ? palette.outline : dx <= -1 ? palette.shadow : palette.fill;
+      px(ctx, cx + dx, y, fade);
+    }
+  }
+  // Wisp curls at bottom
+  px(ctx, cx - 2, bot - 1, palette.accent);
+  px(ctx, cx + 2, bot - 1, palette.accent);
+  px(ctx, cx - 3, bot, palette.shadow);
+  px(ctx, cx + 3, bot, palette.shadow);
+}
+
+/** Demon — jagged runic marks along torso */
+function drawDemonRunes(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  shoulderY: number,
+  hipY: number,
+  palette: StickPalette,
+): void {
+  const top = Math.round(shoulderY + 3);
+  const bot = Math.round(hipY - 4);
+  // Zigzag rune scar down center
+  for (let y = top; y <= bot; y += 3) {
+    const off = ((y / 3) | 0) % 2 === 0 ? -1 : 1;
+    px(ctx, cx + off, y, palette.accent);
+    px(ctx, cx + off, y + 1, palette.highlight ?? palette.accent);
+  }
+  // Side spikes
+  for (let y = top + 2; y <= bot - 2; y += 4) {
+    px(ctx, cx - 4, y, palette.outline);
+    px(ctx, cx + 4, y, palette.outline);
+    px(ctx, cx - 4, y + 1, palette.shadow);
+    px(ctx, cx + 4, y + 1, palette.shadow);
+  }
+}
+
 function drawBossRunes(
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -580,7 +693,6 @@ function drawHeadBoss(
   palette: StickPalette,
 ): void {
   const r = headR;
-  // Squarer stone head — reads as totem, not human.
   for (let dy = -r; dy <= r; dy++) {
     for (let dx = -r; dx <= r; dx++) {
       if (Math.abs(dx) + Math.abs(dy) * 0.85 <= r + 0.2) {
@@ -599,13 +711,220 @@ function drawHeadBoss(
   pixelLine(ctx, cx - 1, headY + 2, cx + 1, headY + 3, palette.shadow, 1);
 }
 
+// ── New variant head drawing functions ──
+
+/** Warrior — helmet with visor slit, jaw exposed */
+function drawHeadWarrior(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  // Helmet dome (squarish top)
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx * dx + dy * dy <= r * r) {
+        const dist = Math.hypot(dx, dy);
+        const helmet = dy <= -1;
+        let color: string;
+        if (dist >= r - 0.5) {
+          color = palette.outline;
+        } else if (helmet) {
+          color = dx <= -1 ? palette.shadow : palette.fill;
+        } else if (dx >= 1) {
+          color = palette.highlight ?? palette.skin;
+        } else if (dx <= -2) {
+          color = palette.shadow;
+        } else {
+          color = palette.skin;
+        }
+        px(ctx, cx + dx, headY + dy, color);
+      }
+    }
+  }
+  // Helmet brim/visor line
+  for (let dx = -r + 1; dx <= r - 1; dx++) {
+    if (dx * dx + (0) * (0) <= (r - 0.6) * (r - 0.6)) {
+      px(ctx, cx + dx, headY - 1, palette.accent);
+    }
+  }
+  // Visor eye slit
+  px(ctx, cx, headY, palette.outline);
+  px(ctx, cx + 1, headY, palette.outline);
+  // Chin guard
+  px(ctx, cx - 1, headY + 3, palette.fill);
+  px(ctx, cx, headY + 3, palette.fill);
+  px(ctx, cx + 1, headY + 3, palette.fill);
+  // Plume on top
+  px(ctx, cx, headY - r - 1, palette.accent);
+  px(ctx, cx, headY - r - 2, palette.accent);
+  px(ctx, cx - 1, headY - r - 2, palette.accent);
+  px(ctx, cx + 1, headY - r - 2, palette.accent);
+}
+
+/** Monk — bald/buzzed head, simple topknot */
+function drawHeadMonk(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx * dx + dy * dy <= r * r) {
+        const dist = Math.hypot(dx, dy);
+        let color: string;
+        if (dist >= r - 0.5) {
+          color = dx >= 1 && dy <= 0 ? palette.skin : palette.outline;
+        } else if (dx >= 1 && dy <= 0) {
+          color = palette.highlight ?? palette.skin;
+        } else if (dx <= -2) {
+          color = palette.shadow;
+        } else {
+          color = palette.skin;
+        }
+        px(ctx, cx + dx, headY + dy, color);
+      }
+    }
+  }
+  // Topknot bun
+  px(ctx, cx, headY - r - 1, palette.accent);
+  px(ctx, cx, headY - r - 2, palette.accent);
+  px(ctx, cx - 1, headY - r - 1, palette.accent);
+  px(ctx, cx + 1, headY - r - 1, palette.accent);
+  // Headband
+  for (let dx = -r + 1; dx <= r - 1; dx++) {
+    if (dx * dx + (-1) * (-1) <= (r - 0.6) * (r - 0.6)) {
+      px(ctx, cx + dx, headY - 2, palette.accent);
+    }
+  }
+  // Eyes
+  px(ctx, cx, headY, palette.outline);
+  px(ctx, cx + 2, headY, palette.outline);
+}
+
+/** Ghost — hooded face, lower half shadowed */
+function drawHeadGhost(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx * dx + dy * dy <= r * r) {
+        const dist = Math.hypot(dx, dy);
+        const hood = dy <= 0;
+        let color: string;
+        if (dist >= r - 0.5) {
+          color = palette.outline;
+        } else if (hood) {
+          color = dx <= -1 ? palette.shadow : palette.fill;
+        } else if (dx >= 1) {
+          color = palette.highlight ?? palette.skin;
+        } else if (dx <= -2) {
+          color = palette.shadow;
+        } else {
+          color = palette.skin;
+        }
+        px(ctx, cx + dx, headY + dy, color);
+      }
+    }
+  }
+  // Glowing eyes
+  px(ctx, cx, headY, palette.accent);
+  px(ctx, cx + 1, headY, palette.accent);
+  px(ctx, cx + 2, headY, palette.highlight ?? palette.accent);
+  px(ctx, cx - 1, headY + 1, palette.accent);
+  px(ctx, cx + 2, headY + 1, palette.accent);
+}
+
+/** Demon — horns, jagged face, glowing eyes */
+function drawHeadDemon(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (Math.abs(dx) + Math.abs(dy) * 0.8 <= r + 0.2) {
+        const edge = Math.abs(dx) + Math.abs(dy) * 0.8 >= r - 0.5;
+        const shade = dx <= -1 || dy >= 1;
+        px(ctx, cx + dx, headY + dy, edge ? palette.outline : shade ? palette.shadow : palette.skin);
+      }
+    }
+  }
+  // Left horn
+  pixelLine(ctx, cx - 2, headY - r + 1, cx - 4, headY - r - 3, palette.outline, 2);
+  pixelLine(ctx, cx - 3, headY - r + 1, cx - 4, headY - r - 3, palette.shadow, 1);
+  // Right horn
+  pixelLine(ctx, cx + 3, headY - r + 1, cx + 5, headY - r - 3, palette.outline, 2);
+  pixelLine(ctx, cx + 4, headY - r + 1, cx + 5, headY - r - 3, palette.shadow, 1);
+  // Glowing eyes
+  px(ctx, cx, headY - 1, palette.accent);
+  px(ctx, cx + 1, headY - 1, palette.highlight ?? palette.accent);
+  px(ctx, cx + 3, headY - 1, palette.accent);
+  px(ctx, cx + 4, headY - 1, palette.highlight ?? palette.accent);
+  // Jagged mouth
+  px(ctx, cx, headY + 2, palette.outline);
+  px(ctx, cx + 1, headY + 2, palette.outline);
+  px(ctx, cx + 2, headY + 2, palette.shadow);
+  px(ctx, cx + 3, headY + 3, palette.outline);
+}
+
+/** Beast — animal snout, pointed ears */
+function drawHeadBeast(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  headY: number,
+  headR: number,
+  palette: StickPalette,
+): void {
+  const r = headR;
+  // Wider, lower head for beast shape
+  for (let dy = -r; dy <= r + 1; dy++) {
+    for (let dx = -r - 1; dx <= r + 1; dx++) {
+      const norm = (dx * dx) / 28 + (dy * dy) / 20;
+      if (norm <= 1) {
+        const edge = norm > 0.78;
+        const shade = dx <= -2;
+        px(ctx, cx + dx, headY + dy, edge ? palette.outline : shade ? palette.shadow : palette.skin);
+      }
+    }
+  }
+  // Left ear (pointed)
+  pixelLine(ctx, cx - r, headY - r + 1, cx - r - 2, headY - r - 3, palette.outline, 2);
+  pixelLine(ctx, cx - r, headY - r + 1, cx - r - 2, headY - r - 3, palette.skin, 1);
+  // Right ear (pointed)
+  pixelLine(ctx, cx + r, headY - r + 1, cx + r + 2, headY - r - 3, palette.outline, 2);
+  pixelLine(ctx, cx + r, headY - r + 1, cx + r + 2, headY - r - 3, palette.skin, 1);
+  // Eyes
+  px(ctx, cx - 1, headY - 1, palette.outline);
+  px(ctx, cx, headY - 1, palette.highlight ?? palette.accent);
+  px(ctx, cx + 2, headY - 1, palette.outline);
+  px(ctx, cx + 3, headY - 1, palette.highlight ?? palette.accent);
+  // Snout
+  px(ctx, cx, headY + 2, palette.outline);
+  px(ctx, cx + 1, headY + 2, palette.outline);
+  px(ctx, cx + 2, headY + 2, palette.outline);
+}
+
 function drawHead(
   ctx: CanvasRenderingContext2D,
   cx: number,
   headY: number,
   headR: number,
   palette: StickPalette,
-  variant: 'hero' | 'slime' | 'archer' | 'boss' = 'hero',
+  variant: 'hero' | 'slime' | 'archer' | 'boss' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast' = 'hero',
 ): void {
   switch (variant) {
     case 'slime':
@@ -616,6 +935,21 @@ function drawHead(
       break;
     case 'boss':
       drawHeadBoss(ctx, cx, headY, headR, palette);
+      break;
+    case 'warrior':
+      drawHeadWarrior(ctx, cx, headY, headR, palette);
+      break;
+    case 'monk':
+      drawHeadMonk(ctx, cx, headY, headR, palette);
+      break;
+    case 'ghost':
+      drawHeadGhost(ctx, cx, headY, headR, palette);
+      break;
+    case 'demon':
+      drawHeadDemon(ctx, cx, headY, headR, palette);
+      break;
+    case 'beast':
+      drawHeadBeast(ctx, cx, headY, headR, palette);
       break;
     default:
       drawHeadHero(ctx, cx, headY, headR, palette);
@@ -630,7 +964,7 @@ export function drawStickyFrame(
   palette: StickPalette,
   pose: StickPose,
   scale: DrawScale = NORMAL,
-  variant: 'hero' | 'slime' | 'archer' | 'boss' = 'hero',
+  variant: 'hero' | 'slime' | 'archer' | 'boss' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast' = 'hero',
 ): void {
   ctx.clearRect(0, 0, w, h);
   ctx.imageSmoothingEnabled = false;
@@ -705,6 +1039,18 @@ export function drawStickyFrame(
   }
   if (variant === 'boss') {
     drawBossRunes(ctx, torsoCx + Math.round(lean * 0.2), shoulderY, hipY, palette);
+  }
+  if (variant === 'warrior') {
+    drawWarriorArmor(ctx, torsoCx + Math.round(lean * 0.2), shoulderY, hipY, palette);
+  }
+  if (variant === 'beast') {
+    drawBeastFur(ctx, torsoCx + Math.round(lean * 0.2), shoulderY, hipY, palette);
+  }
+  if (variant === 'ghost') {
+    drawGhostTrail(ctx, torsoCx + Math.round(lean * 0.2), hipY, footY, palette);
+  }
+  if (variant === 'demon') {
+    drawDemonRunes(ctx, torsoCx + Math.round(lean * 0.2), shoulderY, hipY, palette);
   }
 
   // --- front leg (slimmer stroke) ---
@@ -782,7 +1128,7 @@ export function buildSheetCanvas(
   h: number,
   palette: StickPalette,
   scale: DrawScale = NORMAL,
-  variant: 'hero' | 'slime' | 'archer' | 'boss' = 'hero',
+  variant: 'hero' | 'slime' | 'archer' | 'boss' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast' = 'hero',
 ): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = w * frames.length;

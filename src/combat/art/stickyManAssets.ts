@@ -3,10 +3,31 @@ import {
   DISPLAY_SCALE,
   FRAME_H,
   FRAME_W,
+  PALETTE_ANCIENT_GUARDIAN,
   PALETTE_ARCHER,
+  PALETTE_BANDIT,
+  PALETTE_CELESTIAL,
+  PALETTE_CORRUPTED,
+  PALETTE_DESERT_SPIRIT,
+  PALETTE_DISCIPLE,
+  PALETTE_FROST_SHADE,
+  PALETTE_GUARD,
   PALETTE_HERO,
+  PALETTE_ICE,
+  PALETTE_LIGHTNING,
+  PALETTE_MIST_SPIRIT,
+  PALETTE_RIFT_SPAWN,
+  PALETTE_SAND_DEMON,
+  PALETTE_SCORPION,
   PALETTE_SLIME,
+  PALETTE_STORM_HAWK,
   PALETTE_TOTEM,
+  PALETTE_TRIBULATION,
+  PALETTE_VILLAGER,
+  PALETTE_VOID_SHADE,
+  PALETTE_VOID_WEAVER,
+  PALETTE_WISP,
+  PALETTE_WOLF,
 } from '@/combat/art/stickyManPalette';
 import {
   buildHeroFrames,
@@ -54,6 +75,27 @@ export const ANIM = {
   totemIdle: 'enemy_totem_idle',
   totemAttack: 'enemy_totem_attack',
   totemSit: 'enemy_totem_sit',
+  // New variant animation keys
+  warriorIdle: 'enemy_warrior_idle',
+  warriorWalk: 'enemy_warrior_walk',
+  warriorAttack: 'enemy_warrior_attack',
+  warriorSit: 'enemy_warrior_sit',
+  monkIdle: 'enemy_monk_idle',
+  monkWalk: 'enemy_monk_walk',
+  monkAttack: 'enemy_monk_attack',
+  monkSit: 'enemy_monk_sit',
+  ghostIdle: 'enemy_ghost_idle',
+  ghostWalk: 'enemy_ghost_walk',
+  ghostAttack: 'enemy_ghost_attack',
+  ghostSit: 'enemy_ghost_sit',
+  demonIdle: 'enemy_demon_idle',
+  demonWalk: 'enemy_demon_walk',
+  demonAttack: 'enemy_demon_attack',
+  demonSit: 'enemy_demon_sit',
+  beastIdle: 'enemy_beast_idle',
+  beastWalk: 'enemy_beast_walk',
+  beastAttack: 'enemy_beast_attack',
+  beastSit: 'enemy_beast_sit',
 } as const;
 
 const HERO_ANIM_KEYS = [
@@ -240,7 +282,274 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 100 },
   );
 
-  registerBossSheet(scene);
+  registerBossSheet(scene, 'enemy_totem', PALETTE_TOTEM);
+
+  // ── New map-specific variants ──
+
+  // Ch1 — Villager (monk variant, brown rags)
+  registerEnemySheet(
+    scene,
+    'enemy_villager',
+    PALETTE_VILLAGER,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.monkIdle, walk: ANIM.monkWalk, attack: ANIM.monkAttack, sit: ANIM.monkSit },
+    'monk',
+    { 2: 80 },
+  );
+
+  // Ch1 — Wolf (beast variant, grey)
+  registerEnemySheet(
+    scene,
+    'enemy_wolf_beast',
+    PALETTE_WOLF,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    null,
+    { idle: ANIM.beastIdle, walk: ANIM.beastWalk, sit: ANIM.beastSit },
+    'beast',
+  );
+
+  // Ch1 — Heng Yue disciple (monk variant, blue-white)
+  registerEnemySheet(
+    scene,
+    'enemy_disciple',
+    PALETTE_DISCIPLE,
+    POSES_ARCHER_IDLE,
+    POSES_ARCHER_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.monkIdle, walk: ANIM.monkWalk, attack: ANIM.monkAttack, sit: ANIM.monkSit },
+    'monk',
+    { 2: 100 },
+  );
+
+  // Ch2 — Spirit moth (ghost variant, pale green)
+  registerEnemySheet(
+    scene,
+    'enemy_spirit_moth',
+    PALETTE_MIST_SPIRIT,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    null,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, sit: ANIM.ghostSit },
+    'ghost',
+  );
+
+  // Ch2 — Mist wisp (ghost variant, pale blue)
+  registerEnemySheet(
+    scene,
+    'enemy_mist_wisp',
+    PALETTE_WISP,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, attack: ANIM.ghostAttack, sit: ANIM.ghostSit },
+    'ghost',
+    { 2: 90 },
+  );
+
+  // Ch2 — Spirit fox (beast variant, white)
+  // Reuses enemy_wolf_beast sprite key since same visual type, different stats
+
+  // Ch3 — Bandit thug (warrior variant, brown leather)
+  registerEnemySheet(
+    scene,
+    'enemy_bandit_thug',
+    PALETTE_BANDIT,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.warriorIdle, walk: ANIM.warriorWalk, attack: ANIM.warriorAttack, sit: ANIM.warriorSit },
+    'warrior',
+    { 2: 90 },
+  );
+
+  // Ch3 — Zhao guard (warrior variant, steel + red)
+  registerEnemySheet(
+    scene,
+    'enemy_zhao_guard',
+    PALETTE_GUARD,
+    POSES_ARCHER_IDLE,
+    POSES_ARCHER_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.warriorIdle, walk: ANIM.warriorWalk, attack: ANIM.warriorAttack, sit: ANIM.warriorSit },
+    'warrior',
+    { 2: 100 },
+  );
+
+  // Ch4 — Water spirit (ghost variant, blue-green) — reuses enemy_spirit_moth visual
+  // Ch4 — Ancient guardian (warrior variant, deep blue-green)
+  registerEnemySheet(
+    scene,
+    'enemy_ancient_guardian',
+    PALETTE_ANCIENT_GUARDIAN,
+    POSES_TOTEM_IDLE,
+    POSES_SLIME_WALK,
+    POSES_TOTEM_ATTACK,
+    { idle: ANIM.warriorIdle, walk: ANIM.warriorWalk, attack: ANIM.warriorAttack, sit: ANIM.warriorSit },
+    'warrior',
+    { 2: 120 },
+  );
+
+  // Ch5 — Fire scorpion (beast variant, red-orange) — reuses enemy_wolf_beast visual
+  // Ch5 — Sand demon (demon variant, fiery)
+  registerEnemySheet(
+    scene,
+    'enemy_sand_demon',
+    PALETTE_SAND_DEMON,
+    POSES_TOTEM_IDLE,
+    POSES_SLIME_WALK,
+    POSES_TOTEM_ATTACK,
+    { idle: ANIM.demonIdle, walk: ANIM.demonWalk, attack: ANIM.demonAttack, sit: ANIM.demonSit },
+    'demon',
+    { 2: 110 },
+  );
+
+  // Ch5 — Desert spirit (ghost variant, orange-gold)
+  registerEnemySheet(
+    scene,
+    'enemy_desert_spirit',
+    PALETTE_DESERT_SPIRIT,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, attack: ANIM.ghostAttack, sit: ANIM.ghostSit },
+    'ghost',
+    { 2: 90 },
+  );
+
+  // Ch6 — Storm hawk (beast variant, grey-blue)
+  registerEnemySheet(
+    scene,
+    'enemy_storm_hawk',
+    PALETTE_STORM_HAWK,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    null,
+    { idle: ANIM.beastIdle, walk: ANIM.beastWalk, sit: ANIM.beastSit },
+    'beast',
+  );
+
+  // Ch6 — Lightning spirit (ghost variant, yellow-white)
+  registerEnemySheet(
+    scene,
+    'enemy_lightning_spirit',
+    PALETTE_LIGHTNING,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, attack: ANIM.ghostAttack, sit: ANIM.ghostSit },
+    'ghost',
+    { 2: 100 },
+  );
+
+  // Ch6 — Tribulation elite (demon variant, storm grey + gold)
+  registerEnemySheet(
+    scene,
+    'enemy_tribulation_elite',
+    PALETTE_TRIBULATION,
+    POSES_TOTEM_IDLE,
+    POSES_SLIME_WALK,
+    POSES_TOTEM_ATTACK,
+    { idle: ANIM.demonIdle, walk: ANIM.demonWalk, attack: ANIM.demonAttack, sit: ANIM.demonSit },
+    'demon',
+    { 2: 120 },
+  );
+
+  // Ch7 — Ice golem (warrior variant, ice blue)
+  registerEnemySheet(
+    scene,
+    'enemy_ice_golem',
+    PALETTE_ICE,
+    POSES_TOTEM_IDLE,
+    POSES_SLIME_WALK,
+    POSES_TOTEM_ATTACK,
+    { idle: ANIM.warriorIdle, walk: ANIM.warriorWalk, attack: ANIM.warriorAttack, sit: ANIM.warriorSit },
+    'warrior',
+    { 2: 110 },
+  );
+
+  // Ch7 — Frost shade (ghost variant, pale blue)
+  registerEnemySheet(
+    scene,
+    'enemy_frost_shade',
+    PALETTE_FROST_SHADE,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, attack: ANIM.ghostAttack, sit: ANIM.ghostSit },
+    'ghost',
+    { 2: 90 },
+  );
+
+  // Ch8 — Rift spawn (demon variant, dark purple)
+  registerEnemySheet(
+    scene,
+    'enemy_rift_spawn',
+    PALETTE_RIFT_SPAWN,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.demonIdle, walk: ANIM.demonWalk, attack: ANIM.demonAttack, sit: ANIM.demonSit },
+    'demon',
+    { 2: 100 },
+  );
+
+  // Ch8 — Corrupted cultist (demon variant, dark red)
+  registerEnemySheet(
+    scene,
+    'enemy_corrupted_cultist',
+    PALETTE_CORRUPTED,
+    POSES_ARCHER_IDLE,
+    POSES_ARCHER_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.demonIdle, walk: ANIM.demonWalk, attack: ANIM.demonAttack, sit: ANIM.demonSit },
+    'demon',
+    { 2: 100 },
+  );
+
+  // Ch9 — Gate sentinel (warrior variant, gold-white)
+  registerEnemySheet(
+    scene,
+    'enemy_gate_sentinel',
+    PALETTE_CELESTIAL,
+    POSES_ARCHER_IDLE,
+    POSES_ARCHER_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.warriorIdle, walk: ANIM.warriorWalk, attack: ANIM.warriorAttack, sit: ANIM.warriorSit },
+    'warrior',
+    { 2: 120 },
+  );
+
+  // Ch9 — Celestial archer (warrior variant, silver-blue) — reuses enemy_gate_sentinel visual
+  // Ch9 — Loi Tien elite (warrior variant, celestial look) — reuses enemy_gate_sentinel visual
+
+  // Ch10 — Void shade (ghost variant, deep purple)
+  registerEnemySheet(
+    scene,
+    'enemy_void_shade',
+    PALETTE_VOID_SHADE,
+    POSES_SLIME_IDLE,
+    POSES_SLIME_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, attack: ANIM.ghostAttack, sit: ANIM.ghostSit },
+    'ghost',
+    { 2: 100 },
+  );
+
+  // Ch10 — Void weaver (demon variant, violet glow)
+  registerEnemySheet(
+    scene,
+    'enemy_void_weaver',
+    PALETTE_VOID_WEAVER,
+    POSES_ARCHER_IDLE,
+    POSES_ARCHER_WALK,
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.demonIdle, walk: ANIM.demonWalk, attack: ANIM.demonAttack, sit: ANIM.demonSit },
+    'demon',
+    { 2: 110 },
+  );
 }
 
 function registerEnemySheet(
@@ -251,7 +560,7 @@ function registerEnemySheet(
   walk: typeof POSES_SLIME_WALK,
   attack: typeof POSES_ARCHER_ATTACK | null,
   animKeys: { idle: string; walk: string; attack?: string; sit?: string },
-  variant: 'slime' | 'archer',
+  variant: 'slime' | 'archer' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast',
   attackHolds?: Record<number, number>,
 ): void {
   const frames = attack
@@ -261,7 +570,7 @@ function registerEnemySheet(
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
   let offset = 0;
-  createAnim(scene, animKeys.idle, key, offset, idle.length, variant === 'slime' ? 5 : 5);
+  createAnim(scene, animKeys.idle, key, offset, idle.length, 5);
   offset += idle.length;
   createAnim(scene, animKeys.walk, key, offset, walk.length, 10);
   offset += walk.length;
@@ -274,10 +583,9 @@ function registerEnemySheet(
   }
 }
 
-function registerBossSheet(scene: Phaser.Scene): void {
-  const key = 'enemy_totem';
+function registerBossSheet(scene: Phaser.Scene, key: string, palette: typeof PALETTE_TOTEM): void {
   const frames = [...POSES_TOTEM_IDLE, ...POSES_SIT, ...POSES_TOTEM_ATTACK];
-  const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, PALETTE_TOTEM, NORMAL, 'boss');
+  const canvas = buildSheetCanvas(frames, FRAME_W, FRAME_H, palette, NORMAL, 'boss');
   addSheetFromCanvas(scene, key, canvas, FRAME_W, FRAME_H);
 
   let offset = 0;
@@ -327,6 +635,55 @@ export function cultivatorAnimKeys(spriteKey: string): {
         walk: ANIM.totemIdle,
         attack: ANIM.totemAttack,
         sit: ANIM.totemSit,
+      };
+    case 'enemy_villager':
+    case 'enemy_disciple':
+      return {
+        idle: ANIM.monkIdle,
+        walk: ANIM.monkWalk,
+        attack: ANIM.monkAttack,
+        sit: ANIM.monkSit,
+      };
+    case 'enemy_wolf_beast':
+    case 'enemy_storm_hawk':
+      return {
+        idle: ANIM.beastIdle,
+        walk: ANIM.beastWalk,
+        sit: ANIM.beastSit,
+      };
+    case 'enemy_spirit_moth':
+    case 'enemy_mist_wisp':
+    case 'enemy_desert_spirit':
+    case 'enemy_lightning_spirit':
+    case 'enemy_frost_shade':
+    case 'enemy_void_shade':
+      return {
+        idle: ANIM.ghostIdle,
+        walk: ANIM.ghostWalk,
+        attack: ANIM.ghostAttack,
+        sit: ANIM.ghostSit,
+      };
+    case 'enemy_bandit_thug':
+    case 'enemy_zhao_guard':
+    case 'enemy_ancient_guardian':
+    case 'enemy_ice_golem':
+    case 'enemy_gate_sentinel':
+      return {
+        idle: ANIM.warriorIdle,
+        walk: ANIM.warriorWalk,
+        attack: ANIM.warriorAttack,
+        sit: ANIM.warriorSit,
+      };
+    case 'enemy_sand_demon':
+    case 'enemy_tribulation_elite':
+    case 'enemy_rift_spawn':
+    case 'enemy_corrupted_cultist':
+    case 'enemy_void_weaver':
+      return {
+        idle: ANIM.demonIdle,
+        walk: ANIM.demonWalk,
+        attack: ANIM.demonAttack,
+        sit: ANIM.demonSit,
       };
     default:
       return { idle: ANIM.slimeIdle, walk: ANIM.slimeWalk, sit: ANIM.slimeSit };
