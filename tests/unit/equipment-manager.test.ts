@@ -30,6 +30,7 @@ describe('ItemLoader', () => {
   it('loads all item configs', () => {
     expect(listItemIds()).toEqual([
       'item.bracelet.copper',
+      'item.consumable.immortal_jade',
       'item.ring.speed',
       'item.robe.novice',
       'item.spirit.jade',

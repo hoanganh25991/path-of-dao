@@ -71,8 +71,11 @@
 .action-buttons {
   --btn-size: 52px;
   --btn-lg: 72px;
-  --btn-gap: 10px;
-  --cluster-size: 184px;
+  /* Arc fan: attack center → satellites left/up (180°→68°, ~28° apart for 52px buttons). */
+  --arc-radius: 122px;
+  --arc-origin-x: calc(100% - var(--btn-lg) / 2);
+  --arc-origin-y: calc(100% - var(--btn-lg) / 2);
+  --cluster-size: calc(var(--btn-lg) / 2 + var(--arc-radius) + var(--btn-size) / 2 + 4px);
 
   position: absolute;
   right: max(1rem, env(safe-area-inset-right));
@@ -93,47 +96,50 @@
   pointer-events: auto;
 }
 
+/* Anchor: basic attack — largest, bottom-right of cluster. */
 .action-buttons__cluster .action-btn--attack {
   right: 0;
   bottom: 0;
   z-index: 4;
 }
 
+/* Satellite buttons: evenly spaced on ~112° arc (left → up-left) around attack center. */
+.action-buttons__cluster .action-btn--arc {
+  left: calc(var(--arc-origin-x) + cos(var(--arc-angle)) * var(--arc-radius));
+  top: calc(var(--arc-origin-y) - sin(var(--arc-angle)) * var(--arc-radius));
+  transform: translate(-50%, -50%);
+}
+
 .action-buttons__cluster .action-btn--dodge {
-  right: calc(var(--btn-lg) + 8px);
-  bottom: calc(var(--btn-lg) - 6px);
+  --arc-angle: 180deg;
   z-index: 3;
 }
 
 .action-buttons__cluster .action-btn--skill-primary {
-  right: calc(var(--btn-lg) + 10px);
-  bottom: 0;
+  --arc-angle: 152deg;
   z-index: 3;
 }
 
 .action-buttons__cluster .action-btn--skill-secondary {
-  right: 0;
-  bottom: calc(var(--btn-lg) + 10px);
-  z-index: 3;
+  --arc-angle: 124deg;
+  z-index: 2;
 }
 
 .action-buttons__cluster .action-btn--skill-ultimate {
-  right: calc(var(--btn-lg) + 52px);
-  bottom: calc(var(--btn-lg) + 2px);
+  --arc-angle: 96deg;
   z-index: 2;
 }
 
 .action-buttons__cluster .action-btn--swap-skills {
-  right: calc(var(--btn-lg) + 52px);
-  bottom: calc(var(--btn-lg) + 58px);
-  z-index: 2;
+  --arc-angle: 68deg;
+  z-index: 1;
 }
 
 .action-btn--swap-skills {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-color: rgba(143, 212, 196, 0.35);
   background: rgba(12, 16, 24, 0.92);
   font-size: 1.1rem;
@@ -167,7 +173,11 @@
   filter: saturate(0.65);
 }
 
-.action-btn--cooldown.action-btn--pressed {
+.action-btn--arc.action-btn--cooldown.action-btn--pressed {
+  transform: translate(-50%, -50%);
+}
+
+.action-btn--cooldown.action-btn--pressed:not(.action-btn--arc) {
   transform: none;
 }
 
@@ -239,7 +249,11 @@
   }
 }
 
-.action-btn--pressed {
+.action-btn--arc.action-btn--pressed {
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+.action-btn--pressed:not(.action-btn--arc) {
   transform: scale(0.9);
 }
 

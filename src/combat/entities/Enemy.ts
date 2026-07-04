@@ -22,7 +22,9 @@ import { DISPLAY_SCALE } from '@/combat/art/stickyManPalette';
 
 export const TELEGRAPH_MS = 300;
 export const STRIKE_MS = 100;
-export const DEATH_ANIM_MS = 400;
+/** Brief stagger after HP hits zero before recovery timer runs. */
+export const DEFEAT_STAGGER_MS = 450;
+export const DEFAULT_RECOVERY_MS = 6000;
 const HP_BAR_WIDTH = 26;
 const HP_BAR_HEIGHT = 3;
 
@@ -31,10 +33,10 @@ type AttackPhase = 'none' | 'telegraph' | 'strike';
 export interface EnemyCallbacks {
   /** Attack lands (strike frame). Owner resolves damage/projectiles. */
   onStrike(enemy: Enemy): void;
-  /** HP reached 0 — death anim already started. */
-  onDeath(enemy: Enemy): void;
-  /** Death anim finished — owner releases the enemy to the pool. */
-  onDeathAnimComplete(enemy: Enemy): void;
+  /** HP reached 0 — enemy lost the exchange (non-lethal). */
+  onDefeated(enemy: Enemy): void;
+  /** Defeat pose finished — owner may release, queue refill, or schedule recovery. */
+  onDefeatHoldComplete(enemy: Enemy): void;
   /** Boss phase crossed — queue add spawns. */
   onBossPhaseSpawns?(enemy: Enemy, adds: { id: string; count: number }[]): void;
 }
@@ -59,8 +61,8 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   readonly config: EnemyConfig;
 
   alive = false;
-  /** Death anim in progress — ignore damage/AI but keep updating. */
-  dying = false;
+  /** Lost the fight — HP at zero, recovering or awaiting pool release. */
+  defeated = false;
   spawnX = 0;
   spawnY = 0;
 
@@ -68,7 +70,11 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   private cooldownMs = 0;
   private attackPhase: AttackPhase = 'none';
   private attackPhaseMs = 0;
-  private deathMs = 0;
+  private defeatMs = 0;
+  private recoveryMs = 0;
+  private recoveryDurationMs = DEFAULT_RECOVERY_MS;
+  private recovering = false;
+  private defeatHoldDispatched = false;
   private knockback: KnockbackState | null = null;
   private animKeys!: ReturnType<typeof enemyAnimKeys>;
   private readonly hpBarBg: Phaser.GameObjects.Rectangle;
@@ -102,7 +108,11 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   }
 
   get invulnerable(): boolean {
-    return !this.alive || this.dying;
+    return !this.alive || this.defeated;
+  }
+
+  get isCombatReady(): boolean {
+    return this.alive && !this.defeated;
   }
 
   get isBoss(): boolean {
@@ -118,11 +128,15 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     this.spawnX = x;
     this.spawnY = y;
     this.alive = true;
-    this.dying = false;
+    this.defeated = false;
     this.cooldownMs = 0;
     this.attackPhase = 'none';
     this.attackPhaseMs = 0;
-    this.deathMs = 0;
+    this.defeatMs = 0;
+    this.recoveryMs = 0;
+    this.recovering = false;
+    this.defeatHoldDispatched = false;
+    this.defeatHoldDispatched = false;
     this.knockback = null;
     this.brain = createDecider(this.config.archetype);
     this.bossPhases = this.config.phases?.length ? new BossPhaseTracker(this.config.phases) : null;
@@ -148,9 +162,17 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   }
 
   /** Hide + disable (pool release). Does not destroy the GameObject. */
+  /** Milliseconds until full HP after defeat (roaming spawns set per slot). */
+  setRecoveryDuration(ms: number): void {
+    this.recoveryDurationMs = Math.max(500, ms);
+  }
+
   deactivate(): void {
     this.alive = false;
-    this.dying = false;
+    this.defeated = false;
+    this.recovering = false;
+    this.defeatHoldDispatched = false;
+    this.defeatHoldDispatched = false;
     this.knockback = null;
     clearHitFlash(this.sprite);
     this.sprite.setActive(false).setVisible(false);
@@ -164,15 +186,20 @@ export class Enemy extends EntityBase implements HurtboxEntity {
   }
 
   update(dtMs: number, player: AIPlayerState): void {
-    if (this.dying) {
-      this.deathMs += dtMs;
-      const t = Math.min(1, this.deathMs / DEATH_ANIM_MS);
-      this.sprite.setAlpha(1 - t);
-      // Uniform scale only — non-uniform scale blurs pixel art.
-      this.sprite.setScale(DISPLAY_SCALE * (1 - t * 0.15));
-      if (this.deathMs >= DEATH_ANIM_MS) {
-        this.callbacks.onDeathAnimComplete(this);
+    if (this.defeated) {
+      this.defeatMs += dtMs;
+      if (this.recovering) {
+        this.recoveryMs += dtMs;
+        const t = Math.min(1, this.recoveryMs / this.recoveryDurationMs);
+        this.sprite.setAlpha(0.55 + t * 0.45);
+        if (this.recoveryMs >= this.recoveryDurationMs) {
+          this.recoverFromDefeat();
+        }
+      } else if (!this.defeatHoldDispatched && this.defeatMs >= DEFEAT_STAGGER_MS) {
+        this.defeatHoldDispatched = true;
+        this.callbacks.onDefeatHoldComplete(this);
       }
+      this.trackHpBar();
       return;
     }
     if (!this.alive) return;
@@ -245,8 +272,33 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     }
 
     if (this.stats.isDead) {
-      this.startDeath();
+      this.startDefeat();
     }
+  }
+
+  /** Begin recovery timer in place — used by roaming spawns after defeat rewards. */
+  beginRecovery(): void {
+    if (!this.defeated) return;
+    this.recovering = true;
+    this.recoveryMs = 0;
+    this.sprite.setAlpha(0.55);
+  }
+
+  recoverFromDefeat(): void {
+    if (!this.defeated) return;
+    this.defeated = false;
+    this.recovering = false;
+    this.defeatHoldDispatched = false;
+    this.defeatMs = 0;
+    this.recoveryMs = 0;
+    this.stats.refill();
+    this.body.enable = true;
+    clearHitFlash(this.sprite);
+    this.sprite.clearTint();
+    this.sprite.setAlpha(1);
+    this.sprite.setScale(DISPLAY_SCALE);
+    this.updateHpBar();
+    this.sprite.play(this.animKeys.idle);
   }
 
   get attackCooldownRemainingMs(): number {
@@ -285,19 +337,22 @@ export class Enemy extends EntityBase implements HurtboxEntity {
     }
   }
 
-  private startDeath(): void {
-    this.alive = false;
-    this.dying = true;
-    this.deathMs = 0;
+  private startDefeat(): void {
+    this.defeated = true;
+    this.defeatMs = 0;
+    this.recoveryMs = 0;
+    this.recovering = false;
+    this.defeatHoldDispatched = false;
+    this.defeatHoldDispatched = false;
     this.knockback = null;
     this.attackPhase = 'none';
     this.body.enable = false;
     this.body.stop();
     clearHitFlash(this.sprite);
-    this.sprite.clearTint();
-    this.hpBarBg.setVisible(false);
-    this.hpBarFill.setVisible(false);
-    this.callbacks.onDeath(this);
+    this.sprite.setTint(0x9a9a9a);
+    this.sprite.setAlpha(0.75);
+    this.updateHpBar();
+    this.callbacks.onDefeated(this);
   }
 
   private updateHpBar(): void {

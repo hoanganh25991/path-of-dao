@@ -16,7 +16,7 @@
     "id": { "type": "string", "minLength": 1 },
     "displayNameKey": { "type": "string", "minLength": 1 },
     "descriptionKey": { "type": "string", "minLength": 1 },
-    "slot": { "enum": ["weapon", "armor", "accessory", "spirit"] },
+    "slot": { "enum": ["weapon", "armor", "accessory", "spirit", "consumable"] },
     "rarity": { "enum": ["common", "uncommon", "rare", "epic", "legendary"] },
     "modelId": { "type": "string", "minLength": 1 },
     "modifiers": {

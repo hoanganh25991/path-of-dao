@@ -6,6 +6,8 @@ import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 
 const MAX_SIMULTANEOUS_SFX = 8;
 const UNLOCK_STORAGE_KEY = 'pod.audio.unlocked';
+/** UI bus reads slightly quieter than combat SFX at equal save slider. */
+const UI_BUS_GAIN = 0.82;
 const manifest = manifestJson as AudioManifest;
 
 type ActiveVoice = { stop: () => void; fadeOut?: (sec: number) => void };
@@ -180,7 +182,7 @@ export class AudioManager {
     if (!this.buses) return;
     this.buses.music.setVolume(this.saveVolumes.music);
     this.buses.sfx.setVolume(this.saveVolumes.sfx);
-    this.buses.ui.setVolume(this.saveVolumes.sfx);
+    this.buses.ui.setVolume(this.saveVolumes.sfx * UI_BUS_GAIN);
   }
 
   private static stopBgm(): void {

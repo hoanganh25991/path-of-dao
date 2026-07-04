@@ -1,7 +1,9 @@
 import { createStore } from 'zustand/vanilla';
+import { checksumOf } from '@/core/save/checksum';
 import { SaveManager } from '@/core/save/SaveManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
-import { isAncientDemoActive } from '@/progression/AncientDemoManager';
+import { isAncientDemoActive, resetAncientDemoSession } from '@/progression/AncientDemoManager';
+import { notifyCombatPowerChanged } from '@/progression/CombatPower';
 
 type SavePatch =
   | Partial<PlayerSaveV1>
@@ -17,7 +19,7 @@ export interface GameStore {
   /** Write current state through SaveManager to IndexedDB. */
   persist(): Promise<void>;
   /** Wipe slot and start a fresh save (also persisted). */
-  newGame(): Promise<void>;
+  newGame(options?: { preserveSettings?: boolean }): Promise<void>;
 }
 
 export const gameStore = createStore<GameStore>()((set, get) => ({
@@ -59,17 +61,36 @@ export const gameStore = createStore<GameStore>()((set, get) => ({
   },
 
   async persist() {
-    const current = get().save;
-    if (!current) return;
     // Demo walks are ephemeral — real journey stays in session backup until exit.
     if (isAncientDemoActive()) return;
-    await SaveManager.save(current);
+
+    const snapshot = get().save;
+    if (!snapshot) return;
+
+    await SaveManager.save(snapshot);
+
+    // A slower persist started before newGame() must not clobber the fresh save.
+    const latest = get().save;
+    if (latest && latest !== snapshot) {
+      await SaveManager.save(latest);
+    }
   },
 
-  async newGame() {
-    const save = SaveManager.createNew();
+  async newGame(options) {
+    SaveManager.cancelPendingAutosave();
+
+    const current = get().save;
+    resetAncientDemoSession();
+
+    let save = SaveManager.createNew();
+    if (options?.preserveSettings && current) {
+      save = { ...save, settings: { ...current.settings } };
+      save.checksum = checksumOf(save);
+    }
+
     await SaveManager.save(save);
-    set({ save, isLoaded: true });
+    set({ save: SaveManager.current ?? save, isLoaded: true });
+    notifyCombatPowerChanged(SaveManager.current ?? save);
   },
 }));
 

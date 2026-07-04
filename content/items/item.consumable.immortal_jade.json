@@ -1,0 +1,10 @@
+{
+  "id": "item.consumable.immortal_jade",
+  "displayNameKey": "item.consumable.immortal_jade.name",
+  "descriptionKey": "item.consumable.immortal_jade.desc",
+  "slot": "consumable",
+  "rarity": "epic",
+  "modelId": "models/items/immortal-jade.glb",
+  "modifiers": [],
+  "requiredLevel": 1
+}

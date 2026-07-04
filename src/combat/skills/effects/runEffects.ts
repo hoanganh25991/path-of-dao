@@ -4,6 +4,7 @@ import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import type { SkillDefinition, SkillEffect } from '@/progression/SkillDefinition';
 import { resolveSkillEffects } from '@/combat/skills/resolveSkillEffects';
 import { VFXLibrary, playSkillCastVfx } from '@/combat/skills/VFXLibrary';
+import { buildMeleeArcShape } from '@/combat/combat/geometry';
 
 const SLASH_OFFSET_PX = 26;
 const SLASH_HIT_MS = 80;
@@ -40,17 +41,23 @@ export function runMeleeArc(effect: Extract<SkillEffect, { type: 'melee_arc' }>,
   const halfArc = ((effect.halfAngleDeg * Math.PI) / 180 / 2) * (amp > 1 ? 1.35 : 1);
   const reach = (effect.reach + effect.reachBonus) * amp;
   const { facing } = player;
-  const cx = player.x + facing * SLASH_OFFSET_PX;
-  const cy = player.y;
-  const startAngle = facing > 0 ? -halfArc : Math.PI - halfArc;
-  const endAngle = facing > 0 ? halfArc : Math.PI + halfArc;
+  const vfxCx = player.x + facing * SLASH_OFFSET_PX;
+  const vfxCy = player.y;
 
-  VFXLibrary.slashArc(player.scene, cx, cy - player.sprite.displayHeight * 0.45, facing, reach, skill.intent, amp);
+  VFXLibrary.slashArc(
+    player.scene,
+    vfxCx,
+    vfxCy - player.sprite.displayHeight * 0.45,
+    facing,
+    reach,
+    skill.intent,
+    amp,
+  );
 
   hitboxes.spawn({
     ownerId: player.id,
     team: 'player',
-    shape: { kind: 'arc', radius: reach + 12, startAngle, endAngle, x: cx, y: cy },
+    shape: buildMeleeArcShape(player.x, player.y, facing, reach, halfArc, SLASH_OFFSET_PX),
     damage: damagePayload(ctx, effect.damage.skillMultiplier, effect.damage.damageType),
     lifetimeMs: SLASH_HIT_MS,
     knockback: COMBO_FINISHER_KNOCKBACK * amp,

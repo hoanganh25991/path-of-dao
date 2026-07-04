@@ -1,5 +1,6 @@
 node_modules
 dist
+graphify-out/
 *.local
 .DS_Store
 coverage
@@ -12,3 +13,5 @@ playwright-report
 !plans/
 !tracks/
 dev-dist/
+
+package-lock.json

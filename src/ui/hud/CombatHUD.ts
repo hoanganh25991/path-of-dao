@@ -8,7 +8,7 @@ import { CombatSkillPicker } from '@/ui/hud/CombatSkillPicker';
 import { CombatPauseMenu } from '@/ui/hud/CombatPauseMenu';
 import { CombatDeathOverlay } from '@/ui/hud/CombatDeathOverlay';
 import '@/ui/hud/combat-hud.css';
-import '@/ui/hud/combat-skill-picker.css';
+import { CultivationToast } from '@/ui/hud/CultivationToast';
 
 /** Mounts combat input widgets when the active scene is combat. */
 export class CombatHUD {
@@ -30,6 +30,7 @@ export class CombatHUD {
     CombatSkillPicker.init(CombatHUD.root);
     CombatPauseMenu.init(CombatHUD.root);
     CombatDeathOverlay.init(CombatHUD.root);
+    CultivationToast.init();
 
     CombatHUD.unsubscribe = EventBus.on('scene:changed', ({ id }) => {
       CombatHUD.applyScene(id);
@@ -46,6 +47,7 @@ export class CombatHUD {
     CombatSkillPicker.destroy();
     CombatPauseMenu.destroy();
     CombatDeathOverlay.destroy();
+    CultivationToast.destroy();
     InputManager.destroy();
     CombatHUD.root?.remove();
     CombatHUD.root = null;

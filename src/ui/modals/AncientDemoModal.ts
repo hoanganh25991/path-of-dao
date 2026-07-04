@@ -1,6 +1,7 @@
 import { FullscreenManager } from '@/app/FullscreenManager';
 import '@/ui/modals/ancient-demo.css';
 import '@/ui/skills/skill-detail.css';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getAncientPath, getAncientProfile } from '@/progression/AncientDemoManager';
 import { normalizeLoadout, SKILL_SLOTS } from '@/progression/SkillLoadout';
@@ -173,6 +174,7 @@ export function showAncientDemoModal(
     card.append(body, footer);
     overlay.append(backdrop, card);
     uiRoot.appendChild(overlay);
+    AudioDirector.playPanelOpen();
 
     requestAnimationFrame(() => overlay.classList.add('ancient-demo-modal--active'));
 

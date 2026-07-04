@@ -57,6 +57,24 @@ When authoring **maps**, **story JSON**, **encounters**, or **combat**:
 
 ---
 
+## Cultivation system (game mechanics)
+
+Path of Dao maps *Tiên Nghịch* cultivation onto a **level + realm** ladder the player feels while playing — not a menu stat.
+
+| Concept | *Tiên Nghịch* feel | Path of Dao |
+|---------|-------------------|-------------|
+| **Combat XP** | Killing beasts and enduring ordeals slowly refines qi | Third HUD bar fills on enemy kills; levels within the current realm |
+| **Realm (cảnh giới)** | Mortal → Qi → Foundation → Core → Nascent → Void → True Dao | Seven realms in `content/progression/realms.json`; Home + combat toasts use vi keys (Phàm Thể, Ngưng Khí, Trúc Cơ…) |
+| **Sub-tier (kỳ)** | Sơ / Trung / Hậu / Viên Mãn within each realm | Auto every 3 levels; level-up toast: *Đột phá — Ngưng Khí · Trung Kỳ* |
+| **Realm breakthrough (đột phá cảnh giới)** | Major gate — spirit full, sometimes precious jade | Home **Tu Luyện / Đột Phá** when level + spirit + boss + **Tiên Ngọc** (Immortal Jade) met |
+| **Tiên Ngọc** | Rare jade consumed at major breakthroughs | `item.consumable.immortal_jade` in inventory; boss loot + encounters; Home toast when level/spirit met but jade missing |
+| **Map cultivation ceiling** | Each star/region caps how far you can refine before the road hardens | `recommendedRealmOrder` on maps; first-entry intro explains peak realm on that star |
+| **Second Step / late realms** | Wang Lin's road spans decades — high realms come late | Maps ch1–2 cap at Mortal/Qi; True Dao only on final chapters — intro copy warns higher realms are far ahead |
+
+**Story-as-you-play:** World map → enter portal → **map intro** (name, lore, realm cap) → combat. Chapter stories and My Path milestones still anchor the narrative.
+
+---
+
 ## Where agents should look
 
 | Task | Read first |

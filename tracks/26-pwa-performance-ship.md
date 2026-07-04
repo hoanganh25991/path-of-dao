@@ -33,7 +33,7 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 
 ## Verification
 
-- `npm run typecheck` — clean
-- `npm test` — **351 tests green**
-- `npm run test:e2e` — **1 smoke green**
-- `npm run build` — `docs/` + `sw.js` generated (GitHub Pages deploy folder)
+- `pnpm typecheck` — clean
+- `pnpm test` — **351 tests green**
+- `pnpm test:e2e` — **1 smoke green**
+- `pnpm build` — `docs/` + `sw.js` generated (GitHub Pages deploy folder)

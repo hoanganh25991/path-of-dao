@@ -1,3 +1,38 @@
+const DEFAULT_MELEE_REACH_PADDING_PX = 12;
+
+export interface MeleeArcShape {
+  kind: 'arc';
+  radius: number;
+  startAngle: number;
+  endAngle: number;
+  x: number;
+  y: number;
+}
+
+/**
+ * Forward melee arc rooted on the attacker — not ahead of them.
+ * A forward pivot offset leaves a close-range dead zone where sprites overlap but hits miss.
+ * Radius includes the old pivot offset so max reach stays the same.
+ */
+export function buildMeleeArcShape(
+  x: number,
+  y: number,
+  facing: 1 | -1,
+  reachPx: number,
+  halfArcRad: number,
+  pivotOffsetPx: number,
+  reachPaddingPx = DEFAULT_MELEE_REACH_PADDING_PX,
+): MeleeArcShape {
+  return {
+    kind: 'arc',
+    x,
+    y,
+    radius: reachPx + reachPaddingPx + pivotOffsetPx,
+    startAngle: facing > 0 ? -halfArcRad : Math.PI - halfArcRad,
+    endAngle: facing > 0 ? halfArcRad : Math.PI + halfArcRad,
+  };
+}
+
 /** Circle–circle overlap for hurtbox vs circular hitbox samples. */
 export function circlesOverlap(
   ax: number,

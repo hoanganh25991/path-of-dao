@@ -37,8 +37,8 @@ My Path = your auto-recorded road; Ancient Paths = authored roads to "learn from
 
 ### Verification (2026-07-03)
 
-- `npm run typecheck` clean
-- `npx vitest run` — **334 tests green** (incl. `path-walk.test.ts`, `journey-log.test.ts`)
+- `pnpm typecheck` clean
+- `pnpm exec vitest run` — **334 tests green** (incl. `path-walk.test.ts`, `journey-log.test.ts`)
 - E2E: Echoes **Follow Their Path** — `ancient.breakthrough_sage` (2 maps → ch1 story → Home); My Path journey length unchanged
 - E2E: Echoes **Walk Here** — god-mode combat, pause home restores Begin Journey
 - E2E: **sword ancestor** path — 3 boss maps with interleaved ch1/ch3/ch4 stories

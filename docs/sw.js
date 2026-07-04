@@ -81,7 +81,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"
   }, {
     "url": "index.html",
-    "revision": "8413cff95f0322af0e6624d501e60181"
+    "revision": "d21b92189aaf028036cb0d89fe4cecf2"
   }, {
     "url": "favicon.ico",
     "revision": "e1625ff44026e81605560873d7fcf309"
@@ -98,7 +98,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/void_throne-01-BVfMeWSU.json",
     "revision": null
   }, {
-    "url": "assets/virtual_pwa-register-D0CJfj_o.js",
+    "url": "assets/virtual_pwa-register-DZhl1JSb.js",
     "revision": null
   }, {
     "url": "assets/vendor-BFYH1q1c.js",
@@ -143,10 +143,10 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/mist_forest-01-DjprCa2T.json",
     "revision": null
   }, {
-    "url": "assets/index-D8KUuf-o.css",
+    "url": "assets/index-shpm0h3w.css",
     "revision": null
   }, {
-    "url": "assets/index-C7Kn6B8c.js",
+    "url": "assets/index-BmldcsPx.js",
     "revision": null
   }, {
     "url": "assets/hidden_cave-B3gJzmH4.png",
@@ -165,6 +165,18 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "assets/forgotten_memory-DIUJcbN9.png",
+    "revision": null
+  }, {
+    "url": "assets/fallen_village-star-west-DnpBmXFO.json",
+    "revision": null
+  }, {
+    "url": "assets/fallen_village-star-south-7DGU1lMh.json",
+    "revision": null
+  }, {
+    "url": "assets/fallen_village-star-north-Bm_zoXPP.json",
+    "revision": null
+  }, {
+    "url": "assets/fallen_village-star-east-DX80vAYG.json",
     "revision": null
   }, {
     "url": "assets/fallen_village-02-C3wNAUc3.json",

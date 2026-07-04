@@ -1,5 +1,7 @@
 {
   "home.cultivate": "Cultivate",
+  "progression.level_up": "Breakthrough — {realm}",
+  "progression.breakthrough.need_jade": "Need {count} Immortal Jade to break through.",
   "breakthrough.phase2": "Breaking through to {realm}…",
   "breakthrough.stats_gained": "Power Awakened",
   "realm.mortal_body.name": "Mortal Body",

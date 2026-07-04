@@ -1,5 +1,19 @@
 export type OscillatorWave = 'sine' | 'square' | 'triangle' | 'sawtooth';
 
+/** Rich synthesis profile — replaces bare beeps until OGG assets ship. */
+export type ProceduralPreset =
+  | 'impact-light'
+  | 'impact-heavy'
+  | 'impact-crit'
+  | 'skill-cast'
+  | 'death-dissolve'
+  | 'ui-blip'
+  | 'ui-panel'
+  | 'ui-sting'
+  | 'loot-spark';
+
+export type BgmMood = 'home' | 'explore' | 'combat' | 'boss' | 'story' | 'melancholy';
+
 export type ProceduralTone = {
   type: 'procedural';
   frequency: number;
@@ -9,6 +23,7 @@ export type ProceduralTone = {
   attackMs?: number;
   decayMs?: number;
   sweepTo?: number;
+  preset?: ProceduralPreset;
 };
 
 export type ProceduralBgm = {
@@ -17,6 +32,7 @@ export type ProceduralBgm = {
   frequencies: number[];
   gain?: number;
   durationMs?: number;
+  mood?: BgmMood;
 };
 
 export type FileAudio = {

@@ -202,6 +202,14 @@ export class SaveManager {
     };
   }
 
+  /** Drop a pending debounced autosave (e.g. before wiping progress). */
+  static cancelPendingAutosave(): void {
+    if (SaveManager.autosaveTimer !== null) {
+      clearTimeout(SaveManager.autosaveTimer);
+      SaveManager.autosaveTimer = null;
+    }
+  }
+
   /** Debounced trigger — scene changes batch into one save 2s later. */
   static scheduleAutosave(): void {
     if (SaveManager.autosaveTimer !== null) {

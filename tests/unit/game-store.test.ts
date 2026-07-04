@@ -1,9 +1,14 @@
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { EventBus } from '@/core/EventBus';
 import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
+import {
+  computeCombatPowerFromSave,
+  yearsCultivated,
+} from '@/progression/CombatPower';
+import { getRealmOrder } from '@/progression/RealmStatScaling';
 
 beforeEach(async () => {
   await SaveManager.destroy();
@@ -71,13 +76,105 @@ describe('gameStore', () => {
 
   it('newGame resets progress', async () => {
     await gameStore.getState().load();
-    gameStore.getState().patch({ xp: 999 });
+    gameStore.getState().patch({
+      xp: 999,
+      meta: { ...gameStore.getState().save!.meta, totalPlaySeconds: 86_400 * 20 },
+    });
     await gameStore.getState().persist();
 
     await gameStore.getState().newGame();
-    expect(gameStore.getState().save?.xp).toBe(0);
+    const save = gameStore.getState().save!;
+    expect(save.xp).toBe(0);
+    expect(save.meta.totalPlaySeconds).toBe(0);
+    expect(save.realm.id).toBe('mortal_body');
+    expect(computeCombatPowerFromSave(save)).toBe(50_844);
+    expect(
+      yearsCultivated(save.meta.totalPlaySeconds, getRealmOrder(save.realm.id)),
+    ).toBe(17);
 
     const loaded = await SaveManager.load();
     expect(loaded.xp).toBe(0);
+    expect(loaded.meta.totalPlaySeconds).toBe(0);
+  });
+
+  it('persist does not overwrite a newer save after newGame', async () => {
+    await gameStore.getState().load();
+    gameStore.getState().patch({
+      realm: { id: 'foundation_establishment', tier: 'peak', breakthroughReady: false },
+      meta: { ...gameStore.getState().save!.meta, totalPlaySeconds: 999_999 },
+    });
+
+    let resolveSave!: () => void;
+    const saveGate = new Promise<void>((resolve) => {
+      resolveSave = resolve;
+    });
+
+    const originalSave = SaveManager.save.bind(SaveManager);
+    vi.spyOn(SaveManager, 'save').mockImplementation(async (state, slot) => {
+      if (state.meta.totalPlaySeconds === 999_999) {
+        await saveGate;
+      }
+      return originalSave(state, slot);
+    });
+
+    const slowPersist = gameStore.getState().persist();
+    await gameStore.getState().newGame({ preserveSettings: true });
+    resolveSave();
+    await slowPersist;
+
+    const loaded = await SaveManager.load();
+    expect(loaded.meta.totalPlaySeconds).toBe(0);
+    expect(loaded.realm.id).toBe('mortal_body');
+    expect(computeCombatPowerFromSave(loaded)).toBe(50_844);
+
+    vi.restoreAllMocks();
+  });
+
+  it('newGame preserves settings when requested', async () => {
+    await gameStore.getState().load();
+    gameStore.getState().patch({
+      xp: 500,
+      settings: { locale: 'vi', quality: 'high', sfxVolume: 0.4, musicVolume: 0.6 },
+    });
+    await gameStore.getState().persist();
+
+    await gameStore.getState().newGame({ preserveSettings: true });
+
+    const save = gameStore.getState().save!;
+    expect(save.xp).toBe(0);
+    expect(save.settings).toEqual({
+      locale: 'vi',
+      quality: 'high',
+      sfxVolume: 0.4,
+      musicVolume: 0.6,
+    });
+
+    const loaded = await SaveManager.load();
+    expect(loaded.settings.locale).toBe('vi');
+    expect(loaded.xp).toBe(0);
+  });
+
+  it('newGame resets combat power and cultivation years', async () => {
+    await gameStore.getState().load();
+    gameStore.getState().patch({
+      realm: { id: 'foundation_establishment', tier: 'peak', breakthroughReady: false },
+      meta: { ...gameStore.getState().save!.meta, totalPlaySeconds: 86_400 * 5 },
+    });
+
+    const before = gameStore.getState().save!;
+    expect(computeCombatPowerFromSave(before)).toBeGreaterThan(50_844);
+    expect(
+      yearsCultivated(before.meta.totalPlaySeconds, getRealmOrder(before.realm.id)),
+    ).toBeGreaterThan(17);
+
+    await gameStore.getState().newGame({ preserveSettings: true });
+
+    const after = gameStore.getState().save!;
+    expect(after.realm.id).toBe('mortal_body');
+    expect(after.meta.totalPlaySeconds).toBe(0);
+    expect(computeCombatPowerFromSave(after)).toBe(50_844);
+    expect(
+      yearsCultivated(after.meta.totalPlaySeconds, getRealmOrder(after.realm.id)),
+    ).toBe(17);
   });
 });

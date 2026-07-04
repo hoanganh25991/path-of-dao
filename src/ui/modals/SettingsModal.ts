@@ -1,7 +1,9 @@
 import '@/ui/modals/settings.css';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { EventBus } from '@/core/EventBus';
 import { I18nManager, type LocalePreference } from '@/core/i18n/I18nManager';
 import type { QualityPreference } from '@/app/QualityProfile';
+import { SceneRouter } from '@/app/SceneRouter';
 import { VERSION } from '@/app/version';
 import { gameStore } from '@/core/store/gameStore';
 
@@ -75,6 +77,43 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     version.className = 'settings-modal__version';
     version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
 
+    const progressTitle = document.createElement('p');
+    progressTitle.className = 'settings-modal__section-title';
+    progressTitle.textContent = I18nManager.t('home.settings.progress');
+
+    const resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'settings-modal__reset';
+    resetBtn.dataset.testid = 'settings-reset-btn';
+    resetBtn.textContent = I18nManager.t('home.settings.reset');
+
+    const confirmPanel = document.createElement('div');
+    confirmPanel.className = 'settings-modal__confirm';
+    confirmPanel.dataset.testid = 'settings-reset-confirm';
+    confirmPanel.hidden = true;
+
+    const confirmMessage = document.createElement('p');
+    confirmMessage.className = 'settings-modal__confirm-message';
+    confirmMessage.textContent = I18nManager.t('home.settings.reset_confirm');
+
+    const confirmActions = document.createElement('div');
+    confirmActions.className = 'settings-modal__confirm-actions';
+
+    const cancelResetBtn = document.createElement('button');
+    cancelResetBtn.type = 'button';
+    cancelResetBtn.className = 'settings-modal__confirm-btn';
+    cancelResetBtn.dataset.testid = 'settings-reset-cancel';
+    cancelResetBtn.textContent = I18nManager.t('home.settings.reset_cancel');
+
+    const confirmResetBtn = document.createElement('button');
+    confirmResetBtn.type = 'button';
+    confirmResetBtn.className = 'settings-modal__confirm-btn settings-modal__confirm-btn--danger';
+    confirmResetBtn.dataset.testid = 'settings-reset-confirm-btn';
+    confirmResetBtn.textContent = I18nManager.t('home.settings.reset_confirm_action');
+
+    confirmActions.append(cancelResetBtn, confirmResetBtn);
+    confirmPanel.append(confirmMessage, confirmActions);
+
     const localeButtons: HTMLLabelElement[] = [];
     const qualityButtons: HTMLLabelElement[] = [];
 
@@ -106,6 +145,11 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       qualityTitle.textContent = I18nManager.t('home.settings.quality');
       qualityOptions.setAttribute('aria-label', I18nManager.t('home.settings.quality'));
       version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
+      progressTitle.textContent = I18nManager.t('home.settings.progress');
+      resetBtn.textContent = I18nManager.t('home.settings.reset');
+      confirmMessage.textContent = I18nManager.t('home.settings.reset_confirm');
+      cancelResetBtn.textContent = I18nManager.t('home.settings.reset_cancel');
+      confirmResetBtn.textContent = I18nManager.t('home.settings.reset_confirm_action');
 
       for (const label of localeButtons) {
         const value = label.dataset.value as LocalePreference;
@@ -169,9 +213,38 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       qualityOptions.appendChild(label);
     }
 
-    card.append(header, localeTitle, localeOptions, qualityTitle, qualityOptions, version);
+    card.append(
+      header,
+      localeTitle,
+      localeOptions,
+      qualityTitle,
+      qualityOptions,
+      progressTitle,
+      resetBtn,
+      confirmPanel,
+      version,
+    );
     overlay.append(backdrop, card);
     uiRoot.appendChild(overlay);
+
+    const hideResetConfirm = (): void => {
+      confirmPanel.hidden = true;
+      resetBtn.hidden = false;
+    };
+
+    const showResetConfirm = (): void => {
+      resetBtn.hidden = true;
+      confirmPanel.hidden = false;
+    };
+
+    resetBtn.addEventListener('click', showResetConfirm);
+    cancelResetBtn.addEventListener('click', hideResetConfirm);
+
+    confirmResetBtn.addEventListener('click', () => {
+      void performProgressReset().then(cleanup);
+    });
+
+    AudioDirector.playPanelOpen();
 
     syncLocaleSelection();
     syncQualitySelection();
@@ -188,6 +261,12 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     closeBtn.addEventListener('click', cleanup);
     backdrop.addEventListener('click', cleanup);
   });
+}
+
+async function performProgressReset(): Promise<void> {
+  await gameStore.getState().newGame({ preserveSettings: true });
+  EventBus.emit('home:open-tab', { tab: 'play' });
+  await SceneRouter.instance.switchTo('home');
 }
 
 async function applyLocalePreference(preference: LocalePreference): Promise<void> {

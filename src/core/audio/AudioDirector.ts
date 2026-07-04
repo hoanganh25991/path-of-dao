@@ -48,6 +48,7 @@ export class AudioDirector {
         if (isBoss && !this.bossBgmActive) {
           this.bossBgmActive = true;
           AudioManager.playBgm('bgm.combat.boss');
+          AudioManager.duckMusic(0.55, 500);
         }
       }),
       EventBus.on('player:died', () => {
@@ -56,22 +57,33 @@ export class AudioDirector {
       }),
       EventBus.on('realm:breakthrough', () => {
         AudioManager.playSfx('ui.breakthrough', 'ui');
-        AudioManager.duckMusic(0.5, 600);
+        AudioManager.duckMusic(0.45, 700);
       }),
       EventBus.on('encounter:completed', ({ encounterId }) => {
         const rare = encounterId.includes('secret') || encounterId.includes('hidden');
         AudioManager.playSfx(rare ? 'encounter.rare' : 'encounter.awaken', 'ui');
+        AudioManager.duckMusic(0.55, 450);
       }),
       EventBus.on('progression:level-up', () => {
         AudioManager.playSfx('level.up', 'ui');
+        AudioManager.duckMusic(0.5, 550);
       }),
-      EventBus.on('combat:hit-landed', ({ attackerTeam, victimTeam }) => {
-        if (attackerTeam === 'player' && victimTeam === 'enemy') {
+      EventBus.on('combat:hit-landed', (payload) => {
+        if (payload.attackerTeam === 'player' && payload.victimTeam === 'enemy') {
+          if (payload.isCrit) {
+            AudioManager.playSfx('combat.hit.crit');
+            AudioManager.duckMusic(0.62, 180);
+            return;
+          }
           AudioManager.playSfx('enemy.hit');
+          if (payload.finalDamage >= 40 || payload.skillMultiplier >= 1.5) {
+            AudioManager.duckMusic(0.78, 120);
+          }
           return;
         }
-        if (victimTeam === 'player') {
+        if (payload.victimTeam === 'player') {
           AudioManager.playSfx('player.hit');
+          AudioManager.duckMusic(0.55, 200);
         }
       }),
       EventBus.on('player:attack-started', ({ step }) => {
@@ -86,6 +98,7 @@ export class AudioDirector {
       }),
       EventBus.on('insight:awakened', () => {
         AudioManager.playSfx('encounter.awaken', 'ui');
+        AudioManager.duckMusic(0.5, 500);
       }),
     );
 
@@ -105,9 +118,18 @@ export class AudioDirector {
     AudioManager.playSfx('ui.tap', 'ui');
   }
 
+  static playPanelOpen(): void {
+    AudioManager.playSfx('ui.panel_open', 'ui');
+  }
+
+  static playLootPickup(): void {
+    AudioManager.playSfx('loot.pickup', 'ui');
+  }
+
   static playMapClearSting(): void {
     AudioManager.playBgm('bgm.victory');
     AudioManager.playSfx('map.clear', 'ui');
+    AudioManager.duckMusic(0.4, 800);
   }
 
   static unmount(): void {

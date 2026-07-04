@@ -14,6 +14,8 @@ const statMultiplierSchema = z.object({
 const breakthroughSchema = z.object({
   nextRealm: z.string().min(1),
   spiritCost: z.number().min(0),
+  /** Tiên Ngọc (Immortal Jade) consumed from inventory when > 0. */
+  jadeCost: z.number().int().min(0).default(0),
   requiredBoss: z.string().nullable(),
   requiredMap: z.string().nullable(),
 });

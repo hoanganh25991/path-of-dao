@@ -100,6 +100,7 @@ function createMockAudioContext(): typeof AudioContext {
     createBufferSource() {
       return {
         buffer: null,
+        loop: false,
         connect: vi.fn(),
         start: vi.fn(),
         stop: vi.fn(),

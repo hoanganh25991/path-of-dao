@@ -50,6 +50,26 @@ describe('AudioDirector', () => {
       }),
     ).not.toThrow();
   });
+
+  it('plays crit sfx and resolves manifest key', async () => {
+    await AudioManager.unlock();
+    expect(AudioManager.getSfxEntry('combat.hit.crit')).toBeDefined();
+    expect(() =>
+      EventBus.emit('combat:hit-landed', {
+        isCrit: true,
+        finalDamage: 80,
+        skillMultiplier: 1,
+        x: 0,
+        y: 0,
+        attackerTeam: 'player',
+        victimTeam: 'enemy',
+      }),
+    ).not.toThrow();
+  });
+
+  it('exposes loot pickup manifest key', () => {
+    expect(AudioManager.getSfxEntry('loot.pickup')).toBeDefined();
+  });
 });
 
 function createMockAudioContext(): typeof AudioContext {
@@ -97,6 +117,7 @@ function createMockAudioContext(): typeof AudioContext {
     createBufferSource() {
       return {
         buffer: null,
+        loop: false,
         connect: vi.fn(),
         start: vi.fn(),
         stop: vi.fn(),

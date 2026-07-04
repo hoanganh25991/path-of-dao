@@ -26,6 +26,7 @@
       "breakthrough": {
         "nextRealm": "foundation_establishment",
         "spiritCost": 50,
+        "jadeCost": 1,
         "requiredBoss": null,
         "requiredMap": null
       }
@@ -41,6 +42,7 @@
       "breakthrough": {
         "nextRealm": "core_formation",
         "spiritCost": 120,
+        "jadeCost": 2,
         "requiredBoss": "boss.bandit_lord",
         "requiredMap": null
       }
@@ -56,6 +58,7 @@
       "breakthrough": {
         "nextRealm": "nascent_soul",
         "spiritCost": 250,
+        "jadeCost": 3,
         "requiredBoss": "boss.swamp_warden",
         "requiredMap": null
       }
@@ -71,6 +74,7 @@
       "breakthrough": {
         "nextRealm": "void_spirit",
         "spiritCost": 500,
+        "jadeCost": 5,
         "requiredBoss": "boss.iron_patriarch",
         "requiredMap": null
       }
@@ -86,6 +90,7 @@
       "breakthrough": {
         "nextRealm": "true_dao",
         "spiritCost": 900,
+        "jadeCost": 8,
         "requiredBoss": "boss.void_sovereign",
         "requiredMap": null
       }

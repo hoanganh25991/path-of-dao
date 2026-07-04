@@ -12,6 +12,7 @@ import {
   yearsCultivated,
 } from '@/progression/CombatPower';
 import { BreakthroughManager } from '@/progression/BreakthroughManager';
+import { CultivationRealm } from '@/progression/CultivationRealm';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
 import { showBreakthroughModal } from '@/ui/modals/BreakthroughModal';
 import { showSettingsModal } from '@/ui/modals/SettingsModal';
@@ -112,6 +113,7 @@ export function createProfileHeader(): ProfileHeaderHandles {
   let ceremonyActive = false;
   let profilePanel: ReturnType<typeof createProfilePanel> | null = null;
   let wasBreakthroughReady = false;
+  let wasJadeBlocked = false;
 
   const closeProfilePanel = (): void => {
     profilePanel?.destroy();
@@ -136,7 +138,16 @@ export function createProfileHeader(): ProfileHeaderHandles {
   cultivateBtn.addEventListener('click', () => {
     if (ceremonyActive) return;
     const save = gameStore.getState().save;
-    if (!save?.realm.breakthroughReady) return;
+    if (!save) return;
+
+    const blockers = CultivationRealm.getBreakthroughBlockers(save);
+    if (blockers.jadeShortfall > 0) {
+      showToast(
+        I18nManager.t('progression.breakthrough.need_jade', { count: blockers.jadeShortfall }),
+      );
+      return;
+    }
+    if (!save.realm.breakthroughReady) return;
 
     const nextKey = BreakthroughManager.getNextRealmDisplayKey(save);
     if (!nextKey) return;
@@ -177,6 +188,23 @@ export function createProfileHeader(): ProfileHeaderHandles {
     cultivateBtn.hidden = !ready;
     cultivateBtn.classList.toggle('home-profile__cultivate--ready', ready);
 
+    const blockers = CultivationRealm.getBreakthroughBlockers(save);
+    const onlyJadeMissing =
+      !ready &&
+      !activeAncientId &&
+      blockers.jadeShortfall > 0 &&
+      blockers.levelShortfall === 0 &&
+      blockers.spiritShortfall === 0 &&
+      blockers.missingBoss === null &&
+      blockers.missingMap === null;
+
+    if (onlyJadeMissing && !wasJadeBlocked) {
+      showToast(
+        I18nManager.t('progression.breakthrough.need_jade', { count: blockers.jadeShortfall }),
+      );
+    }
+    wasJadeBlocked = onlyJadeMissing;
+
     if (ready && !wasBreakthroughReady) {
       showToast(I18nManager.t('home.breakthrough_ready'));
     }
@@ -186,6 +214,10 @@ export function createProfileHeader(): ProfileHeaderHandles {
   };
 
   refresh();
+
+  const unsubscribeStore = gameStore.subscribe(() => {
+    refresh();
+  });
 
   const unsubscribeCp = EventBus.on('cp:changed', () => {
     refresh();
@@ -199,6 +231,7 @@ export function createProfileHeader(): ProfileHeaderHandles {
     root,
     refresh,
     destroy() {
+      unsubscribeStore();
       unsubscribeCp();
       unsubscribeBreakthrough();
       closeProfilePanel();

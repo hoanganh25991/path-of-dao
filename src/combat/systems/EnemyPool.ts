@@ -52,6 +52,19 @@ export class EnemyPool {
     return this.active.size;
   }
 
+  /** Enemies still able to fight (not in defeated/recovery pose). */
+  get combatReadyCount(): number {
+    let n = 0;
+    for (const enemy of this.active) {
+      if (enemy.isCombatReady) n += 1;
+    }
+    return n;
+  }
+
+  get combatReadyEnemies(): Enemy[] {
+    return [...this.active].filter((e) => e.isCombatReady);
+  }
+
   releaseAll(): void {
     for (const enemy of [...this.active]) {
       this.release(enemy);

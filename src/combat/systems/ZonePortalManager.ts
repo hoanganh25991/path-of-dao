@@ -21,8 +21,8 @@ export class ZonePortalManager {
   private destroyed = false;
 
   constructor(
-    private readonly scene: Phaser.Scene,
-    private readonly player: Player,
+    scene: Phaser.Scene,
+    player: Player,
     map: Phaser.Tilemaps.Tilemap,
     config: MapConfig,
     private readonly onTransition: () => void,

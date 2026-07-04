@@ -1,32 +1,18 @@
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { isAncientCombatActive } from '@/progression/AncientCombatMode';
-import {
-  checkAwakeningReady,
-  getInsightState,
-  insightDisplayPct,
-} from '@/progression/InsightSystem';
-import { INSIGHT_XP_TO_FULL } from '@/progression/InsightDefinitions';
-import { getSkillDefinition } from '@/progression/SkillLoader';
+import { getCultivationExpView } from '@/progression/CultivationDisplay';
 import '@/ui/hud/player-status.css';
 
 const STATUS_ICONS = {
   hp: '♥',
   mana: '✦',
+  exp: '☸',
 } as const;
-
-const INTENT_ICONS: Record<string, string> = {
-  sword: '⚔',
-  void: '◈',
-  flame: '🔥',
-  lightning: '⚡',
-  time: '⏳',
-  life: '✦',
-};
 
 type CombatStats = { hp: number; hpMax: number; mana: number; manaMax: number };
 
-/** Top-left HP / Mana / Insight bars — updated via combat + store events. */
+/** Top-left HP / Mana / Cultivation XP bars — updated via combat + store events. */
 export class PlayerStatusBar {
   private static root: HTMLElement | null = null;
   private static hpFill: HTMLElement | null = null;
@@ -35,7 +21,6 @@ export class PlayerStatusBar {
   private static hpText: HTMLElement | null = null;
   private static manaText: HTMLElement | null = null;
   private static expText: HTMLElement | null = null;
-  private static expIcon: HTMLElement | null = null;
   private static expRow: HTMLElement | null = null;
   private static ancientMode = false;
   private static lastStats: CombatStats | null = null;
@@ -61,8 +46,8 @@ export class PlayerStatusBar {
           <span class="status-bar__text"></span>
         </div>
       </div>
-      <div class="status-bar-row status-bar-row--exp" data-testid="insight-meter">
-        <span class="status-bar__icon status-bar__icon--exp" aria-hidden="true">◈</span>
+      <div class="status-bar-row status-bar-row--exp" data-testid="cultivation-meter">
+        <span class="status-bar__icon status-bar__icon--exp" aria-hidden="true">${STATUS_ICONS.exp}</span>
         <div class="status-bar status-bar--exp" role="progressbar" aria-valuemin="0" aria-valuemax="100">
           <div class="status-bar__fill"></div>
           <span class="status-bar__text"></span>
@@ -78,7 +63,6 @@ export class PlayerStatusBar {
     PlayerStatusBar.manaText = root.querySelector('.status-bar--mana .status-bar__text');
     PlayerStatusBar.expFill = root.querySelector('.status-bar--exp .status-bar__fill');
     PlayerStatusBar.expText = root.querySelector('.status-bar--exp .status-bar__text');
-    PlayerStatusBar.expIcon = root.querySelector('.status-bar__icon--exp');
     PlayerStatusBar.expRow = root.querySelector('.status-bar-row--exp');
 
     PlayerStatusBar.unsubscribers.push(
@@ -86,9 +70,13 @@ export class PlayerStatusBar {
         PlayerStatusBar.lastStats = stats;
         PlayerStatusBar.renderCombat(stats);
       }),
-      EventBus.on('insight:xp-changed', () => PlayerStatusBar.renderExp()),
-      EventBus.on('insight:ready-to-awaken', () => PlayerStatusBar.renderExp()),
-      gameStore.subscribe(() => PlayerStatusBar.renderExp()),
+      EventBus.on('progression:xp-gained', () => PlayerStatusBar.renderExp()),
+      EventBus.on('progression:level-up', () => PlayerStatusBar.renderExp()),
+      gameStore.subscribe((state, prev) => {
+        if (state.save?.xp !== prev.save?.xp || state.save?.stats.level !== prev.save?.stats.level) {
+          PlayerStatusBar.renderExp();
+        }
+      }),
     );
 
     PlayerStatusBar.renderExp();
@@ -105,7 +93,6 @@ export class PlayerStatusBar {
     PlayerStatusBar.hpText = null;
     PlayerStatusBar.manaText = null;
     PlayerStatusBar.expText = null;
-    PlayerStatusBar.expIcon = null;
     PlayerStatusBar.expRow = null;
     PlayerStatusBar.lastStats = null;
     PlayerStatusBar.ancientMode = false;
@@ -163,44 +150,29 @@ export class PlayerStatusBar {
       !save ||
       !PlayerStatusBar.expFill ||
       !PlayerStatusBar.expText ||
-      !PlayerStatusBar.expIcon ||
       !PlayerStatusBar.expRow
     ) {
       return;
     }
 
     const ancient = PlayerStatusBar.isAncient();
-    const skillId = save.equippedSkills.primary;
-    let intent = 'void';
-    try {
-      intent = getSkillDefinition(skillId).intent;
-    } catch {
-      /* keep default */
-    }
+    const view = getCultivationExpView(save.xp);
 
-    const state = getInsightState(save, intent);
-    const pct = state.awakened ? 100 : insightDisplayPct(state.xp);
-    const ready = !state.awakened && !ancient && checkAwakeningReady(save, intent);
-
-    PlayerStatusBar.expIcon.textContent = INTENT_ICONS[intent] ?? '◈';
-    PlayerStatusBar.expRow.dataset.intent = intent;
-    PlayerStatusBar.expRow.classList.toggle('status-bar-row--ready', ready);
-    PlayerStatusBar.expRow.classList.toggle('status-bar-row--awakened', state.awakened);
+    PlayerStatusBar.expRow.classList.remove('status-bar-row--ready', 'status-bar-row--awakened');
 
     if (ancient) {
       PlayerStatusBar.expFill.style.width = '100%';
       PlayerStatusBar.expText.textContent = '∞';
+    } else if (view.atMaxLevel) {
+      PlayerStatusBar.expFill.style.width = '100%';
+      PlayerStatusBar.expText.textContent = `Lv.${view.level}`;
     } else {
-      PlayerStatusBar.expFill.style.width = `${pct}%`;
-      if (state.awakened) {
-        PlayerStatusBar.expText.textContent = `${INSIGHT_XP_TO_FULL.toLocaleString()} / ${INSIGHT_XP_TO_FULL.toLocaleString()}`;
-      } else {
-        const xpStr = Math.ceil(state.xp).toLocaleString();
-        const maxStr = INSIGHT_XP_TO_FULL.toLocaleString();
-        PlayerStatusBar.expText.textContent = `${xpStr} / ${maxStr}`;
-      }
+      PlayerStatusBar.expFill.style.width = `${view.pct}%`;
+      const xpStr = Math.ceil(view.xpIntoLevel).toLocaleString();
+      const maxStr = view.xpToNext.toLocaleString();
+      PlayerStatusBar.expText.textContent = `Lv.${view.level} · ${xpStr}/${maxStr}`;
     }
 
-    PlayerStatusBar.expRow.setAttribute('aria-valuenow', String(pct));
+    PlayerStatusBar.expRow.setAttribute('aria-valuenow', String(view.pct));
   }
 }

@@ -14,5 +14,5 @@ if (strict) {
   process.env.CONTENT_STRICT_I18N = '1';
 }
 
-const result = spawnSync('npx', args, { cwd: root, stdio: 'inherit', env: process.env });
+const result = spawnSync('pnpm', ['exec', ...args], { cwd: root, stdio: 'inherit', env: process.env });
 process.exit(result.status ?? 1);

@@ -1,6 +1,9 @@
 {
   "id": "loot.boss.standard",
-  "guaranteed": [{ "itemId": "item.spirit.jade", "qty": 1 }],
+  "guaranteed": [
+    { "itemId": "item.spirit.jade", "qty": 1 },
+    { "itemId": "item.consumable.immortal_jade", "qty": 1 }
+  ],
   "entries": [
     { "itemId": "item.sword.iron", "weight": 40, "qty": [1, 1] },
     { "itemId": "item.sword.ancient", "weight": 25, "qty": [1, 1] },

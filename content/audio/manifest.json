@@ -1,43 +1,253 @@
 {
   "version": 1,
   "bgm": {
-    "bgm.home": { "type": "procedural", "loop": true, "frequencies": [110, 165, 220], "gain": 0.1 },
-    "bgm.combat.generic": { "type": "procedural", "loop": true, "frequencies": [82.41, 123.47, 110], "gain": 0.11 },
-    "bgm.combat.boss": { "type": "procedural", "loop": true, "frequencies": [65.41, 98, 87.31], "gain": 0.12 },
-    "bgm.story": { "type": "procedural", "loop": true, "frequencies": [98, 147, 196], "gain": 0.09 },
-    "bgm.victory": { "type": "procedural", "loop": false, "frequencies": [262, 330, 392, 523, 659], "gain": 0.14, "durationMs": 3200 },
+    "bgm.home": {
+      "type": "procedural",
+      "loop": true,
+      "mood": "home",
+      "frequencies": [98, 147, 196],
+      "gain": 0.065
+    },
+    "bgm.combat.generic": {
+      "type": "procedural",
+      "loop": true,
+      "mood": "combat",
+      "frequencies": [82.41, 110, 123.47],
+      "gain": 0.07
+    },
+    "bgm.combat.boss": {
+      "type": "procedural",
+      "loop": true,
+      "mood": "boss",
+      "frequencies": [65.41, 87.31, 98],
+      "gain": 0.075
+    },
+    "bgm.story": {
+      "type": "procedural",
+      "loop": true,
+      "mood": "story",
+      "frequencies": [110, 165, 220],
+      "gain": 0.06
+    },
+    "bgm.victory": {
+      "type": "procedural",
+      "loop": false,
+      "frequencies": [262, 330, 392, 523, 659],
+      "gain": 0.12,
+      "durationMs": 3200
+    },
     "bgm.combat.fallen_village": {
       "type": "procedural",
       "loop": true,
-      "frequencies": [98, 147, 196, 247],
-      "gain": 0.07,
-      "wave": "sine"
+      "mood": "melancholy",
+      "frequencies": [87, 131, 175, 220],
+      "gain": 0.055
     }
   },
   "sfx": {
-    "ui.tap": { "type": "procedural", "frequency": 880, "durationMs": 45, "wave": "sine", "gain": 0.18 },
-    "ui.panel_open": { "type": "procedural", "frequency": 520, "durationMs": 90, "wave": "triangle", "gain": 0.16 },
-    "ui.breakthrough": { "type": "procedural", "frequency": 440, "durationMs": 360, "wave": "sine", "gain": 0.22, "sweepTo": 880 },
-    "player.attack1": { "type": "procedural", "frequency": 280, "durationMs": 70, "wave": "triangle", "gain": 0.2 },
-    "player.attack2": { "type": "procedural", "frequency": 320, "durationMs": 70, "wave": "triangle", "gain": 0.21 },
-    "player.attack3": { "type": "procedural", "frequency": 380, "durationMs": 100, "wave": "triangle", "gain": 0.24 },
-    "player.dodge": { "type": "procedural", "frequency": 600, "durationMs": 130, "wave": "sine", "gain": 0.15, "sweepTo": 200 },
-    "player.hit": { "type": "procedural", "frequency": 140, "durationMs": 150, "wave": "sawtooth", "gain": 0.22 },
-    "skill.sword": { "type": "procedural", "frequency": 400, "durationMs": 110, "wave": "triangle", "gain": 0.2 },
-    "skill.void": { "type": "procedural", "frequency": 180, "durationMs": 200, "wave": "sine", "gain": 0.21, "sweepTo": 90 },
-    "skill.flame": { "type": "procedural", "frequency": 220, "durationMs": 160, "wave": "sawtooth", "gain": 0.2 },
-    "skill.thunder": { "type": "procedural", "frequency": 90, "durationMs": 220, "wave": "square", "gain": 0.23 },
-    "skill.time": { "type": "procedural", "frequency": 660, "durationMs": 170, "wave": "sine", "gain": 0.17, "sweepTo": 330 },
-    "skill.heal": { "type": "procedural", "frequency": 523, "durationMs": 220, "wave": "sine", "gain": 0.17, "sweepTo": 784 },
-    "enemy.hit": { "type": "procedural", "frequency": 200, "durationMs": 55, "wave": "triangle", "gain": 0.16 },
-    "enemy.death": { "type": "procedural", "frequency": 160, "durationMs": 200, "wave": "sawtooth", "gain": 0.18, "sweepTo": 60 },
-    "boss.telegraph": { "type": "procedural", "frequency": 70, "durationMs": 300, "wave": "square", "gain": 0.22 },
-    "boss.phase_change": { "type": "procedural", "frequency": 55, "durationMs": 420, "wave": "square", "gain": 0.24, "sweepTo": 110 },
-    "encounter.rare": { "type": "procedural", "frequency": 740, "durationMs": 260, "wave": "sine", "gain": 0.21 },
-    "encounter.awaken": { "type": "procedural", "frequency": 330, "durationMs": 520, "wave": "sine", "gain": 0.22, "sweepTo": 660 },
-    "map.clear": { "type": "procedural", "frequency": 392, "durationMs": 420, "wave": "triangle", "gain": 0.21, "sweepTo": 523 },
-    "level.up": { "type": "procedural", "frequency": 523, "durationMs": 380, "wave": "sine", "gain": 0.22, "sweepTo": 784 },
-    "ui.confirm": { "type": "procedural", "frequency": 660, "durationMs": 65, "wave": "sine", "gain": 0.16 },
-    "player.land": { "type": "procedural", "frequency": 120, "durationMs": 75, "wave": "triangle", "gain": 0.14 }
+    "ui.tap": {
+      "type": "procedural",
+      "preset": "ui-blip",
+      "frequency": 784,
+      "durationMs": 55,
+      "gain": 0.11
+    },
+    "ui.panel_open": {
+      "type": "procedural",
+      "preset": "ui-panel",
+      "frequency": 440,
+      "durationMs": 140,
+      "gain": 0.1
+    },
+    "ui.confirm": {
+      "type": "procedural",
+      "preset": "ui-blip",
+      "frequency": 660,
+      "durationMs": 60,
+      "gain": 0.1
+    },
+    "ui.breakthrough": {
+      "type": "procedural",
+      "preset": "ui-sting",
+      "frequency": 392,
+      "durationMs": 480,
+      "sweepTo": 784,
+      "gain": 0.18
+    },
+    "player.attack1": {
+      "type": "procedural",
+      "preset": "impact-light",
+      "frequency": 260,
+      "durationMs": 65,
+      "gain": 0.15
+    },
+    "player.attack2": {
+      "type": "procedural",
+      "preset": "impact-light",
+      "frequency": 300,
+      "durationMs": 70,
+      "gain": 0.16
+    },
+    "player.attack3": {
+      "type": "procedural",
+      "preset": "impact-heavy",
+      "frequency": 340,
+      "durationMs": 95,
+      "gain": 0.19
+    },
+    "player.dodge": {
+      "type": "procedural",
+      "preset": "skill-cast",
+      "frequency": 520,
+      "durationMs": 120,
+      "wave": "sine",
+      "sweepTo": 180,
+      "gain": 0.12
+    },
+    "player.hit": {
+      "type": "procedural",
+      "preset": "impact-heavy",
+      "frequency": 130,
+      "durationMs": 130,
+      "gain": 0.17
+    },
+    "skill.sword": {
+      "type": "procedural",
+      "preset": "skill-cast",
+      "frequency": 420,
+      "durationMs": 120,
+      "wave": "triangle",
+      "sweepTo": 280,
+      "gain": 0.16
+    },
+    "skill.void": {
+      "type": "procedural",
+      "preset": "skill-cast",
+      "frequency": 200,
+      "durationMs": 210,
+      "wave": "sine",
+      "sweepTo": 72,
+      "gain": 0.15
+    },
+    "skill.flame": {
+      "type": "procedural",
+      "preset": "skill-cast",
+      "frequency": 240,
+      "durationMs": 170,
+      "wave": "sawtooth",
+      "sweepTo": 480,
+      "gain": 0.16
+    },
+    "skill.thunder": {
+      "type": "procedural",
+      "preset": "skill-cast",
+      "frequency": 85,
+      "durationMs": 240,
+      "wave": "square",
+      "sweepTo": 55,
+      "gain": 0.18
+    },
+    "skill.time": {
+      "type": "procedural",
+      "preset": "skill-cast",
+      "frequency": 640,
+      "durationMs": 180,
+      "wave": "sine",
+      "sweepTo": 320,
+      "gain": 0.14
+    },
+    "skill.heal": {
+      "type": "procedural",
+      "preset": "skill-cast",
+      "frequency": 494,
+      "durationMs": 240,
+      "wave": "sine",
+      "sweepTo": 740,
+      "gain": 0.14
+    },
+    "enemy.hit": {
+      "type": "procedural",
+      "preset": "impact-light",
+      "frequency": 220,
+      "durationMs": 58,
+      "gain": 0.14
+    },
+    "combat.hit.crit": {
+      "type": "procedural",
+      "preset": "impact-crit",
+      "frequency": 280,
+      "durationMs": 120,
+      "gain": 0.2
+    },
+    "enemy.death": {
+      "type": "procedural",
+      "preset": "death-dissolve",
+      "frequency": 180,
+      "durationMs": 220,
+      "sweepTo": 55,
+      "gain": 0.15
+    },
+    "boss.telegraph": {
+      "type": "procedural",
+      "preset": "impact-heavy",
+      "frequency": 72,
+      "durationMs": 280,
+      "wave": "square",
+      "gain": 0.16
+    },
+    "boss.phase_change": {
+      "type": "procedural",
+      "preset": "ui-sting",
+      "frequency": 110,
+      "durationMs": 420,
+      "sweepTo": 220,
+      "gain": 0.17
+    },
+    "encounter.rare": {
+      "type": "procedural",
+      "preset": "ui-sting",
+      "frequency": 587,
+      "durationMs": 320,
+      "sweepTo": 880,
+      "gain": 0.16
+    },
+    "encounter.awaken": {
+      "type": "procedural",
+      "preset": "ui-sting",
+      "frequency": 330,
+      "durationMs": 520,
+      "sweepTo": 660,
+      "gain": 0.16
+    },
+    "map.clear": {
+      "type": "procedural",
+      "preset": "ui-sting",
+      "frequency": 392,
+      "durationMs": 440,
+      "sweepTo": 587,
+      "gain": 0.16
+    },
+    "level.up": {
+      "type": "procedural",
+      "preset": "ui-sting",
+      "frequency": 440,
+      "durationMs": 400,
+      "sweepTo": 660,
+      "gain": 0.17
+    },
+    "loot.pickup": {
+      "type": "procedural",
+      "preset": "loot-spark",
+      "frequency": 880,
+      "durationMs": 70,
+      "gain": 0.09
+    },
+    "player.land": {
+      "type": "procedural",
+      "preset": "impact-light",
+      "frequency": 110,
+      "durationMs": 70,
+      "gain": 0.11
+    }
   }
 }

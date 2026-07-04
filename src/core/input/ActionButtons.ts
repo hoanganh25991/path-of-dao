@@ -86,7 +86,7 @@ export class ActionButtons {
 
     const swapBtn = document.createElement('button');
     swapBtn.type = 'button';
-    swapBtn.className = 'action-btn action-btn--swap-skills';
+    swapBtn.className = 'action-btn action-btn--arc action-btn--swap-skills';
     swapBtn.setAttribute('aria-label', I18nManager.t('combat.skills.swap'));
     swapBtn.innerHTML = '<span class="skill-btn__icon">⟳</span>';
     swapBtn.addEventListener('click', (event) => {
@@ -194,7 +194,7 @@ export class ActionButtons {
   ): void {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `action-btn ${className}`;
+    button.className = `action-btn action-btn--arc ${className}`;
     button.dataset.action = id;
 
     const iconWrap = document.createElement('span');
@@ -221,7 +221,8 @@ export class ActionButtons {
   private mountButton(parent: HTMLElement, layout: ButtonLayout): void {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `action-btn ${layout.className}`;
+    const arcClass = layout.id === 'attack' ? '' : ' action-btn--arc';
+    button.className = `action-btn${arcClass} ${layout.className}`;
     button.dataset.action = layout.id;
     button.setAttribute('aria-label', layout.ariaLabel);
     button.innerHTML = layout.iconHtml;

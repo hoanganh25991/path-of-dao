@@ -17,5 +17,8 @@ describe('audio manifest', () => {
     expect(Object.keys(manifest.sfx).length).toBeGreaterThanOrEqual(24);
     expect(manifest.sfx['ui.tap']).toBeDefined();
     expect(manifest.sfx['level.up']).toBeDefined();
+    expect(manifest.sfx['combat.hit.crit']).toBeDefined();
+    expect(manifest.sfx['loot.pickup']).toBeDefined();
+    expect(manifest.bgm['bgm.combat.fallen_village']).toBeDefined();
   });
 });

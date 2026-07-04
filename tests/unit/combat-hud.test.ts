@@ -35,4 +35,22 @@ describe('CombatHUD', () => {
     EventBus.emit('scene:changed', { id: 'home', payload: undefined });
     expect(hud?.hidden).toBe(true);
   });
+
+  it('places satellite buttons on arc around attack anchor', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    TopRightHud.init(uiRoot);
+    CombatHUD.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'combat', payload: { mapId: 'test' } });
+
+    expect(uiRoot.querySelector('.action-btn--attack')?.classList.contains('action-btn--arc')).toBe(
+      false,
+    );
+    expect(uiRoot.querySelector('.action-btn--dodge')?.classList.contains('action-btn--arc')).toBe(true);
+    expect(uiRoot.querySelector('.action-btn--skill-primary')?.classList.contains('action-btn--arc')).toBe(
+      true,
+    );
+    expect(uiRoot.querySelector('.action-btn--swap-skills')?.classList.contains('action-btn--arc')).toBe(
+      true,
+    );
+  });
 });

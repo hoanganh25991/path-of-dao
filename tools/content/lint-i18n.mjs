@@ -9,7 +9,7 @@ if (process.argv.includes('--strict')) {
   process.env.I18N_STRICT = '1';
 }
 
-const result = spawnSync('npx', ['vitest', 'run', 'tests/content/locale-parity.test.ts'], {
+const result = spawnSync('pnpm', ['exec', 'vitest', 'run', 'tests/content/locale-parity.test.ts'], {
   cwd: root,
   stdio: 'inherit',
   env: process.env,

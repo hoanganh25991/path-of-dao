@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/05-save-system-foundation.md](../plans/05-save-system-foundation.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 ## Summary
 
@@ -18,6 +18,7 @@ Persistent player save in the browser with checksum, migration, and export/impor
 - Default new-game save template
 - **Combat pause menu:** Save button persists runtime + schedules autosave without leaving map
 - **Map exit autosave:** pause Return Home and EXIT zone both persist runtime + flush to IndexedDB
+- **`gameStore.newGame({ preserveSettings })`** — full progress wipe; optional retention of locale, quality, and volume settings (used by settings reset)
 
 ## Remaining
 

@@ -16,7 +16,7 @@ This is the **master progress index**. Each sub-plan has a detailed track file u
 | In progress | **9** (incl. 26 — PWA foundation) |
 | Pending | **0** |
 | Cross-cutting | Tiên Nghịch alignment **7 / 8 done** (T5–T6 landed 2026-07-04) |
-| Active thread | **Base flow `[x]`** — 37 E2E automated sign-off |
+| Active thread | **Base flow `[x]`** — 37 E2E automated sign-off · cultivation HUD + map intro (13) |
 
 ### By phase
 
@@ -147,7 +147,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | Settings version | `0.1.0-mvp` in settings modal |
 | MVP smoke | boot → combat → vi locale |
 
-- **384 unit tests** · **37 E2E tests** (`npm run test:e2e`); 3 seeded ch6–7 cases deferred
+- **384 unit tests** · **37 E2E tests** (`pnpm test:e2e`); 3 seeded ch6–7 cases deferred
 
 **Next:** Sub-plan **26** manual ship checklist (Lighthouse, 30 FPS device, 10-min QA)
 
@@ -242,11 +242,13 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 | Done | Remaining |
 |------|-----------|
-| Web Audio buses; 24+ procedural SFX, 5 BGM tracks | Replace with real OGG assets |
-| First-visit unlock overlay; silent resume on return | BGM crossfade Home ↔ combat |
-| Hit-stop, camera shake, crit flash | Boss phase sting + screen darken |
-| Home aura pulse Core Formation+ | Low-end juice disable profile (26) |
-| | Player attack/dodge/land SFX from actions |
+| Web Audio buses; **26 procedural SFX**, **6 BGM** with mood profiles | Replace with real OGG assets |
+| Preset synthesis (impacts, skills, stings, loot); crit + duck mix | File playback in AudioManager |
+| First-visit unlock overlay; silent resume on return | Boss telegraph SFX (no event yet) |
+| BGM crossfade; per-map BGM (Fallen Village melancholy) | Low-end juice disable profile (26) |
+| Hit-stop, camera shake, crit flash | Boss phase screen darken (visual) |
+| `ui.panel_open` + `loot.pickup` wired; UI bus tier | Dedicated UI volume slider |
+| Home aura pulse Core Formation+ | `player.land` (no jump mechanic) |
 
 → [full track](./25-audio-vfx-polish.md)
 

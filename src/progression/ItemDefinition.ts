@@ -4,6 +4,9 @@ import type { ModifiableStat } from '@/progression/types';
 export const EQUIPMENT_SLOTS = ['weapon', 'armor', 'accessory', 'spirit'] as const;
 export type EquipmentSlot = (typeof EQUIPMENT_SLOTS)[number];
 
+export const ITEM_SLOTS = [...EQUIPMENT_SLOTS, 'consumable'] as const;
+export type ItemSlot = (typeof ITEM_SLOTS)[number];
+
 export const ITEM_RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary'] as const;
 export type ItemRarity = (typeof ITEM_RARITIES)[number];
 
@@ -29,7 +32,7 @@ export const itemDefinitionSchema = z.object({
   id: z.string().min(1),
   displayNameKey: z.string().min(1),
   descriptionKey: z.string().min(1),
-  slot: z.enum(EQUIPMENT_SLOTS),
+  slot: z.enum(['weapon', 'armor', 'accessory', 'spirit', 'consumable']),
   rarity: z.enum(ITEM_RARITIES),
   modelId: z.string().min(1),
   modifiers: z.array(

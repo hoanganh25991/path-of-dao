@@ -39,7 +39,7 @@
           "accessory": null,
           "spirit": null
         },
-        "inventoryItemIds": ["item.sword.wood", "item.robe.novice"],
+        "inventoryItemIds": ["item.sword.wood", "item.robe.novice", "item.consumable.immortal_jade"],
         "pet": null,
         "yearsCultivated": 12,
         "encountersFound": [],

@@ -1,4 +1,5 @@
 import '@/ui/modals/awakening.css';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getInsightIntentConfig } from '@/progression/InsightDefinitions';
 import { InsightSystem } from '@/progression/InsightSystem';
@@ -63,6 +64,7 @@ export function showAwakeningModal(
     content.append(title, subtitle, confirm);
     overlay.append(backdrop, slash, crack, content);
     uiRoot.appendChild(overlay);
+    AudioDirector.playPanelOpen();
 
     requestAnimationFrame(() => overlay.classList.add('awakening-modal--active'));
 

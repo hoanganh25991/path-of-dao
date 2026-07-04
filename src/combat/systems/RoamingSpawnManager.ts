@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { EventBus } from '@/core/EventBus';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { gameStore } from '@/core/store/gameStore';
 import type { Player } from '@/combat/entities/Player';
 import { Enemy, STRIKE_MS } from '@/combat/entities/Enemy';
@@ -10,6 +11,7 @@ import type { RoamConfig } from '@/combat/map/RoamConfig';
 import { EnemyPool } from '@/combat/systems/EnemyPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
+import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvents';
 import { recordJourney } from '@/progression/JourneyLog';
 import { unlockSkillForBoss, unlockSkillsForLevel } from '@/progression/SkillUnlockManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
@@ -64,8 +66,8 @@ export class RoamingSpawnManager {
     this.pool = new EnemyPool((enemyId) => {
       const enemy = new Enemy(scene, getEnemyConfig(enemyId), {
         onStrike: (e) => this.resolveStrike(e),
-        onDeath: (e) => this.grantKillRewards(e),
-        onDeathAnimComplete: (e) => this.onDeathAnimComplete(e),
+        onDefeated: (e) => this.grantDefeatRewards(e),
+        onDefeatHoldComplete: (e) => this.onDefeatHoldComplete(e),
       });
       scene.physics.add.collider(enemy.sprite, walls);
       return enemy;
@@ -105,7 +107,11 @@ export class RoamingSpawnManager {
   }
 
   getHurtboxTargets(): HurtboxEntity[] {
-    return [...this.pool.aliveEnemies].filter((e) => e.alive);
+    return this.pool.combatReadyEnemies;
+  }
+
+  get combatReadyCount(): number {
+    return this.pool.combatReadyCount;
   }
 
   /** Explore maps — retreat anytime; no wave gate. */
@@ -132,6 +138,7 @@ export class RoamingSpawnManager {
     slot.respawnTimer = null;
 
     const enemy = this.pool.acquire(slot.enemyId, slot.x, slot.y);
+    enemy.setRecoveryDuration(slot.respawnMs);
     if (slot.patrolRadius > 0) {
       const r = slot.patrolRadius;
       enemy.setPatrolWaypoints([
@@ -144,20 +151,13 @@ export class RoamingSpawnManager {
     slot.enemy = enemy;
   }
 
-  private onDeathAnimComplete(enemy: Enemy): void {
+  private onDefeatHoldComplete(enemy: Enemy): void {
     const slot = this.slots.find((s) => s.enemy === enemy);
-    this.pool.release(enemy);
-    if (slot) {
-      slot.enemy = null;
-      if (!this.destroyed) {
-        slot.respawnTimer = this.scene.time.delayedCall(slot.respawnMs, () => {
-          this.activateSlot(slot);
-        });
-      }
-    }
+    if (!slot || this.destroyed) return;
+    enemy.beginRecovery();
   }
 
-  private resolveStrike(enemy: Enemy): void {
+  private grantDefeatRewards(enemy: Enemy): void {
     if (enemy.config.archetype === 'ranged_kiter') {
       this.spawnArrow(enemy);
       return;
@@ -240,6 +240,7 @@ export class RoamingSpawnManager {
     );
     const isBoss = Boolean(bossClearId);
     const rewards = computeKillRewards(save, enemy.config);
+    const xpBefore = save.xp;
 
     store.patch((current) => {
       const clearedBosses =
@@ -303,8 +304,9 @@ export class RoamingSpawnManager {
       this.player.stats.setBase(rewards.statsAfterLevelUp);
       this.player.stats.refill();
       this.player.emitStatsChanged();
-      EventBus.emit('progression:level-up', { level: rewards.statsAfterLevelUp.level });
     }
+
+    emitKillProgressionEvents(rewards, xpBefore, gameStore.getState().save?.realm.id ?? save.realm.id);
 
     if (rewards.gold > 0) {
       this.spawnGoldPickup(enemy.x, enemy.y, rewards.gold);
@@ -362,5 +364,6 @@ export class RoamingSpawnManager {
     store.patch((current) => ({
       inventory: { ...current.inventory, gold: current.inventory.gold + value },
     }));
+    AudioDirector.playLootPickup();
   }
 }

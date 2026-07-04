@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { arcContains, arcOverlapsCircle, angleInSweep, circlesOverlap } from '@/combat/combat/geometry';
+import {
+  arcContains,
+  arcOverlapsCircle,
+  angleInSweep,
+  buildMeleeArcShape,
+  circlesOverlap,
+} from '@/combat/combat/geometry';
+import { hurtRadiusFromBody } from '@/combat/combat/Hurtbox';
 
 describe('circlesOverlap', () => {
   it('detects touching circles', () => {
@@ -53,5 +60,57 @@ describe('arcOverlapsCircle', () => {
 
   it('misses when circle is beyond arc radius + hurtbox', () => {
     expect(arcOverlapsCircle(0, 0, 40, -Math.PI / 3, Math.PI / 3, 100, 0, 10)).toBe(false);
+  });
+});
+
+describe('buildMeleeArcShape', () => {
+  const palmHalfArc = Math.PI / 5;
+  const palmReach = 28;
+  const pivotOffset = 26;
+  const stickyHurtRadius = hurtRadiusFromBody(16, 12);
+
+  it('registers close-range overlap that an offset pivot arc misses', () => {
+    const playerX = 0;
+    const enemyX = 18;
+    const oldShape = {
+      kind: 'arc' as const,
+      x: playerX + pivotOffset,
+      y: 0,
+      radius: palmReach + 12,
+      startAngle: -palmHalfArc,
+      endAngle: palmHalfArc,
+    };
+    expect(
+      arcOverlapsCircle(
+        oldShape.x,
+        oldShape.y,
+        oldShape.radius,
+        oldShape.startAngle,
+        oldShape.endAngle,
+        enemyX,
+        0,
+        stickyHurtRadius,
+      ),
+    ).toBe(false);
+
+    const fixed = buildMeleeArcShape(playerX, 0, 1, palmReach, palmHalfArc, pivotOffset);
+    expect(
+      arcOverlapsCircle(
+        fixed.x,
+        fixed.y,
+        fixed.radius,
+        fixed.startAngle,
+        fixed.endAngle,
+        enemyX,
+        0,
+        stickyHurtRadius,
+      ),
+    ).toBe(true);
+  });
+
+  it('keeps the same outer reach as the legacy offset pivot arc', () => {
+    const fixed = buildMeleeArcShape(0, 0, 1, palmReach, palmHalfArc, pivotOffset);
+    const legacyOuterReach = pivotOffset + palmReach + 12;
+    expect(fixed.radius).toBe(legacyOuterReach);
   });
 });

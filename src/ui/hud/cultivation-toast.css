@@ -1,0 +1,25 @@
+.cultivation-toast {
+  position: fixed;
+  top: calc(max(0.75rem, env(safe-area-inset-top)) + 72px);
+  left: 50%;
+  z-index: 120;
+  max-width: min(92vw, 360px);
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(184, 156, 255, 0.55);
+  background: rgba(18, 12, 32, 0.92);
+  color: #e8e4dc;
+  font-family: system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -8px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.cultivation-toast--visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

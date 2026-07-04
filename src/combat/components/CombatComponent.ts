@@ -13,6 +13,7 @@ import { canCastEquippedSkill } from '@/progression/SkillLoadout';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
 import { SkillExecutor } from '@/combat/skills/SkillExecutor';
+import { buildMeleeArcShape } from '@/combat/combat/geometry';
 
 export interface SkillCooldownSnapshot {
   remainingMs: number;
@@ -111,16 +112,12 @@ export class CombatComponent {
   private spawnAttackHitbox(step: number): void {
     const { facing } = this.player;
     const reach = this.reachForStep(step);
-    const cx = this.player.x + facing * SLASH_OFFSET_PX;
-    const cy = this.player.y;
     const halfArc = isArmedAttackStyle(this.player.attackStyle) ? SLASH_HALF_ARC : PALM_HALF_ARC;
-    const startAngle = facing > 0 ? -halfArc : Math.PI - halfArc;
-    const endAngle = facing > 0 ? halfArc : Math.PI + halfArc;
 
     this.hitboxes.spawn({
       ownerId: this.player.id,
       team: 'player',
-      shape: { kind: 'arc', radius: reach + 12, startAngle, endAngle, x: cx, y: cy },
+      shape: buildMeleeArcShape(this.player.x, this.player.y, facing, reach, halfArc, SLASH_OFFSET_PX),
       damage: {
         attacker: this.player.stats.resolved,
         skillMultiplier: this.currentMultiplier,

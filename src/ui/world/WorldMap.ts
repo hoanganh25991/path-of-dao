@@ -1,15 +1,18 @@
 import { SceneRouter } from '@/app/SceneRouter';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import { getMapConfig } from '@/combat/map/MapLoader';
 import { computeCombatPowerFromSave, formatCombatPower } from '@/progression/CombatPower';
+import { isAncientDemoActive } from '@/progression/AncientDemoManager';
+import { markMapIntroSeen, shouldShowMapIntro } from '@/progression/MapIntroManager';
 import {
   getPhongTonLoreId,
   getSealingBarrierStage,
   isPhongTonLoreUnlocked,
 } from '@/progression/SealingBarrierProgression';
-import { canEnter, getMapTravelState } from '@/progression/WorldProgression';
+import { canEnter, getJourneyHomeMapId, getMapTravelState } from '@/progression/WorldProgression';
 import { getWorldMapData, listWorldRegions } from '@/progression/WorldMapLoader';
 import {
   createWorldMapViewport,
@@ -23,6 +26,7 @@ import {
 } from '@/ui/components/DifficultyBadge';
 import { createRegionConnectionPath, createRegionNode } from '@/ui/world/RegionNode';
 import { createSealingBarrierLayer } from '@/ui/world/SealingBarrierLayer';
+import { showMapIntroModal } from '@/ui/modals/MapIntroModal';
 import '@/ui/world/world-map.css';
 
 let activeOverlay: HTMLElement | null = null;
@@ -47,7 +51,7 @@ function closeWorldMap(): void {
 }
 
 /** Enter combat on a world-map node (persists current map + autosave). */
-export function enterMapCombat(mapId: string): void {
+export async function enterMapCombat(mapId: string, options?: { skipIntro?: boolean }): Promise<void> {
   const save = gameStore.getState().save;
   if (!save) return;
 
@@ -63,7 +67,24 @@ export function enterMapCombat(mapId: string): void {
   void gameStore.getState().persist();
   SaveManager.scheduleAutosave();
   closeWorldMap();
-  void SceneRouter.instance.switchTo('combat', { mapId });
+
+  const latest = gameStore.getState().save;
+  const showIntro =
+    !options?.skipIntro &&
+    !isAncientDemoActive() &&
+    latest &&
+    shouldShowMapIntro(mapId, latest);
+
+  if (showIntro) {
+    const uiRoot = document.getElementById('ui-root');
+    if (uiRoot) {
+      await showMapIntroModal(uiRoot, { mapId });
+      gameStore.getState().patch((current) => markMapIntroSeen(mapId, current));
+      void gameStore.getState().persist();
+    }
+  }
+
+  await SceneRouter.instance.switchTo('combat', { mapId });
 }
 
 function renderDetailSheet(mapId: string, host: HTMLElement): void {
@@ -238,6 +259,8 @@ export function showWorldMap(uiRoot: HTMLElement): void {
   const save = gameStore.getState().save;
   if (!save) return;
 
+  AudioDirector.playPanelOpen();
+
   const data = getWorldMapData();
 
   const overlay = document.createElement('div');
@@ -343,7 +366,7 @@ export function showWorldMap(uiRoot: HTMLElement): void {
     ? { x: barrier.center.x + barrier.radiusX * 0.75, y: barrier.center.y - barrier.radiusY * 0.55 }
     : null;
 
-  const playerFocus = getMapNodeWorldPosition(save.progress.currentMapId)
+  const playerFocus = getMapNodeWorldPosition(getJourneyHomeMapId(save))
     ?? barrierFocus
     ?? { x: data.width / 2, y: data.height / 2 };
 

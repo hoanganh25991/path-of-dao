@@ -7,6 +7,8 @@ import { patchAncientSwordMilestone } from '@/progression/WeaponProgression';
 import {
   type EquipmentSlot,
   type EquipmentSlots,
+  type ItemDefinition,
+  type ItemSlot,
   EQUIPMENT_SLOTS,
 } from '@/progression/ItemDefinition';
 import { getItemDefinition } from '@/progression/ItemLoader';
@@ -52,6 +54,10 @@ function removeFromInventory(
     .filter((entry) => entry.qty > 0);
 }
 
+function isEquipmentSlot(slot: ItemSlot): slot is EquipmentSlot {
+  return (EQUIPMENT_SLOTS as readonly ItemSlot[]).includes(slot);
+}
+
 function itemModifiers(itemId: string, slot: EquipmentSlot): StatModifier[] {
   const def = getItemDefinition(itemId);
   return def.modifiers.map((mod, index) => ({
@@ -71,13 +77,14 @@ export class EquipmentManager {
     save: PlayerSaveV1,
     slot?: EquipmentSlot,
   ): EquipFailureReason | null {
-    let def;
+    let def: ItemDefinition;
     try {
       def = getItemDefinition(itemId);
     } catch {
       return 'unknown_item';
     }
 
+    if (!isEquipmentSlot(def.slot)) return 'wrong_slot';
     if (slot && def.slot !== slot) return 'wrong_slot';
     if (save.stats.level < def.requiredLevel) return 'level_too_low';
 
@@ -110,6 +117,9 @@ export class EquipmentManager {
     }
 
     const def = getItemDefinition(itemId);
+    if (!isEquipmentSlot(def.slot)) {
+      return { ok: false, reason: 'wrong_slot', modifiers: EquipmentManager.getModifiers(save.equipped) };
+    }
     const slot = def.slot;
     const previous = save.equipped[slot];
 

@@ -47,11 +47,40 @@ describe('CultivationRealm', () => {
     expect(CultivationRealm.checkBreakthroughReady(save)).toBe(true);
   });
 
+  it('requires Tiên Ngọc (Immortal Jade) for qi → foundation when spirit is met', () => {
+    const stats = buildPlayerStats('hero.wanderer', 12, 'qi_condensation');
+    const save = makeSave({
+      realm: { id: 'qi_condensation', tier: 'early', breakthroughReady: false },
+      stats: { ...stats, spirit: 60 },
+      inventory: { items: [], gold: 0 },
+    });
+    expect(CultivationRealm.getBreakthroughBlockers(save).jadeShortfall).toBe(1);
+    expect(CultivationRealm.checkBreakthroughReady(save)).toBe(false);
+
+    save.inventory.items = [{ id: 'item.consumable.immortal_jade', qty: 1 }];
+    expect(CultivationRealm.getBreakthroughBlockers(save).jadeShortfall).toBe(0);
+    expect(CultivationRealm.checkBreakthroughReady(save)).toBe(true);
+  });
+
+  it('consumes Immortal Jade on breakthrough', () => {
+    const stats = buildPlayerStats('hero.wanderer', 12, 'qi_condensation');
+    const save = makeSave({
+      realm: { id: 'qi_condensation', tier: 'early', breakthroughReady: false },
+      stats: { ...stats, spirit: 60 },
+      inventory: { items: [{ id: 'item.consumable.immortal_jade', qty: 2 }], gold: 0 },
+    });
+
+    const next = CultivationRealm.performBreakthrough(save);
+    expect(next.realm.id).toBe('foundation_establishment');
+    expect(next.inventory.items.find((i) => i.id === 'item.consumable.immortal_jade')?.qty).toBe(1);
+  });
+
   it('requires spirit for qi → foundation', () => {
     const stats = buildPlayerStats('hero.wanderer', 12, 'qi_condensation');
     const save = makeSave({
       realm: { id: 'qi_condensation', tier: 'early', breakthroughReady: false },
       stats: { ...stats, spirit: 30 },
+      inventory: { items: [{ id: 'item.consumable.immortal_jade', qty: 1 }], gold: 0 },
     });
     expect(CultivationRealm.checkBreakthroughReady(save)).toBe(false);
 
@@ -64,6 +93,7 @@ describe('CultivationRealm', () => {
     const save = makeSave({
       realm: { id: 'foundation_establishment', tier: 'early', breakthroughReady: false },
       stats: { ...stats, spirit: 200 },
+      inventory: { items: [{ id: 'item.consumable.immortal_jade', qty: 2 }], gold: 0 },
       progress: {
         ...makeSave().progress,
         clearedBosses: [],

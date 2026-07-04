@@ -2,6 +2,7 @@ import type { QualityPreference } from '@/app/QualityProfile';
 import type { SceneId } from '@/app/SceneId';
 import type { Locale, LocalePreference } from '@/core/i18n/I18nManager';
 import type { AuraTier } from '@/home/realmAura';
+import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import type { StatModifier } from '@/progression/StatModifier';
 import type { HomeTab } from '@/ui/home/types';
 
@@ -33,7 +34,8 @@ export type GameEvents = {
   'player:attack-started': { step: 1 | 2 | 3 };
   'player:dodge-started': undefined;
   'skill:cast': { intent: string };
-  'progression:level-up': { level: number };
+  'progression:xp-gained': { xpTotal: number; xpGained: number; level: number };
+  'progression:level-up': { level: number; realmId: string; tier: PlayerSaveV1['realm']['tier'] };
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
   'combat:open-skill-picker': { slot?: 'primary' | 'secondary' | 'ultimate' };

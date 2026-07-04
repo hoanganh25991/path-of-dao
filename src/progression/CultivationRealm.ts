@@ -1,4 +1,6 @@
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
+import { IMMORTAL_JADE_ITEM_ID } from '@/progression/CultivationDisplay';
+import { consumeInventoryItem, inventoryQty } from '@/progression/InventoryManager';
 import { buildPlayerStats } from '@/progression/playerStats';
 import { getRealmDefinition, listRealmDefinitions } from '@/progression/RealmStatScaling';
 import type { RealmDefinition } from '@/shared/schemas/realms';
@@ -6,6 +8,14 @@ import type { RealmDefinition } from '@/shared/schemas/realms';
 export type RealmTier = PlayerSaveV1['realm']['tier'];
 
 const TIERS: RealmTier[] = ['early', 'mid', 'late', 'peak'];
+
+export interface BreakthroughBlockers {
+  levelShortfall: number;
+  spiritShortfall: number;
+  jadeShortfall: number;
+  missingBoss: string | null;
+  missingMap: string | null;
+}
 
 export interface CultivationRealmState {
   id: string;
@@ -30,19 +40,46 @@ export class CultivationRealm {
     return TIERS[index] ?? 'early';
   }
 
-  static checkBreakthroughReady(save: PlayerSaveV1): boolean {
+  /** What's still missing before the next realm breakthrough (0 / null = met). */
+  static getBreakthroughBlockers(save: PlayerSaveV1): BreakthroughBlockers {
     const current = getRealmDefinition(save.realm.id);
-    if (!current.breakthrough) return false;
+    if (!current.breakthrough) {
+      return {
+        levelShortfall: 0,
+        spiritShortfall: 0,
+        jadeShortfall: 0,
+        missingBoss: null,
+        missingMap: null,
+      };
+    }
 
-    const { nextRealm, spiritCost, requiredBoss, requiredMap } = current.breakthrough;
+    const { nextRealm, spiritCost, jadeCost, requiredBoss, requiredMap } = current.breakthrough;
     const nextDef = getRealmDefinition(nextRealm);
+    const jadeRequired = jadeCost ?? 0;
 
-    if (save.stats.level < nextDef.levelMin) return false;
-    if (spiritCost > 0 && save.stats.spirit < spiritCost) return false;
-    if (requiredBoss && !save.progress.clearedBosses.includes(requiredBoss)) return false;
-    if (requiredMap && !save.progress.clearedMaps.includes(requiredMap)) return false;
+    return {
+      levelShortfall: Math.max(0, nextDef.levelMin - save.stats.level),
+      spiritShortfall: Math.max(0, spiritCost - save.stats.spirit),
+      jadeShortfall: Math.max(
+        0,
+        jadeRequired - inventoryQty(save.inventory.items, IMMORTAL_JADE_ITEM_ID),
+      ),
+      missingBoss:
+        requiredBoss && !save.progress.clearedBosses.includes(requiredBoss) ? requiredBoss : null,
+      missingMap:
+        requiredMap && !save.progress.clearedMaps.includes(requiredMap) ? requiredMap : null,
+    };
+  }
 
-    return true;
+  static checkBreakthroughReady(save: PlayerSaveV1): boolean {
+    const blockers = CultivationRealm.getBreakthroughBlockers(save);
+    return (
+      blockers.levelShortfall === 0 &&
+      blockers.spiritShortfall === 0 &&
+      blockers.jadeShortfall === 0 &&
+      blockers.missingBoss === null &&
+      blockers.missingMap === null
+    );
   }
 
   static syncRealmState(save: PlayerSaveV1): CultivationRealmState {
@@ -68,11 +105,16 @@ export class CultivationRealm {
     const nextId = breakthrough.nextRealm;
     const spiritAfter = save.stats.spirit - breakthrough.spiritCost;
     const newStats = buildPlayerStats(save.heroId, save.stats.level, nextId);
+    const items =
+      breakthrough.jadeCost > 0
+        ? consumeInventoryItem(save.inventory.items, IMMORTAL_JADE_ITEM_ID, breakthrough.jadeCost)
+        : save.inventory.items;
 
     return {
       ...save,
       realm: { id: nextId, tier: 'early', breakthroughReady: false },
       stats: { ...newStats, spirit: spiritAfter },
+      inventory: { ...save.inventory, items },
       runtime: { hp: newStats.hpMax, mana: newStats.manaMax },
     };
   }

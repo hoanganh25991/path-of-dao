@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { EventBus } from '@/core/EventBus';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { gameStore } from '@/core/store/gameStore';
 import type { Player } from '@/combat/entities/Player';
 import { Enemy, STRIKE_MS } from '@/combat/entities/Enemy';
@@ -10,9 +11,16 @@ import type { EncounterConfig } from '@/combat/enemies/EnemyConfig';
 import { EnemyPool } from '@/combat/systems/EnemyPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
+import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvents';
 import { recordJourney } from '@/progression/JourneyLog';
 import { unlockSkillForBoss, unlockSkillsForLevel } from '@/progression/SkillUnlockManager';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import {
+  resolveEncounterScale,
+  scaleEncounterForPower,
+  type EncounterScale,
+} from '@/combat/systems/EncounterScaling';
+import { getRealmOrder } from '@/progression/RealmStatScaling';
 
 export const MAX_ALIVE = 18;
 const NEXT_WAVE_DELAY_MS = 1500;
@@ -53,6 +61,8 @@ interface GoldPickup {
 export class SpawnManager {
   private readonly pool: EnemyPool;
   private readonly encounter: EncounterConfig;
+  private readonly encounterScale: EncounterScale;
+  private maxAlive: number;
   private queue: QueuedSpawn[] = [];
   private waveIndex = -1;
   private waveActive = false;
@@ -68,14 +78,27 @@ export class SpawnManager {
     private readonly center: { x: number; y: number },
     walls: Phaser.Tilemaps.TilemapLayer,
     private readonly hitboxes: HitboxManager,
+    encounterScale?: EncounterScale,
   ) {
-    this.encounter = getEncounterConfig(encounterId);
+    const baseEncounter = getEncounterConfig(encounterId);
+    const save = gameStore.getState().save;
+    this.encounterScale =
+      encounterScale ??
+      (save
+        ? resolveEncounterScale(
+            getRealmOrder(save.realm.id),
+            player.mapRecommendedRealmOrder,
+            save.stats.level,
+          )
+        : resolveEncounterScale(1, 1, 1));
+    this.encounter = scaleEncounterForPower(baseEncounter, this.encounterScale);
+    this.maxAlive = this.encounterScale.maxAlive;
 
     this.pool = new EnemyPool((enemyId) => {
       const enemy = new Enemy(scene, getEnemyConfig(enemyId), {
         onStrike: (e) => this.resolveStrike(e),
-        onDeath: (e) => this.grantKillRewards(e),
-        onDeathAnimComplete: (e) => this.releaseAndRefill(e),
+        onDefeated: (e) => this.grantDefeatRewards(e),
+        onDefeatHoldComplete: (e) => this.onDefeatHoldComplete(e),
         onBossPhaseSpawns: (e, adds) => this.queueBossAdds(e, adds),
       });
       scene.physics.add.collider(enemy.sprite, walls);
@@ -111,7 +134,16 @@ export class SpawnManager {
 
   /** Alive enemies registered as hurtbox targets each frame. */
   getHurtboxTargets(): HurtboxEntity[] {
-    return [...this.pool.aliveEnemies].filter((e) => e.alive);
+    return this.pool.combatReadyEnemies;
+  }
+
+  /** Combat-ready enemies — for camera zoom director. */
+  get combatReadyCount(): number {
+    return this.pool.combatReadyCount;
+  }
+
+  get encounterTier() {
+    return this.encounterScale.tier;
   }
 
   /** True when every wave was cleared and no enemies remain. */
@@ -123,6 +155,7 @@ export class SpawnManager {
       this.waveIndex >= lastWave &&
       !this.waveActive &&
       this.queue.length === 0 &&
+      this.pool.combatReadyCount === 0 &&
       this.pool.aliveCount === 0
     );
   }
@@ -165,31 +198,57 @@ export class SpawnManager {
   }
 
   private fillFromQueue(): void {
-    while (this.queue.length > 0 && this.pool.aliveCount < MAX_ALIVE) {
+    while (this.queue.length > 0 && this.pool.combatReadyCount < this.maxAlive) {
       const next = this.queue.shift();
       if (!next) break;
       this.pool.acquire(next.enemyId, next.x, next.y);
     }
   }
 
-  private releaseAndRefill(enemy: Enemy): void {
-    this.pool.release(enemy);
+  private onDefeatHoldComplete(enemy: Enemy): void {
     if (this.destroyed || !this.waveActive) return;
 
-    this.fillFromQueue();
+    if (this.queue.length > 0) {
+      this.pool.release(enemy);
+      this.fillFromQueue();
+    } else if (this.isWaveFullyDefeated()) {
+      this.finishWave();
+      return;
+    } else {
+      enemy.beginRecovery();
+      return;
+    }
 
-    if (this.queue.length === 0 && this.pool.aliveCount === 0) {
-      this.waveActive = false;
-      EventBus.emit('map:wave-cleared', {
-        encounterId: this.encounter.id,
-        waveIndex: this.waveIndex,
+    this.checkWaveProgress();
+  }
+
+  private isWaveFullyDefeated(): boolean {
+    if (this.queue.length > 0) return false;
+    const active = [...this.pool.aliveEnemies];
+    return active.length > 0 && active.every((e) => e.defeated);
+  }
+
+  private checkWaveProgress(): void {
+    if (!this.isWaveFullyDefeated()) return;
+    this.finishWave();
+  }
+
+  private finishWave(): void {
+    if (!this.waveActive) return;
+    this.waveActive = false;
+    for (const enemy of [...this.pool.aliveEnemies]) {
+      this.pool.release(enemy);
+    }
+
+    EventBus.emit('map:wave-cleared', {
+      encounterId: this.encounter.id,
+      waveIndex: this.waveIndex,
+    });
+
+    if (this.waveIndex + 1 < this.encounter.waves.length) {
+      this.scene.time.delayedCall(NEXT_WAVE_DELAY_MS, () => {
+        this.startWave(this.waveIndex + 1);
       });
-
-      if (this.waveIndex + 1 < this.encounter.waves.length) {
-        this.scene.time.delayedCall(NEXT_WAVE_DELAY_MS, () => {
-          this.startWave(this.waveIndex + 1);
-        });
-      }
     }
   }
 
@@ -301,7 +360,7 @@ export class SpawnManager {
     this.fillFromQueue();
   }
 
-  private grantKillRewards(enemy: Enemy): void {
+  private grantDefeatRewards(enemy: Enemy): void {
     const store = gameStore.getState();
     const save = store.save;
     if (!save) return;
@@ -313,6 +372,7 @@ export class SpawnManager {
     const isBoss = Boolean(bossClearId);
 
     const rewards = computeKillRewards(save, enemy.config);
+    const xpBefore = save.xp;
 
     store.patch((current) => {
       const bossClearId = enemy.config.bossClearId;
@@ -377,13 +437,20 @@ export class SpawnManager {
       this.player.stats.setBase(rewards.statsAfterLevelUp);
       this.player.stats.refill();
       this.player.emitStatsChanged();
-      EventBus.emit('progression:level-up', { level: rewards.statsAfterLevelUp.level });
     }
+
+    emitKillProgressionEvents(rewards, xpBefore, gameStore.getState().save?.realm.id ?? save.realm.id);
 
     if (rewards.gold > 0) {
       this.spawnGoldPickup(enemy.x, enemy.y, rewards.gold);
     }
 
+    EventBus.emit('map:enemy-defeated', {
+      enemyId: enemy.config.id,
+      isBoss,
+      wasRematch,
+    });
+    // Back-compat for audio / juice listeners during migration.
     EventBus.emit('map:enemy-killed', {
       enemyId: enemy.config.id,
       isBoss,
@@ -436,6 +503,7 @@ export class SpawnManager {
     store.patch((current) => ({
       inventory: { ...current.inventory, gold: current.inventory.gold + value },
     }));
+    AudioDirector.playLootPickup();
   }
 
   private flashAoeRing(enemy: Enemy): void {

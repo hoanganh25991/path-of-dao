@@ -1,4 +1,5 @@
 import '@/ui/modals/encounter.css';
+import { AudioDirector } from '@/core/audio/AudioDirector';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { FortuitousEncounterManager } from '@/progression/FortuitousEncounterManager';
 import type { EncounterDefinition } from '@/shared/schemas/fortuitous-encounters';
@@ -58,6 +59,7 @@ export function showEncounterModal(
     card.append(art, title, flavor, confirm);
     overlay.append(backdrop, card, burst);
     uiRoot.appendChild(overlay);
+    AudioDirector.playPanelOpen();
 
     requestAnimationFrame(() => {
       overlay.classList.add('encounter-modal--active');

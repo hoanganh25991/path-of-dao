@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/01-project-scaffold.md](../plans/01-project-scaffold.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 ## Summary
 
@@ -12,9 +12,10 @@ Runnable TypeScript project with Vite dev server, Vitest, and the target repo la
 
 - Vite 6 bundler with fast hot reload
 - TypeScript 5 strict mode
-- Vitest unit test runner wired into npm scripts
+- Vitest unit test runner wired into pnpm scripts
 - Standard folder layout: source, content, assets, tools, tests
-- Dev server boots with `npm run dev`
+- Dev server boots with `pnpm dev`
+- pnpm lockfile committed; `package-lock.json` gitignored
 - Typecheck and production build scripts
 
 ## Remaining

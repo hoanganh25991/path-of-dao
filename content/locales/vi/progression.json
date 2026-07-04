@@ -1,5 +1,7 @@
 {
   "home.cultivate": "Đột Phá",
+  "progression.level_up": "Đột phá — {realm}",
+  "progression.breakthrough.need_jade": "Cần {count} Tiên Ngọc để đột phá cảnh giới.",
   "breakthrough.phase2": "Đang đột phá lên {realm}…",
   "breakthrough.stats_gained": "Sức Mạnh Thức Tỉnh",
   "realm.mortal_body.name": "Phàm Thể",

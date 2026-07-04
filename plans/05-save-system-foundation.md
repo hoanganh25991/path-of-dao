@@ -175,7 +175,7 @@ Pause when `document.hidden`.
 
 ## 9. Tests
 
-Use `fake-indexeddb` npm dev dependency for Vitest.
+Use `fake-indexeddb` pnpm dev dependency for Vitest.
 
 | Test | Assert |
 |------|--------|

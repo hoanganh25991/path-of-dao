@@ -4,12 +4,23 @@
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('@/app/SceneRouter', () => ({
+  SceneRouter: {
+    instance: {
+      switchTo: vi.fn(async () => undefined),
+    },
+  },
+}));
+
 import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import { EquipmentManager } from '@/progression/EquipmentManager';
+import { formatCombatPower } from '@/progression/CombatPower';
 import { HomeUI } from '@/ui/home/HomeUI';
+import { showSettingsModal } from '@/ui/modals/SettingsModal';
 
 beforeEach(async () => {
   document.body.innerHTML = '<div id="ui-root"></div>';
@@ -160,6 +171,36 @@ describe('HomeUI', () => {
     const cpValue = uiRoot.querySelector('.home-profile__stat-value');
     expect(cpValue?.textContent).toBeTruthy();
     expect(cpValue!.textContent!.length).toBeGreaterThan(0);
+  });
+
+  it('profile header updates combat power and years after progress reset', async () => {
+    gameStore.getState().patch({
+      realm: { id: 'qi_condensation', tier: 'late', breakthroughReady: false },
+      meta: { ...gameStore.getState().save!.meta, totalPlaySeconds: 86_400 * 8 },
+    });
+
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+
+    const statValues = (): string[] =>
+      [...uiRoot.querySelectorAll('.home-profile__stat-value')].map(
+        (el) => el.textContent ?? '',
+      );
+
+    const [cpBefore, yearsBefore = ''] = statValues();
+    expect(cpBefore).not.toBe(formatCombatPower(50_844, 'en'));
+
+    void showSettingsModal(uiRoot);
+    document.querySelector<HTMLButtonElement>('[data-testid="settings-reset-btn"]')!.click();
+    document.querySelector<HTMLButtonElement>('[data-testid="settings-reset-confirm-btn"]')!.click();
+
+    await vi.waitFor(() => {
+      const [cpAfter, yearsAfter = ''] = statValues();
+      expect(cpAfter).toBe(formatCombatPower(50_844, 'en'));
+      expect(yearsAfter).toBe('17');
+      expect(Number.parseInt(yearsAfter, 10)).toBeLessThan(Number.parseInt(yearsBefore, 10));
+    });
   });
 
   it('opens settings modal from profile header', () => {

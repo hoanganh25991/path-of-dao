@@ -102,6 +102,7 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
     },
   };
 
+  save.realm = syncRealmProgress(save).realm;
   save.checksum = checksumOf(save);
   return save;
 }

@@ -17,6 +17,7 @@ Home screen navigation with bottom tabs, profile header, and slide-up panels.
 - Breakthrough-ready toast when Cultivate becomes available
 - English and Vietnamese home UI strings
 - Path tab story replay buttons (`home-story-replay-{sceneId}`) — fixed testid binding
+- **Settings → Replay from Beginning** — confirm dialog; wipes journey progress via `gameStore.newGame({ preserveSettings: true })`; keeps locale, quality, and volume prefs
 
 ## Remaining
 

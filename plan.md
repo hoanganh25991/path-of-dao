@@ -24,7 +24,7 @@
 
 Already signed off — treat as fixed unless a PROD gate fails:
 
-- 384 unit tests + 37 E2E tests green (`npm test`, `npm run test:e2e`)
+- 384 unit tests + 37 E2E tests green (`pnpm test`, `pnpm test:e2e`)
 - Fresh-save ch1–10 road, Echoes paths, world map lock, save reload (automated)
 - PWA foundation: manifest, SW, quality profiles, app icons, CI jobs
 - Procedural audio + combat juice wired
@@ -80,8 +80,8 @@ Phase G  Release tag & smoke on live URL
 |------|--------|------|
 | A1 | Create branch `release/v0.1.0` from current main | Branch exists |
 | A2 | Run `pnpm typecheck` | Zero errors |
-| A3 | Run `pnpm test` | All unit tests green |
-| A4 | Run `pnpm run test:e2e` | All E2E green (note 3 seeded ch6–7 cases if still deferred — fix only if they fail on clean save) |
+| A3 | Run `ppnpm test` | All unit tests green |
+| A4 | Run `ppnpm test:e2e` | All E2E green (note 3 seeded ch6–7 cases if still deferred — fix only if they fail on clean save) |
 | A5 | Run `pnpm content:validate` (or project equivalent) | No validation errors |
 | A6 | Run `pnpm build` | `docs/` + `sw.js` generated |
 | A7 | Record commit SHA in this file or release notes | SHA documented |

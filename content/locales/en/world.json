@@ -78,5 +78,7 @@
   "map.heavenly_gate.02.name": "Lôi Tiên Trial Gate",
   "map.void_throne.01.name": "Hall Approach",
   "map.void_throne.02.name": "Thunder Immortal Hall",
-  "map.test.grove.name": "Test Grove"
+  "map.test.grove.name": "Test Grove",
+  "map.intro.continue": "Step onto the road",
+  "map.intro.realm_cap": "On this star you may cultivate to {realm} before the Dao demands a harder road. Higher realms — Second Step cultivators and beyond — lie far ahead."
 }
