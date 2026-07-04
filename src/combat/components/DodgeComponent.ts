@@ -56,6 +56,8 @@ export class DodgeComponent {
     const { sprite, scene } = this.player;
     const ghost = scene.add
       .image(sprite.x, sprite.y, sprite.texture.key)
+      .setOrigin(sprite.originX, sprite.originY)
+      .setScale(sprite.scaleX, sprite.scaleY)
       .setFlipX(sprite.flipX)
       .setAlpha(0.35)
       .setDepth(sprite.depth - 1);
