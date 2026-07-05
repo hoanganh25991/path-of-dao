@@ -38,3 +38,5 @@ pnpm icons:gen
 - [tracks/index.md](tracks/index.md) — master progress index (what is done)
 
 After `pnpm build`, commit the generated **`docs/`** folder and set **GitHub → Settings → Pages → Deploy from branch → `/docs`**.
+
+https://youtu.be/IoqsmkrdJxk

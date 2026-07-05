@@ -81,7 +81,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"
   }, {
     "url": "index.html",
-    "revision": "5e726c4ce6d56d51fdae34382dc0b7e6"
+    "revision": "2fb9a5a654fa05b4ad5ab4f506cad98c"
   }, {
     "url": "favicon.ico",
     "revision": "e1625ff44026e81605560873d7fcf309"
@@ -92,22 +92,22 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "icons/icon-192.png",
     "revision": "16d8cd7e83a3b7e2f9f8a050e9a42ab1"
   }, {
-    "url": "assets/void_throne-02-BcuhAwRe.json",
+    "url": "assets/void_throne-02-Bu_KYudS.json",
     "revision": null
   }, {
-    "url": "assets/void_throne-01-CCf2eSqK.json",
+    "url": "assets/void_throne-01-DPHVQUxq.json",
     "revision": null
   }, {
-    "url": "assets/virtual_pwa-register-C9wjhKtp.js",
+    "url": "assets/virtual_pwa-register-CC8oNbmt.js",
     "revision": null
   }, {
     "url": "assets/vendor-C8bt_7hy.js",
     "revision": null
   }, {
-    "url": "assets/thunder_peaks-02-Cxzv1XsC.json",
+    "url": "assets/thunder_peaks-02-C75iLLH-.json",
     "revision": null
   }, {
-    "url": "assets/thunder_peaks-01-ChzRoqxD.json",
+    "url": "assets/thunder_peaks-01-B1OygHXx.json",
     "revision": null
   }, {
     "url": "assets/three-CENNe__j.js",
@@ -116,10 +116,10 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/test-grove-BmjgbXKt.json",
     "revision": null
   }, {
-    "url": "assets/stone_canyon-02-kPIR3dKT.json",
+    "url": "assets/stone_canyon-02-CQ0ZlfOb.json",
     "revision": null
   }, {
-    "url": "assets/stone_canyon-01-C4f1aU_c.json",
+    "url": "assets/stone_canyon-01-BHPfkcpr.json",
     "revision": null
   }, {
     "url": "assets/spirit_beast-DulYBVVe.png",
@@ -131,64 +131,64 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/phaser-B0p4fdBD.js",
     "revision": null
   }, {
-    "url": "assets/moon_lake-02-DS0wZPCG.json",
+    "url": "assets/moon_lake-02-CMniiI_N.json",
     "revision": null
   }, {
-    "url": "assets/moon_lake-01-DkQVrr6H.json",
+    "url": "assets/moon_lake-01-9zZZ1Yd5.json",
     "revision": null
   }, {
-    "url": "assets/mist_forest-02-DdAOJlgm.json",
+    "url": "assets/mist_forest-02-Bb5RE-_W.json",
     "revision": null
   }, {
-    "url": "assets/mist_forest-01-Bx-wjaqd.json",
+    "url": "assets/mist_forest-01-BLrs4O0E.json",
     "revision": null
   }, {
-    "url": "assets/index-ZmMzrzUK.css",
+    "url": "assets/index-DAcPh544.js",
     "revision": null
   }, {
-    "url": "assets/index-V9Bm5g98.js",
+    "url": "assets/index-CkgDAENq.css",
     "revision": null
   }, {
     "url": "assets/hidden_cave-B3gJzmH4.png",
     "revision": null
   }, {
-    "url": "assets/heavenly_gate-02-WOR2nLKY.json",
+    "url": "assets/heavenly_gate-02-B6BZkrT6.json",
     "revision": null
   }, {
-    "url": "assets/heavenly_gate-01-N9TSXxSf.json",
+    "url": "assets/heavenly_gate-01-BUsbeMKr.json",
     "revision": null
   }, {
-    "url": "assets/frozen_palace-02-4AezZ3rv.json",
+    "url": "assets/frozen_palace-02-DXeUEDzY.json",
     "revision": null
   }, {
-    "url": "assets/frozen_palace-01-C9e8neCI.json",
+    "url": "assets/frozen_palace-01-DiXbPhhr.json",
     "revision": null
   }, {
     "url": "assets/forgotten_memory-DIUJcbN9.png",
     "revision": null
   }, {
-    "url": "assets/fallen_village-star-west-B1ZQQldU.json",
+    "url": "assets/fallen_village-star-west-DYU9W_fS.json",
     "revision": null
   }, {
-    "url": "assets/fallen_village-star-south-DLdKl8yo.json",
+    "url": "assets/fallen_village-star-south--1vE57zS.json",
     "revision": null
   }, {
-    "url": "assets/fallen_village-star-north-CkbuSf9B.json",
+    "url": "assets/fallen_village-star-north-B0dXaGdl.json",
     "revision": null
   }, {
-    "url": "assets/fallen_village-star-east-BBp6AkFf.json",
+    "url": "assets/fallen_village-star-east-PEjOa93f.json",
     "revision": null
   }, {
-    "url": "assets/fallen_village-02-XesD3VXW.json",
+    "url": "assets/fallen_village-02-K1j3TVk4.json",
     "revision": null
   }, {
     "url": "assets/fallen_village-01-DZ3_n6ln.json",
     "revision": null
   }, {
-    "url": "assets/burning_desert-02-DUZWQQS6.json",
+    "url": "assets/burning_desert-02-BdZa2UEH.json",
     "revision": null
   }, {
-    "url": "assets/burning_desert-01-CFHgFukv.json",
+    "url": "assets/burning_desert-01-Dxat7oja.json",
     "revision": null
   }, {
     "url": "assets/ancient_sword-C5uOUtmA.png",
@@ -197,10 +197,10 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/ancient_inheritance-CItgCV1O.png",
     "revision": null
   }, {
-    "url": "assets/abyss_rift-02-BCXujazi.json",
+    "url": "assets/abyss_rift-02-DMv6VWji.json",
     "revision": null
   }, {
-    "url": "assets/abyss_rift-01-DSqWhb-l.json",
+    "url": "assets/abyss_rift-01-D9FKhQmr.json",
     "revision": null
   }, {
     "url": "favicon.ico",
