@@ -320,7 +320,7 @@ export class RoamingSpawnManager {
 
       let withUnlocks = interim;
       if (rewards.statsAfterLevelUp) {
-        withUnlocks = unlockSkillsForLevel(withUnlocks, rewards.statsAfterLevelUp.level);
+        withUnlocks = unlockSkillsForLevel(withUnlocks, current.stats.level, rewards.statsAfterLevelUp.level);
       }
       if (bossClearId && !wasRematch) {
         withUnlocks = unlockSkillForBoss(withUnlocks, bossClearId);

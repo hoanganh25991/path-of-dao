@@ -12,17 +12,17 @@ export interface EncounterScale {
 }
 
 const TIER_TARGETS: Record<EncounterTier, number> = {
-  solo: 1,
-  squad: 10,
-  horde: 100,
-  mass: 500,
+  solo: 6,
+  squad: 12,
+  horde: 24,
+  mass: 48,
 };
 
 const TIER_MAX_ALIVE: Record<EncounterTier, number> = {
-  solo: 3,
+  solo: 6,
   squad: 12,
   horde: 18,
-  mass: 18,
+  mass: 24,
 };
 
 /** Camera zoom targets per tier (Phaser zoom — higher = closer). */

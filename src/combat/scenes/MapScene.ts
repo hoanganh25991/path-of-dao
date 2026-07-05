@@ -158,16 +158,20 @@ export class MapScene extends Phaser.Scene {
     }
 
     if (config.spawnMode === 'roam' && config.roamTable) {
-      const roam = getRoamConfig(config.roamTable);
-      this.spawnManager = new RoamingSpawnManager(
-        this,
-        this.player,
-        roam,
-        collision,
-        this.hitboxManager,
-        { x: config.spawn.x, y: config.spawn.y },
-        config.recommendedRealmOrder,
-      );
+      try {
+        const roam = getRoamConfig(config.roamTable);
+        this.spawnManager = new RoamingSpawnManager(
+          this,
+          this.player,
+          roam,
+          collision,
+          this.hitboxManager,
+          { x: config.spawn.x, y: config.spawn.y },
+          config.recommendedRealmOrder,
+        );
+      } catch (err) {
+        console.error(`MapScene: failed to init RoamingSpawnManager for "${this.mapId}":`, err);
+      }
     } else if (config.encounterTable) {
       try {
         this.spawnManager = new SpawnManager(

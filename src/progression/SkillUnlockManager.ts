@@ -49,9 +49,15 @@ function mergeUnlocks(save: PlayerSaveV1, ids: string[]): PlayerSaveV1 {
   return next;
 }
 
-export function unlockSkillsForLevel(save: PlayerSaveV1, level: number): PlayerSaveV1 {
-  const skillId = CONFIG.byLevel[String(level)];
-  return skillId ? unlockAndEquip(save, [skillId]) : save;
+export function unlockSkillsForLevel(save: PlayerSaveV1, oldLevel: number, newLevel: number): PlayerSaveV1 {
+  const ids: string[] = [];
+  for (let lv = oldLevel + 1; lv <= newLevel; lv++) {
+    const skillId = CONFIG.byLevel[String(lv)];
+    if (skillId && !save.unlockedSkills.includes(skillId)) {
+      ids.push(skillId);
+    }
+  }
+  return ids.length > 0 ? unlockAndEquip(save, ids) : save;
 }
 
 export function unlockSkillForBoss(save: PlayerSaveV1, bossClearId: string): PlayerSaveV1 {
