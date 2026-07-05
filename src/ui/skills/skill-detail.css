@@ -141,8 +141,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.25);
   background: rgba(20, 24, 36, 0.95);
@@ -150,6 +150,9 @@
   -webkit-tap-highlight-color: transparent;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-shadow: 0 0 6px rgba(100, 120, 180, 0.15);
+  padding: 0;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .skill-detail-tabs__tab--active {
@@ -163,7 +166,8 @@
 }
 
 .skill-detail-tabs__tab .skill-btn__icon {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1;
 }
 
 .skill-loadout__pool-icons {

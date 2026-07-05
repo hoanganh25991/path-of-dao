@@ -74,12 +74,14 @@
   --swap-btn-size: 44px;
   /* Quarter-circle: utility inner ring + dynamic skill arc (angles set in JS). */
   --arc-radius-inner: 76px;
-  --arc-radius-skill: 124px;
+  --arc-radius-skill: 168px;
+  --skill-arc-gap: 8px;
+  --arc-skill-min-deg: 98deg;
   --arc-origin-x: calc(100% - var(--btn-lg) / 2);
   --arc-origin-y: calc(100% - var(--btn-lg) / 2);
   --cluster-size: calc(var(--btn-lg) / 2 + var(--arc-radius-skill) + var(--btn-size) / 2 + 6px);
   --arc-right-overhang: calc(
-    cos(98deg) * var(--arc-radius-skill) + var(--btn-size) / 2 - var(--btn-lg) / 2
+    cos(var(--arc-skill-min-deg)) * var(--arc-radius-skill) + var(--btn-size) / 2 - var(--btn-lg) / 2
   );
 
   position: absolute;

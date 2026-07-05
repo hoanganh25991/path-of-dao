@@ -28,6 +28,7 @@ import { EncounterTrigger } from '@/combat/systems/EncounterTrigger';
 import { HitboxManager } from '@/combat/combat/HitboxManager';
 import { tilemapKey } from '@/combat/scenes/BootScene';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import { STRUCTURE_TEXTURES } from '@/combat/art/structures/StructureRegistry';
 import { getQualitySettingsFromSave } from '@/app/QualityProfile';
 import { CombatJuiceBridge } from '@/combat/juice/CombatJuiceBridge';
 import { JuiceController } from '@/combat/juice/JuiceController';
@@ -304,15 +305,15 @@ export class MapScene extends Phaser.Scene {
     const W = config.bounds.width;
     const H = config.bounds.height;
     const margin = 160;
-    const treeCount = Math.floor((W * H) / 1200000) + 8;
+    const treeCount = Math.min(30, Math.floor((W * H) / 1200000) + 8);
     const rockCount = Math.floor((W * H) / 2400000) + 6;
     const lanternCount = Math.max(3, Math.floor((W * H) / 4000000));
     const bushCount = Math.floor((W * H) / 600000) + 6;
+    const houseCount = Math.max(1, Math.floor((W * H) / 8000000));
 
     const seeded: Record<string, true> = {};
-    const posKey = (x: number, y: number): string => `${Math.round(x / 64)},${Math.round(y / 64)}`;
+    const posKey = (x: number, y: number): string => `${Math.round(x / 80)},${Math.round(y / 80)}`;
 
-    // Bush clusters using tileset sprite frames (GID 9 = Bush)
     for (let i = 0; i < bushCount; i++) {
       const x = margin + Math.random() * (W - margin * 2);
       const y = margin + Math.random() * (H - margin * 2);
@@ -325,23 +326,28 @@ export class MapScene extends Phaser.Scene {
       bush.setDepth(y);
     }
 
-    // Trees: trunk sprite (GID 11) below + canopy sprite (GID 12) above
     for (let i = 0; i < treeCount; i++) {
       const x = margin + Math.random() * (W - margin * 2);
       const y = margin + Math.random() * (H - margin * 2);
       if (seeded[posKey(x, y)]) continue;
       seeded[posKey(x, y)] = true;
+      const scale = 1.0 + Math.random() * 0.5;
+      const tree = this.add.sprite(x, y, STRUCTURE_TEXTURES.tree);
+      tree.setOrigin(0.5, 1);
+      tree.setScale(scale);
+      tree.setAlpha(0.9 + Math.random() * 0.1);
+      tree.setDepth(y);
+    }
 
-      const trunk = this.add.sprite(x, y, TEXTURE_KEYS.tileset, 10);
-      trunk.setOrigin(0.5, 1);
-      trunk.setScale(1.0 + Math.random() * 0.3);
-      trunk.setDepth(y - 1);
-
-      const canopy = this.add.sprite(x, y - 18, TEXTURE_KEYS.tileset, 11);
-      canopy.setOrigin(0.5, 1);
-      const canopyScale = 1.2 + Math.random() * 0.6;
-      canopy.setScale(canopyScale);
-      canopy.setDepth(y + 2);
+    for (let i = 0; i < houseCount; i++) {
+      const x = margin + Math.random() * (W - margin * 2);
+      const y = margin + Math.random() * (H - margin * 2);
+      if (seeded[posKey(x, y)]) continue;
+      seeded[posKey(x, y)] = true;
+      const house = this.add.sprite(x, y, STRUCTURE_TEXTURES.house);
+      house.setOrigin(0.5, 1);
+      house.setScale(0.9 + Math.random() * 0.3);
+      house.setDepth(y);
     }
 
     // Rocks (GID 14)

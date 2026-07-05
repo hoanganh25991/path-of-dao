@@ -58,15 +58,55 @@ const SKILL_BUTTONS = SKILL_SLOT_INDICES.map((slot) => ({
   slot,
 }));
 
-/** Spread equipped skills evenly on the 98°–172° arc (inside the utility ring). */
-const SKILL_ARC_START_DEG = 172;
-const SKILL_ARC_END_DEG = 98;
 const SKILL_ARC_RADIUS = 'var(--arc-radius-skill)';
 
-function skillArcAngle(index: number, count: number): number {
-  if (count <= 1) return 135;
-  const step = (SKILL_ARC_START_DEG - SKILL_ARC_END_DEG) / (count - 1);
-  return SKILL_ARC_START_DEG - step * index;
+/** Center of the outer skill quarter-circle (math coords: 0° = right, 90° = up). */
+const SKILL_ARC_CENTER_DEG = 135;
+const SKILL_ARC_MAX_DEG = 178;
+const SKILL_ARC_MIN_DEG = 72;
+
+/**
+ * Place skill buttons on an arc with at least `--skill-arc-gap` between neighbors.
+ * Reads `--arc-radius-skill`, `--btn-size`, and `--skill-arc-gap` from the cluster root.
+ */
+function layoutSkillArc(
+  root: HTMLElement,
+  count: number,
+): { angles: number[]; minAngleDeg: number } {
+  if (count <= 0) return { angles: [], minAngleDeg: 98 };
+
+  const style = getComputedStyle(root);
+  const radiusPx = parseFloat(style.getPropertyValue('--arc-radius-skill')) || 124;
+  const btnSizePx = parseFloat(style.getPropertyValue('--btn-size')) || 52;
+  const gapPx = parseFloat(style.getPropertyValue('--skill-arc-gap')) || 8;
+
+  if (count === 1) {
+    return { angles: [SKILL_ARC_CENTER_DEG], minAngleDeg: SKILL_ARC_CENTER_DEG };
+  }
+
+  const minChord = btnSizePx + gapPx;
+  const stepDeg =
+    (2 * Math.asin(Math.min(1, minChord / (2 * radiusPx))) * 180) / Math.PI;
+  const spanDeg = stepDeg * (count - 1);
+
+  let startDeg = SKILL_ARC_CENTER_DEG + spanDeg / 2;
+  let endDeg = SKILL_ARC_CENTER_DEG - spanDeg / 2;
+
+  if (startDeg > SKILL_ARC_MAX_DEG) {
+    startDeg = SKILL_ARC_MAX_DEG;
+    endDeg = startDeg - spanDeg;
+  }
+  if (endDeg < SKILL_ARC_MIN_DEG) {
+    endDeg = SKILL_ARC_MIN_DEG;
+    startDeg = endDeg + spanDeg;
+  }
+
+  const angles = Array.from({ length: count }, (_, index) => {
+    const t = index / (count - 1);
+    return startDeg - t * (startDeg - endDeg);
+  });
+
+  return { angles, minAngleDeg: endDeg };
 }
 
 export class ActionButtons {
@@ -164,10 +204,13 @@ export class ActionButtons {
       active.push({ id, slot, skillId });
     }
 
+    const arcLayout = layoutSkillArc(this.element, active.length);
+    this.element.style.setProperty('--arc-skill-min-deg', `${arcLayout.minAngleDeg}deg`);
+
     for (let i = 0; i < active.length; i++) {
       const { id, skillId } = active[i]!;
       const state = this.buttons.get(id)!;
-      const angle = skillArcAngle(i, active.length);
+      const angle = arcLayout.angles[i]!;
 
       state.el.hidden = false;
       state.el.style.setProperty('--arc-radius', SKILL_ARC_RADIUS);
