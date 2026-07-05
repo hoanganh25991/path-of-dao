@@ -12,7 +12,13 @@
       "radius": 72,
       "ticks": 2,
       "tickIntervalMs": 300,
-      "damage": { "skillMultiplier": 1.7, "damageType": "spirit" }
+      "damage": {
+        "skillMultiplier": 1.7,
+        "damageType": "spirit"
+      }
     }
-  ]
+  ],
+  "vfx": {
+    "cast": "vfx_flame_cast"
+  }
 }

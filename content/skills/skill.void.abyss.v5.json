@@ -18,5 +18,8 @@
       "hitRadius": 12,
       "pullForce": 160
     }
-  ]
+  ],
+  "vfx": {
+    "cast": "vfx_void_cast"
+  }
 }

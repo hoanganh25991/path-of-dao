@@ -4,5 +4,8 @@
   "nameKey": "skill.time.slow.awakened.name",
   "kind": "bolt",
   "manaCost": 25,
-  "skillMultiplier": 1.8
+  "skillMultiplier": 1.8,
+  "vfx": {
+    "cast": "vfx_time_cast"
+  }
 }

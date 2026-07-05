@@ -16,5 +16,8 @@
         "damageType": "physical"
       }
     }
-  ]
+  ],
+  "vfx": {
+    "cast": "vfx_ice_cast"
+  }
 }

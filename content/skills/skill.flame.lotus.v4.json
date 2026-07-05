@@ -17,5 +17,8 @@
       "ticks": 2,
       "tickIntervalMs": 300
     }
-  ]
+  ],
+  "vfx": {
+    "cast": "vfx_flame_cast"
+  }
 }

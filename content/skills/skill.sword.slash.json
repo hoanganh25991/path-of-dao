@@ -4,5 +4,8 @@
   "nameKey": "skill.sword.slash.name",
   "kind": "arc",
   "manaCost": 20,
-  "skillMultiplier": 1.6
+  "skillMultiplier": 1.6,
+  "vfx": {
+    "cast": "vfx_ice_cast"
+  }
 }

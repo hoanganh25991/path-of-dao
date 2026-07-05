@@ -4,5 +4,8 @@
   "nameKey": "skill.time.slow.name",
   "kind": "bolt",
   "manaCost": 25,
-  "skillMultiplier": 1.5
+  "skillMultiplier": 1.5,
+  "vfx": {
+    "cast": "vfx_time_cast"
+  }
 }

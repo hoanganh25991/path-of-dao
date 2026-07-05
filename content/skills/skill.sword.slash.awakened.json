@@ -8,5 +8,8 @@
   "awakenedOverrides": {
     "arcHalfAngle": 1.5708,
     "arcReachBonus": 24
+  },
+  "vfx": {
+    "cast": "vfx_ice_cast"
   }
 }

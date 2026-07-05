@@ -8,12 +8,12 @@
       "focusKey": "demo.focus.breakthrough",
       "visualTheme": "jade",
       "unlockedSkills": [
-        "skill.void.slash",
-        "skill.sword.slash",
-        "skill.flame.bolt",
-        "skill.life.mend",
         "skill.basic.meditate",
-        "skill.lightning.strike"
+        "skill.void.slash",
+        "skill.flame.bolt",
+        "skill.lightning.strike",
+        "skill.life.mend",
+        "skill.time.slow"
       ],
       "highlightKeys": ["demo.highlight.breakthrough", "demo.highlight.qi_condensation", "demo.highlight.cultivate"],
       "startScene": "home",
@@ -31,12 +31,12 @@
         "awakenedIntents": [],
         "insightReadyIntents": [],
         "equippedSkills": {
-          "primary": "skill.void.slash",
-          "secondary": "skill.sword.slash",
+          "primary": "skill.basic.meditate",
+          "secondary": "skill.void.slash",
           "ultimate": "skill.flame.bolt",
-          "skill3": "skill.life.mend",
-          "skill4": "skill.basic.meditate",
-          "skill5": "skill.lightning.strike"
+          "skill3": "skill.lightning.strike",
+          "skill4": "skill.life.mend",
+          "skill5": "skill.time.slow"
         },
         "equipped": {
           "weapon": "item.sword.wood",
@@ -63,12 +63,12 @@
       "focusKey": "demo.focus.awakening",
       "visualTheme": "insight",
       "unlockedSkills": [
-        "skill.void.slash",
-        "skill.sword.slash",
-        "skill.lightning.strike",
-        "skill.time.slow",
         "skill.void.slash.awakened",
-        "skill.sword.slash.awakened"
+        "skill.flame.scorch.v1",
+        "skill.lightning.fork.v1",
+        "skill.time.drift.v2",
+        "skill.life.pulse.v2",
+        "skill.sword.crescent.v1"
       ],
       "highlightKeys": ["demo.highlight.insight_meter", "demo.highlight.awaken_button", "demo.highlight.foundation"],
       "startScene": "home",
@@ -83,15 +83,15 @@
         "realmTier": "early",
         "spirit": 40,
         "gold": 1200,
-        "awakenedIntents": [],
-        "insightReadyIntents": ["void", "sword"],
+        "awakenedIntents": ["void"],
+        "insightReadyIntents": ["sword"],
         "equippedSkills": {
-          "primary": "skill.void.slash",
-          "secondary": "skill.sword.slash",
-          "ultimate": "skill.time.slow",
-          "skill3": "skill.lightning.strike",
-          "skill4": "skill.void.slash.awakened",
-          "skill5": "skill.sword.slash.awakened"
+          "primary": "skill.void.slash.awakened",
+          "secondary": "skill.flame.scorch.v1",
+          "ultimate": "skill.lightning.fork.v1",
+          "skill3": "skill.time.drift.v2",
+          "skill4": "skill.life.pulse.v2",
+          "skill5": "skill.sword.crescent.v1"
         },
         "equipped": {
           "weapon": "item.sword.iron",
@@ -118,18 +118,14 @@
       "focusKey": "demo.focus.combat",
       "visualTheme": "sword",
       "unlockedSkills": [
-        "skill.sword.slash",
-        "skill.sword.slash.awakened",
-        "skill.lightning.strike",
-        "skill.lightning.strike.awakened",
-        "skill.flame.bolt.awakened",
-        "skill.void.slash.awakened"
+        "skill.sword.cleave.v2",
+        "skill.sword.rain.v3",
+        "skill.flame.ember.v2",
+        "skill.lightning.arc.v2",
+        "skill.void.rift.v1",
+        "skill.time.loop.v3"
       ],
-      "highlightKeys": [
-        "demo.highlight.core_formation",
-        "demo.highlight.awakened_sword",
-        "demo.highlight.combo"
-      ],
+      "highlightKeys": ["demo.highlight.core_formation", "demo.highlight.awakened_sword", "demo.highlight.combo"],
       "startScene": "combat",
       "startMapId": "map.test.grove",
       "path": [
@@ -145,12 +141,12 @@
         "awakenedIntents": ["sword", "lightning"],
         "insightReadyIntents": [],
         "equippedSkills": {
-          "primary": "skill.sword.slash.awakened",
-          "secondary": "skill.lightning.strike.awakened",
-          "ultimate": "skill.flame.bolt.awakened",
-          "skill3": "skill.void.slash.awakened",
-          "skill4": "skill.sword.slash",
-          "skill5": "skill.lightning.strike"
+          "primary": "skill.sword.cleave.v2",
+          "secondary": "skill.sword.rain.v3",
+          "ultimate": "skill.flame.ember.v2",
+          "skill3": "skill.lightning.arc.v2",
+          "skill4": "skill.void.rift.v1",
+          "skill5": "skill.time.loop.v3"
         },
         "equipped": {
           "weapon": "item.sword.iron",
@@ -177,18 +173,14 @@
       "focusKey": "demo.focus.combat",
       "visualTheme": "flame",
       "unlockedSkills": [
-        "skill.flame.bolt",
-        "skill.flame.bolt.awakened",
-        "skill.life.mend",
-        "skill.life.mend.awakened",
-        "skill.void.slash.awakened",
-        "skill.lightning.strike.awakened"
+        "skill.flame.pillar.v3",
+        "skill.flame.lotus.v4",
+        "skill.life.surge.v3",
+        "skill.lightning.storm.v3",
+        "skill.void.surge.v3",
+        "skill.sword.burst.v4"
       ],
-      "highlightKeys": [
-        "demo.highlight.nascent_soul",
-        "demo.highlight.awakened_flame",
-        "demo.highlight.breakthrough"
-      ],
+      "highlightKeys": ["demo.highlight.nascent_soul", "demo.highlight.awakened_flame", "demo.highlight.breakthrough"],
       "startScene": "combat",
       "startMapId": "map.test.grove",
       "path": [
@@ -204,12 +196,12 @@
         "awakenedIntents": ["flame", "life", "void"],
         "insightReadyIntents": [],
         "equippedSkills": {
-          "primary": "skill.flame.bolt.awakened",
-          "secondary": "skill.life.mend.awakened",
-          "ultimate": "skill.void.slash.awakened",
-          "skill3": "skill.lightning.strike.awakened",
-          "skill4": "skill.flame.bolt",
-          "skill5": "skill.life.mend"
+          "primary": "skill.flame.pillar.v3",
+          "secondary": "skill.flame.lotus.v4",
+          "ultimate": "skill.life.surge.v3",
+          "skill3": "skill.lightning.storm.v3",
+          "skill4": "skill.void.surge.v3",
+          "skill5": "skill.sword.burst.v4"
         },
         "equipped": {
           "weapon": "item.sword.wood",
@@ -236,18 +228,14 @@
       "focusKey": "demo.focus.fortune",
       "visualTheme": "fortune",
       "unlockedSkills": [
-        "skill.void.slash",
-        "skill.void.slash.awakened",
-        "skill.flame.bolt",
-        "skill.life.mend",
-        "skill.time.slow",
+        "skill.lightning.judgment.v4",
+        "skill.time.stasis.v4",
+        "skill.flame.bolt.awakened",
+        "skill.life.mend.awakened",
+        "skill.void.tear.v2",
         "skill.sword.slash.awakened"
       ],
-      "highlightKeys": [
-        "demo.highlight.encounters",
-        "demo.highlight.lore_archive",
-        "demo.highlight.spirit_pet"
-      ],
+      "highlightKeys": ["demo.highlight.encounters", "demo.highlight.lore_archive", "demo.highlight.spirit_pet"],
       "startScene": "home",
       "startMapId": "map.test.grove",
       "path": [
@@ -260,15 +248,15 @@
         "realmId": "core_formation",
         "realmTier": "early",
         "gold": 15000,
-        "awakenedIntents": ["void"],
+        "awakenedIntents": ["void", "flame"],
         "insightReadyIntents": [],
         "equippedSkills": {
-          "primary": "skill.void.slash.awakened",
-          "secondary": "skill.flame.bolt",
-          "ultimate": "skill.life.mend",
-          "skill3": "skill.time.slow",
-          "skill4": "skill.sword.slash.awakened",
-          "skill5": "skill.void.slash"
+          "primary": "skill.lightning.judgment.v4",
+          "secondary": "skill.time.stasis.v4",
+          "ultimate": "skill.flame.bolt.awakened",
+          "skill3": "skill.life.mend.awakened",
+          "skill4": "skill.void.tear.v2",
+          "skill5": "skill.sword.slash.awakened"
         },
         "equipped": {
           "weapon": "item.sword.ancient",
@@ -287,10 +275,7 @@
           "encounter.forgotten_memory",
           "encounter.secret_manual"
         ],
-        "loreUnlocked": [
-          "lore.fallen_village.memory_01",
-          "lore.fallen_village.memory_02"
-        ],
+        "loreUnlocked": ["lore.fallen_village.memory_01", "lore.fallen_village.memory_02"],
         "storySeen": ["chapter.01.fallen_village", "chapter.02.whispering_forest"],
         "clearedBosses": ["boss.bandit_lord"],
         "clearedMaps": ["map.test.grove"],
@@ -305,18 +290,14 @@
       "focusKey": "demo.focus.endgame",
       "visualTheme": "void",
       "unlockedSkills": [
-        "skill.void.slash.awakened",
-        "skill.sword.slash.awakened",
-        "skill.flame.bolt.awakened",
-        "skill.lightning.strike.awakened",
-        "skill.time.slow.awakened",
-        "skill.life.mend.awakened"
+        "skill.void.nova.v4",
+        "skill.void.abyss.v5",
+        "skill.sword.heaven.v5",
+        "skill.lightning.tribulation.v5",
+        "skill.time.echo.v5",
+        "skill.life.spirit.v4"
       ],
-      "highlightKeys": [
-        "demo.highlight.void_spirit",
-        "demo.highlight.awakened_void",
-        "demo.highlight.encounters"
-      ],
+      "highlightKeys": ["demo.highlight.void_spirit", "demo.highlight.awakened_void", "demo.highlight.encounters"],
       "startScene": "combat",
       "startMapId": "map.test.grove",
       "path": [
@@ -332,12 +313,12 @@
         "awakenedIntents": ["void", "sword", "time"],
         "insightReadyIntents": [],
         "equippedSkills": {
-          "primary": "skill.void.slash.awakened",
-          "secondary": "skill.sword.slash.awakened",
-          "ultimate": "skill.time.slow.awakened",
-          "skill3": "skill.flame.bolt.awakened",
-          "skill4": "skill.lightning.strike.awakened",
-          "skill5": "skill.life.mend.awakened"
+          "primary": "skill.void.nova.v4",
+          "secondary": "skill.void.abyss.v5",
+          "ultimate": "skill.sword.heaven.v5",
+          "skill3": "skill.lightning.tribulation.v5",
+          "skill4": "skill.time.echo.v5",
+          "skill5": "skill.life.spirit.v4"
         },
         "equipped": {
           "weapon": "item.sword.ancient",
@@ -345,19 +326,10 @@
           "accessory": "item.ring.speed",
           "spirit": "item.spirit.jade"
         },
-        "inventoryItemIds": [
-          "item.sword.ancient",
-          "item.sword.iron",
-          "item.bracelet.copper",
-          "item.spirit.jade"
-        ],
+        "inventoryItemIds": ["item.sword.ancient", "item.sword.iron", "item.bracelet.copper", "item.spirit.jade"],
         "pet": "pet.spirit_fox",
         "yearsCultivated": 420,
-        "encountersFound": [
-          "encounter.ancient_inheritance",
-          "encounter.spirit_beast",
-          "encounter.hidden_cave@cave.grove"
-        ],
+        "encountersFound": ["encounter.ancient_inheritance", "encounter.spirit_beast", "encounter.hidden_cave@cave.grove"],
         "loreUnlocked": ["lore.fallen_village.memory_01"],
         "storySeen": ["chapter.01.fallen_village"],
         "clearedBosses": ["boss.bandit_lord", "boss.swamp_warden"],

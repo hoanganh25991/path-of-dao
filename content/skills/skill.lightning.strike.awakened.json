@@ -4,5 +4,8 @@
   "nameKey": "skill.lightning.strike.awakened.name",
   "kind": "bolt",
   "manaCost": 20,
-  "skillMultiplier": 2.0
+  "skillMultiplier": 2.0,
+  "vfx": {
+    "cast": "vfx_lightning_cast"
+  }
 }

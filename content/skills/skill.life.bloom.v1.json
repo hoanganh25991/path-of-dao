@@ -11,5 +11,8 @@
       "type": "heal",
       "healPct": 0.08
     }
-  ]
+  ],
+  "vfx": {
+    "cast": "vfx_life_cast"
+  }
 }

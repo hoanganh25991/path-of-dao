@@ -9,6 +9,10 @@ const SLASH_TEX_SIZE = 64;
 const RING_TEX_SIZE = 32;
 const AOE_FLAME_TEX = 48;
 const VOID_CRACK_TEX = 48;
+const LIGHTNING_BOLT_TEX = 32;
+const TIME_RIPPLE_TEX = 40;
+const LIFE_BLOOM_TEX = 40;
+const ICE_SPIKE_TEX = 36;
 
 function parseColor(hex: string): number {
   return Number.parseInt(hex.replace('#', ''), 16);
@@ -215,6 +219,42 @@ export const VFXLibrary = {
     );
     spawnPixelSparks(scene, x, y, 0x9060ff, 4, radius * 0.35, 19);
   },
+
+  lightningBolt(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y,
+      VFX_TEXTURE_KEYS.lightningBolt, LIGHTNING_BOLT_TEX,
+      radius, 0xffe080, 280, 21, 0.5, 1.0,
+    );
+    spawnPixelSparks(scene, x, y, 0xffe040, 5, radius * 0.6, 22);
+  },
+
+  timeRipple(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y,
+      VFX_TEXTURE_KEYS.timeRipple, TIME_RIPPLE_TEX,
+      radius, 0x90d8ff, 400, 20, 0.6, 1.1,
+    );
+    spawnPixelSparks(scene, x, y, 0x70c0e0, 4, radius * 0.4, 21);
+  },
+
+  lifeBloom(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y,
+      VFX_TEXTURE_KEYS.lifeBloom, LIFE_BLOOM_TEX,
+      radius, 0x80ffb0, 360, 22, 0.5, 1.0,
+    );
+    spawnPixelSparks(scene, x, y, 0x60e890, 6, radius * 0.45, 23);
+  },
+
+  iceSpike(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y,
+      VFX_TEXTURE_KEYS.iceSpike, ICE_SPIKE_TEX,
+      radius, 0xc0e8ff, 340, 19, 0.5, 0.95,
+    );
+    spawnPixelSparks(scene, x, y, 0x90c8e0, 4, radius * 0.4, 20);
+  },
 };
 
 export function playSkillCastVfx(
@@ -225,7 +265,25 @@ export function playSkillCastVfx(
   amp = 1,
 ): void {
   VFXLibrary.playCast(scene, x, y, skill.intent, amp);
-  if (skill.vfx?.cast === 'vfx_void_cast') {
-    VFXLibrary.voidCrack(scene, x, y - 16, 48 * amp);
+
+  switch (skill.vfx?.cast) {
+    case 'vfx_void_cast':
+      VFXLibrary.voidCrack(scene, x, y - 16, 48 * amp);
+      break;
+    case 'vfx_lightning_cast':
+      VFXLibrary.lightningBolt(scene, x, y - 12, 40 * amp);
+      break;
+    case 'vfx_time_cast':
+      VFXLibrary.timeRipple(scene, x, y - 12, 44 * amp);
+      break;
+    case 'vfx_life_cast':
+      VFXLibrary.lifeBloom(scene, x, y - 14, 42 * amp);
+      break;
+    case 'vfx_ice_cast':
+      VFXLibrary.iceSpike(scene, x, y - 12, 38 * amp);
+      break;
+    case 'vfx_flame_cast':
+      VFXLibrary.flamePetal(scene, x, y - 14, 46 * amp);
+      break;
   }
 }

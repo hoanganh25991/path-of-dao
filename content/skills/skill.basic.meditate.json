@@ -5,5 +5,8 @@
   "kind": "meditate",
   "manaCost": 0,
   "skillMultiplier": 1,
-  "cooldownMs": 400
+  "cooldownMs": 400,
+  "vfx": {
+    "cast": "vfx_life_cast"
+  }
 }

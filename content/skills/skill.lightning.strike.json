@@ -4,5 +4,8 @@
   "nameKey": "skill.lightning.strike.name",
   "kind": "bolt",
   "manaCost": 20,
-  "skillMultiplier": 1.7
+  "skillMultiplier": 1.7,
+  "vfx": {
+    "cast": "vfx_lightning_cast"
+  }
 }

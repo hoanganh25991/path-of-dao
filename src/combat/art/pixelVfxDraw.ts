@@ -13,6 +13,10 @@ export const VFX_TEXTURE_KEYS = {
   aoeFlame: 'vfx-aoe-flame',
   voidCrack: 'vfx-void-crack',
   auraRing: 'vfx-aura-ring',
+  lightningBolt: 'vfx-lightning-bolt',
+  timeRipple: 'vfx-time-ripple',
+  lifeBloom: 'vfx-life-bloom',
+  iceSpike: 'vfx-ice-spike',
 } as const;
 
 function px(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size = 1): void {
@@ -270,6 +274,93 @@ export function drawAuraRingCanvas(): HTMLCanvasElement {
   });
 }
 
+/** Zigzag lightning bolt — distinct from the rounded spirit bolt. */
+export function drawLightningBoltCanvas(): HTMLCanvasElement {
+  const size = 32;
+  return withCtx(size, size, (ctx) => {
+    const path = [
+      [2, 26], [10, 20], [8, 14], [14, 12], [12, 6],
+      [20, 8], [18, 14], [26, 10], [28, 4],
+    ] as [number, number][];
+    for (let i = 0; i < path.length - 1; i++) {
+      const a = path[i]!;
+      const b = path[i + 1]!;
+      pixelLine(ctx, a[0], a[1], b[0], b[1], '#ffffff', 3);
+    }
+    // Glow halo
+    const mid = path[4]!;
+    pixelArc(ctx, mid[0], mid[1], 6, 0, Math.PI * 2, '#ffffff', 1);
+    pixelArc(ctx, mid[0], mid[1], 8, 0, Math.PI * 2, 'rgba(255,232,0,0.6)', 1);
+  });
+}
+
+/** Concentric time ripples — expanding circles. */
+export function drawTimeRippleCanvas(): HTMLCanvasElement {
+  const size = 40;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    for (let r = 4; r <= 16; r += 3) {
+      const alpha = 0.9 - (r - 4) / 16 * 0.6;
+      px(ctx, c, c, `rgba(140,220,255,${alpha})`, 2);
+    }
+    pixelRing(ctx, c, c, 6, 'rgba(160,230,255,1)', 1);
+    pixelRing(ctx, c, c, 10, 'rgba(100,200,240,0.8)', 1);
+    pixelRing(ctx, c, c, 14, 'rgba(60,160,220,0.5)', 1);
+    pixelRing(ctx, c, c, 18, 'rgba(30,120,200,0.3)', 1);
+    // Tick marks
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      px(ctx, c + Math.round(Math.cos(a) * 12), c + Math.round(Math.sin(a) * 12), 'rgba(255,255,255,0.7)');
+    }
+  });
+}
+
+/** Flower bloom burst — petal shape, green/yellow. */
+export function drawLifeBloomCanvas(): HTMLCanvasElement {
+  const size = 40;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    const petals = 6;
+    for (let p = 0; p < petals; p++) {
+      const a = (p / petals) * Math.PI * 2;
+      for (let d = 1; d <= 10; d++) {
+        const px2 = c + Math.round(Math.cos(a) * d);
+        const py = c + Math.round(Math.sin(a) * d);
+        const shade = d < 4 ? '#a0ffc0' : d < 7 ? '#50e878' : '#28b050';
+        px(ctx, px2, py, shade);
+      }
+    }
+    pixelArc(ctx, c, c, 5, 0, Math.PI * 2, '#e0ffe0', 2);
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+  });
+}
+
+/** Ice crystal spike shard — sharp geometric. */
+export function drawIceSpikeCanvas(): HTMLCanvasElement {
+  const size = 36;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    // Outer hexagon
+    const pts: [number, number][] = [];
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+      pts.push([c + Math.round(Math.cos(a) * 14), c + Math.round(Math.sin(a) * 14)]);
+    }
+    for (let i = 0; i < pts.length; i++) {
+      const [x1, y1] = pts[i]!;
+      const [x2, y2] = pts[(i + 1) % pts.length]!;
+      pixelLine(ctx, x1, y1, x2, y2, '#d0e8ff', 2);
+    }
+    // Inner burst
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      pixelLine(ctx, c, c, c + Math.round(Math.cos(a) * 8), c + Math.round(Math.sin(a) * 8), '#b0d0f0', 1);
+    }
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+    pixelArc(ctx, c, c, 12, 0, Math.PI * 2, 'rgba(160,200,255,0.4)', 1);
+  });
+}
+
 function addCanvasTexture(scene: Phaser.Scene, key: string, canvas: HTMLCanvasElement): void {
   if (scene.textures.exists(key)) {
     scene.textures.remove(key);
@@ -289,6 +380,10 @@ export function registerPixelVfxAssets(scene: Phaser.Scene): void {
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.aoeFlame, drawAoeFlameCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.voidCrack, drawVoidCrackCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.auraRing, drawAuraRingCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.lightningBolt, drawLightningBoltCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.timeRipple, drawTimeRippleCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.lifeBloom, drawLifeBloomCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.iceSpike, drawIceSpikeCanvas());
 }
 
 /** Round world position so scaled sprites land on pixel grid. */
