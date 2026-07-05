@@ -407,9 +407,10 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     PALETTE_MOON_SPIRIT,
     POSES_SLIME_IDLE,
     POSES_SLIME_WALK,
-    null,
-    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, sit: ANIM.ghostSit },
+    POSES_ARCHER_ATTACK,
+    { idle: ANIM.ghostIdle, walk: ANIM.ghostWalk, attack: ANIM.ghostAttack, sit: ANIM.ghostSit },
     'ghost',
+    { 2: 90 },
   );
   // Ch4 — Ancient guardian (warrior variant, deep blue-green)
   registerEnemySheet(

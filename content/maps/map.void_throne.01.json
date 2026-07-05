@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 3073248,
-      "y": 1097600,
+      "x": 43025472,
+      "y": 15366400,
       "radius": 616,
       "id": "cave.void_throne"
     }

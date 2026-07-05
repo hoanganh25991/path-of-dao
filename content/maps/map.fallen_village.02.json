@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "ancient_sword",
-      "x": 89920,
-      "y": 69920,
+      "x": 449600,
+      "y": 349600,
       "radius": 180,
       "id": "sword.fallen_village"
     }

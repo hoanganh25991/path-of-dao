@@ -2,70 +2,34 @@
   "id": "roam.fallen_village.01.south",
   "spawns": [
     {
-      "enemyPool": ["enemy.slime", "enemy.slime", "enemy.slime", "enemy.wolf"],
+      "enemyId": "enemy.slime",
       "x": 1600,
       "y": 3400,
       "patrolRadius": 65
     },
     {
-      "enemyPool": ["enemy.village.spirit_pest", "enemy.village.spirit_pest", "enemy.slime"],
+      "enemyId": "enemy.village.spirit_pest",
       "x": 3000,
       "y": 4000,
       "patrolRadius": 70
     },
     {
-      "enemyPool": ["enemy.village.scavenger", "enemy.village.scavenger", "enemy.bandit.thug"],
+      "enemyId": "enemy.village.scavenger",
       "x": 4600,
       "y": 3200,
       "patrolRadius": 75
     },
     {
-      "enemyPool": ["enemy.wolf", "enemy.wolf", "enemy.wolf", "enemy.village.spirit_pest"],
+      "enemyId": "enemy.wolf",
       "x": 5800,
       "y": 4400,
       "patrolRadius": 80
     },
     {
-      "enemyPool": ["enemy.slime", "enemy.slime", "enemy.village.scavenger"],
+      "enemyId": "enemy.slime",
       "x": 7200,
       "y": 3600,
       "patrolRadius": 60
-    },
-    {
-      "enemyPool": ["enemy.bandit.thug", "enemy.wolf", "enemy.wolf"],
-      "x": 2400,
-      "y": 2800,
-      "patrolRadius": 70
-    },
-    {
-      "enemyPool": ["enemy.slime", "enemy.slime"],
-      "x": 6400,
-      "y": 2800,
-      "patrolRadius": 65
-    },
-    {
-      "enemyPool": ["enemy.village.spirit_pest", "enemy.village.spirit_pest", "enemy.village.spirit_pest"],
-      "x": 3800,
-      "y": 5000,
-      "patrolRadius": 60
-    },
-    {
-      "enemyPool": ["enemy.village.scavenger", "enemy.bandit.thug"],
-      "x": 5200,
-      "y": 5400,
-      "patrolRadius": 72
-    },
-    {
-      "enemyPool": ["enemy.wolf", "enemy.wolf", "enemy.bandit.thug"],
-      "x": 800,
-      "y": 4400,
-      "patrolRadius": 78
-    },
-    {
-      "enemyPool": ["enemy.slime", "enemy.slime", "enemy.slime"],
-      "x": 6800,
-      "y": 2000,
-      "patrolRadius": 55
     }
   ]
 }

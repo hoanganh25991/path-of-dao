@@ -3,11 +3,24 @@ import { getMapConfig, resolveTiledUrl } from '@/combat/map/MapLoader';
 import { createPlaceholderTextures } from '@/combat/textures/placeholderTextures';
 import { registerStickyManAssets } from '@/combat/art/stickyManAssets';
 import { registerPixelVfxAssets } from '@/combat/art/pixelVfxDraw';
+import { setTilesetBiome, BIOME_PALETTES } from '@/combat/art/tileset/TilesetRegistry';
 import { MapScene } from '@/combat/scenes/MapScene';
 
 export const tilemapKey = (mapId: string): string => `tilemap:${mapId}`;
 
-/** Loads the Tiled map + placeholder art, then hands off to MapScene. */
+const CHAPTER_BIOME: Record<string, keyof typeof BIOME_PALETTES> = {
+  'chapter.01.fallen_village': 'village',
+  'chapter.02.mist_forest': 'mist',
+  'chapter.03.stone_canyon': 'canyon',
+  'chapter.04.moon_lake': 'lake',
+  'chapter.05.burning_desert': 'desert',
+  'chapter.06.thunder_peaks': 'storm',
+  'chapter.07.frozen_palace': 'ice',
+  'chapter.08.abyss_rift': 'void',
+  'chapter.09.heavenly_gate': 'village',
+  'chapter.10.void_throne': 'void',
+};
+
 export class BootScene extends Phaser.Scene {
   static readonly KEY = 'BootScene';
 
@@ -28,6 +41,9 @@ export class BootScene extends Phaser.Scene {
 
   preload(): void {
     const config = getMapConfig(this.mapId);
+    const biomeKey = CHAPTER_BIOME[config.chapterId] ?? 'village';
+    const biome = BIOME_PALETTES[biomeKey];
+    if (biome) setTilesetBiome(biome);
     this.load.tilemapTiledJSON(tilemapKey(this.mapId), resolveTiledUrl(config));
   }
 

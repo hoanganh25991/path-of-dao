@@ -35,15 +35,14 @@ import { CombatCameraDirector } from '@/combat/camera/CombatCameraDirector';
 
 const CAMERA_LERP = 0.08;
 const CAMERA_DEADZONE = 100;
-/** Zoom tuned for crisp 32×56 sticky-man @ 2× scale — avoid tiny muddy sprites. */
 const COMBAT_ZOOM = 0.88;
 const ANCIENT_COMBAT_ZOOM = 0.72;
 
 const DEPTH = {
   ground: 0,
-  decoration: 1,
+  decoration: 2,
   player: 10,
-  foreground: 20,
+  foreground: 100,
 } as const;
 
 /** Main gameplay scene: tilemap, collision, player, camera, dev exit. */
@@ -118,6 +117,7 @@ export class MapScene extends Phaser.Scene {
     const attackStyle = save ? resolveAttackStyle(save) : 'unarmed';
     registerHeroCombatAssets(this, attackStyle);
     this.player = new Player(this, spawn.x, spawn.y, this.buildStatSheet(), this.hitboxManager);
+    this.player.sprite.setDepth(DEPTH.player);
     this.player.attackerRealmOrder = save ? getRealmOrder(save.realm.id) : 1;
     this.player.mapRecommendedRealmOrder = config.recommendedRealmOrder;
     if (save) {
@@ -210,6 +210,14 @@ export class MapScene extends Phaser.Scene {
     this.hitboxManager.update(delta);
     this.cameraDirector?.update(this.spawnManager?.combatReadyCount ?? 0, delta);
     this.syncExitPortal();
+
+    this.player.sprite.setDepth(this.player.sprite.y);
+    if (this.spawnManager) {
+      const enemies = this.spawnManager.getHurtboxTargets();
+      for (const enemy of enemies) {
+        enemy.sprite.setDepth(enemy.sprite.y);
+      }
+    }
   }
 
   /** Show the depart portal once waves are cleared (retreat anytime via pause / roam maps). */
@@ -287,7 +295,7 @@ export class MapScene extends Phaser.Scene {
     return { x: config.bounds.width / 2, y: config.bounds.height / 2 };
   }
 
-  /** Scatter decorative environment props (trees, rocks, lanterns) across the map. */
+  /** Scatter decorative environment sprites using tileset textures for 2.5D look. */
   private spawnEnvironmentDecorations(config: MapConfig): void {
     const W = config.bounds.width;
     const H = config.bounds.height;
@@ -295,44 +303,83 @@ export class MapScene extends Phaser.Scene {
     const treeCount = Math.floor((W * H) / 1200000) + 8;
     const rockCount = Math.floor((W * H) / 2400000) + 6;
     const lanternCount = Math.max(3, Math.floor((W * H) / 4000000));
+    const bushCount = Math.floor((W * H) / 600000) + 6;
 
     const seeded: Record<string, true> = {};
-    const rng = (): number => {
-      const v = Math.sin(this.time.now * 1.371 + Object.keys(seeded).length * 7.31);
-      return v - Math.floor(v);
-    };
     const posKey = (x: number, y: number): string => `${Math.round(x / 64)},${Math.round(y / 64)}`;
 
+    // Bush clusters using tileset sprite frames (GID 9 = Bush)
+    for (let i = 0; i < bushCount; i++) {
+      const x = margin + Math.random() * (W - margin * 2);
+      const y = margin + Math.random() * (H - margin * 2);
+      if (seeded[posKey(x, y)]) continue;
+      seeded[posKey(x, y)] = true;
+      const bush = this.add.sprite(x, y, TEXTURE_KEYS.tileset, 8);
+      bush.setOrigin(0.5, 1);
+      bush.setScale(1.2 + Math.random() * 0.4);
+      bush.setAlpha(0.85 + Math.random() * 0.15);
+      bush.setDepth(y);
+    }
+
+    // Trees: trunk sprite (GID 11) below + canopy sprite (GID 12) above
     for (let i = 0; i < treeCount; i++) {
-      const x = margin + rng() * (W - margin * 2);
-      const y = margin + rng() * (H - margin * 2);
+      const x = margin + Math.random() * (W - margin * 2);
+      const y = margin + Math.random() * (H - margin * 2);
       if (seeded[posKey(x, y)]) continue;
       seeded[posKey(x, y)] = true;
-      const shade = Phaser.Display.Color.HSLToColor(0.28, 0.3, 0.12 + rng() * 0.1).color;
-      this.add.rectangle(x, y, 6, 18, 0x503a28, 0.85).setDepth(1);
-      this.add.circle(x, y - 12, 14 + rng() * 6, shade, 0.7).setDepth(2);
+
+      const trunk = this.add.sprite(x, y, TEXTURE_KEYS.tileset, 10);
+      trunk.setOrigin(0.5, 1);
+      trunk.setScale(1.0 + Math.random() * 0.3);
+      trunk.setDepth(y - 1);
+
+      const canopy = this.add.sprite(x, y - 18, TEXTURE_KEYS.tileset, 11);
+      canopy.setOrigin(0.5, 1);
+      const canopyScale = 1.2 + Math.random() * 0.6;
+      canopy.setScale(canopyScale);
+      canopy.setDepth(y + 2);
     }
 
+    // Rocks (GID 14)
     for (let i = 0; i < rockCount; i++) {
-      const x = margin + rng() * (W - margin * 2);
-      const y = margin + rng() * (H - margin * 2);
+      const x = margin + Math.random() * (W - margin * 2);
+      const y = margin + Math.random() * (H - margin * 2);
       if (seeded[posKey(x, y)]) continue;
       seeded[posKey(x, y)] = true;
-      const shade = Phaser.Display.Color.HSLToColor(0.08, 0.05, 0.25 + rng() * 0.12).color;
-      this.add.ellipse(x, y, 12 + rng() * 8, 6 + rng() * 4, shade, 0.8).setDepth(2);
+      const rock = this.add.sprite(x, y, TEXTURE_KEYS.tileset, 13);
+      rock.setOrigin(0.5, 1);
+      rock.setScale(0.8 + Math.random() * 0.5);
+      rock.setAlpha(0.8 + Math.random() * 0.2);
+      rock.setDepth(y);
     }
 
-    for (let i = 0; i < lanternCount; i++) {
-      const x = 200 + rng() * (W - 400);
-      const y = 200 + rng() * (H - 400);
+    // Flowers (GID 13)
+    const flowerCount = bushCount;
+    for (let i = 0; i < flowerCount; i++) {
+      const x = margin + Math.random() * (W - margin * 2);
+      const y = margin + Math.random() * (H - margin * 2);
       if (seeded[posKey(x, y)]) continue;
       seeded[posKey(x, y)] = true;
-      this.add.rectangle(x, y + 6, 3, 24, 0x6b5433, 0.9).setDepth(1);
-      const glow = this.add.circle(x, y - 6, 5, 0xd4a840, 0.6).setDepth(3);
+      const flower = this.add.sprite(x, y, TEXTURE_KEYS.tileset, 12);
+      flower.setOrigin(0.5, 1);
+      flower.setScale(0.8 + Math.random() * 0.4);
+      flower.setDepth(y);
+    }
+
+    // Lanterns (GID 25)
+    for (let i = 0; i < lanternCount; i++) {
+      const x = 200 + Math.random() * (W - 400);
+      const y = 200 + Math.random() * (H - 400);
+      if (seeded[posKey(x, y)]) continue;
+      seeded[posKey(x, y)] = true;
+      const lantern = this.add.sprite(x, y, TEXTURE_KEYS.tileset, 24);
+      lantern.setOrigin(0.5, 1);
+      lantern.setScale(1.0 + Math.random() * 0.3);
+      lantern.setDepth(y);
       this.tweens.add({
-        targets: glow,
-        alpha: { from: 0.3, to: 0.7 },
-        duration: 1200 + rng() * 800,
+        targets: lantern,
+        alpha: { from: 0.7, to: 1.0 },
+        duration: 1200 + Math.random() * 800,
         yoyo: true,
         repeat: -1,
       });

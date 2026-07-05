@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 967680,
-      "y": 1105920,
+      "x": 11612160,
+      "y": 13271040,
       "radius": 480,
       "id": "cave.abyss_rift"
     }

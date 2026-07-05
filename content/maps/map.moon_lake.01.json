@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 245760,
-      "y": 368640,
+      "x": 1966080,
+      "y": 2949120,
       "radius": 320,
       "id": "cave.moon_lake"
     }

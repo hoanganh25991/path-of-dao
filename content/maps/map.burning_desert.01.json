@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 699840,
-      "y": 349920,
+      "x": 6298560,
+      "y": 3149280,
       "radius": 360,
       "id": "cave.burning_desert"
     }

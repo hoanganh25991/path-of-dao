@@ -1,12 +1,19 @@
 /**
- * Procedural Tiled-format map builder (sub-plan 21).
- * Same 8-tile grove tileset as test-grove; region themes vary layout via seed.
+ * Procedural Tiled-format map builder with 2.5D pixel-art tileset (25 tiles).
  */
-
 const TILE = 32;
-/** Impassable outer rim — two tiles thick so the boundary reads clearly and blocks movement. */
 export const WALL_THICK = 2;
-const G = { GRASS: 1, GRASS_VAR: 2, DIRT: 3, ROCK: 4, BUSH: 5, TRUNK: 6, CANOPY: 7, WATER: 8 };
+
+const G = {
+  GRASS: 1, GRASS_VAR: 2, DIRT: 3, SAND: 4,
+  SHALLOW_WATER: 5, DEEP_WATER: 6, WATER_EDGE_N: 7, WATER_EDGE_W: 8,
+  BUSH: 9, TALL_GRASS: 10, TRUNK: 11, CANOPY: 12, FLOWER: 13,
+  ROCK: 14, CLIFF: 15, GRAVEL: 16, CAVE: 17,
+  WOOD_FENCE: 18, STONE_WALL: 19, ROOF: 20, COBBLESTONE: 21,
+  PATH: 22, BRIDGE: 23, SHADOW: 24, LANTERN: 25,
+};
+
+const TILE_COUNT = 25;
 const LEGACY_W = 50;
 const LEGACY_H = 38;
 
@@ -19,7 +26,6 @@ function scaledCount(base, width, height, baseW = LEGACY_W, baseH = LEGACY_H) {
   return Math.max(1, Math.round(base * areaScale(width, height, baseW, baseH)));
 }
 
-/** Tile coords covered by portal rectangles — carved out of the border wall. */
 function collectPortalTiles(portals, width, height) {
   const portalTiles = new Set();
   for (const portal of portals) {
@@ -39,12 +45,12 @@ function collectPortalTiles(portals, width, height) {
 function paintBorderWalls(collision, width, height, portalTiles = new Set(), wallThick = WALL_THICK) {
   for (let t = 0; t < wallThick; t++) {
     for (let x = 0; x < width; x++) {
-      if (!portalTiles.has(`${x},${t}`)) collision[idx(width, x, t)] = G.ROCK;
-      if (!portalTiles.has(`${x},${height - 1 - t}`)) collision[idx(width, x, height - 1 - t)] = G.ROCK;
+      if (!portalTiles.has(`${x},${t}`)) collision[idx(width, x, t)] = G.CLIFF;
+      if (!portalTiles.has(`${x},${height - 1 - t}`)) collision[idx(width, x, height - 1 - t)] = G.CLIFF;
     }
     for (let y = 0; y < height; y++) {
-      if (!portalTiles.has(`${t},${y}`)) collision[idx(width, t, y)] = G.ROCK;
-      if (!portalTiles.has(`${width - 1 - t},${y}`)) collision[idx(width, width - 1 - t, y)] = G.ROCK;
+      if (!portalTiles.has(`${t},${y}`)) collision[idx(width, t, y)] = G.CLIFF;
+      if (!portalTiles.has(`${width - 1 - t},${y}`)) collision[idx(width, width - 1 - t, y)] = G.CLIFF;
     }
   }
 }
@@ -62,14 +68,6 @@ function mulberry32(seed) {
 const idx = (w, x, y) => y * w + x;
 const grid = (w, h) => new Array(w * h).fill(0);
 
-/**
- * @param {object} opts
- * @param {number} [opts.width=50]
- * @param {number} [opts.height=38]
- * @param {number} opts.seed
- * @param {'village'|'forest'|'canyon'|'lake'|'desert'|'thunder'|'frozen'|'abyss'|'celestial'|'void'} opts.theme
- * @param {boolean} [opts.bossArena=false]
- */
 export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena = false }) {
   const rand = mulberry32(seed);
   const ground = grid(width, height);
@@ -85,11 +83,21 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     village: 0.25, forest: 0.08, canyon: 0.12, lake: 0.1, desert: 0.45,
     thunder: 0.22, frozen: 0.08, abyss: 0.18, celestial: 0.16, void: 0.38,
   }[theme] ?? 0.15;
+  const sandBias = {
+    village: 0, forest: 0, canyon: 0.05, lake: 0, desert: 0.25,
+    thunder: 0, frozen: 0, abyss: 0, celestial: 0, void: 0,
+  }[theme] ?? 0;
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      if (rand() < dirtBias) ground[idx(width, x, y)] = G.DIRT;
-      else ground[idx(width, x, y)] = rand() < grassVarChance ? G.GRASS_VAR : G.GRASS;
+      const r = rand();
+      if (sandBias > 0 && r < sandBias) {
+        ground[idx(width, x, y)] = G.SAND;
+      } else if (r < dirtBias) {
+        ground[idx(width, x, y)] = G.DIRT;
+      } else {
+        ground[idx(width, x, y)] = r < grassVarChance ? G.GRASS_VAR : G.GRASS;
+      }
     }
   }
 
@@ -102,6 +110,7 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
   for (let x = WALL_THICK + 2; x <= width - WALL_THICK - 4; x++) {
     for (let y = pathY0; y <= pathY1; y++) ground[idx(width, x, y)] = G.DIRT;
   }
+  // North branch path
   const branchY0 = Math.max(WALL_THICK + 2, Math.floor(height * 0.21));
   for (let y = branchY0; y <= spawnTileY; y++) {
     for (let x = width - WALL_THICK - 6; x <= width - WALL_THICK - 4; x++) {
@@ -111,22 +120,26 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
 
   paintBorderWalls(collision, width, height);
 
-  // Theme features
+  // Water features
   if (theme === 'lake' || theme === 'forest' || theme === 'frozen') {
     const cx = Math.floor(width * (theme === 'lake' ? 0.24 : theme === 'frozen' ? 0.4 : 0.56));
     const cy = Math.floor(height * (theme === 'lake' ? 0.74 : theme === 'frozen' ? 0.63 : 0.58));
-    for (let y = cy - 4; y <= cy + 4; y++) {
-      for (let x = cx - 5; x <= cx + 5; x++) {
+    const rx = theme === 'lake' ? 7 : 5;
+    const ry = theme === 'lake' ? 6 : 4;
+    for (let y = cy - ry; y <= cy + ry; y++) {
+      for (let x = cx - rx; x <= cx + rx; x++) {
         if (x < WALL_THICK || y < WALL_THICK || x >= width - WALL_THICK || y >= height - WALL_THICK) continue;
-        const oval = ((x - cx) / 5) ** 2 + ((y - cy) / 4) ** 2 <= 1;
+        const oval = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1;
         if (oval) {
-          collision[idx(width, x, y)] = G.WATER;
+          const dist = Math.sqrt(((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2);
+          collision[idx(width, x, y)] = dist > 0.65 ? G.SHALLOW_WATER : G.DEEP_WATER;
           ground[idx(width, x, y)] = G.DIRT;
         }
       }
     }
   }
 
+  // Rock clusters
   const rockThemes = { canyon: 8, desert: 4, thunder: 12, abyss: 6, void: 10, celestial: 2, frozen: 2 };
   const rockCount = scaledCount(rockThemes[theme] ?? 0, width, height);
   if (rockCount > 0) {
@@ -136,20 +149,49 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
       const span = theme === 'void' ? 5 : 4;
       for (let dy = 0; dy < 3; dy++) {
         for (let dx = 0; dx < span; dx++) {
-          collision[idx(width, rx + dx, ry + dy)] = G.ROCK;
+          const tileCollision = ground[idx(width, rx + dx, ry + dy)] !== G.DIRT ? G.CLIFF : G.ROCK;
+          collision[idx(width, rx + dx, ry + dy)] = tileCollision;
         }
       }
     }
   }
 
+  // Abyss crack / void fissure
   if (theme === 'abyss' || theme === 'void') {
-    for (let i = 0; i < scaledCount(6, width, height); i++) {
-      const x = WALL_THICK + 2 + Math.floor(rand() * (width - (WALL_THICK + 2) * 2));
-      const y = WALL_THICK + 2 + Math.floor(rand() * (height - (WALL_THICK + 2) * 2));
-      ground[idx(width, x, y)] = G.GRASS_VAR;
+    const crackY = Math.floor(height * 0.45);
+    for (let x = WALL_THICK + 4; x < width - WALL_THICK - 4; x++) {
+      const wy = crackY + Math.floor(Math.sin(x * 0.3 + seed) * 4);
+      if (wy > WALL_THICK && wy < height - WALL_THICK) {
+        collision[idx(width, x, wy)] = G.DEEP_WATER;
+        ground[idx(width, x, wy)] = G.DIRT;
+      }
     }
   }
 
+  // Tall grass patches
+  const tallGrassCount = scaledCount(
+    { village: 10, forest: 20, canyon: 4, lake: 12, desert: 2, thunder: 5, frozen: 8, abyss: 15, celestial: 6, void: 1 }[theme] ?? 8,
+    width, height,
+  );
+  for (let i = 0; i < tallGrassCount; i++) {
+    const gx = WALL_THICK + 2 + Math.floor(rand() * (width - (WALL_THICK + 2) * 2));
+    const gy = WALL_THICK + 2 + Math.floor(rand() * (height - (WALL_THICK + 2) * 2));
+    if (collision[idx(width, gx, gy)] !== 0) continue;
+    if (ground[idx(width, gx, gy)] === G.DIRT) continue;
+    decoration[idx(width, gx, gy)] = G.TALL_GRASS;
+  }
+
+  // Gravel patches in canyon/desert
+  if (theme === 'canyon' || theme === 'desert') {
+    for (let i = 0; i < scaledCount(6, width, height); i++) {
+      const gx = WALL_THICK + 3 + Math.floor(rand() * (width - (WALL_THICK + 3) * 2));
+      const gy = WALL_THICK + 3 + Math.floor(rand() * (height - (WALL_THICK + 3) * 2));
+      if (collision[idx(width, gx, gy)] !== 0) continue;
+      ground[idx(width, gx, gy)] = G.GRAVEL;
+    }
+  }
+
+  // Boss arena walls
   if (bossArena) {
     const enc = {
       x0: width - Math.max(18, Math.floor(width * 0.36)),
@@ -159,22 +201,25 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     };
     const gapX = width - Math.max(14, Math.floor(width * 0.28));
     for (let x = enc.x0; x <= enc.x1; x++) {
-      collision[idx(width, x, enc.y0)] = G.ROCK;
-      if (x < gapX || x > gapX + 2) collision[idx(width, x, enc.y1)] = G.ROCK;
+      collision[idx(width, x, enc.y0)] = G.STONE_WALL;
+      if (x < gapX || x > gapX + 2) collision[idx(width, x, enc.y1)] = G.STONE_WALL;
     }
     for (let y = enc.y0; y <= enc.y1; y++) {
-      collision[idx(width, enc.x0, y)] = G.ROCK;
-      collision[idx(width, enc.x1, y)] = G.ROCK;
+      collision[idx(width, enc.x0, y)] = G.STONE_WALL;
+      collision[idx(width, enc.x1, y)] = G.STONE_WALL;
+    }
+    // Boss arena floor
+    for (let y = enc.y0 + 1; y < enc.y1; y++) {
+      for (let x = enc.x0 + 1; x < enc.x1; x++) {
+        ground[idx(width, x, y)] = G.COBBLESTONE;
+      }
     }
   }
 
+  // Trees: trunk on collision (GID 11) + canopy on foreground (GID 12)
   const treeCount = scaledCount(
-    {
-      village: 8, forest: 14, canyon: 6, lake: 10, desert: 4,
-      thunder: 3, frozen: 6, abyss: 12, celestial: 7, void: 2,
-    }[theme] ?? 8,
-    width,
-    height,
+    { village: 8, forest: 14, canyon: 6, lake: 10, desert: 4, thunder: 3, frozen: 6, abyss: 12, celestial: 7, void: 2 }[theme] ?? 8,
+    width, height,
   );
   for (let i = 0; i < treeCount; i++) {
     const tx = WALL_THICK + 1 + Math.floor(rand() * (width - (WALL_THICK + 1) * 2));
@@ -188,11 +233,33 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     foreground[idx(width, tx, ty - 2)] = G.CANOPY;
   }
 
+  // Bushes on decoration layer
   for (let i = 0; i < scaledCount(50, width, height); i++) {
     const x = WALL_THICK + 1 + Math.floor(rand() * (width - (WALL_THICK + 1) * 2));
     const y = WALL_THICK + 1 + Math.floor(rand() * (height - (WALL_THICK + 1) * 2));
     if (collision[idx(width, x, y)] === 0 && decoration[idx(width, x, y)] === 0) {
       decoration[idx(width, x, y)] = G.BUSH;
+    }
+  }
+
+  // Flowers
+  for (let i = 0; i < scaledCount(25, width, height); i++) {
+    const x = WALL_THICK + 1 + Math.floor(rand() * (width - (WALL_THICK + 1) * 2));
+    const y = WALL_THICK + 1 + Math.floor(rand() * (height - (WALL_THICK + 1) * 2));
+    if (collision[idx(width, x, y)] === 0 && decoration[idx(width, x, y)] === 0 && ground[idx(width, x, y)] !== G.DIRT) {
+      decoration[idx(width, x, y)] = G.FLOWER;
+    }
+  }
+
+  // Lanterns near spawn and paths
+  const lanternPositions = [
+    { x: spawnTileX + 3, y: spawnTileY },
+    { x: spawnTileX + 6, y: pathY0 },
+    { x: width - WALL_THICK - 6, y: spawnTileY },
+  ];
+  for (const lp of lanternPositions) {
+    if (lp.x > 0 && lp.x < width && lp.y > 0 && lp.y < height && collision[idx(width, lp.x, lp.y)] === 0) {
+      decoration[idx(width, lp.x, lp.y)] = G.LANTERN;
     }
   }
 
@@ -205,6 +272,7 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     }
   }
 
+  // Copy collision tiles to decoration layer for visual + physics
   for (let i = 0; i < collision.length; i++) {
     if (collision[i] !== 0) decoration[i] = collision[i];
   }
@@ -229,21 +297,19 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
     tileheight: TILE,
     nextlayerid: 6,
     nextobjectid: 4,
-    tilesets: [
-      {
-        firstgid: 1,
-        name: 'grove',
-        tilewidth: TILE,
-        tileheight: TILE,
-        tilecount: 8,
-        columns: 8,
-        spacing: 0,
-        margin: 0,
-        image: 'grove.png',
-        imagewidth: 256,
-        imageheight: 32,
-      },
-    ],
+    tilesets: [{
+      firstgid: 1,
+      name: 'grove',
+      tilewidth: TILE,
+      tileheight: TILE,
+      tilecount: TILE_COUNT,
+      columns: TILE_COUNT,
+      spacing: 0,
+      margin: 0,
+      image: 'grove.png',
+      imagewidth: TILE_COUNT * TILE,
+      imageheight: TILE,
+    }],
     layers: [
       tileLayer(1, 'ground', ground, width, height),
       tileLayer(2, 'decoration', decoration, width, height),
@@ -253,10 +319,7 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
         id: 5,
         name: 'objects',
         type: 'objectgroup',
-        x: 0,
-        y: 0,
-        opacity: 1,
-        visible: true,
+        x: 0, y: 0, opacity: 1, visible: true,
         objects: [
           { id: 1, name: 'spawn', type: 'spawn', x: spawnX, y: spawnY, width: 0, height: 0, point: true },
           { id: 2, name: 'exit_home', type: 'exit', x: exitX, y: exitY, width: 96, height: 128 },
@@ -268,43 +331,12 @@ export function buildTiledMap({ width = 50, height = 38, seed, theme, bossArena 
 }
 
 function tileLayer(id, name, data, width, height, visible = true) {
-  return {
-    id,
-    name,
-    type: 'tilelayer',
-    width,
-    height,
-    x: 0,
-    y: 0,
-    opacity: 1,
-    visible,
-    data,
-  };
+  return { id, name, type: 'tilelayer', width, height, x: 0, y: 0, opacity: 1, visible, data };
 }
 
 export { TILE };
 
-/**
- * Large Tu Chân Tinh sub-zone (~25× legacy footprint). Peaceful paths, portal gaps, roam markers.
- *
- * @param {object} opts
- * @param {number} [opts.width=250]
- * @param {number} [opts.height=190]
- * @param {number} opts.seed
- * @param {'village'|'forest'|'canyon'|'lake'|'desert'|'thunder'|'frozen'|'abyss'|'celestial'|'void'} opts.theme
- * @param {Array<{id:string,x:number,y:number,width:number,height:number}>} [opts.portals=[]]
- * @param {boolean} [opts.includeExit=false]
- * @param {{x:number,y:number}} [opts.spawn]
- */
-export function buildStarZoneMap({
-  width = 250,
-  height = 190,
-  seed,
-  theme,
-  portals = [],
-  includeExit = false,
-  spawn,
-}) {
+export function buildStarZoneMap({ width = 250, height = 190, seed, theme, portals = [], includeExit = false, spawn }) {
   const rand = mulberry32(seed);
   const ground = grid(width, height);
   const decoration = grid(width, height);
@@ -319,15 +351,25 @@ export function buildStarZoneMap({
     village: 0.22, forest: 0.08, canyon: 0.12, lake: 0.1, desert: 0.45,
     thunder: 0.22, frozen: 0.08, abyss: 0.18, celestial: 0.16, void: 0.38,
   }[theme] ?? 0.15;
+  const sandBias = {
+    village: 0, forest: 0, canyon: 0.05, lake: 0, desert: 0.25,
+    thunder: 0, frozen: 0, abyss: 0, celestial: 0, void: 0,
+  }[theme] ?? 0;
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      if (rand() < dirtBias) ground[idx(width, x, y)] = G.DIRT;
-      else ground[idx(width, x, y)] = rand() < grassVarChance ? G.GRASS_VAR : G.GRASS;
+      const r = rand();
+      if (sandBias > 0 && r < sandBias) {
+        ground[idx(width, x, y)] = G.SAND;
+      } else if (r < dirtBias) {
+        ground[idx(width, x, y)] = G.DIRT;
+      } else {
+        ground[idx(width, x, y)] = r < grassVarChance ? G.GRASS_VAR : G.GRASS;
+      }
     }
   }
 
-  // Wandering paths — horizontal + vertical meanders for peaceful exploration
+  // Wandering paths
   for (let x = WALL_THICK + 4; x < width - WALL_THICK - 4; x++) {
     const pathY = Math.floor(height * 0.45 + Math.sin(x * 0.08) * 6);
     for (let dy = -1; dy <= 1; dy++) {
@@ -349,14 +391,8 @@ export function buildStarZoneMap({
   const STAR_BASE_W = 250;
   const STAR_BASE_H = 190;
   const treeCount = scaledCount(
-    {
-      village: 28, forest: 48, canyon: 18, lake: 32, desert: 14,
-      thunder: 10, frozen: 22, abyss: 36, celestial: 20, void: 8,
-    }[theme] ?? 24,
-    width,
-    height,
-    STAR_BASE_W,
-    STAR_BASE_H,
+    { village: 28, forest: 48, canyon: 18, lake: 32, desert: 14, thunder: 10, frozen: 22, abyss: 36, celestial: 20, void: 8 }[theme] ?? 24,
+    width, height, STAR_BASE_W, STAR_BASE_H,
   );
 
   for (let i = 0; i < treeCount; i++) {
@@ -400,59 +436,26 @@ export function buildStarZoneMap({
 
   let nextId = 2;
   for (const portal of portals) {
-    objects.push({
-      id: nextId++,
-      name: portal.id,
-      type: 'portal',
-      x: portal.x,
-      y: portal.y,
-      width: portal.width,
-      height: portal.height,
-    });
+    objects.push({ id: nextId++, name: portal.id, type: 'portal', x: portal.x, y: portal.y, width: portal.width, height: portal.height });
   }
 
   if (includeExit) {
-    const exitX = (width - WALL_THICK - 8) * TILE;
-    const exitY = Math.floor(height * 0.48) * TILE;
-    objects.push({
-      id: nextId++,
-      name: 'exit_home',
-      type: 'exit',
-      x: exitX,
-      y: exitY,
-      width: 96,
-      height: 128,
-    });
+    objects.push({ id: nextId++, name: 'exit_home', type: 'exit', x: (width - WALL_THICK - 8) * TILE, y: Math.floor(height * 0.48) * TILE, width: 96, height: 128 });
   }
 
   return {
-    type: 'map',
-    version: '1.10',
-    tiledversion: '1.10.2',
-    orientation: 'orthogonal',
-    renderorder: 'right-down',
-    infinite: false,
-    width,
-    height,
-    tilewidth: TILE,
-    tileheight: TILE,
-    nextlayerid: 6,
-    nextobjectid: nextId,
-    tilesets: [
-      {
-        firstgid: 1,
-        name: 'grove',
-        tilewidth: TILE,
-        tileheight: TILE,
-        tilecount: 8,
-        columns: 8,
-        spacing: 0,
-        margin: 0,
-        image: 'grove.png',
-        imagewidth: 256,
-        imageheight: 32,
-      },
-    ],
+    type: 'map', version: '1.10', tiledversion: '1.10.2',
+    orientation: 'orthogonal', renderorder: 'right-down', infinite: false,
+    width, height, tilewidth: TILE, tileheight: TILE,
+    nextlayerid: 6, nextobjectid: nextId,
+    tilesets: [{
+      firstgid: 1, name: 'grove',
+      tilewidth: TILE, tileheight: TILE,
+      tilecount: TILE_COUNT, columns: TILE_COUNT,
+      spacing: 0, margin: 0,
+      image: 'grove.png',
+      imagewidth: TILE_COUNT * TILE, imageheight: TILE,
+    }],
     layers: [
       tileLayer(1, 'ground', ground, width, height),
       tileLayer(2, 'decoration', decoration, width, height),

@@ -18,8 +18,8 @@
   "pois": [
     {
       "type": "hidden_cave",
-      "x": 219264,
-      "y": 219520,
+      "x": 1534848,
+      "y": 1536640,
       "radius": 280,
       "id": "cave.stone_canyon"
     }
