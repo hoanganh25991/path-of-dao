@@ -4,16 +4,15 @@
     {
       "trigger": "onEnter",
       "enemies": [
-        {
-          "id": "enemy.slime",
-          "count": 3,
-          "spread": 100
-        },
-        {
-          "id": "enemy.wolf",
-          "count": 2,
-          "spread": 120
-        }
+        { "id": "enemy.village.scavenger", "count": 6, "spread": 160 },
+        { "id": "enemy.wolf", "count": 4, "spread": 180 }
+      ]
+    },
+    {
+      "trigger": "onWaveCleared",
+      "enemies": [
+        { "id": "enemy.village.scavenger", "count": 4, "spread": 140 },
+        { "id": "enemy.village.spirit_pest", "count": 4, "spread": 150 }
       ]
     }
   ]

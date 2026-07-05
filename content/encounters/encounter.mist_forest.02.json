@@ -4,26 +4,15 @@
     {
       "trigger": "onEnter",
       "enemies": [
-        {
-          "id": "enemy.spirit.wisp",
-          "count": 3,
-          "spread": 120
-        },
-        {
-          "id": "enemy.elite.shadow",
-          "count": 1,
-          "spread": 80
-        }
+        { "id": "enemy.spirit.wisp", "count": 4, "spread": 160 },
+        { "id": "enemy.spirit.fox", "count": 4, "spread": 170 }
       ]
     },
     {
       "trigger": "onWaveCleared",
       "enemies": [
-        {
-          "id": "boss.mist_stalker",
-          "count": 1,
-          "spread": 0
-        }
+        { "id": "enemy.spirit.moth", "count": 3, "spread": 140 },
+        { "id": "boss.mist_stalker", "count": 1, "spread": 0 }
       ]
     }
   ]

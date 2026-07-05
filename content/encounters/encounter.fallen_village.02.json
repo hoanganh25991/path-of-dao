@@ -4,26 +4,15 @@
     {
       "trigger": "onEnter",
       "enemies": [
-        {
-          "id": "enemy.heng_yue.disciple",
-          "count": 3,
-          "spread": 130
-        },
-        {
-          "id": "enemy.totem",
-          "count": 1,
-          "spread": 0
-        }
+        { "id": "enemy.heng_yue.disciple", "count": 5, "spread": 160 },
+        { "id": "enemy.wolf", "count": 3, "spread": 180 }
       ]
     },
     {
       "trigger": "onWaveCleared",
       "enemies": [
-        {
-          "id": "boss.jade_guardian",
-          "count": 1,
-          "spread": 0
-        }
+        { "id": "enemy.heng_yue.disciple", "count": 3, "spread": 140 },
+        { "id": "boss.jade_guardian", "count": 1, "spread": 0 }
       ]
     }
   ]

@@ -22,7 +22,7 @@ import {
 } from '@/combat/systems/EncounterScaling';
 import { getRealmOrder } from '@/progression/RealmStatScaling';
 
-export const MAX_ALIVE = 18;
+export const MAX_ALIVE = 24;
 const NEXT_WAVE_DELAY_MS = 1500;
 const WAVE_RESET_DELAY_MS = 1700;
 const MELEE_HIT_SLACK = 1.3;
