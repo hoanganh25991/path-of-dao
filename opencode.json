@@ -1,10 +1,24 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "openrouter/deepseek/deepseek-v4-pro:nitro",
+  "model": "openrouter/deepseek/deepseek-v4-pro",
   "provider": {
     "openrouter": {
       "options": {
-        "apiKey": "{env:OPENROUTER_API_KEY}"
+        "apiKey": "{env:OPENROUTER_API_KEY}",
+        "headerTimeout": false
+      },
+      "model": {
+        "deepseek/deepseek-v4-pro": {
+          "options": {
+            "openrouter": {
+              "provider": {
+                "allow_fallbacks": true,
+                "order": ["DeepInfra", "Groq", "Together"],
+                "require_parameters": true
+              }
+            }
+          }
+        }
       }
     },
     "openai": {

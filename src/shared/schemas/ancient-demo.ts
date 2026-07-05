@@ -14,6 +14,9 @@ export const ancientSaveTemplateSchema = z.object({
     primary: z.string(),
     secondary: z.string(),
     ultimate: z.string(),
+    skill3: z.string().optional().default(''),
+    skill4: z.string().optional().default(''),
+    skill5: z.string().optional().default(''),
   }),
   equipped: z.object({
     weapon: z.string().nullable(),

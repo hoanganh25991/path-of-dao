@@ -11,7 +11,9 @@
         "skill.void.slash",
         "skill.sword.slash",
         "skill.flame.bolt",
-        "skill.life.mend"
+        "skill.life.mend",
+        "skill.basic.meditate",
+        "skill.lightning.strike"
       ],
       "highlightKeys": ["demo.highlight.breakthrough", "demo.highlight.qi_condensation", "demo.highlight.cultivate"],
       "startScene": "home",
@@ -31,7 +33,10 @@
         "equippedSkills": {
           "primary": "skill.void.slash",
           "secondary": "skill.sword.slash",
-          "ultimate": "skill.flame.bolt"
+          "ultimate": "skill.flame.bolt",
+          "skill3": "skill.life.mend",
+          "skill4": "skill.basic.meditate",
+          "skill5": "skill.lightning.strike"
         },
         "equipped": {
           "weapon": "item.sword.wood",
@@ -83,7 +88,10 @@
         "equippedSkills": {
           "primary": "skill.void.slash",
           "secondary": "skill.sword.slash",
-          "ultimate": "skill.time.slow"
+          "ultimate": "skill.time.slow",
+          "skill3": "skill.lightning.strike",
+          "skill4": "skill.void.slash.awakened",
+          "skill5": "skill.sword.slash.awakened"
         },
         "equipped": {
           "weapon": "item.sword.iron",
@@ -139,7 +147,10 @@
         "equippedSkills": {
           "primary": "skill.sword.slash.awakened",
           "secondary": "skill.lightning.strike.awakened",
-          "ultimate": "skill.flame.bolt.awakened"
+          "ultimate": "skill.flame.bolt.awakened",
+          "skill3": "skill.void.slash.awakened",
+          "skill4": "skill.sword.slash",
+          "skill5": "skill.lightning.strike"
         },
         "equipped": {
           "weapon": "item.sword.iron",
@@ -195,7 +206,10 @@
         "equippedSkills": {
           "primary": "skill.flame.bolt.awakened",
           "secondary": "skill.life.mend.awakened",
-          "ultimate": "skill.void.slash.awakened"
+          "ultimate": "skill.void.slash.awakened",
+          "skill3": "skill.lightning.strike.awakened",
+          "skill4": "skill.flame.bolt",
+          "skill5": "skill.life.mend"
         },
         "equipped": {
           "weapon": "item.sword.wood",
@@ -251,7 +265,10 @@
         "equippedSkills": {
           "primary": "skill.void.slash.awakened",
           "secondary": "skill.flame.bolt",
-          "ultimate": "skill.life.mend"
+          "ultimate": "skill.life.mend",
+          "skill3": "skill.time.slow",
+          "skill4": "skill.sword.slash.awakened",
+          "skill5": "skill.void.slash"
         },
         "equipped": {
           "weapon": "item.sword.ancient",
@@ -317,7 +334,10 @@
         "equippedSkills": {
           "primary": "skill.void.slash.awakened",
           "secondary": "skill.sword.slash.awakened",
-          "ultimate": "skill.time.slow.awakened"
+          "ultimate": "skill.time.slow.awakened",
+          "skill3": "skill.flame.bolt.awakened",
+          "skill4": "skill.lightning.strike.awakened",
+          "skill5": "skill.life.mend.awakened"
         },
         "equipped": {
           "weapon": "item.sword.ancient",

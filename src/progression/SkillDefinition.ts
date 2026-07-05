@@ -57,7 +57,7 @@ export const skillVfxSchema = z.object({
 
 export const skillDefinitionSchema = z.object({
   id: z.string().min(1),
-  intent: z.enum(['sword', 'void', 'flame', 'lightning', 'time', 'life']),
+  intent: z.enum(['sword', 'void', 'flame', 'lightning', 'time', 'life', 'basic']),
   nameKey: z.string().min(1),
   kind: skillKindSchema,
   manaCost: z.number().int().min(0),

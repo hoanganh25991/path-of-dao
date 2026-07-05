@@ -101,9 +101,9 @@ export const TILE_DEFS: Record<string, TileDef> = {
     wall: true,
   },
   cliff: {
-    gid: 15, name: 'Cliff', category: TileCategory.Rock,
-    surface: '#6a6a75', edge: '#3d3d48', detail: '#505058',
-    highlight: '#808088', shadow: '#282830', speckle: '#757580',
+    gid: 15, name: 'Space Border', category: TileCategory.Rock,
+    surface: '#101830', edge: '#060810', detail: '#1a2860',
+    highlight: '#3040a0', shadow: '#040610', speckle: '#5060c0',
     wall: true,
   },
   gravel: {

@@ -132,34 +132,38 @@
 
 .skill-detail-tabs {
   display: flex;
-  gap: 0.4rem;
-  padding: 0.15rem 0;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  flex-wrap: wrap;
 }
 
 .skill-detail-tabs__tab {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(12, 14, 20, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: rgba(20, 24, 36, 0.95);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 6px rgba(100, 120, 180, 0.15);
 }
 
 .skill-detail-tabs__tab--active {
-  border-color: rgba(45, 212, 168, 0.7);
-  box-shadow: 0 0 12px rgba(45, 212, 168, 0.2);
+  border-color: rgba(45, 212, 168, 0.8);
+  box-shadow: 0 0 14px rgba(45, 212, 168, 0.3);
 }
 
 .skill-detail-tabs__tab--awakened {
-  border-color: rgba(255, 220, 120, 0.35);
+  border-color: rgba(255, 220, 120, 0.45);
+  box-shadow: 0 0 10px rgba(255, 200, 80, 0.2);
 }
 
 .skill-detail-tabs__tab .skill-btn__icon {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
 }
 
 .skill-loadout__pool-icons {

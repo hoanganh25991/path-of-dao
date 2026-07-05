@@ -42,6 +42,7 @@ function vline(ctx: CanvasRenderingContext2D, x: number, y1: number, y2: number,
 }
 
 let seed = 0;
+export function resetTileSeed(v: number): void { seed = v * 16807 + 1; }
 function rs(): number {
   seed = (seed * 16807 + 1) % 2147483647;
   return seed / 2147483647;
@@ -422,23 +423,62 @@ function drawRock(ctx: CanvasRenderingContext2D, def: TileDef): void {
 }
 
 function drawCliff(ctx: CanvasRenderingContext2D, def: TileDef): void {
-  drawSurfaceArea(ctx, def, 0, SH - 4);
+  // Deep space background
+  vRamp(ctx, 0, 0, T, SH, '#0a1028', '#101838');
 
-  const faceH = T - (SH - 4);
-  vRamp(ctx, 0, SH - 4, T, faceH, def.edge, def.shadow);
+  // Nebula haze — large soft color patches
+  for (let i = 0; i < 4; i++) {
+    const nx = rng(T);
+    const ny = rng(SH - 6);
+    const nr = 4 + rng(8);
+    const [nrR, nrG, nrB] = hex(def.detail);
+    ctx.fillStyle = rgbaStr(nrR, nrG, nrB, 0.15 + rs() * 0.2);
+    ctx.beginPath();
+    ctx.arc(nx, ny, nr, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
-  // Horizontal crack lines
-  for (let row = SH - 2; row < T - 2; row += 3) {
-    hline(ctx, 2, T - 2, row, def.shadow);
+  // Bright stars — small white/blue dots
+  for (let i = 0; i < 18; i++) {
+    const sx = rng(T - 2) + 1;
+    const sy = rng(SH - 4) + 1;
+    const brightness = 0.4 + rs() * 0.6;
+    const [sr, sg, sb] = hex(def.highlight);
+    ctx.fillStyle = rgbaStr(sr, sg, sb, brightness);
+    // Cross-shaped star
+    pset(ctx, sx, sy, rgbaStr(sr, sg, sb, brightness));
     if (rs() > 0.5) {
-      const cx = rng(T - 10) + 5;
-      hline(ctx, cx, cx + 4, row, def.speckle);
+      pset(ctx, sx - 1, sy, rgbaStr(sr, sg, sb, brightness * 0.6));
+      pset(ctx, sx + 1, sy, rgbaStr(sr, sg, sb, brightness * 0.6));
+      pset(ctx, sx, sy - 1, rgbaStr(sr, sg, sb, brightness * 0.6));
+      pset(ctx, sx, sy + 1, rgbaStr(sr, sg, sb, brightness * 0.6));
     }
   }
 
-  // Clean top edge
-  hline(ctx, 0, T, SH - 4, '#000000');
-  hline(ctx, 0, T, SH - 5, def.highlight);
+  // Twinkling distant stars — single pixels
+  for (let i = 0; i < 30; i++) {
+    const tx = rng(T);
+    const ty = rng(SH - 3);
+    const alpha = 0.2 + rs() * 0.5;
+    ctx.fillStyle = rgbaStr(200, 210, 255, alpha);
+    pset(ctx, tx, ty, rgbaStr(200, 210, 255, alpha));
+  }
+
+  // Cosmic void front face with depth
+  const faceH = T - (SH - 2);
+  vRamp(ctx, 0, SH - 2, T, faceH, '#050810', '#020408');
+
+  // Subtle void particles in the depth
+  for (let i = 0; i < 8; i++) {
+    const vx = rng(T);
+    const vy = SH + rng(faceH - 2);
+    ctx.fillStyle = rgbaStr(60, 70, 120, 0.3);
+    pset(ctx, vx, vy, rgbaStr(60, 70, 120, 0.3));
+  }
+
+  // Clean horizon line between space and void
+  hline(ctx, 0, T, SH - 2, 'rgba(48,64,160,0.4)');
+  hline(ctx, 0, T, SH - 3, 'rgba(80,100,200,0.3)');
 }
 
 function drawCaveEntrance(ctx: CanvasRenderingContext2D, def: TileDef): void {
@@ -605,7 +645,7 @@ const DRAW: Record<string, DrawFn> = {
   'Canopy': drawCanopy,
   'Flower': drawFlower,
   'Rock': drawRock,
-  'Cliff': drawCliff,
+  'Space Border': drawCliff,
   'Gravel': drawGravel,
   'Cave': drawCaveEntrance,
   'Wood Fence': drawWoodFence,

@@ -1,6 +1,6 @@
 import type Phaser from 'phaser';
 import { TILE_LIST, TILE_SIZE, type BiomePalette, type TileDef, applyBiomeToTile, BIOME_PALETTES } from './TilesetTypes';
-import { drawTile } from './TilesetDraw';
+import { drawTile, resetTileSeed } from './TilesetDraw';
 
 export { BIOME_PALETTES };
 
@@ -29,6 +29,7 @@ function generateTilesetCanvas(): HTMLCanvasElement {
   const ctx = canvas.getContext('2d')!;
 
   for (const def of TILE_LIST) {
+    resetTileSeed(def.gid);
     const biomeDef = applyBiomeToTile(def, _currentBiome);
     ctx.save();
     ctx.translate((def.gid - 1) * TILE_SIZE, 0);

@@ -60,15 +60,15 @@ export function coerceEquippedSkills(raw: unknown): EquippedSkills {
   }
 
   if (raw && typeof raw === 'object') {
-    const legacy = raw as Partial<Record<'primary' | 'secondary' | 'ultimate', string>>;
+    const legacy = raw as Partial<Record<'primary' | 'secondary' | 'ultimate' | 'skill3' | 'skill4' | 'skill5', string>>;
     if ('primary' in legacy || 'secondary' in legacy || 'ultimate' in legacy) {
       return [
         legacy.primary ?? '',
         legacy.secondary ?? '',
         legacy.ultimate ?? '',
-        '',
-        '',
-        '',
+        legacy.skill3 ?? '',
+        legacy.skill4 ?? '',
+        legacy.skill5 ?? '',
       ];
     }
   }

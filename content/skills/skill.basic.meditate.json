@@ -1,6 +1,6 @@
 {
   "id": "skill.basic.meditate",
-  "intent": "life",
+  "intent": "basic",
   "nameKey": "skill.basic.meditate.name",
   "kind": "meditate",
   "manaCost": 0,
