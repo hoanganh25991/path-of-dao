@@ -1,1 +1,0 @@
-if('serviceWorker' in navigator) navigator.serviceWorker.register('/path-of-dao/dev-sw.js?dev-sw', { scope: '/path-of-dao/', type: 'classic' })
