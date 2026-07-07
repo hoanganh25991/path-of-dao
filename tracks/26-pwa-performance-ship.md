@@ -17,7 +17,7 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 - **Save settings** — `settings.quality` (back-compat default `auto`)
 - **Settings modal** — performance picker + fullscreen toggle (On/Off) + version row (`0.1.0-mvp`)
 - **PWA** — `vite-plugin-pwa`, `public/manifest.json`, SW precache; **GitHub Pages base** `/path-of-dao/`; **landscape** orientation
-- **App icons** — unarmed cultivator jab pose (no sword — matches T1 mortal start); regen via `python3 tools/gen-app-icon.py`
+- **App icons** — unarmed cultivator standing pose (no sword, no reticle — Google Play metadata safe); regen via `python3 tools/gen-app-icon.py`
 - **Build** — manual chunks (`phaser`, `three`, `vendor`); build + SW generation green
 - **CI** — unit job + **e2e job** (Playwright chromium)
 - **E2E smoke** — `tests/e2e/smoke.spec.ts`: boot → **Continue Journey** → combat → home → Continue again → vi locale

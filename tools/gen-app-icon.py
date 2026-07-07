@@ -2,6 +2,7 @@
 """Generate Path of Dao app icons (PWA + Google Play hi-res).
 
 Pixel-art unarmed cultivator (mortal start — no weapon) on a void background.
+No rings/reticles — store-safe for Google Play metadata policy.
 Matches sticky-man palettes from src/combat/art/stickyManPalette.ts.
 
 Run:  python3 tools/gen-app-icon.py
@@ -97,34 +98,23 @@ def limb_end(ox, oy, angle_deg, length):
 
 
 def draw_background(g):
-    """Radial void gradient with subtle dao ring."""
-    cx, cy = g.n // 2, g.n // 2
-    max_r = g.n * 0.72
+    """Flat void field with scattered qi motes — no rings, reticles, or framing shapes."""
     for y in range(g.n):
         for x in range(g.n):
-            dist = math.hypot(x - cx, y - cy) / max_r
-            if dist > 1:
-                g.px(x, y, VOID_DARK)
-            elif dist > 0.85:
-                g.px(x, y, VOID_MID)
-            elif dist > 0.55:
-                g.px(x, y, VOID_GLOW)
-            else:
-                g.px(x, y, VOID_MID)
+            g.px(x, y, VOID_MID)
 
-    g.ring(cx, cy, 26, GOLD, 1)
-    g.ring(cx, cy, 24, SHADOW, 1)
-    for angle in (0, 90, 180, 270):
-        rad = math.radians(angle)
-        x0 = cx + math.sin(rad) * 22
-        y0 = cy - math.cos(rad) * 22
-        x1 = cx + math.sin(rad) * 27
-        y1 = cy - math.cos(rad) * 27
-        g.line(x0, y0, x1, y1, GOLD_HI, 2)
-
-    for sx, sy in ((10, 14), (52, 18), (14, 50), (48, 46), (32, 8), (8, 32)):
+    # Scattered qi sparkles — asymmetric, no cardinal sight marks.
+    for sx, sy in ((10, 14), (52, 18), (14, 50), (48, 46), (32, 8), (8, 32),
+                   (54, 40), (12, 28), (44, 54), (24, 10), (40, 56)):
         g.px(sx, sy, CYAN)
-        g.px(sx + 1, sy, CYAN)
+        if sx < g.n - 1:
+            g.px(sx + 1, sy, CYAN)
+
+    # Gentle upward dao wisps (gold energy trails, not weapon sights).
+    for ox, oy, angle in ((18, 52, -55), (46, 50, -125), (30, 54, -90)):
+        tip = limb_end(ox, oy, angle, 5)
+        g.line(ox, oy, tip[0], tip[1], GOLD, 1)
+        g.px(tip[0], tip[1], GOLD_HI)
 
 
 def draw_hero_top_hair(g, cx, head_y, head_r):
@@ -139,7 +129,7 @@ def draw_hero_top_hair(g, cx, head_y, head_r):
 
 
 def sticky_man(g, cx=32, top=14):
-    """Unarmed cultivator facing right — jab pose, empty hands."""
+    """Unarmed cultivator facing viewer — calm standing pose, empty hands."""
     head_r = 5
     head_y = top + head_r
     shoulder_y = head_y + head_r + 2
@@ -147,34 +137,25 @@ def sticky_man(g, cx=32, top=14):
 
     for sign, fill in ((-1, SHADOW), (1, FILL)):
         hx = cx + sign * 3
-        knee = limb_end(hx, hip_y, sign * 10, 10)
-        foot = limb_end(knee[0], knee[1], sign * 6, 12)
+        knee = limb_end(hx, hip_y, sign * 8, 10)
+        foot = limb_end(knee[0], knee[1], sign * 4, 12)
         g.line(hx, hip_y, knee[0], knee[1], OUTLINE, 4)
         g.line(hx, hip_y, knee[0], knee[1], fill, 2)
         g.line(knee[0], knee[1], foot[0], foot[1], OUTLINE, 4)
         g.line(knee[0], knee[1], foot[0], foot[1], fill, 2)
 
-    # Back arm — relaxed guard at side.
-    bk_elbow = limb_end(cx - 4, shoulder_y, -18, 9)
-    bk_fist = limb_end(bk_elbow[0], bk_elbow[1], -8, 7)
-    g.line(cx - 4, shoulder_y, bk_elbow[0], bk_elbow[1], OUTLINE, 4)
-    g.line(cx - 4, shoulder_y, bk_elbow[0], bk_elbow[1], SKIN, 2)
-    g.line(bk_elbow[0], bk_elbow[1], bk_fist[0], bk_fist[1], OUTLINE, 3)
-    g.line(bk_elbow[0], bk_elbow[1], bk_fist[0], bk_fist[1], SKIN, 2)
+    # Arms relaxed at sides — no strike pose toward the viewer.
+    for side in (-1, 1):
+        sx = cx + side * 4
+        elbow = limb_end(sx, shoulder_y, side * 12, 9)
+        fist = limb_end(elbow[0], elbow[1], side * 6, 7)
+        g.line(sx, shoulder_y, elbow[0], elbow[1], OUTLINE, 4)
+        g.line(sx, shoulder_y, elbow[0], elbow[1], SKIN, 2)
+        g.line(elbow[0], elbow[1], fist[0], fist[1], OUTLINE, 3)
+        g.line(elbow[0], elbow[1], fist[0], fist[1], SKIN, 2)
 
     g.rect(cx - 4, shoulder_y, cx + 4, hip_y, FILL, OUTLINE)
     g.line(cx - 4, hip_y - 2, cx + 4, hip_y - 2, GOLD, 2)
-
-    # Front arm — forward jab (unarmed strike).
-    fr_elbow = limb_end(cx + 4, shoulder_y, 28, 10)
-    fr_fist = limb_end(fr_elbow[0], fr_elbow[1], -42, 9)
-    g.line(cx + 4, shoulder_y, fr_elbow[0], fr_elbow[1], OUTLINE, 4)
-    g.line(cx + 4, shoulder_y, fr_elbow[0], fr_elbow[1], SKIN, 2)
-    g.line(fr_elbow[0], fr_elbow[1], fr_fist[0], fr_fist[1], OUTLINE, 4)
-    g.line(fr_elbow[0], fr_elbow[1], fr_fist[0], fr_fist[1], SKIN, 2)
-    g.px(fr_fist[0], fr_fist[1], OUTLINE)
-    g.px(fr_fist[0] + 1, fr_fist[1], SKIN)
-    g.px(fr_fist[0], fr_fist[1] + 1, SKIN)
 
     g.disc(cx, head_y, head_r, SKIN, OUTLINE)
     band_y = head_y - 2
