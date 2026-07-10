@@ -355,13 +355,13 @@ flowchart LR
 
 | Done | Remaining |
 |------|-----------|
-| Web Audio buses; **26 procedural SFX**, **6 BGM** with mood profiles | Replace with real OGG assets |
-| Preset synthesis (impacts, skills, stings, loot); crit + duck mix | File playback in AudioManager |
-| First-visit unlock overlay; silent resume on return | Boss telegraph SFX (no event yet) |
-| BGM crossfade; per-map BGM (Fallen Village melancholy); **home/story calm sine pad** (startup buzz fix) | Low-end juice disable profile (26) |
-| Hit-stop, camera shake, crit flash | Boss phase screen darken (visual) |
-| `ui.panel_open` + `loot.pickup` wired; UI bus tier | Dedicated UI volume slider |
-| Home aura pulse Core Formation+ | `player.land` (no jump mechanic) |
+| Web Audio buses; **26 procedural SFX**; **6 real BGM file loops** (oriental/cultivation) | Real SFX OGG one-shots |
+| File BGM playback (MP3/OGG, cache, crossfade); licenses in `assets/audio/README.md` | Boss telegraph SFX (no event yet) |
+| First-visit unlock overlay; silent resume on return | Low-end juice disable profile (26) |
+| Preset SFX; crit + duck; per-map Fallen Village BGM | Boss phase screen darken (visual) |
+| Hit-stop, camera shake, crit flash | Dedicated UI volume slider |
+| `ui.panel_open` + `loot.pickup` wired; UI bus tier | `player.land` (no jump mechanic) |
+| Home aura pulse Core Formation+ | |
 
 → [full track](./25-audio-vfx-polish.md) — **What needs to do** table
 

@@ -7,7 +7,6 @@ public/audio/
   bgm/
     home.{mp3,ogg}            — shrine / Home scene
     story.{mp3,ogg}           — story reader
-    explore.{mp3,ogg}         — calm explore bed (source for fallen village)
     fallen_village.{mp3,ogg}  — Fallen Village star map
     combat.{mp3,ogg}          — generic combat
     boss.{mp3,ogg}            — boss tension bed
@@ -40,7 +39,7 @@ SFX remain `"type": "procedural"` until real one-shots land.
 |------|--------|--------|---------|
 | `home.*` | [Asianoriental1](https://opengameart.org/content/asianoriental1) | Tozan | CC0 |
 | `story.*` | [Tyhosi Garden 3](https://opengameart.org/content/tyhosi-garden-3) | Tozan | CC0 |
-| `explore.*` / `fallen_village.*` | [Oriental Somber](https://opengameart.org/content/oriental-somber) | Tozan | CC0 |
+| `fallen_village.*` | [Oriental Somber](https://opengameart.org/content/oriental-somber) | Tozan | CC0 |
 | `victory.*` | [Koto Short](https://opengameart.org/content/koto-short) (trimmed) | Tozan | CC0 |
 | `combat.*` | [Samurai Nights](https://opengameart.org/content/samurai-nights) demo | Majadroid | OGA-BY 3.0 |
 | `boss.*` | Mixed from Samurai Nights single loops (qin + erhu + beat) | Majadroid | OGA-BY 3.0 |

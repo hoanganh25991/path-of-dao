@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_void_sovereign.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "circle",
+  "telegraphMs": 300,
+  "telegraphColor": 3018853,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,10 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [],
+      "attackShape": "aoe_ring",
+      "telegraphMs": 260,
+      "telegraphColor": 5774471
     },
     {
       "hpThreshold": 0.25,
@@ -45,7 +51,10 @@
           "id": "enemy.void.shade",
           "count": 2
         }
-      ]
+      ],
+      "attackShape": "circle",
+      "telegraphMs": 180,
+      "telegraphColor": 16723285
     }
   ]
 }
