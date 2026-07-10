@@ -1375,6 +1375,34 @@ header.home-profile {
   font-size: 0.8125rem;
 }
 
+.home-lore__body {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--dao-text-muted, rgba(255, 255, 255, 0.72));
+  font-style: italic;
+}
+
+.home-lore__claimed {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #1a2e28;
+  background: linear-gradient(135deg, #7fd4b8 0%, #5fb89e 100%);
+}
+
+.home-path__detail {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--dao-text-muted, rgba(255, 255, 255, 0.7));
+  font-style: italic;
+}
+
 .home-story__replay {
   min-height: 36px;
   min-width: 64px;

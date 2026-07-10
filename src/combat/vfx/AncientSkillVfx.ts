@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { InsightIntentId, SkillKind } from '@/progression/SkillDefinition';
 import { VFX_TEXTURE_KEYS } from '@/combat/art/pixelVfxDraw';
-import { spawnPixelSparks } from '@/combat/skills/VFXLibrary';
+import { playAncientIntentFlourish, spawnPixelSparks } from '@/combat/skills/VFXLibrary';
 import { getIntentVisual } from '@/ui/skills/SkillIcon';
 
 const ANCIENT_AMP = 4.5;
@@ -11,7 +11,7 @@ export function getAncientSkillAmp(isGodMode: boolean): number {
   return isGodMode ? ANCIENT_AMP : 1;
 }
 
-/** Screen shake + pixel burst when an ancient unleashes a skill. */
+/** Screen shake + intent-colored burst when an ancient unleashes a skill. */
 export function burstAncientSkill(
   scene: Phaser.Scene,
   x: number,
@@ -44,4 +44,5 @@ export function burstAncientSkill(
   });
 
   spawnPixelSparks(scene, x, y, parseInt(visual.color.slice(1), 16), 8, kind === 'arc' ? 48 : 36, 49);
+  playAncientIntentFlourish(scene, intent, x, y - 18, ANCIENT_AMP);
 }

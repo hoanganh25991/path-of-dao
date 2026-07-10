@@ -21,6 +21,8 @@
   "path.kind.breakthrough": "Đột Phá",
   "path.kind.boss": "Trùm",
   "path.kind.encounter": "Cơ Duyên",
+  "path.kind.lore": "Ký Ức",
+  "home.lore.claimed": "Đã giữ trên con đường",
   "path.stage.explore": "Thám Hiểm",
   "path.stage.ordeal": "Thử Thách",
   "path.strength.level": "Cấp {level}",

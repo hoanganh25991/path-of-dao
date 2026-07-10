@@ -18,6 +18,8 @@ import { I18nManager } from '@/core/i18n/I18nManager';
 import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import { EquipmentManager } from '@/progression/EquipmentManager';
+import { applyEncounterReward } from '@/progression/FortuitousEncounterManager';
+import { getEncounterDefinition } from '@/progression/EncounterLoader';
 import { formatCombatPower } from '@/progression/CombatPower';
 import { HomeUI } from '@/ui/home/HomeUI';
 import { showSettingsModal } from '@/ui/modals/SettingsModal';
@@ -72,6 +74,30 @@ describe('HomeUI', () => {
 
     HomeUI.openTab('story');
     expect(uiRoot.querySelector('[data-panel="story"]')).toBeTruthy();
+  });
+
+  it('My Path shows claimed Wang Family Memory lore with confirmation badge', () => {
+    const save = gameStore.getState().save!;
+    const encounter = getEncounterDefinition('encounter.forgotten_memory');
+    const patch = applyEncounterReward(encounter, save);
+    gameStore.getState().patch(patch);
+
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+    HomeUI.openTab('story');
+
+    const loreRow = uiRoot.querySelector('[data-testid="home-lore-row-lore.fallen_village.memory_01"]');
+    expect(loreRow).toBeTruthy();
+    expect(loreRow?.textContent).toContain('Wang Family Memory');
+    expect(loreRow?.textContent).toContain('village bell still rings');
+    expect(loreRow?.textContent).toContain('Kept on your path');
+
+    const encounterRow = uiRoot.querySelector(
+      '[data-testid="home-path-row-encounter-encounter.forgotten_memory"]',
+    );
+    expect(encounterRow).toBeTruthy();
+    expect(encounterRow?.textContent).toContain('Kept on your path');
   });
 
   it('profile Dharma unequip from slot then inventory card opens detail', () => {

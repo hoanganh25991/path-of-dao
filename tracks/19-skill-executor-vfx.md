@@ -19,6 +19,8 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 - **Heavenly Thunder** — `thunder_strike` vertical bolt from sky (not horizontal projectile sprite)
 - **Thunder Chain (awakened)** — `thunder_chain` jumps between in-range foes with link VFX
 - Enemy target provider wired MapScene → CombatComponent → SkillExecutor for chain targeting
+- **Intent-unique pixel textures** — void rift arc, sword qi, thunder column, life pulse, time vortex, flame comet orb
+- **Ancient echo flourishes** — god-mode casts add per-intent elemental burst via `playAncientIntentFlourish`
 - Cooldown manager per skill slot
 - Awakened void: pull field then projectile
 - Awakened flame: twin AoE damage ticks

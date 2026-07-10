@@ -20,6 +20,11 @@ export const VFX_TEXTURE_KEYS = {
   flameOrb: 'vfx-flame-orb',
   voidShard: 'vfx-void-shard',
   timeOrb: 'vfx-time-orb',
+  voidRift: 'vfx-void-rift',
+  swordQi: 'vfx-sword-qi',
+  thunderColumn: 'vfx-thunder-column',
+  lifePulse: 'vfx-life-pulse',
+  timeVortex: 'vfx-time-vortex',
 } as const;
 
 function px(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size = 1): void {
@@ -152,17 +157,21 @@ export function drawBoltCanvas(): HTMLCanvasElement {
   });
 }
 
-/** Searing flame orb — round core with flickering mantle. */
+/** Searing flame orb — round core with comet tail. */
 export function drawFlameOrbCanvas(): HTMLCanvasElement {
-  const size = 18;
+  const size = 20;
   return withCtx(size, size, (ctx) => {
     const c = size / 2;
-    pixelArc(ctx, c, c, 7, 0, Math.PI * 2, '#ff5020', 2);
-    pixelArc(ctx, c, c, 5, 0, Math.PI * 2, '#ff9040', 2);
-    px(ctx, c - 1, c - 1, '#ffffff', 2);
-    px(ctx, c + 4, c - 3, '#ffb060');
-    px(ctx, c - 4, c + 2, '#ff7040');
-    px(ctx, c + 2, c + 4, '#ffd080');
+    // Comet tail (authored trailing left)
+    pixelLine(ctx, 0, c, 6, c - 1, '#ff5020', 2);
+    pixelLine(ctx, 2, c + 1, 7, c, '#ff8040', 1);
+    px(ctx, 1, c - 2, '#ffb060');
+    pixelArc(ctx, c + 1, c, 7, 0, Math.PI * 2, '#ff5020', 2);
+    pixelArc(ctx, c + 1, c, 5, 0, Math.PI * 2, '#ff9040', 2);
+    px(ctx, c, c - 1, '#ffffff', 2);
+    px(ctx, c + 5, c - 3, '#ffb060');
+    px(ctx, c - 2, c + 2, '#ff7040');
+    px(ctx, c + 3, c + 4, '#ffd080');
   });
 }
 
@@ -323,7 +332,7 @@ export function drawAuraRingCanvas(): HTMLCanvasElement {
   });
 }
 
-/** Zigzag lightning bolt — distinct from the rounded spirit bolt. */
+/** Zigzag lightning bolt — horizontal fork arcs (not heavenly thunder). */
 export function drawLightningBoltCanvas(): HTMLCanvasElement {
   const size = 32;
   return withCtx(size, size, (ctx) => {
@@ -336,10 +345,30 @@ export function drawLightningBoltCanvas(): HTMLCanvasElement {
       const b = path[i + 1]!;
       pixelLine(ctx, a[0], a[1], b[0], b[1], '#ffffff', 3);
     }
-    // Glow halo
     const mid = path[4]!;
     pixelArc(ctx, mid[0], mid[1], 6, 0, Math.PI * 2, '#ffffff', 1);
     pixelArc(ctx, mid[0], mid[1], 8, 0, Math.PI * 2, 'rgba(255,232,0,0.6)', 1);
+  });
+}
+
+/** Vertical thunder column — heavenly strike impact (top = sky). */
+export function drawThunderColumnCanvas(): HTMLCanvasElement {
+  const w = 24;
+  const h = 48;
+  return withCtx(w, h, (ctx) => {
+    const cx = w / 2;
+    const path = [
+      [cx, 2], [cx + 4, 10], [cx - 2, 16], [cx + 5, 22],
+      [cx - 3, 28], [cx + 4, 34], [cx, h - 2],
+    ] as [number, number][];
+    for (let i = 0; i < path.length - 1; i++) {
+      const a = path[i]!;
+      const b = path[i + 1]!;
+      pixelLine(ctx, a[0], a[1], b[0], b[1], '#ffe880', 2);
+      pixelLine(ctx, a[0], a[1], b[0], b[1], '#ffffff', 1);
+    }
+    px(ctx, cx - 1, h - 4, '#ffffff', 3);
+    pixelArc(ctx, cx, h - 3, 5, 0, Math.PI, '#ffe040', 1);
   });
 }
 
@@ -356,11 +385,76 @@ export function drawTimeRippleCanvas(): HTMLCanvasElement {
     pixelRing(ctx, c, c, 10, 'rgba(100,200,240,0.8)', 1);
     pixelRing(ctx, c, c, 14, 'rgba(60,160,220,0.5)', 1);
     pixelRing(ctx, c, c, 18, 'rgba(30,120,200,0.3)', 1);
-    // Tick marks
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * Math.PI * 2;
       px(ctx, c + Math.round(Math.cos(a) * 12), c + Math.round(Math.sin(a) * 12), 'rgba(255,255,255,0.7)');
     }
+  });
+}
+
+/** Void intent melee — ragged purple tear arc. */
+export function drawVoidRiftCanvas(): HTMLCanvasElement {
+  const size = 64;
+  return withCtx(size, size, (ctx) => {
+    const cy = size / 2;
+    pixelArc(ctx, 8, cy, 48, -0.55, 0.55, '#281040', 3);
+    pixelArc(ctx, 8, cy, 46, -0.52, 0.52, '#8060c0', 2);
+    pixelArc(ctx, 8, cy, 44, -0.5, 0.5, '#c0a0ff', 2);
+    pixelLine(ctx, 50, cy - 12, 58, cy - 6, '#e0c0ff', 2);
+    pixelLine(ctx, 52, cy + 8, 60, cy + 14, '#9060ff', 2);
+    px(ctx, 56, cy - 4, '#ffffff', 2);
+  });
+}
+
+/** Sword qi crescent — gold edge, pale core. */
+export function drawSwordQiCanvas(): HTMLCanvasElement {
+  const size = 64;
+  return withCtx(size, size, (ctx) => {
+    const cy = size / 2;
+    pixelArc(ctx, 6, cy, 50, -0.65, 0.65, '#304060', 3);
+    pixelArc(ctx, 6, cy, 49, -0.63, 0.63, '#c9a86a', 2);
+    pixelArc(ctx, 6, cy, 47, -0.6, 0.6, '#e8f0ff', 2);
+    px(ctx, 55, cy - 6, '#ffffff', 2);
+    px(ctx, 57, cy, '#fff8e0', 2);
+    px(ctx, 54, cy + 6, '#ffe8a0');
+  });
+}
+
+/** Rising life pulse — spiral petals lifting upward. */
+export function drawLifePulseCanvas(): HTMLCanvasElement {
+  const size = 40;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    for (let p = 0; p < 5; p++) {
+      const base = (p / 5) * Math.PI * 2 - Math.PI / 2;
+      for (let d = 2; d <= 12; d++) {
+        const spiral = base + d * 0.35;
+        const px2 = c + Math.round(Math.cos(spiral) * d * 0.9);
+        const py = c + Math.round(Math.sin(spiral) * d * 0.6 - d * 0.25);
+        px(ctx, px2, py, d < 5 ? '#e0ffe8' : '#50e878');
+      }
+    }
+    px(ctx, c - 1, c - 2, '#ffffff', 2);
+    pixelLine(ctx, c, c + 6, c, size - 4, '#80ffb0', 1);
+  });
+}
+
+/** Time vortex — slow-field spiral orb. */
+export function drawTimeVortexCanvas(): HTMLCanvasElement {
+  const size = 20;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 3;
+      const r = 2 + (i % 4);
+      px(ctx, c + Math.round(Math.cos(a) * r), c + Math.round(Math.sin(a) * r), i % 2 === 0 ? '#90d0f0' : '#5090b0');
+    }
+    pixelRing(ctx, c, c, 7, '#a0e0ff', 1);
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+    px(ctx, c, 2, '#d0f0ff');
+    px(ctx, c, size - 3, '#d0f0ff');
+    px(ctx, 2, c, '#d0f0ff');
+    px(ctx, size - 3, c, '#d0f0ff');
   });
 }
 
@@ -436,6 +530,11 @@ export function registerPixelVfxAssets(scene: Phaser.Scene): void {
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.flameOrb, drawFlameOrbCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.voidShard, drawVoidShardCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.timeOrb, drawTimeOrbCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.voidRift, drawVoidRiftCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.swordQi, drawSwordQiCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.thunderColumn, drawThunderColumnCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.lifePulse, drawLifePulseCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.timeVortex, drawTimeVortexCanvas());
 }
 
 /** Round world position so scaled sprites land on pixel grid. */

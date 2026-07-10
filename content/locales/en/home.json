@@ -21,6 +21,8 @@
   "path.kind.breakthrough": "Breakthrough",
   "path.kind.boss": "Boss",
   "path.kind.encounter": "Fortune",
+  "path.kind.lore": "Memory",
+  "home.lore.claimed": "Kept on your path",
   "path.stage.explore": "Explore",
   "path.stage.ordeal": "Ordeal",
   "path.strength.level": "Lv {level}",

@@ -2,6 +2,7 @@ import { SceneRouter } from '@/app/SceneRouter';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
 import { describeJourneyEntry } from '@/ui/home/journeyView';
+import { describeLoreEntry, loreBodyForEncounter } from '@/progression/LoreDisplay';
 
 export interface StoryPanelHandles {
   root: HTMLElement;
@@ -26,14 +27,32 @@ export function createStoryPanel(): StoryPanelHandles {
   root.append(title, list);
 
   const renderLore = (loreId: string): HTMLElement => {
+    const view = describeLoreEntry(loreId);
     const row = document.createElement('div');
-    row.className = 'home-story__row home-story__row--lore';
+    row.className = 'home-story__row home-story__row--lore home-path__row';
+    row.dataset.testid = `home-lore-row-${loreId}`;
+
+    const main = document.createElement('div');
+    main.className = 'home-path__main';
+
+    const kind = document.createElement('span');
+    kind.className = 'home-path__kind';
+    kind.textContent = I18nManager.t('path.kind.lore');
 
     const loreTitle = document.createElement('p');
-    loreTitle.className = 'home-story__title';
-    loreTitle.textContent = I18nManager.t(loreId.replace(/^lore\./, 'demo.lore.'));
+    loreTitle.className = 'home-story__title home-path__title';
+    loreTitle.textContent = I18nManager.t(view.titleKey);
 
-    row.appendChild(loreTitle);
+    const body = document.createElement('p');
+    body.className = 'home-lore__body';
+    body.textContent = I18nManager.t(view.bodyKey);
+
+    const claimed = document.createElement('span');
+    claimed.className = 'home-lore__claimed';
+    claimed.textContent = I18nManager.t('home.lore.claimed');
+
+    main.append(kind, loreTitle, body, claimed);
+    row.appendChild(main);
     return row;
   };
 
@@ -77,6 +96,23 @@ export function createStoryPanel(): StoryPanelHandles {
       strength.textContent = view.strength;
 
       main.append(kind, stepTitle, strength);
+
+      if (entry.kind === 'encounter') {
+        const encounterId = entry.refId.split('@')[0] ?? entry.refId;
+        const linkedLoreId = loreBodyForEncounter(encounterId, lore);
+        if (linkedLoreId) {
+          const detail = document.createElement('p');
+          detail.className = 'home-path__detail';
+          detail.textContent = I18nManager.t(linkedLoreId.replace(/^lore\./, 'demo.lore.'));
+          main.appendChild(detail);
+
+          const seized = document.createElement('span');
+          seized.className = 'home-lore__claimed';
+          seized.textContent = I18nManager.t('home.lore.claimed');
+          main.appendChild(seized);
+        }
+      }
+
       row.appendChild(main);
 
       if (view.replay) {

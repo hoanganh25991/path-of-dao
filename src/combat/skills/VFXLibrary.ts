@@ -11,9 +11,26 @@ const RING_TEX_SIZE = 32;
 const AOE_FLAME_TEX = 48;
 const VOID_CRACK_TEX = 48;
 const LIGHTNING_BOLT_TEX = 32;
+const THUNDER_COLUMN_TEX = 48;
 const TIME_RIPPLE_TEX = 40;
 const LIFE_BLOOM_TEX = 40;
+const LIFE_PULSE_TEX = 40;
 const ICE_SPIKE_TEX = 36;
+
+function slashTexture(intent: InsightIntentId): string {
+  switch (intent) {
+    case 'void':
+      return VFX_TEXTURE_KEYS.voidRift;
+    case 'sword':
+      return VFX_TEXTURE_KEYS.swordQi;
+    default:
+      return VFX_TEXTURE_KEYS.slash;
+  }
+}
+
+function slashTexSize(intent: InsightIntentId): number {
+  return intent === 'void' || intent === 'sword' ? SLASH_TEX_SIZE : SLASH_TEX_SIZE;
+}
 
 function projectileTexture(intent: InsightIntentId): string {
   switch (intent) {
@@ -24,7 +41,7 @@ function projectileTexture(intent: InsightIntentId): string {
     case 'void':
       return VFX_TEXTURE_KEYS.voidShard;
     case 'time':
-      return VFX_TEXTURE_KEYS.timeOrb;
+      return VFX_TEXTURE_KEYS.timeVortex;
     case 'sword':
       return VFX_TEXTURE_KEYS.arrow;
     default:
@@ -99,6 +116,7 @@ export function spawnProjectileTrail(
       break;
     case 'time':
       expandRing(scene, x, y, tint, 0.15, 0.55 + power * 0.08, 120, 17, 0.35);
+      spawnPixelSparks(scene, x, y, 0x90d0f0, 1, 5, 17);
       break;
     default:
       spawnPixelSparks(scene, x, y, tint, 1, 5, 18);
@@ -233,11 +251,13 @@ export const VFXLibrary = {
   ): void {
     const { glow } = getIntentVisual(intent);
     const tint = parseColor(glow);
-    const scale = (reach / SLASH_TEX_SIZE) * 1.15 * (0.95 + power * 0.1);
+    const texKey = slashTexture(intent);
+    const texSize = slashTexSize(intent);
+    const scale = (reach / texSize) * 1.15 * (0.95 + power * 0.1);
     const cx = x + facing * SLASH_OFFSET_PX;
     const cy = y;
     const slash = scene.add
-      .image(Math.round(cx), Math.round(cy), VFX_TEXTURE_KEYS.slash)
+      .image(Math.round(cx), Math.round(cy), texKey)
       .setFlipX(facing < 0)
       .setOrigin(0.08, 0.5)
       .setScale(scale)
@@ -306,6 +326,19 @@ export const VFXLibrary = {
     const tint = parseColor(glow);
     const radius = 38 + power * 12;
     VFXLibrary.lifeBloom(scene, x, y - 8, radius);
+    expandSprite(
+      scene,
+      x,
+      y - 14,
+      VFX_TEXTURE_KEYS.lifePulse,
+      LIFE_PULSE_TEX,
+      radius * 0.9,
+      tint,
+      340 + power * 30,
+      23,
+      0.4,
+      1.05,
+    );
     expandRing(scene, x, y - 20, tint, 0.5 + power * 0.05, 2.8 + power * 0.5, 360 + power * 40, 22, 0.9);
     spawnPixelSparks(scene, x, y - 28, tint, Math.floor(4 + power * 2), 16 + power * 5, 23);
   },
@@ -417,6 +450,74 @@ export function playSkillCastVfx(
   if (power >= 2) {
     scene.cameras.main.shake(90, 0.003 + power * 0.0015);
   }
+
+  if (power >= 4) {
+    playAncientIntentFlourish(scene, skill.intent, x, y - 18, power);
+  }
+}
+
+/** Extra elemental read when an ancient echo casts (god-mode amp). */
+export function playAncientIntentFlourish(
+  scene: Phaser.Scene,
+  intent: InsightIntentId,
+  x: number,
+  y: number,
+  power: number,
+): void {
+  const radius = 52 + power * 10;
+  switch (intent) {
+    case 'void':
+      VFXLibrary.voidCrack(scene, x, y, radius);
+      break;
+    case 'flame':
+      VFXLibrary.flamePetal(scene, x, y, radius);
+      break;
+    case 'lightning':
+      expandThunderColumn(scene, x, y + 8, 56 + power * 8, power);
+      break;
+    case 'time':
+      VFXLibrary.timeRipple(scene, x, y, radius + 8);
+      break;
+    case 'life':
+      expandSprite(
+        scene, x, y, VFX_TEXTURE_KEYS.lifePulse, LIFE_PULSE_TEX,
+        radius, 0x80ffb0, 420, 24, 0.5, 1.1,
+      );
+      break;
+    case 'sword':
+      expandSprite(
+        scene, x, y, VFX_TEXTURE_KEYS.swordQi, SLASH_TEX_SIZE,
+        radius, 0xc9a86a, 280, 25, 0.35, 0.95,
+      );
+      break;
+    default:
+      expandRing(scene, x, y, parseColor(getIntentVisual(intent).glow), 0.6, 3.5, 260, 24, 0.8);
+  }
+}
+
+function expandThunderColumn(
+  scene: Phaser.Scene,
+  x: number,
+  groundY: number,
+  displayHeight: number,
+  power: number,
+): void {
+  const targetScale = displayHeight / THUNDER_COLUMN_TEX;
+  const img = scene.add
+    .image(Math.round(x), Math.round(groundY), VFX_TEXTURE_KEYS.thunderColumn)
+    .setOrigin(0.5, 1)
+    .setScale(targetScale * 0.35)
+    .setTint(0xffe080)
+    .setDepth(24);
+  scene.tweens.add({
+    targets: img,
+    scaleX: targetScale * (0.85 + power * 0.04),
+    scaleY: targetScale * (1.0 + power * 0.06),
+    alpha: 0,
+    duration: 280 + power * 20,
+    ease: 'Quad.easeOut',
+    onComplete: () => img.destroy(),
+  });
 }
 
 /** Heavenly thunder — vertical bolt from sky to ground (not a sideways projectile). */
@@ -457,7 +558,7 @@ export function playVerticalThunderStrike(
     onComplete: () => gfx.destroy(),
   });
 
-  VFXLibrary.lightningBolt(scene, x, groundY, 30 + power * 10);
+  expandThunderColumn(scene, x, groundY, 40 + power * 14, power);
   spawnPixelSparks(scene, x, groundY, 0xffe040, 4 + Math.floor(power * 1.5), 18 + power * 5, 25);
   scene.cameras.main.shake(70, 0.004 + power * 0.0015);
 }

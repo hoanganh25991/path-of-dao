@@ -168,9 +168,11 @@ Pose data: `stickyManDraw.ts` (`POSES_WALK`, `POSES_ATTACK_*`, `POSES_HIT`) and 
 | Skill cast | Expanding pixel ring + intent-colored sparks |
 | Melee arc | Pixel slash arc texture + contact sparks (armed); punch/kick reach tables when unarmed |
 | Spirit bolt | Pixel bolt sprite (tinted by intent) |
-| Heal | Expanding pixel ring bloom |
-| Flame AOE | Pixel flame burst + sparks |
-| Void pull | Jagged void-crack texture + purple sparks |
+| Void slash | Purple void-rift arc + crack burst |
+| Sword slash | Gold qi crescent arc |
+| Heavenly thunder | Vertical column + sky-to-ground zigzag (not horizontal bolt) |
+| Life mend | Bloom + rising life-pulse spiral |
+| Time slow | Time vortex orb + ripple trail |
 | Telegraph | Enemy red tint (unchanged; works over anims) |
 
 Procedural VFX textures: `src/combat/art/pixelVfxDraw.ts` → `registerPixelVfxAssets()` in BootScene.

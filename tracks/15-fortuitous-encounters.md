@@ -24,6 +24,7 @@ Random and POI-triggered cultivation encounters with rewards, lore, and cosmetic
 - **Fortune toast** after accepting encounter reward
 - **Defensive pause/resume** in `EncounterTrigger.presentEncounter` — skips modal if scene shuts down and avoids crash on null `physics.world`
 - **Wang Family Memory repeat fix** — `encounter.forgotten_memory` marked `unique: true`; lore encounters skip roll when `loreUnlocked` already contains reward id
+- **My Path lore confirmation** — Memory rows show lore text + “Kept on your path” badge; fortune milestones show linked lore when claimed
 
 ## Remaining
 
