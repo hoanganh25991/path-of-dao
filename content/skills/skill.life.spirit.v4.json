@@ -1,6 +1,6 @@
 {
   "id": "skill.life.spirit.v4",
-  "intent": "life",
+  "intent": "life_death",
   "nameKey": "skill.life.spirit.v4.name",
   "kind": "heal",
   "manaCost": 32,

@@ -10,11 +10,11 @@ export interface IntentVisual {
 
 export const INTENT_VISUALS: Record<InsightIntentId, IntentVisual> = {
   sword: { icon: '⚔', color: '#4a6088', glow: '#c0d8ff', label: 'Sword' },
-  void: { icon: '◈', color: '#2a1848', glow: '#c0a0ff', label: 'Void' },
+  truth_falsehood: { icon: '◈', color: '#2a1848', glow: '#c0a0ff', label: 'Truth & Falsehood' },
   flame: { icon: '🔥', color: '#a83018', glow: '#ffb040', label: 'Flame' },
   lightning: { icon: '⚡', color: '#284868', glow: '#ffe880', label: 'Lightning' },
-  time: { icon: '⏳', color: '#384858', glow: '#a0d8ff', label: 'Time' },
-  life: { icon: '✦', color: '#286848', glow: '#80ffb0', label: 'Life' },
+  cause_effect: { icon: '⏳', color: '#384858', glow: '#a0d8ff', label: 'Cause & Effect' },
+  life_death: { icon: '✦', color: '#286848', glow: '#80ffb0', label: 'Life & Death' },
   basic: { icon: '🧘', color: '#585050', glow: '#c8c0b0', label: 'Basic' },
 };
 

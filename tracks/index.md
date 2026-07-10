@@ -13,11 +13,11 @@ Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where
 
 | Metric | Value |
 |--------|-------|
-| Sub-plans done | **18 / 34** (53%) |
-| In progress | **15** (incl. 06 procedural fork, 14 intent redesign, 29–34 cross-cutting) |
+| Sub-plans done | **19 / 34** (56%) |
+| In progress | **14** (incl. 06 procedural fork, 29–34 cross-cutting) |
 | Pending | **0** (31 content partial — UI pending) |
 | Alignment T1–T8 | **8 / 8 done** (weapon arc) |
-| **Plan vs code gaps** | Master Intent (14) · Dao Scroll **UI** (31) · `divineArts` rename (30) · procedural settlements (21) |
+| **Plan vs code gaps** | Dao Scroll **art/tooltip/auto-walk** (31 Phase E) · `divineArts` rename (30) |
 | Active thread | **Procedural road playable** — reconcile with `map-design-canon` + ship checklist (26) |
 
 ### By phase
@@ -28,9 +28,9 @@ Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where
 | **1 — Core Engine** | 03–05 | `[x]` Complete |
 | **2 — 2D Combat** | 06–09 | `[~]` 07–09 done; **06** procedural world landed, map canon gaps |
 | **3 — 3D Home** | 10–12 | `[x]` Complete |
-| **4 — Progression** | 13–16 | `[~]` 13, 15–16 done; **14** plan redesigned, code still legacy 6 intents |
+| **4 — Progression** | 13–16 | `[x]` 13–16 done — **14** Master Intent migration shipped 2026-07-10 |
 | **5 — World & Content** | 17–20 | `[~]` 17 done; 18–20 in progress |
-| **6 — MVP Content** | 21–23 | `[~]` Procedural maps playable; settlements/timeline/boss polish remain |
+| **6 — MVP Content** | 21–23 | `[~]` Procedural maps playable with settlements/signature trees; timeline/boss polish remain |
 | **7 — Polish & Ship** | 24–26 | `[~]` 24–25 in progress; 26 foundation landed |
 | **Cross** | 27–28 | `[x]` Echoes + Path done |
 | **Cross** | 29–34 | `[~]` Integration + art/loot; **31** prose done, UI pending |
@@ -68,7 +68,7 @@ Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where
 | 11 | Equipment slots & 3D preview | 3 | `[x]` | [track](./11-equipment-3d-preview.md) | [plan](../plans/11-equipment-3d-preview.md) |
 | 12 | Home UI panels & navigation | 3 | `[x]` | [track](./12-home-ui-panels.md) | [plan](../plans/12-home-ui-panels.md) |
 | 13 | Cultivation realm & breakthrough | 4 | `[x]` | [track](./13-cultivation-realm-system.md) | [plan](../plans/13-cultivation-realm-system.md) |
-| 14 | Master Intent & awakenings | 4 | `[~]` | [track](./14-insight-system.md) | [plan](../plans/14-insight-system.md) |
+| 14 | Master Intent & awakenings | 4 | `[x]` | [track](./14-insight-system.md) | [plan](../plans/14-insight-system.md) |
 | 15 | Fortuitous encounter events | 4 | `[x]` | [track](./15-fortuitous-encounters.md) | [plan](../plans/15-fortuitous-encounters.md) |
 | 16 | Combat power & character profile | 4 | `[x]` | [track](./16-combat-power-profile.md) | [plan](../plans/16-combat-power-profile.md) |
 | 17 | World map & free travel | 5 | `[x]` | [track](./17-world-map-travel.md) | [plan](../plans/17-world-map-travel.md) |
@@ -120,9 +120,9 @@ Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where
 | # | Topic | Resolution | Track action |
 |---|--------|------------|--------------|
 | C1 | **Map runtime** | **Keep procedural endless** — add settlements/signature trees as procedural props; relax Tiled 16k as hard gate | 21/22/06 remaining updated |
-| C2 | **Master Intent** | **Migrate** plan 14 redesign (`MasterIntentSystem`, main-flow + gate) | 14 back to active work |
-| C3 | **Wheel save** | **Rename** `equippedSkills` → `divineArts` in save/UI; keep indexed shape + `''` empty for now | 30 remaining |
-| C4 | **Dao Scroll** | **Locale prose done** — runtime B→C→D pending (plan 31 §9.1) | 31 `[~]` |
+| C2 | **Master Intent** | **Migrated** plan 14 redesign (`MasterIntentSystem`, main-flow + gate) — `[x]` done 2026-07-10 | 14 done |
+| C3 | **Wheel save** | **Renamed** `equippedSkills` → `divineArts` in save/UI (`[x]` done 2026-07-10) — kept indexed shape + `''` empty as decided | 30 remaining (pause editor, DA-04 icons) |
+| C4 | **Dao Scroll** | **Phases B→D shipped 2026-07-10** — shard JSON, save unlock, Path sub-tab all playable; Phase E (art/tooltip/auto-walk) remains | 31 `[~]` |
 | C5 | **Defeat canon** | Simplified defeat-in-place OK for MVP; full origin tween optional later | 06 note |
 | C6 | **Ch1 star zones** | Keep star sub-zones (east/south/north) — no revert | 21 done note |
 
@@ -138,11 +138,11 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 - [x] **New game starts unarmed** — punch/kick combo (`hero_strike_*`); no sword in weapon slot (T1, T4)
 - [x] **Ancient Spirit Sword** obtainable from map POI (ch1–2); equipping enables sword combo + Sword Intent (T2, T3)
 - [~] All 10 chapters playable with **6-slide** Wang Lin diary scenes (18 content done; illustrations pending)
-- [~] 20 maps traversable — procedural endless playable; settlements/trees as procedural props pending
+- [x] 20 maps traversable — procedural endless playable; settlement clusters + signature tree spawn per `worldProfile`
 - [~] 8 boss fights with distinct patterns (23 — phase tracker wired; pattern polish open)
 - [~] 40 Divine Arts equippable; Sword Intent gated until ancient sword (T7 done)
-- [~] **Master Intent** — legacy meter works; plan 14 redesign not migrated
-- [~] **Dao Scroll** — **20-map prose in `timeline.json`**; shard JSON + Path sub-tab + unlock flow pending (31)
+- [x] **Master Intent** — plan 14 redesign migrated: main-flow (`life_death`→`cause_effect`→`truth_falsehood`) + gate-flow (`sword`/`flame`/`lightning`)
+- [~] **Dao Scroll** — 20 shards playable (offer modal → read → Path tab **Dao Scroll** sub-tab, replay-safe); illustrations + world map tooltip + ancient auto-walk pending (31 Phase E)
 - [ ] **Fake 2.5D ship gate** — authored sprites replace sticky-man (plans 29 + 32)
 - [ ] Full UI in English and Vietnamese (24)
 - [ ] PWA installable; 30 FPS on mid-range Android (26)
@@ -162,10 +162,10 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | World map portal + lock | Free jump + chapter gate UI |
 | Save reload + settings | Continue Journey, fullscreen, version |
 
-- **~500 unit tests passing** · **37 E2E** · **22 unit failures** to triage (2026-07-10)
-- **New since last track sync:** procedural world profiles, 2.5D tiles, skill VFX tiers, plans 29–34
+- **543 unit tests passing, 0 failing** (2026-07-10 — +14 from Master Intent migration: `master-intent.test.ts`, save migration case, timeline/ancient-demo/skill-loadout updates; see track 14) · **37 E2E**
+- **New since last track sync:** Master Intent migration (14), procedural world profiles, 2.5D tiles, skill VFX tiers, plans 29–34
 
-**Next priorities:** plan **31** Dao Scroll **runtime** (B→D) → **14** Master Intent → `divineArts` rename → ship **26**
+**Next priorities:** plan **31** Dao Scroll **Phase E** (art/tooltip/auto-walk) → ship **26** (`divineArts` rename done 2026-07-10, track 30)
 
 ---
 
@@ -177,19 +177,19 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 
 | # | Task | Track | Notes |
 |---|------|-------|-------|
-| 1 | Fix **22 failing unit tests** | 34 | Run `pnpm test`; triage before sign-off |
-| 2 | **Dao Scroll runtime** — phases B→D (shard JSON, save unlock, Path sub-tab) | 31 | Prose done; not player-visible yet |
-| 3 | **Master Intent migration** — `MasterIntentSystem`, new `insights.json` | 14 | User decision: migrate plan 14 redesign |
+| 1 | ~~Fix **22 failing unit tests**~~ | 34 | `[x]` Done 2026-07-10 — all were stale expectations, no code bugs found |
+| 2 | ~~**Dao Scroll runtime** — phases B→D (shard JSON, save unlock, Path sub-tab)~~ | 31 | `[x]` Done 2026-07-10 — 20 shards playable, offer modal, Dao Scroll sub-tab, replay-safe |
+| 3 | ~~**Master Intent migration** — `MasterIntentSystem`, new `insights.json`~~ | 14 | `[x]` Done 2026-07-10 — main-flow + gate-flow, save migration, Dao Scroll `intentLesson` ids |
 | 4 | Manual **SHIP_CHECKLIST** + Lighthouse + 30 FPS device | 26 | After tests green |
 
 ### P1 — MVP completeness
 
 | # | Task | Track | Notes |
 |---|------|-------|-------|
-| 5 | Rename `equippedSkills` → `divineArts` (save + UI; keep `[0..5]`) | 30 | User decision: rename only |
+| 5 | ~~Rename `equippedSkills` → `divineArts` (save + UI; keep `[0..5]`)~~ | 30 | `[x]` Done 2026-07-10 — schema, types, all consumers, `ancients.json`, tests; v1 load alias in `SaveMigration.ts` |
 | 6 | **8 boss distinct patterns** — telegraphs, phases, punish windows | 23 | Phase tracker exists; polish open |
-| 7 | Procedural **settlement clusters + signature tree** per `worldProfile` | 06, 21, 22 | User decision: keep procedural |
-| 8 | Map-clear modal → offer timeline shard read | 18, 31 | Hooks chapter flow to Dao Scroll |
+| 7 | ~~Procedural **settlement clusters + signature tree** per `worldProfile`~~ | 06, 21, 22 | `[x]` Done 2026-07-10 — `ProceduralSettlementGenerator` + `SettlementDecorator`; auto-defaults + authored fallen_village pair |
+| 8 | ~~Map-clear modal → offer timeline shard read~~ | 18, 31 | `[x]` Done 2026-07-10 — `TimelineOfferModal` in `MapScene.finishMapExit` |
 | 9 | `opponentKind: beast\|cultivator` on enemies + recovery rules | 06, 08 | Beasts despawn; cultivators sit-recover |
 | 10 | Full **en/vi UI audit** + Vietnamese overflow | 24 | `timeline.json` / story done |
 
@@ -202,7 +202,7 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 | 13 | Chapter + timeline **illustrations** (webp or null) | 32, 18, 31 | Polish, not logic block |
 | 14 | Skill cast **audio sync** on impact frames | 19, 25 | |
 | 15 | Real **OGG** assets + file playback | 25 | Procedural OK for MVP if time short |
-| 16 | Validator: `timelineShardId` on all maps; CI `content:validate` | 20, 31 | |
+| 16 | ~~Validator: `timelineShardId` on all maps; CI `content:validate`~~ | 20, 31 | `[x]` Done 2026-07-10 — `lintCrossrefs` + schema validate all 20 shards |
 | 17 | Loot pity / full item roster lint | 33, 20 | |
 
 ### Done — do not rework unless plan changes
@@ -245,9 +245,9 @@ flowchart LR
 |-------|-------|--------------|
 | **Controls** | Wheel + Dash + Gather Qi (§1.2) | `[x]` 03, 07 |
 | **Divine Arts** | Cast pipeline + 6 slots (19, 30) | `[~]` VFX strong; save rename open |
-| **Master Intent** | Emergent awakenings (14) | `[~]` legacy 6 intents shipped |
-| **Level design** | 20 maps + settlements + trees | `[~]` procedural fork (C1) |
-| **Story** | Chapter finales (18) prose `[x]` · Dao Scroll UI (31) `[ ]` | `[~]` |
+| **Master Intent** | Emergent awakenings (14) | `[x]` main-flow + gate-flow migrated |
+| **Level design** | 20 maps + settlements + trees | `[x]` procedural fork (C1) — auto + authored |
+| **Story** | Chapter finales (18) prose `[x]` · Dao Scroll runtime B→D (31) `[x]` · Phase E art `[ ]` | `[~]` |
 | **Art** | design-arts (32) → combat hooks (29) | `[~]` placeholders |
 | **Loot** | item-system (33) | `[~]` drops work |
 | **Ship** | 24–26 + quick check (34) | `[~]` |
@@ -265,15 +265,6 @@ flowchart LR
 
 → [full track](./06-phaser-map-scene-base.md) — **What needs to do** table
 
-### 14 — Master Intent `[~]`
-
-| Done | Remaining |
-|------|-----------|
-| Legacy 6-intent XP meter + awakening ceremony | Plan redesign: main-flow + gate intents |
-| Sword gate until ancient sword (T7) | `MasterIntentSystem` + `insights.json` migration |
-
-→ [full track](./14-insight-system.md) — **What needs to do** table
-
 ### 15 — Fortuitous encounters `[x]`
 
 | Done | Remaining |
@@ -289,7 +280,8 @@ flowchart LR
 
 | Done | Remaining |
 |------|-----------|
-| StoryReader + 10 chapter finales; **6 slides/ch** Wang Lin prose en+vi | Chapter illustrations; Dao Scroll hook on map clear (31) |
+| StoryReader + 10 chapter finales; **6 slides/ch** Wang Lin prose en+vi | Chapter illustrations |
+| Dao Scroll hook on map clear (31) — `[x]` done 2026-07-10 | |
 
 → [full track](./18-chapter-story-system.md) — **What needs to do** table
 
@@ -297,7 +289,9 @@ flowchart LR
 
 | Done | Remaining |
 |------|-----------|
-| 20-map locale prose (`timeline.json` en+vi) | Shard JSON, save, Path sub-tab, unlock modal — phases B–E |
+| 20-map locale prose (`timeline.json` en+vi) | Illustrations (`assets/story/timeline/*.webp`) |
+| **Phases B→D shipped 2026-07-10** — shard JSON + `TimelineLoader`, `timelineSeen` save + unlock-on-clear, offer modal, `TimelineShardReader`, Path tab **Dao Scroll** sub-tab | World map pin punch-line tooltip (17 §6.4) |
+| Journey `timeline_shard` entries + replay from My Path and Dao Scroll | Ancient follow-walk auto-open shard between maps (28) |
 
 → [full track](./31-wang-lin-story-timeline.md) — **What needs to do** checklist
 
@@ -395,8 +389,8 @@ flowchart LR
 | ID | Status | What needs to do (summary) | Detail |
 |----|--------|---------------------------|--------|
 | 29 | `[~]` | DA-01 hero sprites; layered props; anim QA all families | [track](./29-pixel-art-combat-canon.md) |
-| 30 | `[~]` | Rename `equippedSkills` → `divineArts`; DA-04 wheel icons | [track](./30-divine-arts-wheel-loadout.md) |
-| 31 | `[~]` | **B→D:** shard JSON, save unlock, Dao Scroll Path tab | [track](./31-wang-lin-story-timeline.md) |
+| 30 | `[~]` | ~~Rename `equippedSkills` → `divineArts`~~ `[x]` done 2026-07-10; DA-04 wheel icons + optional pause editor remain | [track](./30-divine-arts-wheel-loadout.md) |
+| 31 | `[~]` | **Phase E:** illustrations, world map tooltip, ancient auto-walk hook | [track](./31-wang-lin-story-timeline.md) |
 | 32 | `[~]` | DA-01…09 art pipeline; auto-wire on drop | [track](./32-design-arts.md) |
 | 33 | `[~]` | Loot lint; item roster; DA-05 icons | [track](./33-item-loot-system.md) |
 | 34 | `[~]` | Fix 22 unit failures; smoke + DevTools gate | [track](./34-quick-check-smoke-devtools.md) |
@@ -405,7 +399,7 @@ flowchart LR
 
 ## Detail tracks — done (reference)
 
-Sub-plans **01–05**, **07–13**, **15–17**, **27–28** meet their **original** acceptance criteria. See [Conflicts to resolve](#conflicts-to-resolve) for newer plan deltas (14, 06, 21).
+Sub-plans **01–05**, **07–13**, **14**, **15–17**, **27–28** meet their **original** acceptance criteria. See [Conflicts to resolve](#conflicts-to-resolve) for remaining newer plan deltas (06, 21).
 
 | ID | Highlight |
 |----|-----------|
@@ -414,6 +408,7 @@ Sub-plans **01–05**, **07–13**, **15–17**, **27–28** meet their **origin
 | 08–09 | Cultivator AI, hitboxes & damage |
 | 10–12 | Three.js Home, equipment, UI panels (T8 empty hands) |
 | 13 | Realm breakthrough |
+| 14 | Master Intent — main-flow + gate-flow migration (2026-07-10) |
 | 15–17 | Encounters, CP profile, world map (T2, T5) |
 | 27 | Ancient Echo demo |
 | 28 | Path & Journey |

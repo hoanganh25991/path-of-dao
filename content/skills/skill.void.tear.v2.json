@@ -1,6 +1,6 @@
 {
   "id": "skill.void.tear.v2",
-  "intent": "void",
+  "intent": "truth_falsehood",
   "nameKey": "skill.void.tear.v2.name",
   "kind": "bolt",
   "manaCost": 22,

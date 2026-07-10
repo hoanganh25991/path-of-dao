@@ -411,7 +411,7 @@ export class ProceduralRoamingSpawnManager {
         xp: rewards.xpTotal,
         ...(rewards.statsAfterLevelUp ? { stats: rewards.statsAfterLevelUp } : {}),
         unlockedSkills: withUnlocks.unlockedSkills,
-        equippedSkills: withUnlocks.equippedSkills,
+        divineArts: withUnlocks.divineArts,
         realm,
         progress: withUnlocks.progress,
       };

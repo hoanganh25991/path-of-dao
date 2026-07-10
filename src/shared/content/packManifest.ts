@@ -13,6 +13,7 @@ export interface ContentManifest {
   encounters: string[];
   fortuitous: string[];
   stories: string[];
+  timelineShards: string[];
   checksum: string;
 }
 
@@ -25,8 +26,18 @@ export function buildContentManifest(): ContentManifest {
   const encounters = [...index.encounters.keys()].sort();
   const fortuitous = [...index.fortuitous.keys()].sort();
   const stories = [...index.stories.keys()].sort();
+  const timelineShards = [...index.timelineShards.keys()].sort();
 
-  const payload = JSON.stringify({ maps, enemies, skills, items, encounters, fortuitous, stories });
+  const payload = JSON.stringify({
+    maps,
+    enemies,
+    skills,
+    items,
+    encounters,
+    fortuitous,
+    stories,
+    timelineShards,
+  });
   const checksum = createHash('sha256').update(payload).digest('hex').slice(0, 16);
   const today = new Date().toISOString().slice(0, 10);
 
@@ -40,6 +51,7 @@ export function buildContentManifest(): ContentManifest {
     encounters,
     fortuitous,
     stories,
+    timelineShards,
     checksum,
   };
 }

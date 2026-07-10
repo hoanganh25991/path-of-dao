@@ -44,7 +44,13 @@ describe('journey recording hooks', () => {
     const { patch } = applyMapClearPatch(save, 'map.fallen_village.01', true);
 
     expect(patch.progress?.journey?.some((e) => e.kind === 'map_clear')).toBe(true);
-    expect(patch.progress?.journey?.at(-1)?.refId).toBe('map.fallen_village.01');
+    expect(patch.progress?.journey?.find((e) => e.kind === 'map_clear')?.refId).toBe(
+      'map.fallen_village.01',
+    );
+    // First clear of a map with a Dao Scroll shard also records a timeline_shard step (sub-plan 31).
+    expect(patch.progress?.journey?.at(-1)).toEqual(
+      expect.objectContaining({ kind: 'timeline_shard', refId: 'timeline.map.fallen_village.01' }),
+    );
   });
 
   it('records a story step when a chapter story completes', () => {

@@ -5,7 +5,7 @@ import {
   listAssignableSkills,
   normalizeLoadout,
   SKILL_SLOTS,
-  type EquippedSkills,
+  type DivineArtsLoadout,
 } from '@/progression/SkillLoadout';
 import type { SkillSlotIndex } from '@/progression/SkillSlots';
 import { createSkillDetailPanel } from '@/ui/skills/SkillDetailPanel';
@@ -20,10 +20,10 @@ function slotLabel(slot: SkillSlotIndex): string {
 
 /** Shared loadout picker — slot row, skill detail preview, icon pool. */
 export function createLoadoutPickerElement(
-  initial: EquippedSkills,
+  initial: DivineArtsLoadout,
   pool: string[],
-  onChange: (loadout: EquippedSkills) => void,
-): { root: HTMLElement; getLoadout: () => EquippedSkills } {
+  onChange: (loadout: DivineArtsLoadout) => void,
+): { root: HTMLElement; getLoadout: () => DivineArtsLoadout } {
   const loadout = normalizeLoadout(initial, pool);
   let activeSlot: SkillSlotIndex = 0;
   let previewSkillId = loadout[0] || pool[0] || '';
@@ -126,7 +126,7 @@ export function createLoadoutPickerElement(
         renderSlots();
         renderPool();
         renderDetail();
-        onChange([...loadout] as EquippedSkills);
+        onChange([...loadout] as DivineArtsLoadout);
       });
 
       poolEl.appendChild(pick);
@@ -142,6 +142,6 @@ export function createLoadoutPickerElement(
 
   return {
     root,
-    getLoadout: () => [...loadout] as EquippedSkills,
+    getLoadout: () => [...loadout] as DivineArtsLoadout,
   };
 }

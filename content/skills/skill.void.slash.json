@@ -1,6 +1,6 @@
 {
   "id": "skill.void.slash",
-  "intent": "void",
+  "intent": "truth_falsehood",
   "nameKey": "skill.void.slash.name",
   "kind": "arc",
   "manaCost": 20,

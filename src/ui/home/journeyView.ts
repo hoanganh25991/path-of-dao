@@ -15,6 +15,8 @@ export interface JourneyView {
   strength: string;
   /** Present when this step can be replayed as a story scene. */
   replay?: { chapterId: string; sceneId: string };
+  /** Present when this step can be replayed as a Dao Scroll timeline shard. */
+  timelineReplay?: { shardId: string };
 }
 
 function realmName(realmId: string): string {
@@ -53,6 +55,13 @@ export function describeJourneyEntry(entry: JourneyEntry): JourneyView {
         replay: chapter ? { chapterId: chapter.id, sceneId: entry.refId } : undefined,
       };
     }
+    case 'timeline_shard':
+      return {
+        title: I18nManager.t(`${entry.refId}.title`),
+        kindLabel: I18nManager.t('path.kind.timeline_shard'),
+        strength,
+        timelineReplay: { shardId: entry.refId },
+      };
     case 'breakthrough':
       return {
         title: realmName(entry.refId),

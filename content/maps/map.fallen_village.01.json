@@ -41,5 +41,6 @@
   "recommendedCp": 800,
   "recommendedRealmOrder": 1,
   "worldProfile": "world.fallen_village",
-  "requiredBossId": null
+  "requiredBossId": null,
+  "timelineShardId": "timeline.map.fallen_village.01"
 }

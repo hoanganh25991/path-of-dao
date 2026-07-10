@@ -29,5 +29,6 @@
   "roamTable": null,
   "spawnMode": "procedural",
   "requiredBossId": null,
-  "worldProfile": "world.mist_forest"
+  "worldProfile": "world.mist_forest",
+  "timelineShardId": "timeline.map.mist_forest.02"
 }

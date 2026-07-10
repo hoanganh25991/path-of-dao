@@ -7,7 +7,8 @@ export const SKILL_SLOT_INDICES: SkillSlotIndex[] = [0, 1, 2, 3, 4, 5];
 
 export type SkillSlot = SkillSlotIndex;
 
-export type EquippedSkills = [
+/** Save field `divineArts` — six indexed slots, `''` = empty (track 30 rename, was `equippedSkills`). */
+export type DivineArtsLoadout = [
   string,
   string,
   string,
@@ -18,7 +19,7 @@ export type EquippedSkills = [
 
 export type SkillActionId = `skill${SkillSlotIndex}`;
 
-export function emptyEquippedSkills(): EquippedSkills {
+export function emptyDivineArts(): DivineArtsLoadout {
   return ['', '', '', '', '', ''];
 }
 
@@ -52,11 +53,11 @@ export function createEmptySkillCooldowns(): SkillSlotCooldowns {
 }
 
 /** Legacy `{ primary, secondary, ultimate }` or array → six-slot tuple. */
-export function coerceEquippedSkills(raw: unknown): EquippedSkills {
+export function coerceDivineArts(raw: unknown): DivineArtsLoadout {
   if (Array.isArray(raw)) {
     const slots = raw.map((entry) => (typeof entry === 'string' ? entry : ''));
     while (slots.length < MAX_SKILL_SLOTS) slots.push('');
-    return slots.slice(0, MAX_SKILL_SLOTS) as EquippedSkills;
+    return slots.slice(0, MAX_SKILL_SLOTS) as DivineArtsLoadout;
   }
 
   if (raw && typeof raw === 'object') {
@@ -73,5 +74,5 @@ export function coerceEquippedSkills(raw: unknown): EquippedSkills {
     }
   }
 
-  return emptyEquippedSkills();
+  return emptyDivineArts();
 }

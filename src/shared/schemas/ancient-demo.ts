@@ -10,7 +10,8 @@ export const ancientSaveTemplateSchema = z.object({
   awakenedIntents: z.array(z.string()),
   /** Max insight XP + uses, not yet awakened — Skills panel shows Awaken. */
   insightReadyIntents: z.array(z.string()).default([]),
-  equippedSkills: z.object({
+  /** Renamed from `equippedSkills` (track 30) — same named-slot template shape. */
+  divineArts: z.object({
     primary: z.string(),
     secondary: z.string(),
     ultimate: z.string(),

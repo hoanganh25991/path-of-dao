@@ -30,5 +30,22 @@
     "waterShallow": 4,
     "waterMacroThreshold": 0.035,
     "dirtMacroThreshold": 0.91
+  },
+  "settlements": [
+    {
+      "id": "settlement.fallen_village.ruins",
+      "type": "ruin_village",
+      "structures": ["house_ruin", "house_ruin", "hut", "well", "shrine"],
+      "radius": 260,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.scorched_elm",
+    "displayNameKey": "map.fallen_village.01.signature_tree",
+    "scale": 2.4,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

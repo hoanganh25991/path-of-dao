@@ -90,7 +90,7 @@
   background: linear-gradient(90deg, #8a8f98, #d8dce6);
 }
 
-.status-bar-row--exp[data-intent='void'] .status-bar--exp .status-bar__fill {
+.status-bar-row--exp[data-intent='truth_falsehood'] .status-bar--exp .status-bar__fill {
   background: linear-gradient(90deg, #3a2f6a, #8b6fd4);
 }
 
@@ -102,11 +102,11 @@
   background: linear-gradient(90deg, #2b5aa8, #7ec8ff);
 }
 
-.status-bar-row--exp[data-intent='time'] .status-bar--exp .status-bar__fill {
+.status-bar-row--exp[data-intent='cause_effect'] .status-bar--exp .status-bar__fill {
   background: linear-gradient(90deg, #4a6a5a, #9fd4b0);
 }
 
-.status-bar-row--exp[data-intent='life'] .status-bar--exp .status-bar__fill {
+.status-bar-row--exp[data-intent='life_death'] .status-bar--exp .status-bar__fill {
   background: linear-gradient(90deg, #2a7a52, #6fd4a0);
 }
 

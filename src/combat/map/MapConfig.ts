@@ -48,6 +48,8 @@ export const mapConfigSchema = z.object({
     .record(z.string(), z.object({ x: z.number(), y: z.number() }))
     .default({}),
   bgm: z.string().nullable(),
+  /** Dao Scroll shard id unlocked on first clear (`content/story-timeline/*.json`); null for sub-zones/test maps. */
+  timelineShardId: z.string().nullable().default(null),
   pois: z
     .array(
       z.object({

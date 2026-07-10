@@ -29,14 +29,14 @@ export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent' | 'destiny'
 
 const SIGNATURE_INTENT_ICONS: Record<string, string> = {
   sword: '⚔',
-  void: '◈',
+  truth_falsehood: '◈',
   flame: '🔥',
   lightning: '⚡',
-  time: '⏳',
-  life: '✦',
+  cause_effect: '⏳',
+  life_death: '✦',
 };
 
-const ALL_INTENT_IDS = ['sword', 'void', 'flame', 'lightning', 'time', 'life'];
+const ALL_INTENT_IDS = ['life_death', 'cause_effect', 'truth_falsehood', 'sword', 'flame', 'lightning'];
 
 export interface ProfilePanelHandles {
   root: HTMLElement;

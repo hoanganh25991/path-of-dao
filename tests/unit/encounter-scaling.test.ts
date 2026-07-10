@@ -11,28 +11,28 @@ import { getEncounterConfig } from '@/combat/cultivators/CultivatorLoader';
 describe('resolveEncounterScale', () => {
   it('solo when player is below map realm', () => {
     const scale = resolveEncounterScale(1, 3, 5);
-    expect(scale).toEqual({ tier: 'solo', targetCount: 1, maxAlive: 3 });
+    expect(scale).toEqual({ tier: 'solo', targetCount: 6, maxAlive: 6 });
   });
 
   it('squad at parity without level boost', () => {
     const scale = resolveEncounterScale(3, 3, 8);
-    expect(scale).toEqual({ tier: 'squad', targetCount: 10, maxAlive: 12 });
+    expect(scale).toEqual({ tier: 'squad', targetCount: 12, maxAlive: 12 });
   });
 
   it('horde when slightly over map realm', () => {
     const scale = resolveEncounterScale(4, 3, 8);
-    expect(scale).toEqual({ tier: 'horde', targetCount: 100, maxAlive: 18 });
+    expect(scale).toEqual({ tier: 'horde', targetCount: 24, maxAlive: 18 });
   });
 
   it('mass when far over map realm or high level', () => {
     expect(resolveEncounterScale(6, 3, 8)).toEqual({
       tier: 'mass',
-      targetCount: 500,
-      maxAlive: 18,
+      targetCount: 48,
+      maxAlive: 24,
     });
     expect(resolveEncounterScale(3, 3, 12)).toEqual({
       tier: 'horde',
-      targetCount: 100,
+      targetCount: 24,
       maxAlive: 18,
     });
   });
@@ -43,7 +43,7 @@ describe('scaleEncounterForPower', () => {
     const base = getEncounterConfig('encounters.test');
     const scaled = scaleEncounterForPower(base, resolveEncounterScale(6, 1, 15));
     const total = scaled.waves[0]!.enemies.reduce((sum, g) => sum + g.count, 0);
-    expect(total).toBe(500);
+    expect(total).toBe(48);
   });
 });
 

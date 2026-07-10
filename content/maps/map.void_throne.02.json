@@ -21,5 +21,6 @@
   "spawnMode": "procedural",
   "worldProfile": "world.void_throne",
   "roamTable": null,
-  "requiredBossId": null
+  "requiredBossId": null,
+  "timelineShardId": "timeline.map.void_throne.02"
 }

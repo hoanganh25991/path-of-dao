@@ -308,7 +308,7 @@ describe('I18nManager', () => {
     await I18nManager.load('en');
     expect(I18nManager.t('home.nav.play')).toBe('Journey');
     expect(I18nManager.t('home.nav.echoes')).toBe('Echoes');
-    expect(I18nManager.t('home.map_portal')).toBe('Map Portal');
+    expect(I18nManager.t('home.map_portal')).toBe('Star Domain Portal');
   });
 
   it('loads Vietnamese home strings', async () => {

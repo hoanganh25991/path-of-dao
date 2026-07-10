@@ -56,11 +56,11 @@ describe('skill-unlocks.json references', () => {
 });
 
 describe('unlockSkillsForMapClear on the road', () => {
-  it('teaches sword slash on mist forest explore clear', () => {
+  it('teaches flame bolt on mist forest explore clear', () => {
     const save = SaveManager.createNew();
     const next = unlockSkillsForMapClear(save, 'map.mist_forest.01');
-    expect(next.unlockedSkills).toContain('skill.sword.slash');
-    expect(Object.values(next.equippedSkills)).toContain('skill.sword.slash');
+    expect(next.unlockedSkills).toContain('skill.flame.bolt');
+    expect(Object.values(next.divineArts)).toContain('skill.flame.bolt');
   });
 
   it('does not re-unlock on repeat clear', () => {

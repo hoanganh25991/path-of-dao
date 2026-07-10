@@ -17,6 +17,18 @@
 > and `src/progression/MasterIntentSystem.isIntentUnlocked` for the gating logic. Everything else
 > in this plan (XP mechanics §5, awakening requirements shape §6, HUD §8, modal §9, wheel §10)
 > is unchanged in *structure* — only the intent roster and the addition of an unlock check changed.
+>
+> **Migrated 2026-07-10:** `MasterIntentSystem.ts` (`isIntentUnlocked` + `filterSkillsForIntentGates`)
+> is implemented and wired into cast (`CombatComponent`) and the equip pool (`SkillLoadout`).
+> `content/progression/insights.json` carries the 6-id `life_death`/`cause_effect`/`truth_falsehood`
+> + `sword`/`flame`/`lightning` roster with `flow`/`order`/`gate`. Old saves migrate via
+> `SaveMigration.migrateLegacyInsightKeys` (`void`→`truth_falsehood`, `life`→`life_death`,
+> `time`→`cause_effect`); Dao Scroll `intentLesson` ids migrated in the same change. Tests:
+> `tests/unit/master-intent.test.ts` (sequential + gate unlock, awakening swap) and
+> `tests/unit/save-manager.test.ts` (legacy key migration) — not the `master-intent-system.test.ts` /
+> `art-executor.test.ts` / `awakening-modal.test.ts` names referenced in §12 below (those predate the
+> redesign and don't exist as separate files; coverage lives in `master-intent.test.ts`,
+> `insight-system.test.ts`, and `skill-executor.test.ts`).
 
 ## 1. Objective
 

@@ -6,6 +6,7 @@ import {
   resetEncounterRng,
   rollOnKillStreak,
   rollOnMapEnter,
+  rollOnWaveClear,
   setEncounterRng,
   wasFound,
   wasPoiFound,
@@ -30,14 +31,16 @@ describe('FortuitousEncounterManager', () => {
   });
 
   it('skips unique encounter when already found', () => {
+    // spirit_beast is the sole waveClear-trigger encounter and is unique:true —
+    // once found, the whole trigger pool is exhausted and rolls null.
     setEncounterRng(() => 0.01);
     const save = makeSave({
       progress: {
         ...makeSave().progress,
-        encountersFound: ['encounter.ancient_inheritance'],
+        encountersFound: ['encounter.spirit_beast'],
       },
     });
-    expect(rollOnMapEnter('map.test.grove', save)).toBeNull();
+    expect(rollOnWaveClear('map.test.grove', save)).toBeNull();
   });
 
   it('respects kill streak threshold', () => {
@@ -108,7 +111,7 @@ describe('FortuitousEncounterManager', () => {
     const next = { ...save, ...applyEncounterReward(encounter, save) };
 
     expect(next.unlockedSkills).toContain('skill.flame.bolt');
-    expect(Object.values(next.equippedSkills ?? {})).toContain('skill.flame.bolt');
+    expect(Object.values(next.divineArts ?? {})).toContain('skill.flame.bolt');
   });
 
   it('spirit beast unlocks pet cosmetic', () => {
@@ -120,11 +123,12 @@ describe('FortuitousEncounterManager', () => {
 });
 
 describe('EncounterLoader', () => {
-  it('loads all six MVP encounter types', () => {
+  it('loads all seven MVP encounter types', () => {
     expect(listEncounterIds()).toEqual(
       [
         'encounter.ancient_inheritance',
         'encounter.ancient_sword',
+        'encounter.destiny_cave',
         'encounter.forgotten_memory',
         'encounter.hidden_cave',
         'encounter.secret_manual',

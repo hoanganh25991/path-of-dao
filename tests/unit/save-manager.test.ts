@@ -165,4 +165,34 @@ describe('migrate', () => {
     const save = SaveManager.createNew();
     expect(() => migrate({ ...save, stats: { broken: true } })).toThrow(SaveMigrationError);
   });
+
+  it('renames legacy insight keys (void/life/time) into the Master Intent roster', () => {
+    const save = SaveManager.createNew();
+    const legacyState = { xp: 40, awakened: false, totalUses: 12 };
+    const legacyRaw = {
+      ...save,
+      insights: {
+        sword: save.insights.sword,
+        flame: save.insights.flame,
+        lightning: save.insights.lightning,
+        void: legacyState,
+        life: { xp: 200, awakened: true, totalUses: 60 },
+        time: { xp: 10, awakened: false, totalUses: 2 },
+      },
+    };
+
+    const migrated = migrate(legacyRaw);
+
+    expect(migrated.insights.truth_falsehood).toEqual(legacyState);
+    expect(migrated.insights.life_death).toEqual({ xp: 200, awakened: true, totalUses: 60 });
+    expect(migrated.insights.cause_effect).toEqual({ xp: 10, awakened: false, totalUses: 2 });
+    expect(migrated.insights).not.toHaveProperty('void');
+    expect(migrated.insights).not.toHaveProperty('life');
+    expect(migrated.insights).not.toHaveProperty('time');
+  });
+
+  it('leaves already-migrated saves with new intent keys untouched', () => {
+    const save = SaveManager.createNew();
+    expect(migrate(save).insights).toEqual(save.insights);
+  });
 });

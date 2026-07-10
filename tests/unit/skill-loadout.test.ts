@@ -7,11 +7,11 @@ import {
   listDiscoveredIntentIds,
   listUnlockedSkillIds,
   normalizeLoadout,
-  canCastEquippedSkill,
+  canCastDivineArt,
 } from '@/progression/SkillLoadout';
 import { MEDITATE_SKILL_ID } from '@/progression/BuiltinSkills';
 import { unlockSkillIds } from '@/progression/SkillUnlockManager';
-import type { EquippedSkills } from '@/progression/SkillSlots';
+import type { DivineArtsLoadout } from '@/progression/SkillSlots';
 
 describe('SkillLoadout', () => {
   it('starts with no unlocked skills on a fresh save', () => {
@@ -26,9 +26,16 @@ describe('SkillLoadout', () => {
   });
 
   it('discovers intents after earning a skill', () => {
+    const save = unlockSkillIds(SaveManager.createNew(), ['skill.life.mend']);
+    expect(listDiscoveredIntentIds(save)).toContain('life_death');
+    expect(listUnlockedSkillIds(save)).toContain('skill.life.mend');
+  });
+
+  it('gate-flow skills are unlockable but stay uncastable until the milestone/boss gate is met', () => {
     const save = unlockSkillIds(SaveManager.createNew(), ['skill.flame.bolt']);
     expect(listDiscoveredIntentIds(save)).toContain('flame');
-    expect(listUnlockedSkillIds(save)).toContain('skill.flame.bolt');
+    expect(save.unlockedSkills).toContain('skill.flame.bolt');
+    expect(listUnlockedSkillIds(save)).not.toContain('skill.flame.bolt');
   });
 
   const pool = [
@@ -47,7 +54,7 @@ describe('SkillLoadout', () => {
         '',
         '',
         '',
-      ] satisfies EquippedSkills,
+      ] satisfies DivineArtsLoadout,
       pool,
     );
     expect(loadout[0]).toBe('skill.void.slash');
@@ -57,7 +64,7 @@ describe('SkillLoadout', () => {
 
   it('normalizeLoadout clears invalid skills without filling placeholders', () => {
     const loadout = normalizeLoadout(
-      ['skill.invalid', '', 'skill.flame.bolt', '', '', ''] satisfies EquippedSkills,
+      ['skill.invalid', '', 'skill.flame.bolt', '', '', ''] satisfies DivineArtsLoadout,
       pool,
     );
     expect(loadout[0]).toBe('');
@@ -73,7 +80,7 @@ describe('SkillLoadout', () => {
         '',
         '',
         '',
-      ] satisfies EquippedSkills,
+      ] satisfies DivineArtsLoadout,
       2,
       'skill.void.slash',
     );
@@ -90,13 +97,13 @@ describe('SkillLoadout', () => {
       '',
       '',
       '',
-    ] satisfies EquippedSkills;
+    ] satisfies DivineArtsLoadout;
     expect(listAssignableSkills(loadout, 0, pool)).toEqual(pool);
   });
 
   it('cannot cast meditate from a skill slot even if legacy save still lists it', () => {
     const save = SaveManager.createNew();
-    save.equippedSkills[1] = MEDITATE_SKILL_ID;
-    expect(canCastEquippedSkill(save, 1)).toBe(false);
+    save.divineArts[1] = MEDITATE_SKILL_ID;
+    expect(canCastDivineArt(save, 1)).toBe(false);
   });
 });

@@ -1,6 +1,6 @@
 {
   "id": "skill.time.loop.v3",
-  "intent": "time",
+  "intent": "cause_effect",
   "nameKey": "skill.time.loop.v3.name",
   "kind": "bolt",
   "manaCost": 22,

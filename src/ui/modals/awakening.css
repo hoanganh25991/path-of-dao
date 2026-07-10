@@ -24,7 +24,7 @@
   background: radial-gradient(circle at 50% 45%, rgba(200, 205, 220, 0.12), rgba(0, 0, 0, 0.9));
 }
 
-.awakening-modal--void .awakening-modal__backdrop {
+.awakening-modal--truth_falsehood .awakening-modal__backdrop {
   background: radial-gradient(circle at 50% 45%, rgba(90, 70, 160, 0.18), rgba(0, 0, 0, 0.92));
 }
 

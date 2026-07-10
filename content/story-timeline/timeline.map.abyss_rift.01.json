@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.abyss_rift.01",
+  "mapId": "map.abyss_rift.01",
+  "chapterId": "chapter.08.abyss_rift",
+  "wangLinPhase": "heart_rift",
+  "intentLesson": "truth_falsehood",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch08.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch08.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch08.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

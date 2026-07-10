@@ -54,9 +54,9 @@ function defaultProjectileTexture(intent: InsightIntentId): string {
       return VFX_TEXTURE_KEYS.flameOrb;
     case 'lightning':
       return VFX_TEXTURE_KEYS.lightningBolt;
-    case 'void':
+    case 'truth_falsehood':
       return VFX_TEXTURE_KEYS.voidShard;
-    case 'time':
+    case 'cause_effect':
       return VFX_TEXTURE_KEYS.timeVortex;
     case 'sword':
       return VFX_TEXTURE_KEYS.arrow;
@@ -67,7 +67,7 @@ function defaultProjectileTexture(intent: InsightIntentId): string {
 
 function defaultMeleeTexture(intent: InsightIntentId): string {
   switch (intent) {
-    case 'void':
+    case 'truth_falsehood':
       return VFX_TEXTURE_KEYS.voidRift;
     case 'sword':
       return VFX_TEXTURE_KEYS.swordQi;

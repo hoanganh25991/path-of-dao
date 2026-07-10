@@ -152,7 +152,7 @@ export function applyEncounterReward(
   let insights = save.insights;
   let loreUnlocked = save.progress.loreUnlocked;
   let cosmetics = save.cosmetics;
-  let equippedSkills = save.equippedSkills;
+  let divineArts = save.divineArts;
   let equipped = save.equipped;
   let progress = save.progress;
   let unlockedSkills = save.unlockedSkills;
@@ -166,7 +166,7 @@ export function applyEncounterReward(
         progress = milestonePatch.progress ?? progress;
         equipped = milestonePatch.equipped ?? equipped;
         if (milestonePatch.unlockedSkills) unlockedSkills = milestonePatch.unlockedSkills;
-        if (milestonePatch.equippedSkills) equippedSkills = milestonePatch.equippedSkills;
+        if (milestonePatch.divineArts) divineArts = milestonePatch.divineArts;
       } else {
         inventory = {
           ...inventory,
@@ -204,7 +204,7 @@ export function applyEncounterReward(
     case 'skill_variant': {
       const skillId = encounter.reward.skillId;
       unlockedSkills = unlockSkillIds({ ...save, unlockedSkills }, [skillId]).unlockedSkills;
-      equippedSkills = equipLearnedSkill(equippedSkills, skillId);
+      divineArts = equipLearnedSkill(divineArts, skillId);
       break;
     }
     case 'destiny_choice': {
@@ -231,7 +231,7 @@ export function applyEncounterReward(
           destinyPoints = { ...destinyPoints, divine: destinyPoints.divine + 1 };
           if (r.skillId) {
             unlockedSkills = unlockSkillIds({ ...save, unlockedSkills }, [r.skillId]).unlockedSkills;
-            equippedSkills = equipLearnedSkill(equippedSkills, r.skillId);
+            divineArts = equipLearnedSkill(divineArts, r.skillId);
           }
           break;
         }
@@ -266,7 +266,7 @@ export function applyEncounterReward(
     inventory,
     insights,
     cosmetics,
-    equippedSkills,
+    divineArts,
     equipped,
     unlockedSkills,
     destinyPoints,

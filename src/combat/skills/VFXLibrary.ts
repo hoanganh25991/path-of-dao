@@ -27,7 +27,7 @@ const LIFE_SPIRIT_TEX = 40;
 function slashTexture(intent: InsightIntentId, skillId?: string): string {
   if (skillId) return getSkillVfxProfile(skillId, intent).meleeTexture ?? VFX_TEXTURE_KEYS.slash;
   switch (intent) {
-    case 'void':
+    case 'truth_falsehood':
       return VFX_TEXTURE_KEYS.voidRift;
     case 'sword':
       return VFX_TEXTURE_KEYS.swordQi;
@@ -47,9 +47,9 @@ function projectileTexture(intent: InsightIntentId, skillId?: string): string {
       return VFX_TEXTURE_KEYS.flameOrb;
     case 'lightning':
       return VFX_TEXTURE_KEYS.lightningBolt;
-    case 'void':
+    case 'truth_falsehood':
       return VFX_TEXTURE_KEYS.voidShard;
-    case 'time':
+    case 'cause_effect':
       return VFX_TEXTURE_KEYS.timeVortex;
     case 'sword':
       return VFX_TEXTURE_KEYS.arrow;
@@ -59,7 +59,7 @@ function projectileTexture(intent: InsightIntentId, skillId?: string): string {
 }
 
 function projectileScale(intent: InsightIntentId, power: number): number {
-  const base = intent === 'lightning' ? 1.25 : intent === 'flame' ? 1.15 : intent === 'void' ? 1.2 : 1.05;
+  const base = intent === 'lightning' ? 1.25 : intent === 'flame' ? 1.15 : intent === 'truth_falsehood' ? 1.2 : 1.05;
   return base * (0.9 + power * 0.12);
 }
 
@@ -99,7 +99,7 @@ export function playSkillImpactVfx(
     case 'intent':
     default:
       switch (intent) {
-        case 'void':
+        case 'truth_falsehood':
           VFXLibrary.voidCrack(scene, x, y, radius);
           break;
         case 'flame':
@@ -109,10 +109,10 @@ export function playSkillImpactVfx(
           expandThunderColumn(scene, x, y, 32 + power * 10, power);
           scene.cameras.main.shake(60, 0.004 + power * 0.001);
           break;
-        case 'time':
+        case 'cause_effect':
           VFXLibrary.timeRipple(scene, x, y, radius);
           break;
-        case 'life':
+        case 'life_death':
           VFXLibrary.lifeBloom(scene, x, y, radius * 0.9);
           break;
         default:
@@ -143,10 +143,10 @@ export function spawnProjectileTrail(
     case 'lightning':
       spawnPixelSparks(scene, x, y, 0xffe040, 2, 10 + power * 2, 20);
       break;
-    case 'void':
+    case 'truth_falsehood':
       spawnPixelSparks(scene, x, y, tint, 1, 5, 18);
       break;
-    case 'time':
+    case 'cause_effect':
       expandRing(scene, x, y, tint, 0.15, 0.55 + power * 0.08, 120, 17, 0.35);
       spawnPixelSparks(scene, x, y, 0x90d0f0, 1, 5, 17);
       break;
@@ -302,7 +302,7 @@ export const VFXLibrary = {
     spawnPixelSparks(scene, hitX, cy, tint, Math.floor(2 + power * 1.2), 12 + power * 3, 22);
 
     switch (intent) {
-      case 'void':
+      case 'truth_falsehood':
         VFXLibrary.voidCrack(scene, hitX, cy, 36 + power * 14);
         break;
       case 'sword':
@@ -624,7 +624,7 @@ export function playAncientIntentFlourish(
 ): void {
   const radius = 52 + power * 10;
   switch (intent) {
-    case 'void':
+    case 'truth_falsehood':
       VFXLibrary.voidCrack(scene, x, y, radius);
       break;
     case 'flame':
@@ -633,10 +633,10 @@ export function playAncientIntentFlourish(
     case 'lightning':
       expandThunderColumn(scene, x, y + 8, 56 + power * 8, power);
       break;
-    case 'time':
+    case 'cause_effect':
       VFXLibrary.timeRipple(scene, x, y, radius + 8);
       break;
-    case 'life':
+    case 'life_death':
       expandSprite(
         scene, x, y, VFX_TEXTURE_KEYS.lifePulse, LIFE_PULSE_TEX,
         radius, 0x80ffb0, 420, 24, 0.5, 1.1,

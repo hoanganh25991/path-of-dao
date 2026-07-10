@@ -26,6 +26,12 @@ function tilingRatio(tiledPath: string): number {
   return matches / total;
 }
 
+/**
+ * Ratio of the outer rim that is impassable (any nonzero collision tile).
+ * Post-C1 (procedural endless) the border no longer relies on a single legacy
+ * "rock" tile id (4) — the 25-tile 2.5D set uses several border/collision ids
+ * (5, 6, 11, 15, 19, ...) — so this checks for any collision tile, not a fixed id.
+ */
 function borderRockCoverage(tiledPath: string): number {
   const raw = JSON.parse(readFileSync(resolve(__dirname, '../../', tiledPath), 'utf-8')) as {
     width: number;
@@ -42,13 +48,13 @@ function borderRockCoverage(tiledPath: string): number {
   for (let x = 0; x < w; x++) {
     for (const y of [0, 1, h - 2, h - 1]) {
       rim++;
-      if (collision[y * w + x] === 4) rock++;
+      if (collision[y * w + x] !== 0) rock++;
     }
   }
   for (let y = 2; y < h - 2; y++) {
     for (const x of [0, 1, w - 2, w - 1]) {
       rim++;
-      if (collision[y * w + x] === 4) rock++;
+      if (collision[y * w + x] !== 0) rock++;
     }
   }
   return rock / rim;

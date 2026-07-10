@@ -21,6 +21,13 @@ export function getInsightIntentConfig(intentId: string): InsightIntentConfig {
   return config;
 }
 
+/** Main-flow intents (life_death → cause_effect → truth_falsehood) in curriculum order. */
+export function listMainFlowIntentIdsInOrder(): string[] {
+  return listInsightIntentIds()
+    .filter((intentId) => insightsData.intents[intentId]?.flow === 'main')
+    .sort((a, b) => (insightsData.intents[a]?.order ?? 0) - (insightsData.intents[b]?.order ?? 0));
+}
+
 export function getIntentForSkillId(skillId: string): string | null {
   for (const [intentId, config] of Object.entries(insightsData.intents)) {
     if (config.baseSkillId === skillId || config.awakenedSkillId === skillId) {

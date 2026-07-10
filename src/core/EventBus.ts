@@ -43,7 +43,7 @@ export type GameEvents = {
   'demo:entered': { ancientId: string };
   'demo:exited': undefined;
   'combat:open-skill-picker': { slot?: 0 | 1 | 2 | 3 | 4 | 5 };
-  'loadout:changed': { equippedSkills: import('@/progression/SkillSlots').EquippedSkills };
+  'loadout:changed': { divineArts: import('@/progression/SkillSlots').DivineArtsLoadout };
   'skill:cooldown-state': import('@/progression/SkillSlots').SkillCooldownState;
   'health:cooldown-state': { remainingMs: number; totalMs: number };
   'home:open-tab': { tab: HomeTab };

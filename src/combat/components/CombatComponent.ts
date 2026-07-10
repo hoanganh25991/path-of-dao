@@ -7,11 +7,12 @@ import type { Player } from '@/combat/entities/Player';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { recordSkillInsight } from '@/progression/InsightSystem';
+import { isIntentUnlocked } from '@/progression/MasterIntentSystem';
 import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/SkillLoader';
-import { canUseSwordIntent, isArmedAttackStyle } from '@/progression/WeaponProgression';
+import { isArmedAttackStyle } from '@/progression/WeaponProgression';
 import { isKickStrike } from '@/combat/art/stickyManStrikes';
-import { canCastEquippedSkill } from '@/progression/SkillLoadout';
-import { coerceEquippedSkills } from '@/progression/SkillSlots';
+import { canCastDivineArt } from '@/progression/SkillLoadout';
+import { coerceDivineArts } from '@/progression/SkillSlots';
 import type { SkillSlot } from '@/core/input/InputState';
 import { CooldownManager } from '@/combat/skills/CooldownManager';
 import { SkillExecutor } from '@/combat/skills/SkillExecutor';
@@ -75,16 +76,16 @@ export class CombatComponent {
 
   trySkill(slot: SkillSlot): boolean {
     const save = gameStore.getState().save;
-    if (!save || !canCastEquippedSkill(save, slot)) return false;
+    if (!save || !canCastDivineArt(save, slot)) return false;
 
-    const equippedId = coerceEquippedSkills(save.equippedSkills)[slot];
+    const equippedId = coerceDivineArts(save.divineArts)[slot];
 
     this.player.meditate.cancel();
 
     const skillId = resolveEffectiveSkillId(equippedId, save.insights);
     const skill = getSkillDefinition(skillId);
 
-    if (skill.intent === 'sword' && !canUseSwordIntent(save)) return false;
+    if (!isIntentUnlocked(skill.intent, save)) return false;
 
     if (!this.skills.canCast(skill, this.cooldowns.remainingMs(slot))) return false;
     if (!this.player.stats.spendMana(skill.manaCost)) return false;

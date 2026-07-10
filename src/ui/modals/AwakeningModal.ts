@@ -13,11 +13,11 @@ const PHASE2_MS = 1400;
 
 const INTENT_THEME: Record<string, string> = {
   sword: 'awakening-modal--sword',
-  void: 'awakening-modal--void',
+  truth_falsehood: 'awakening-modal--truth_falsehood',
   flame: 'awakening-modal--flame',
   lightning: 'awakening-modal--lightning',
-  time: 'awakening-modal--time',
-  life: 'awakening-modal--life',
+  cause_effect: 'awakening-modal--cause_effect',
+  life_death: 'awakening-modal--life_death',
 };
 
 /** Intent-themed awakening ceremony (sub-plan 14 §9). */
@@ -45,7 +45,7 @@ export function showAwakeningModal(
 
     const crack = document.createElement('div');
     crack.className = 'awakening-modal__crack';
-    crack.hidden = options.intentId !== 'void';
+    crack.hidden = options.intentId !== 'truth_falsehood';
 
     const title = document.createElement('p');
     title.className = 'awakening-modal__title';

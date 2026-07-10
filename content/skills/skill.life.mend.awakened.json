@@ -1,6 +1,6 @@
 {
   "id": "skill.life.mend.awakened",
-  "intent": "life",
+  "intent": "life_death",
   "nameKey": "skill.life.mend.awakened.name",
   "kind": "heal",
   "manaCost": 15,

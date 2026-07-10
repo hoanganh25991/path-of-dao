@@ -21,10 +21,10 @@ describe('getSkillVfxProfile', () => {
   });
 
   it('maps void nova and abyss to unique sprites', () => {
-    expect(getSkillVfxProfile('skill.void.nova.v4', 'void').projectileTexture).toBe(
+    expect(getSkillVfxProfile('skill.void.nova.v4', 'truth_falsehood').projectileTexture).toBe(
       VFX_TEXTURE_KEYS.voidNova,
     );
-    expect(getSkillVfxProfile('skill.void.abyss.v5', 'void').impact).toBe('void_abyss');
+    expect(getSkillVfxProfile('skill.void.abyss.v5', 'truth_falsehood').impact).toBe('void_abyss');
   });
 
   it('maps flame lotus and pillar AoE kinds', () => {

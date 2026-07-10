@@ -21,5 +21,6 @@
   "spawnMode": "procedural",
   "worldProfile": "world.abyss_rift",
   "roamTable": null,
-  "requiredBossId": null
+  "requiredBossId": null,
+  "timelineShardId": "timeline.map.abyss_rift.02"
 }

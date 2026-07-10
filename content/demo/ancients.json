@@ -30,7 +30,7 @@
         "gold": 800,
         "awakenedIntents": [],
         "insightReadyIntents": [],
-        "equippedSkills": {
+        "divineArts": {
           "primary": "skill.basic.meditate",
           "secondary": "skill.void.slash",
           "ultimate": "skill.flame.bolt",
@@ -83,9 +83,9 @@
         "realmTier": "early",
         "spirit": 40,
         "gold": 1200,
-        "awakenedIntents": ["void"],
+        "awakenedIntents": ["truth_falsehood"],
         "insightReadyIntents": ["sword"],
-        "equippedSkills": {
+        "divineArts": {
           "primary": "skill.void.slash.awakened",
           "secondary": "skill.flame.scorch.v1",
           "ultimate": "skill.lightning.fork.v1",
@@ -140,7 +140,7 @@
         "gold": 4500,
         "awakenedIntents": ["sword", "lightning"],
         "insightReadyIntents": [],
-        "equippedSkills": {
+        "divineArts": {
           "primary": "skill.sword.cleave.v2",
           "secondary": "skill.sword.rain.v3",
           "ultimate": "skill.flame.ember.v2",
@@ -193,9 +193,9 @@
         "realmId": "nascent_soul",
         "realmTier": "early",
         "gold": 7200,
-        "awakenedIntents": ["flame", "life", "void"],
+        "awakenedIntents": ["flame", "life_death", "truth_falsehood"],
         "insightReadyIntents": [],
-        "equippedSkills": {
+        "divineArts": {
           "primary": "skill.flame.pillar.v3",
           "secondary": "skill.flame.lotus.v4",
           "ultimate": "skill.life.surge.v3",
@@ -248,9 +248,9 @@
         "realmId": "core_formation",
         "realmTier": "early",
         "gold": 15000,
-        "awakenedIntents": ["void", "flame"],
+        "awakenedIntents": ["truth_falsehood", "flame"],
         "insightReadyIntents": [],
-        "equippedSkills": {
+        "divineArts": {
           "primary": "skill.lightning.judgment.v4",
           "secondary": "skill.time.stasis.v4",
           "ultimate": "skill.flame.bolt.awakened",
@@ -310,9 +310,9 @@
         "realmId": "void_spirit",
         "realmTier": "mid",
         "gold": 12000,
-        "awakenedIntents": ["void", "sword", "time"],
+        "awakenedIntents": ["truth_falsehood", "sword", "cause_effect"],
         "insightReadyIntents": [],
-        "equippedSkills": {
+        "divineArts": {
           "primary": "skill.void.nova.v4",
           "secondary": "skill.void.abyss.v5",
           "ultimate": "skill.sword.heaven.v5",

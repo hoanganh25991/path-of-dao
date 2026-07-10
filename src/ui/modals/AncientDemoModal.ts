@@ -71,7 +71,7 @@ export function showAncientDemoModal(
   return new Promise((resolve) => {
     const profile = getAncientProfile(options.ancientId);
     const path = getAncientPath(options.ancientId);
-    const loadout = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
+    const loadout = normalizeLoadout(profile.save.divineArts, profile.unlockedSkills);
     const skillIds = SKILL_SLOTS.map((slot) => loadout[slot]).filter(Boolean);
     let activeSkillId = skillIds[0] ?? profile.unlockedSkills[0] ?? 'skill.void.slash';
 
@@ -213,7 +213,7 @@ export function renderAncientCard(profile: AncientProfile, active: boolean): HTM
   card.dataset.ancientId = profile.id;
   if (active) card.classList.add('home-ancient-card--active');
 
-  const loadout = normalizeLoadout(profile.save.equippedSkills, profile.unlockedSkills);
+  const loadout = normalizeLoadout(profile.save.divineArts, profile.unlockedSkills);
 
   const identity = document.createElement('span');
   identity.className = 'home-ancient-card__identity';

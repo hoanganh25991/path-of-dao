@@ -1352,6 +1352,55 @@ header.home-profile {
   cursor: pointer;
 }
 
+/* Story — My Path / Dao Scroll sub-tabs (sub-plan 31) */
+.home-path-tabs {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+  padding: 0.15rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--dao-border);
+  border-radius: 0.5rem;
+}
+
+.home-path-tabs__tab {
+  flex: 1;
+  min-height: 36px;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--dao-muted);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-path-tabs__tab--active {
+  background: rgba(201, 162, 39, 0.18);
+  color: var(--dao-gold);
+}
+
+.home-path-tabs__tab:focus-visible {
+  outline: 2px solid var(--dao-jade);
+  outline-offset: 1px;
+}
+
+.home-dao-scroll__row--locked {
+  opacity: 0.55;
+}
+
+.home-dao-scroll__intent {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+}
+
+.home-dao-scroll__punchline {
+  font-style: italic;
+}
+
 /* Story */
 .home-story__list {
   display: flex;

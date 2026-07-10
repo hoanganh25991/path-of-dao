@@ -21,5 +21,6 @@
   "roamTable": null,
   "spawnMode": "procedural",
   "requiredBossId": null,
-  "worldProfile": "world.moon_lake"
+  "worldProfile": "world.moon_lake",
+  "timelineShardId": "timeline.map.moon_lake.02"
 }

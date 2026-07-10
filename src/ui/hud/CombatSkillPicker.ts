@@ -55,9 +55,9 @@ export class CombatSkillPicker {
     requestAnimationFrame(() => CombatSkillPicker.root?.classList.add('combat-skill-picker--open'));
 
     const pool = listAssignableSkillPool(save);
-    const picker = createLoadoutPickerElement(save.equippedSkills, pool, (loadout) => {
-      gameStore.getState().patch({ equippedSkills: loadout });
-      EventBus.emit('loadout:changed', { equippedSkills: loadout });
+    const picker = createLoadoutPickerElement(save.divineArts, pool, (loadout) => {
+      gameStore.getState().patch({ divineArts: loadout });
+      EventBus.emit('loadout:changed', { divineArts: loadout });
     });
 
     CombatSkillPicker.panel.replaceChildren();

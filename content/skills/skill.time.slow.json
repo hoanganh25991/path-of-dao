@@ -1,6 +1,6 @@
 {
   "id": "skill.time.slow",
-  "intent": "time",
+  "intent": "cause_effect",
   "nameKey": "skill.time.slow.name",
   "kind": "bolt",
   "manaCost": 25,

@@ -1,6 +1,6 @@
 {
   "id": "skill.void.surge.v3",
-  "intent": "void",
+  "intent": "truth_falsehood",
   "nameKey": "skill.void.surge.v3.name",
   "kind": "bolt",
   "manaCost": 24,

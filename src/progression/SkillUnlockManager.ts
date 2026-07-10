@@ -22,13 +22,13 @@ export function unlockSkillIds(save: PlayerSaveV1, ids: string[]): PlayerSaveV1 
 
 function unlockAndEquip(save: PlayerSaveV1, ids: string[]): PlayerSaveV1 {
   const next = mergeUnlocks(save, ids);
-  let loadout = next.equippedSkills;
+  let loadout = next.divineArts;
   for (const id of ids) {
     if (next.unlockedSkills.includes(id)) {
       loadout = equipLearnedSkill(loadout, id);
     }
   }
-  return loadout === next.equippedSkills ? next : { ...next, equippedSkills: loadout };
+  return loadout === next.divineArts ? next : { ...next, divineArts: loadout };
 }
 
 function mergeUnlocks(save: PlayerSaveV1, ids: string[]): PlayerSaveV1 {

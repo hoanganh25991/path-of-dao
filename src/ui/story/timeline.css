@@ -1,0 +1,111 @@
+/* Dao Scroll — timeline offer modal + shard reader punch-line card (sub-plan 31). */
+
+.timeline-offer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.timeline-offer-modal--active {
+  opacity: 1;
+}
+
+.timeline-offer-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(201, 162, 39, 0.14), rgba(0, 0, 0, 0.88));
+}
+
+.timeline-offer-modal__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  max-width: 22rem;
+  width: calc(100% - 2rem);
+  text-align: center;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 1rem;
+  background: rgba(12, 16, 24, 0.94);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+.timeline-offer-modal__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f0f4ff;
+}
+
+.timeline-offer-modal__actions {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.timeline-offer-modal__btn {
+  flex: 1;
+  min-height: 44px;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: rgba(232, 230, 227, 0.75);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.timeline-offer-modal__btn--primary {
+  border-color: transparent;
+  background: linear-gradient(135deg, #c9a227, #8f7014);
+  color: #1a1204;
+  font-weight: 700;
+}
+
+/* Punch-line card — final slide of TimelineShardReader */
+.story-reader--timeline .story-reader__punchline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+  justify-content: center;
+  padding: 0 0 0 0.9rem;
+  border-left: 4px solid var(--intent-rim, #c9a227);
+  animation: timeline-punchline-in 0.4s ease;
+}
+
+.story-reader__punchline-quote {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: #f0f4ff;
+}
+
+.story-reader__punchline-attribution {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--intent-rim, #c9a227);
+  opacity: 0.9;
+}
+
+@keyframes timeline-punchline-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

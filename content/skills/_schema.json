@@ -6,7 +6,7 @@
   "required": ["id", "intent", "nameKey", "kind", "manaCost", "skillMultiplier"],
   "properties": {
     "id": { "type": "string" },
-    "intent": { "enum": ["sword", "void", "flame", "lightning", "time", "life"] },
+    "intent": { "enum": ["sword", "truth_falsehood", "flame", "lightning", "cause_effect", "life_death"] },
     "nameKey": { "type": "string" },
     "kind": { "enum": ["arc", "bolt", "heal", "meditate"] },
     "manaCost": { "type": "integer", "minimum": 0 },

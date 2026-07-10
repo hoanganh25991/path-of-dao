@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.burning_desert.01",
+  "mapId": "map.burning_desert.01",
+  "chapterId": "chapter.05.burning_desert",
+  "wangLinPhase": "tempered_road",
+  "intentLesson": "flame",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch05.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch05.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch05.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

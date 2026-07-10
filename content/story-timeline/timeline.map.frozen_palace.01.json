@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.frozen_palace.01",
+  "mapId": "map.frozen_palace.01",
+  "chapterId": "chapter.07.frozen_palace",
+  "wangLinPhase": "memory_inner_demon",
+  "intentLesson": "cause_effect",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch07.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch07.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch07.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

@@ -93,7 +93,7 @@ export class App {
       });
     };
     (window as unknown as Record<string, unknown>).__devPrepareAwakening = (
-      intentId = 'void',
+      intentId = 'life_death',
     ): void => {
       devPrepareAwakening(intentId);
     };

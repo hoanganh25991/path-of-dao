@@ -51,13 +51,13 @@ describe('InputManager button edge detection', () => {
   });
 
   it('maps keyboard attack to pressed on poll', () => {
-    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyJ' }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
 
     const frame = InputManager.poll();
     expect(frame.state.attack.pressed).toBe(true);
     expect(frame.state.attack.held).toBe(true);
 
-    window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyJ' }));
+    window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
     InputManager.poll();
     const released = InputManager.consume();
     expect(released.attack.released).toBe(true);

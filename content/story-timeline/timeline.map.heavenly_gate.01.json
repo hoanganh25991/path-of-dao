@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.heavenly_gate.01",
+  "mapId": "map.heavenly_gate.01",
+  "chapterId": "chapter.09.heavenly_gate",
+  "wangLinPhase": "threshold",
+  "intentLesson": "flame",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch09.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch09.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch09.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

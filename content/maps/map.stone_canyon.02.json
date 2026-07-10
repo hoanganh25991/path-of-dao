@@ -21,5 +21,6 @@
   "roamTable": null,
   "spawnMode": "procedural",
   "requiredBossId": null,
-  "worldProfile": "world.stone_canyon"
+  "worldProfile": "world.stone_canyon",
+  "timelineShardId": "timeline.map.stone_canyon.02"
 }

@@ -4,6 +4,7 @@ import { skillDefinitionSchema } from '@/progression/SkillDefinition';
 import { itemDefinitionSchema } from '@/progression/ItemDefinition';
 import { chaptersIndexSchema } from '@/shared/schemas/chapter';
 import { storySceneSchema } from '@/shared/schemas/story';
+import { timelineShardSchema } from '@/shared/schemas/timeline';
 import { worldMapFileSchema } from '@/shared/schemas/world-map';
 import { encounterDefinitionSchema } from '@/shared/schemas/fortuitous-encounters';
 import { realmsFileSchema } from '@/shared/schemas/realms';
@@ -100,6 +101,13 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
         severity: 'error',
       });
     }
+    if (map.timelineShardId && !index.timelineShards.has(map.timelineShardId)) {
+      errors.push({
+        file: path,
+        message: `timelineShardId "${map.timelineShardId}" not found in content/story-timeline`,
+        severity: 'error',
+      });
+    }
     if (!localeHasKey(index.locales, map.displayNameKey, 'en')) {
       errors.push({
         file: path,
@@ -177,6 +185,39 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
             });
           }
         }
+      }
+    }
+  }
+
+  for (const [fileId, raw] of index.timelineShards) {
+    const parsed = timelineShardSchema.safeParse(raw);
+    if (!parsed.success) continue;
+    const shard = parsed.data;
+    const path = `story-timeline/${fileId}.json`;
+
+    if (!mapIds.has(shard.mapId)) {
+      errors.push({ file: path, message: `mapId "${shard.mapId}" not found`, severity: 'error' });
+    }
+    if (!chapterIds.has(shard.chapterId)) {
+      errors.push({
+        file: path,
+        message: `chapterId "${shard.chapterId}" not in chapters/index.json`,
+        severity: 'error',
+      });
+    }
+
+    const keys = [...shard.slides.map((s) => s.textKey), shard.punchlineKey, shard.punchlineAttributionKey];
+    for (const key of keys) {
+      if (!localeHasKey(index.locales, key, 'en')) {
+        errors.push({ file: path, message: `locale key "${key}" missing in en locale`, severity: 'error' });
+      } else if (!localeHasKey(index.locales, key, 'vi')) {
+        const issue = {
+          file: path,
+          message: `locale key "${key}" missing in vi locale`,
+          severity: 'warning' as const,
+        };
+        if (options.strictI18n) errors.push({ ...issue, severity: 'error' });
+        else warnings.push(issue);
       }
     }
   }

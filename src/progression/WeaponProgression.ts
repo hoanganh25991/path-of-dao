@@ -69,6 +69,6 @@ export function patchAncientSwordMilestone(
     progress: { ...save.progress, weaponMilestone: 'ancient_sword' },
     equipped: { ...save.equipped, weapon: itemId },
     unlockedSkills: unlocked.unlockedSkills,
-    equippedSkills: unlocked.equippedSkills,
+    divineArts: unlocked.divineArts,
   };
 }

@@ -1,6 +1,6 @@
 {
   "id": "skill.life.pulse.v2",
-  "intent": "life",
+  "intent": "life_death",
   "nameKey": "skill.life.pulse.v2.name",
   "kind": "heal",
   "manaCost": 18,

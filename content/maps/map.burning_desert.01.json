@@ -29,5 +29,6 @@
   "roamTable": null,
   "spawnMode": "procedural",
   "worldProfile": "world.burning_desert",
-  "requiredBossId": null
+  "requiredBossId": null,
+  "timelineShardId": "timeline.map.burning_desert.01"
 }

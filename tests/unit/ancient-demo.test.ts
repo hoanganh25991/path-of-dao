@@ -39,11 +39,11 @@ describe('AncientDemoManager', () => {
     expect(save.stats.spirit).toBeGreaterThanOrEqual(50);
   });
 
-  it('insight seeker can awaken void and sword', () => {
+  it('insight seeker already awakened truth & falsehood and is ready to awaken sword', () => {
     const save = buildAncientSave('ancient.insight_seeker');
-    expect(checkAwakeningReady(save, 'void')).toBe(true);
+    expect(save.insights.truth_falsehood?.awakened).toBe(true);
+    expect(checkAwakeningReady(save, 'truth_falsehood')).toBe(false);
     expect(checkAwakeningReady(save, 'sword')).toBe(true);
-    expect(save.insights.void?.awakened).toBe(false);
   });
 
   it('fortune emissary has all encounter types recorded', () => {
@@ -53,11 +53,11 @@ describe('AncientDemoManager', () => {
     expect(save.cosmetics.pet).toBe('pet.spirit_fox');
   });
 
-  it('builds void walker with awakened void and high realm', () => {
+  it('builds void walker with awakened truth & falsehood and high realm', () => {
     const save = buildAncientSave('ancient.void_walker');
     expect(save.realm.id).toBe('void_spirit');
-    expect(save.insights.void?.awakened).toBe(true);
-    expect(save.equippedSkills[0]).toBe('skill.void.slash.awakened');
+    expect(save.insights.truth_falsehood?.awakened).toBe(true);
+    expect(save.divineArts[0]).toBe('skill.void.nova.v4');
   });
 
   it('detects meaningful progress on leveled save', () => {
@@ -84,16 +84,16 @@ describe('AncientDemoManager', () => {
 
   it('enter applies normalized default loadout', async () => {
     await enterAncientDemo('ancient.sword_ancestor');
-    const skills = gameStore.getState().save!.equippedSkills;
-    expect(new Set(skills.filter(Boolean)).size).toBe(3);
+    const skills = gameStore.getState().save!.divineArts;
+    expect(new Set(skills.filter(Boolean)).size).toBe(6);
     await exitAncientDemo();
   });
 
   it('buildAncientSave seeds profile unlocked skills', () => {
     const save = buildAncientSave('ancient.sword_ancestor');
-    expect(save.unlockedSkills).toContain('skill.sword.slash.awakened');
-    expect(save.equippedSkills[0]).toBe('skill.sword.slash.awakened');
-    expect(save.equippedSkills[2]).toBe('skill.flame.bolt.awakened');
+    expect(save.unlockedSkills).toContain('skill.sword.cleave.v2');
+    expect(save.divineArts[0]).toBe('skill.sword.cleave.v2');
+    expect(save.divineArts[2]).toBe('skill.flame.ember.v2');
   });
 
   it('enter replaces hero loadout and exit restores it', async () => {
@@ -108,22 +108,22 @@ describe('AncientDemoManager', () => {
     gameStore.getState().patch({
       xp: 100,
       stats: { ...gameStore.getState().save!.stats, level: 3 },
-      equippedSkills: [...heroLoadout],
+      divineArts: [...heroLoadout],
       unlockedSkills: heroLoadout.filter(Boolean),
     });
 
     await enterAncientDemo('ancient.breakthrough_sage');
-    expect(gameStore.getState().save!.equippedSkills).toEqual([
+    expect(gameStore.getState().save!.divineArts).toEqual([
+      'skill.basic.meditate',
       'skill.void.slash',
-      'skill.sword.slash',
       'skill.flame.bolt',
-      '',
-      '',
-      '',
+      'skill.lightning.strike',
+      'skill.life.mend',
+      'skill.time.slow',
     ]);
 
     await exitAncientDemo();
-    expect(gameStore.getState().save!.equippedSkills).toEqual([...heroLoadout]);
+    expect(gameStore.getState().save!.divineArts).toEqual([...heroLoadout]);
   });
 
   it('each ancient exposes at least four unlocked skills', () => {

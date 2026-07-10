@@ -2,16 +2,16 @@ import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { getInsightIntentConfig, getIntentForSkillId, listInsightIntentIds } from '@/progression/InsightDefinitions';
 import { getInsightState } from '@/progression/InsightSystem';
+import { filterSkillsForIntentGates } from '@/progression/MasterIntentSystem';
 import {
-  coerceEquippedSkills,
-  emptyEquippedSkills,
+  coerceDivineArts,
+  emptyDivineArts,
   SKILL_SLOT_INDICES,
-  type EquippedSkills,
+  type DivineArtsLoadout,
   type SkillSlotIndex,
 } from '@/progression/SkillSlots';
-import { filterSkillsForWeaponGate } from '@/progression/WeaponProgression';
 
-export type { EquippedSkills, SkillSlotIndex as SkillSlotId } from '@/progression/SkillSlots';
+export type { DivineArtsLoadout, SkillSlotIndex as SkillSlotId } from '@/progression/SkillSlots';
 export { SKILL_SLOT_INDICES as SKILL_SLOTS } from '@/progression/SkillSlots';
 
 export function isFilledSkillSlot(skillId: string | undefined): boolean {
@@ -53,11 +53,11 @@ export function listUnlockedSkillIds(save: PlayerSaveV1): string[] {
       ids.add(config.awakenedSkillId);
     }
   }
-  return filterSkillsForWeaponGate(save, [...ids].sort());
+  return filterSkillsForIntentGates(save, [...ids].sort());
 }
 
 export function listAssignableSkills(
-  _loadout: EquippedSkills,
+  _loadout: DivineArtsLoadout,
   _slot: SkillSlotIndex,
   pool: string[],
 ): string[] {
@@ -65,16 +65,16 @@ export function listAssignableSkills(
 }
 
 export function assignSkillToSlot(
-  loadout: EquippedSkills,
+  loadout: DivineArtsLoadout,
   slot: SkillSlotIndex,
   skillId: string,
-): EquippedSkills {
-  const next = [...loadout] as EquippedSkills;
+): DivineArtsLoadout {
+  const next = [...loadout] as DivineArtsLoadout;
   next[slot] = skillId;
   return next;
 }
 
-export function equipLearnedSkill(loadout: EquippedSkills, skillId: string): EquippedSkills {
+export function equipLearnedSkill(loadout: DivineArtsLoadout, skillId: string): DivineArtsLoadout {
   if (loadout.includes(skillId)) return loadout;
   for (const slot of SKILL_SLOT_INDICES) {
     if (!isFilledSkillSlot(loadout[slot])) {
@@ -85,8 +85,8 @@ export function equipLearnedSkill(loadout: EquippedSkills, skillId: string): Equ
 }
 
 /** Drop skills outside the pool; leave empty slots empty (no HUD placeholder). */
-export function normalizeLoadout(loadout: EquippedSkills | unknown, pool: string[]): EquippedSkills {
-  const next = coerceEquippedSkills(loadout);
+export function normalizeLoadout(loadout: DivineArtsLoadout | unknown, pool: string[]): DivineArtsLoadout {
+  const next = coerceDivineArts(loadout);
 
   for (const slot of SKILL_SLOT_INDICES) {
     const id = next[slot];
@@ -98,16 +98,16 @@ export function normalizeLoadout(loadout: EquippedSkills | unknown, pool: string
   return next;
 }
 
-export function defaultLoadoutFromSave(save: PlayerSaveV1): EquippedSkills {
+export function defaultLoadoutFromSave(save: PlayerSaveV1): DivineArtsLoadout {
   const pool = listAssignableSkillPool(save);
-  return normalizeLoadout(save.equippedSkills, pool);
+  return normalizeLoadout(save.divineArts, pool);
 }
 
-export function canCastEquippedSkill(save: PlayerSaveV1, slot: SkillSlotIndex): boolean {
-  const loadout = coerceEquippedSkills(save.equippedSkills);
+export function canCastDivineArt(save: PlayerSaveV1, slot: SkillSlotIndex): boolean {
+  const loadout = coerceDivineArts(save.divineArts);
   const skillId = loadout[slot];
   if (!isFilledSkillSlot(skillId)) return false;
   return listUnlockedSkillIds(save).includes(skillId);
 }
 
-export { coerceEquippedSkills, emptyEquippedSkills };
+export { coerceDivineArts, emptyDivineArts };

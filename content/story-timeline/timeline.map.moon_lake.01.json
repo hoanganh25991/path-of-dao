@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.moon_lake.01",
+  "mapId": "map.moon_lake.01",
+  "chapterId": "chapter.04.moon_lake",
+  "wangLinPhase": "sword_destiny",
+  "intentLesson": "sword",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch04.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch04.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch04.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

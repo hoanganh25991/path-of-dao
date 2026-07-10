@@ -5,6 +5,8 @@ import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import { SaveManager } from '@/core/save/SaveManager';
 import { applyMapClearPatch } from '@/progression/ChapterManager';
+import { showTimelineOfferModal } from '@/ui/modals/TimelineOfferModal';
+import { openTimelineShardReader } from '@/ui/story/TimelineShardReader';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { exitAncientDemo, getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { applyAncientGodMode, isAncientCombatActive } from '@/progression/AncientCombatMode';
@@ -26,8 +28,13 @@ import { resolvePortalSpawn } from '@/combat/map/portalSpawn';
 import { getRoamConfig } from '@/combat/map/RoamLoader';
 import { getWorldProfile, worldSeedForMap } from '@/combat/world/ProceduralWorldLoader';
 import { resolveGroundPalette } from '@/combat/world/GroundPalette';
+import {
+  generateSettlementPlacements,
+  generateSignatureTreePlacement,
+} from '@/combat/world/ProceduralSettlementGenerator';
 import { EndlessGroundManager } from '@/combat/map/EndlessGround';
 import { WorldFogOverlay } from '@/combat/map/WorldFog';
+import { SettlementDecorator } from '@/combat/map/SettlementDecorator';
 import { biomeGroundColor } from '@/combat/map/biomeGroundColor';
 import { AudioManager } from '@/core/audio/AudioManager';
 import { EncounterTrigger } from '@/combat/systems/EncounterTrigger';
@@ -65,6 +72,7 @@ export class MapScene extends Phaser.Scene {
   private spawnManager: SpawnManager | RoamingSpawnManager | ProceduralRoamingSpawnManager | null = null;
   private endlessGround: EndlessGroundManager | null = null;
   private worldFog: WorldFogOverlay | null = null;
+  private settlementDecorator: SettlementDecorator | null = null;
   private zonePortalManager: ZonePortalManager | null = null;
   private encounterTrigger: EncounterTrigger | null = null;
   private exiting = false;
@@ -164,6 +172,14 @@ export class MapScene extends Phaser.Scene {
         DEPTH.ground,
       );
       this.endlessGround.warmStart(spawn.x, spawn.y);
+
+      this.settlementDecorator = new SettlementDecorator(this);
+      this.settlementDecorator.renderSettlements(
+        generateSettlementPlacements(seed, worldProfile, config.spawn.x, config.spawn.y),
+      );
+      this.settlementDecorator.renderSignatureTree(
+        generateSignatureTreePlacement(seed, worldProfile, config.spawn.x, config.spawn.y),
+      );
     } else {
       this.spawnEnvironmentDecorations(config);
     }
@@ -349,6 +365,8 @@ export class MapScene extends Phaser.Scene {
     this.endlessGround = null;
     this.worldFog?.destroy();
     this.worldFog = null;
+    this.settlementDecorator?.destroy();
+    this.settlementDecorator = null;
     this.hitboxManager?.destroy();
   }
 
@@ -629,6 +647,11 @@ export class MapScene extends Phaser.Scene {
       }
       void gameStore.getState().persist();
       SaveManager.scheduleAutosave();
+
+      if (result.pendingTimelineShard) {
+        await this.offerTimelineShard(result.pendingTimelineShard);
+      }
+
       if (result.pendingStory) {
         void SceneRouter.instance.switchTo('story', result.pendingStory);
         return;
@@ -636,6 +659,19 @@ export class MapScene extends Phaser.Scene {
     }
 
     void SceneRouter.instance.switchTo('home');
+  }
+
+  /** "A page of the road opens" — offer, then read inline before returning home (sub-plan 31 §6.2). */
+  private async offerTimelineShard(shardId: string): Promise<void> {
+    const uiRoot = document.getElementById('ui-root');
+    if (!uiRoot) return;
+
+    const choice = await showTimelineOfferModal(uiRoot);
+    if (choice !== 'read') return;
+
+    await new Promise<void>((resolve) => {
+      openTimelineShardReader(uiRoot, { shardId, onFinished: resolve });
+    });
   }
 
   private persistRuntime(): void {

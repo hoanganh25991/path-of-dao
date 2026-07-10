@@ -1,6 +1,6 @@
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { getSkillDefinition } from '@/progression/SkillLoader';
-import type { EquippedSkills } from '@/progression/SkillLoadout';
+import type { DivineArtsLoadout } from '@/progression/SkillLoadout';
 import { SKILL_SLOTS } from '@/progression/SkillLoadout';
 import {
   isAwakenedSkillId,
@@ -13,7 +13,7 @@ function skillDescKey(nameKey: string): string {
 }
 
 /** Icon-only strip for compact ancient echo list rows. */
-export function createSkillIconStrip(loadout: EquippedSkills): HTMLElement {
+export function createSkillIconStrip(loadout: DivineArtsLoadout): HTMLElement {
   const strip = document.createElement('div');
   strip.className = 'skill-icon-strip';
 
@@ -32,7 +32,7 @@ export function createSkillIconStrip(loadout: EquippedSkills): HTMLElement {
 }
 
 export function createSkillShowcaseList(
-  loadout: EquippedSkills,
+  loadout: DivineArtsLoadout,
   options: { compact?: boolean; title?: string } = {},
 ): HTMLElement {
   const root = document.createElement('div');

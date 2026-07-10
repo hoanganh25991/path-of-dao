@@ -1,6 +1,6 @@
 {
   "id": "skill.time.stasis.v4",
-  "intent": "time",
+  "intent": "cause_effect",
   "nameKey": "skill.time.stasis.v4.name",
   "kind": "bolt",
   "manaCost": 30,

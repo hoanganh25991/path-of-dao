@@ -1,6 +1,6 @@
 {
   "id": "skill.time.drift.v2",
-  "intent": "time",
+  "intent": "cause_effect",
   "nameKey": "skill.time.drift.v2.name",
   "kind": "bolt",
   "manaCost": 18,

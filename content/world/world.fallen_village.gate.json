@@ -33,5 +33,22 @@
     "waterMacroThreshold": 0,
     "dirtMacroThreshold": 0.68,
     "rockMacroThreshold": 0.86
+  },
+  "settlements": [
+    {
+      "id": "settlement.fallen_village.gate.courtyard",
+      "type": "sect_courtyard",
+      "structures": ["sect_gate", "watchtower", "wall_segment", "pavilion"],
+      "radius": 240,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.jade_pine",
+    "displayNameKey": "map.fallen_village.02.signature_tree",
+    "scale": 2.6,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

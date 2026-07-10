@@ -14,6 +14,17 @@ const localeVi = join(root, 'content', 'locales', 'vi', 'skills.json');
 
 mkdirSync(skillsDir, { recursive: true });
 
+/**
+ * Skill content ids keep their legacy slug (`skill.void.*`, `skill.life.*`,
+ * `skill.time.*` — never rename shipped ids). Only the `intent` FIELD maps to
+ * the Master Intent curriculum id (plan 14 redesign).
+ */
+const INTENT_TAG = {
+  void: 'truth_falsehood',
+  life: 'life_death',
+  time: 'cause_effect',
+};
+
 const VARIANTS = [
   { intent: 'sword', kind: 'arc', rows: [
     { slug: 'crescent', v: 1, mult: 1.2, mana: 18, cd: 3000, halfAngle: 45 },
@@ -60,11 +71,11 @@ const VARIANTS = [
 const enLocale = {};
 const viLocale = {};
 
-function buildSkill(intent, kind, row) {
-  const id = `skill.${intent}.${row.slug}.v${row.v}`;
+function buildSkill(intentSlug, kind, row) {
+  const id = `skill.${intentSlug}.${row.slug}.v${row.v}`;
   const skill = {
     id,
-    intent,
+    intent: INTENT_TAG[intentSlug] ?? intentSlug,
     nameKey: `${id}.name`,
     kind,
     manaCost: row.mana,
@@ -116,7 +127,7 @@ function buildSkill(intent, kind, row) {
     life: { bloom: ['Life Bloom', 'Hoa Sinh'], pulse: ['Vital Pulse', 'Mạch Sinh'], surge: ['Healing Surge', 'Sinh Tăng'], spirit: ['Spirit Bloom', 'Linh Hoa'] },
   };
 
-  const [enName, viName] = names[intent]?.[row.slug] ?? [`${row.slug} v${row.v}`, `${row.slug} v${row.v}`];
+  const [enName, viName] = names[intentSlug]?.[row.slug] ?? [`${row.slug} v${row.v}`, `${row.slug} v${row.v}`];
   enLocale[`${id}.name`] = enName;
   enLocale[`${id}.desc`] = `Variant art — ${enName.toLowerCase()}.`;
   viLocale[`${id}.name`] = viName;

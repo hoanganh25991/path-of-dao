@@ -140,14 +140,15 @@ Punch-line uses **Intent color** from [plan 29 §8](../plans/29-pixel-art-combat
 ## 5. Wang Lin × Intent lesson map (all 20 maps)
 
 Wang Lin's arc is the **Intent curriculum**: each map teaches one facet of Master Intent he
-embodied (perseverance, void, flame of obsession, tribulation, time's cost, life's price).
+embodied (life-and-death's stubborn survival, truth-and-falsehood behind illusion, flame of
+obsession, tribulation, cause-and-effect's price).
 
 | Map | Region beat | Wang Lin phase | Intent lesson | Punch-line theme |
 |-----|-------------|----------------|---------------|------------------|
-| `map.fallen_village.01` | Village ruins | mortal_outcast | **Life** | Stubborn survival |
-| `map.fallen_village.02` | Tu Sen ordeal | mortal_outcast | **Life** | Cost of protecting what remains |
-| `map.mist_forest.01` | Exile wilderness | wilderness_exile | **Void** | Walking into uncertainty |
-| `map.mist_forest.02` | Liu Mei | wilderness_exile | **Void** | Fortune hides in refusal to quit |
+| `map.fallen_village.01` | Village ruins | mortal_outcast | **Life & Death** | Stubborn survival |
+| `map.fallen_village.02` | Tu Sen ordeal | mortal_outcast | **Life & Death** | Cost of protecting what remains |
+| `map.mist_forest.01` | Exile wilderness | wilderness_exile | **Truth & Falsehood** | Walking into uncertainty |
+| `map.mist_forest.02` | Liu Mei | wilderness_exile | **Truth & Falsehood** | Fortune hides in refusal to quit |
 | `map.stone_canyon.01` | Zhao roads | fortuitous_inheritance | **Sword** | First cut — humble blade |
 | `map.stone_canyon.02` | Hong Die | fortuitous_inheritance | **Sword** | Ruthlessness has a shape |
 | `map.moon_lake.01` | Seal approach | sword_destiny | **Sword** | Destiny is seized, not granted |
@@ -156,14 +157,14 @@ embodied (perseverance, void, flame of obsession, tribulation, time's cost, life
 | `map.burning_desert.02` | Flame Thunder Lord | tempered_road | **Lightning** | Two elements, one will |
 | `map.thunder_peaks.01` | Tribulation sky | heavenly_tribulation | **Lightning** | Heaven tests the stubborn |
 | `map.thunder_peaks.02` | Heaven Fate (I) | heavenly_tribulation | **Lightning** | Loss is also a teacher |
-| `map.frozen_palace.01` | Memory halls | memory_inner_demon | **Time** | Past power has a price |
-| `map.frozen_palace.02` | Wang Yue | memory_inner_demon | **Time** | Memory traded for dao |
-| `map.abyss_rift.01` | Rift walk | heart_rift | **Void** | Obsession deepens |
-| `map.abyss_rift.02` | Heart demon | heart_rift | **Void** | The self is the last enemy |
+| `map.frozen_palace.01` | Memory halls | memory_inner_demon | **Cause & Effect** | Past power has a price |
+| `map.frozen_palace.02` | Wang Yue | memory_inner_demon | **Cause & Effect** | Memory traded for dao |
+| `map.abyss_rift.01` | Rift walk | heart_rift | **Truth & Falsehood** | Obsession deepens |
+| `map.abyss_rift.02` | Heart demon | heart_rift | **Truth & Falsehood** | The self is the last enemy |
 | `map.heavenly_gate.01` | Gate approach | threshold | **Flame** | Guardians judge intent |
 | `map.heavenly_gate.02` | Gate trial | threshold | **Sword** | Heart before blade |
-| `map.void_throne.01` | Thunder approach | obsession_seal | **Time** | Decades compress to steps |
-| `map.void_throne.02` | Epilogue hall | obsession_seal | **All six** | What remains after obsession |
+| `map.void_throne.01` | Thunder approach | obsession_seal | **Cause & Effect** | Decades compress to steps |
+| `map.void_throne.02` | Epilogue hall | obsession_seal | **Life & Death** | What remains after obsession |
 
 Chapter finale scenes (plan 18) **summarize** the chapter; timeline shards **cover every step**.
 
@@ -217,15 +218,15 @@ Star portal pin tooltip: show punch-line **one-liner** if shard read; `"?"` if l
 | File | Purpose | Status (2026-07-10) |
 |------|---------|---------------------|
 | `content/locales/{en,vi}/timeline.json` | body, wang_lin, punchline, map titles | `[x]` all 20 maps |
-| `content/story-timeline/timeline.{mapId}.json` | 20 timeline shard scripts | `[ ]` not created |
-| `assets/story/timeline/*.webp` | Painterly illustrations (≤500KB mobile) | `[ ]` placeholders |
-| `src/progression/TimelineLoader.ts` | Load + validate shards | `[ ]` |
-| `src/ui/story/TimelineShardReader.ts` | Reader with punch-line slide | `[ ]` |
-| `src/ui/home/panels/StoryPanel.ts` or `PathPanel.ts` | Dao Scroll sub-tab + timeline list | `[ ]` extend Path tab |
-| `src/progression/ChapterManager.ts` | Offer shard on map clear | `[ ]` |
-| `src/core/save/SaveSchema.ts` | `timelineSeen: string[]` | `[ ]` |
-| `content/maps/*.json` | `timelineShardId` per map | `[ ]` |
-| `tests/unit/timeline-loader.test.ts` | Schema + 20-map coverage | `[ ]` |
+| `content/story-timeline/timeline.{mapId}.json` | 20 timeline shard scripts | `[x]` created (`src/shared/schemas/timeline.ts`) |
+| `assets/story/timeline/*.webp` | Painterly illustrations (≤500KB mobile) | `[ ]` placeholders — Phase E |
+| `src/progression/TimelineLoader.ts` | Load + validate shards | `[x]` + road-order helper |
+| `src/ui/story/TimelineShardReader.ts` | Reader with punch-line slide | `[x]` |
+| `src/ui/home/panels/StoryPanel.ts` or `PathPanel.ts` | Dao Scroll sub-tab + timeline list | `[x]` My Path / Dao Scroll sub-tabs |
+| `src/progression/ChapterManager.ts` | Offer shard on map clear | `[x]` `pendingTimelineShard` on `MapClearResult` |
+| `src/core/save/SaveSchema.ts` | `timelineSeen: string[]` | `[x]` |
+| `content/maps/*.json` | `timelineShardId` per map | `[x]` all 20 main maps |
+| `tests/unit/timeline-loader.test.ts` | Schema + 20-map coverage | `[x]` |
 
 ---
 
@@ -248,18 +249,18 @@ Pixel combat stays separate (plan 29). Timeline is **HTML story layer** only.
 
 - [x] All **20** MVP maps have en+vi locale keys (`timeline.chNN.mapMM.body|wang_lin|punchline`)
 - [x] Map title keys for scroll UI (`timeline.map.*.title`)
-- [ ] Every shard has ≥1 illustration path (SVG/WEBP placeholders for MVP)
-- [ ] `content/story-timeline/timeline.{mapId}.json` — 20 shard files referencing locale keys
+- [ ] Every shard has ≥1 illustration path (SVG/WEBP placeholders for MVP) — Phase E, ships with `illustration: null` today (reader falls back to placeholder panel)
+- [x] `content/story-timeline/timeline.{mapId}.json` — 20 shard files referencing locale keys
 
 **Runtime (in-game read-through):**
 
-- [ ] Every shard has `punchlineKey` + `intentLesson` in JSON schema
-- [ ] Dao Scroll lists all maps in road order; locked until cleared
-- [ ] Read-through: image + body + Wang Lin parallel + punch-line slide
-- [ ] Replay from Dao Scroll without re-granting rewards
-- [ ] Ancient follow-walk plays shard between maps (plan 28)
-- [ ] `timelineSeen` persists; journey records `timeline_shard` entries
-- [ ] World map pin shows punch-line when shard read (plan 17 §6.4)
+- [x] Every shard has `punchlineKey` + `intentLesson` in JSON schema
+- [x] Dao Scroll lists all maps in road order; locked until cleared (silhouette + `home.path.dao_scroll.locked` hint)
+- [x] Read-through: image (placeholder until Phase E) + body + Wang Lin parallel + punch-line slide
+- [x] Replay from Dao Scroll without re-granting rewards
+- [ ] Ancient follow-walk plays shard between maps (plan 28) — Phase E3
+- [x] `timelineSeen` persists; journey records `timeline_shard` entries
+- [ ] World map pin shows punch-line when shard read (plan 17 §6.4) — Phase E2
 - [x] Chapter stories (plan 18) still fire on `.02` — **complemented**, not replaced
 
 ---
@@ -269,12 +270,12 @@ Pixel combat stays separate (plan 29). Timeline is **HTML story layer** only.
 | Phase | Status | Owner track |
 |-------|--------|-------------|
 | **A — Locale prose** | `[x]` Done | [tracks/31](../tracks/31-wang-lin-story-timeline.md) |
-| **B — Shard JSON + maps hook** | `[ ]` Next | 31 + 20 |
-| **C — Save + unlock on map clear** | `[ ]` | 31 + 05 |
-| **D — Dao Scroll UI (Path sub-tab)** | `[ ]` | 31 + 12 |
-| **E — Illustrations** | `[ ]` parallel | 32 / encounter-art |
+| **B — Shard JSON + maps hook** | `[x]` Done 2026-07-10 | 31 + 20 |
+| **C — Save + unlock on map clear** | `[x]` Done 2026-07-10 | 31 + 05 |
+| **D — Dao Scroll UI (Path sub-tab)** | `[x]` Done 2026-07-10 | 31 + 12 |
+| **E — Illustrations, world map tooltip, ancient auto-walk** | `[ ]` Next (parallel) | 32 / encounter-art · 17 · 28 |
 
-**Suggested implement order:** B → C → D → E (art can land anytime after D accepts null illus).
+**Suggested implement order:** B → C → D → E (art can land anytime after D accepts null illus). **B–D shipped 2026-07-10** — Dao Scroll is player-visible now; E is polish, not a logic blocker.
 
 **Track:** [tracks/31-wang-lin-story-timeline.md](../tracks/31-wang-lin-story-timeline.md)
 

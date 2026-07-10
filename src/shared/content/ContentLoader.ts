@@ -3,6 +3,12 @@ import { getCultivatorConfig, listCultivatorIds } from '@/combat/cultivators/Cul
 import { getSkillDefinition, listSkillIds } from '@/progression/SkillLoader';
 import { getItemDefinition, listItemIds } from '@/progression/ItemLoader';
 import { getStoryScene, listStorySceneIds } from '@/progression/StoryLoader';
+import {
+  findTimelineShardByMapId,
+  getTimelineShard,
+  listTimelineShardIds,
+  listTimelineShardsInRoadOrder,
+} from '@/progression/TimelineLoader';
 import { listChapters } from '@/progression/ChapterLoader';
 import { getWorldMapData } from '@/progression/WorldMapLoader';
 
@@ -60,6 +66,22 @@ export class ContentLoader {
 
   static listChapters() {
     return listChapters();
+  }
+
+  static listTimelineShards(): string[] {
+    return listTimelineShardIds();
+  }
+
+  static getTimelineShard(id: string) {
+    return getTimelineShard(id);
+  }
+
+  static listTimelineShardsInRoadOrder() {
+    return listTimelineShardsInRoadOrder();
+  }
+
+  static findTimelineShardByMapId(mapId: string) {
+    return findTimelineShardByMapId(mapId);
   }
 
   static getWorldMap() {

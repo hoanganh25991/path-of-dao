@@ -29,5 +29,6 @@
   "roamTable": null,
   "spawnMode": "procedural",
   "requiredBossId": null,
-  "worldProfile": "world.fallen_village.gate"
+  "worldProfile": "world.fallen_village.gate",
+  "timelineShardId": "timeline.map.fallen_village.02"
 }

@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.fallen_village.01",
+  "mapId": "map.fallen_village.01",
+  "chapterId": "chapter.01.fallen_village",
+  "wangLinPhase": "mortal_outcast",
+  "intentLesson": "life_death",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch01.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch01.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch01.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

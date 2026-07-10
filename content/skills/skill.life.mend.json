@@ -1,6 +1,6 @@
 {
   "id": "skill.life.mend",
-  "intent": "life",
+  "intent": "life_death",
   "nameKey": "skill.life.mend.name",
   "kind": "heal",
   "manaCost": 15,

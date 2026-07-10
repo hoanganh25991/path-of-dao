@@ -1,6 +1,6 @@
 {
   "id": "skill.time.echo.v5",
-  "intent": "time",
+  "intent": "cause_effect",
   "nameKey": "skill.time.echo.v5.name",
   "kind": "bolt",
   "manaCost": 26,

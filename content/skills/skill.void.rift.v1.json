@@ -1,6 +1,6 @@
 {
   "id": "skill.void.rift.v1",
-  "intent": "void",
+  "intent": "truth_falsehood",
   "nameKey": "skill.void.rift.v1.name",
   "kind": "bolt",
   "manaCost": 18,

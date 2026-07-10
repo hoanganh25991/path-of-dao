@@ -30,23 +30,23 @@ afterEach(() => {
 
 describe('HomeProgressionNudges', () => {
   it('shows awakening toast when returning home with a ready intent', () => {
-    const voidConfig = getInsightIntentConfig('void');
+    const lifeDeathConfig = getInsightIntentConfig('life_death');
     gameStore.getState().patch({
       insights: {
-        void: {
+        life_death: {
           xp: INSIGHT_XP_TO_FULL,
           awakened: false,
-          totalUses: voidConfig.awakenRequirement.minUses,
+          totalUses: lifeDeathConfig.awakenRequirement.minUses,
         },
       },
-      realm: { id: voidConfig.awakenRequirement.minRealm, tier: 'early', breakthroughReady: false },
+      realm: { id: lifeDeathConfig.awakenRequirement.minRealm, tier: 'early', breakthroughReady: false },
     });
 
     initHomeProgressionNudges();
     EventBus.emit('scene:changed', { id: 'home', payload: undefined });
 
     const toast = document.querySelector('.home-toast');
-    expect(toast?.textContent).toContain('Void Slash');
+    expect(toast?.textContent).toContain('Spirit Mend Art');
     expect(toast?.textContent).toContain('Skills');
   });
 });

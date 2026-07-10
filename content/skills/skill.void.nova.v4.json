@@ -1,6 +1,6 @@
 {
   "id": "skill.void.nova.v4",
-  "intent": "void",
+  "intent": "truth_falsehood",
   "nameKey": "skill.void.nova.v4.name",
   "kind": "bolt",
   "manaCost": 36,

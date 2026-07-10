@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.mist_forest.01",
+  "mapId": "map.mist_forest.01",
+  "chapterId": "chapter.02.mist_forest",
+  "wangLinPhase": "wilderness_exile",
+  "intentLesson": "truth_falsehood",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch02.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch02.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch02.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

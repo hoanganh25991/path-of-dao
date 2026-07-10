@@ -29,5 +29,6 @@
   "spawnMode": "procedural",
   "worldProfile": "world.thunder_peaks",
   "roamTable": null,
-  "requiredBossId": null
+  "requiredBossId": null,
+  "timelineShardId": "timeline.map.thunder_peaks.01"
 }

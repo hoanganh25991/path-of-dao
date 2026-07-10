@@ -12,7 +12,7 @@ import {
   listReadyAwakeningIntents,
   seedDefaultInsights,
 } from '@/progression/InsightSystem';
-import { coerceEquippedSkills } from '@/progression/SkillSlots';
+import { coerceDivineArts } from '@/progression/SkillSlots';
 import { buildPlayerStats } from '@/progression/playerStats';
 import { gameStore } from '@/core/store/gameStore';
 
@@ -22,7 +22,7 @@ function makeSave(overrides: Partial<PlayerSaveV1> = {}): PlayerSaveV1 {
     ...base,
     ...overrides,
     insights: { ...base.insights, ...(overrides.insights ?? {}) },
-    equippedSkills: coerceEquippedSkills(overrides.equippedSkills ?? base.equippedSkills),
+    divineArts: coerceDivineArts(overrides.divineArts ?? base.divineArts),
   };
 }
 
@@ -32,36 +32,36 @@ beforeEach(async () => {
 });
 
 describe('InsightSystem', () => {
-  it('seeds all six intents in a new save', () => {
+  it('seeds all six Master Intents in a new save', () => {
     const save = SaveManager.createNew();
     expect(Object.keys(save.insights).sort()).toEqual([
+      'cause_effect',
       'flame',
-      'life',
+      'life_death',
       'lightning',
       'sword',
-      'time',
-      'void',
+      'truth_falsehood',
     ]);
   });
 
   it('accumulates XP on skill use', () => {
     const save = makeSave();
-    const { insights } = grantInsightXp(save, 'void', 'skillUse');
-    expect(insights.void?.xp).toBe(2);
-    expect(insights.void?.totalUses).toBe(1);
-    expect(insightDisplayPct(insights.void!.xp)).toBe(1);
+    const { insights } = grantInsightXp(save, 'life_death', 'skillUse');
+    expect(insights.life_death?.xp).toBe(2);
+    expect(insights.life_death?.totalUses).toBe(1);
+    expect(insightDisplayPct(insights.life_death!.xp)).toBe(1);
   });
 
   it('caps XP after awakening and ignores further gains', () => {
     const save = makeSave({
       insights: {
         ...seedDefaultInsights(),
-        void: { xp: 200, awakened: true, totalUses: 60 },
+        life_death: { xp: 200, awakened: true, totalUses: 60 },
       },
     });
-    const { insights } = grantInsightXp(save, 'void', 'skillUse');
-    expect(insights.void?.xp).toBe(200);
-    expect(insights.void?.totalUses).toBe(60);
+    const { insights } = grantInsightXp(save, 'life_death', 'skillUse');
+    expect(insights.life_death?.xp).toBe(200);
+    expect(insights.life_death?.totalUses).toBe(60);
   });
 
   it('blocks awakening when realm is too low', () => {
@@ -69,10 +69,10 @@ describe('InsightSystem', () => {
       stats: buildPlayerStats('hero.wanderer', 12, 'mortal_body'),
       insights: {
         ...seedDefaultInsights(),
-        void: { xp: 200, awakened: false, totalUses: 50 },
+        life_death: { xp: 200, awakened: false, totalUses: 50 },
       },
     });
-    expect(checkAwakeningReady(save, 'void')).toBe(false);
+    expect(checkAwakeningReady(save, 'life_death')).toBe(false);
   });
 
   it('allows awakening when XP, uses, and realm requirements are met', () => {
@@ -81,10 +81,10 @@ describe('InsightSystem', () => {
       realm: { id: 'foundation_establishment', tier: 'early', breakthroughReady: false },
       insights: {
         ...seedDefaultInsights(),
-        void: { xp: 200, awakened: false, totalUses: 50 },
+        life_death: { xp: 200, awakened: false, totalUses: 50 },
       },
     });
-    expect(checkAwakeningReady(save, 'void')).toBe(true);
+    expect(checkAwakeningReady(save, 'life_death')).toBe(true);
   });
 
   it('swaps equipped skill id to awakened variant on applyAwakening', async () => {
@@ -92,8 +92,8 @@ describe('InsightSystem', () => {
     const save = makeSave({
       stats: buildPlayerStats('hero.wanderer', 12, 'foundation_establishment'),
       realm: { id: 'foundation_establishment', tier: 'early', breakthroughReady: false },
-      equippedSkills: [
-        'skill.void.slash',
+      divineArts: [
+        'skill.life.mend',
         'skill.sword.slash',
         'skill.time.slow',
         '',
@@ -102,18 +102,18 @@ describe('InsightSystem', () => {
       ],
       insights: {
         ...seedDefaultInsights(),
-        void: { xp: 200, awakened: false, totalUses: 50 },
+        life_death: { xp: 200, awakened: false, totalUses: 50 },
       },
     });
     await SaveManager.save(save);
     gameStore.setState({ save, isLoaded: true });
 
-    const awakenedId = InsightSystem.applyAwakening('void');
+    const awakenedId = InsightSystem.applyAwakening('life_death');
     const next = gameStore.getState().save;
 
-    expect(awakenedId).toBe(getInsightIntentConfig('void').awakenedSkillId);
-    expect(next?.insights.void?.awakened).toBe(true);
-    expect(next?.equippedSkills[0]).toBe('skill.void.slash.awakened');
+    expect(awakenedId).toBe(getInsightIntentConfig('life_death').awakenedSkillId);
+    expect(next?.insights.life_death?.awakened).toBe(true);
+    expect(next?.divineArts[0]).toBe('skill.life.mend.awakened');
   });
 
   it('lists intents ready for awakening ceremony', () => {
@@ -122,10 +122,10 @@ describe('InsightSystem', () => {
       realm: { id: 'foundation_establishment', tier: 'early', breakthroughReady: false },
       insights: {
         ...seedDefaultInsights(),
-        void: { xp: 200, awakened: false, totalUses: 50 },
-        life: { xp: 50, awakened: false, totalUses: 5 },
+        life_death: { xp: 200, awakened: false, totalUses: 50 },
+        cause_effect: { xp: 50, awakened: false, totalUses: 5 },
       },
     });
-    expect(listReadyAwakeningIntents(save)).toEqual(['void']);
+    expect(listReadyAwakeningIntents(save)).toEqual(['life_death']);
   });
 });

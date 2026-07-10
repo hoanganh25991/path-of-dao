@@ -132,12 +132,12 @@ export class InsightSystem {
     const state = getInsightState(save, intentId);
     const awakenedSkillId = config.awakenedSkillId;
 
-    const equippedSkills = [...save.equippedSkills] as typeof save.equippedSkills;
+    const divineArts = [...save.divineArts] as typeof save.divineArts;
     for (const slot of [0, 1, 2, 3, 4, 5] as const) {
-      const current = equippedSkills[slot];
+      const current = divineArts[slot];
       const currentIntent = current ? getIntentForSkillId(current) : null;
       if (currentIntent === intentId || current === config.baseSkillId) {
-        equippedSkills[slot] = awakenedSkillId;
+        divineArts[slot] = awakenedSkillId;
       }
     }
 
@@ -150,7 +150,7 @@ export class InsightSystem {
           awakened: true,
         },
       },
-      equippedSkills,
+      divineArts,
     });
 
     void store.persist();

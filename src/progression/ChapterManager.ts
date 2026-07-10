@@ -1,4 +1,5 @@
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
+import { getMapConfig } from '@/combat/map/MapLoader';
 import {
   getChapter,
   getChapterByFinalMap,
@@ -7,11 +8,13 @@ import {
 import { getStoryScene } from '@/progression/StoryLoader';
 import type { StoryReward } from '@/shared/schemas/story';
 import { unlockSkillsForChapter, unlockSkillsForMapClear } from '@/progression/SkillUnlockManager';
-import { recordJourney } from '@/progression/JourneyLog';
+import { appendJourneyStep, makeJourneyEntry, recordJourney } from '@/progression/JourneyLog';
 
 export interface MapClearResult {
   newlyCleared: boolean;
   pendingStory?: { chapterId: string; sceneId: string };
+  /** Dao Scroll shard newly unlocked on this clear — offer "Read now" / "Later" (sub-plan 31 §6.2). */
+  pendingTimelineShard?: string;
 }
 
 export interface StoryCompletionPatch {
@@ -57,25 +60,34 @@ function applyRewards(save: PlayerSaveV1, rewards: StoryReward[]): PlayerSaveV1 
   return next;
 }
 
-/** Pure — mark map cleared; queue story if chapter finale first clear. */
+function pendingTimelineShardFor(save: PlayerSaveV1, mapId: string): string | undefined {
+  const shardId = getMapConfig(mapId).timelineShardId;
+  if (!shardId || save.progress.timelineSeen.includes(shardId)) return undefined;
+  return shardId;
+}
+
+/** Pure — mark map cleared; queue story if chapter finale first clear, queue Dao Scroll shard offer. */
 export function tryClearMap(save: PlayerSaveV1, mapId: string, wavesCleared: boolean): MapClearResult {
   if (!wavesCleared) return { newlyCleared: false };
   if (save.progress.clearedMaps.includes(mapId)) return { newlyCleared: false };
 
+  const pendingTimelineShard = pendingTimelineShardFor(save, mapId);
+
   if (!isChapterFinalMap(mapId)) {
-    return { newlyCleared: true };
+    return { newlyCleared: true, pendingTimelineShard };
   }
 
   const chapter = getChapterByFinalMap(mapId);
-  if (!chapter) return { newlyCleared: true };
+  if (!chapter) return { newlyCleared: true, pendingTimelineShard };
 
   if (save.progress.storySeen.includes(chapter.storySceneId)) {
-    return { newlyCleared: true };
+    return { newlyCleared: true, pendingTimelineShard };
   }
 
   return {
     newlyCleared: true,
     pendingStory: { chapterId: chapter.id, sceneId: chapter.storySceneId },
+    pendingTimelineShard,
   };
 }
 
@@ -92,10 +104,22 @@ export function applyMapClearPatch(
 
   return {
     patch: (() => {
+      let journey = recordJourney(save, 'map_clear', mapId, mapId);
+      let timelineSeen = save.progress.timelineSeen;
+
+      if (result.pendingTimelineShard) {
+        timelineSeen = [...timelineSeen, result.pendingTimelineShard];
+        journey = appendJourneyStep(
+          journey,
+          makeJourneyEntry(save, 'timeline_shard', result.pendingTimelineShard, mapId),
+        );
+      }
+
       const clearedProgress = {
         ...save.progress,
         clearedMaps: [...save.progress.clearedMaps, mapId],
-        journey: recordJourney(save, 'map_clear', mapId, mapId),
+        timelineSeen,
+        journey,
       };
       const merged = unlockSkillsForMapClear(
         { ...save, progress: clearedProgress },
@@ -104,7 +128,7 @@ export function applyMapClearPatch(
       return {
         progress: merged.progress,
         unlockedSkills: merged.unlockedSkills,
-        equippedSkills: merged.equippedSkills,
+        divineArts: merged.divineArts,
       };
     })(),
     result,

@@ -4,6 +4,11 @@ import { gameStore } from '@/core/store/gameStore';
 import { describeJourneyEntry } from '@/ui/home/journeyView';
 import { describeLoreEntry, loreBodyForEncounter } from '@/progression/LoreDisplay';
 import { renderBestiaryRow } from '@/ui/home/bestiaryView';
+import { listTimelineShardsInRoadOrder } from '@/progression/TimelineLoader';
+import { intentRimColor } from '@/shared/intentColors';
+import { openTimelineShardReader } from '@/ui/story/TimelineShardReader';
+
+export type StorySubTab = 'my_path' | 'dao_scroll';
 
 export interface StoryPanelHandles {
   root: HTMLElement;
@@ -11,12 +16,37 @@ export interface StoryPanelHandles {
   destroy(): void;
 }
 
-/** "My Path" — the player's cultivation road: an ordered journey of milestones,
- *  each stamped with the strength they held at that step (learn from your history). */
+function uiRootEl(): HTMLElement | null {
+  return document.getElementById('ui-root');
+}
+
+/** "My Path" (journey scroll) + "Dao Scroll" (Wang Lin road read-through) — sub-plan 28 + 31. */
 export function createStoryPanel(): StoryPanelHandles {
   const root = document.createElement('div');
   root.className = 'home-panel home-story';
   root.dataset.panel = 'story';
+
+  // Sub-tab bar
+  const subTabs = document.createElement('div');
+  subTabs.className = 'home-path-tabs';
+  const subTabDefs: { id: StorySubTab; key: string }[] = [
+    { id: 'my_path', key: 'home.path.my_path' },
+    { id: 'dao_scroll', key: 'home.path.dao_scroll' },
+  ];
+  const subTabButtons: HTMLElement[] = [];
+  for (const { id, key } of subTabDefs) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'home-path-tabs__tab';
+    btn.dataset.subTab = id;
+    btn.textContent = I18nManager.t(key);
+    subTabs.appendChild(btn);
+    subTabButtons.push(btn);
+  }
+
+  // My Path content
+  const myPathRoot = document.createElement('div');
+  myPathRoot.className = 'home-my-path';
 
   const title = document.createElement('h2');
   title.className = 'home-panel__title';
@@ -33,7 +63,38 @@ export function createStoryPanel(): StoryPanelHandles {
   bestiaryList.className = 'home-story__list home-bestiary__list';
   bestiaryList.dataset.testid = 'home-bestiary-list';
 
-  root.append(title, list, bestiaryTitle, bestiaryList);
+  myPathRoot.append(title, list, bestiaryTitle, bestiaryList);
+
+  // Dao Scroll content
+  const daoScrollRoot = document.createElement('div');
+  daoScrollRoot.className = 'home-dao-scroll';
+  daoScrollRoot.hidden = true;
+
+  const daoScrollList = document.createElement('div');
+  daoScrollList.className = 'home-story__list home-dao-scroll__list';
+  daoScrollList.dataset.testid = 'home-dao-scroll-list';
+
+  const daoScrollEmpty = document.createElement('p');
+  daoScrollEmpty.className = 'home-panel__empty';
+  daoScrollEmpty.hidden = true;
+  daoScrollEmpty.textContent = I18nManager.t('home.path.dao_scroll.empty');
+
+  daoScrollRoot.append(daoScrollList, daoScrollEmpty);
+
+  root.append(subTabs, myPathRoot, daoScrollRoot);
+
+  function switchSubTab(id: StorySubTab): void {
+    for (const btn of subTabButtons) {
+      btn.classList.toggle('home-path-tabs__tab--active', btn.dataset.subTab === id);
+    }
+    myPathRoot.hidden = id !== 'my_path';
+    daoScrollRoot.hidden = id !== 'dao_scroll';
+    refresh();
+  }
+
+  for (const btn of subTabButtons) {
+    btn.addEventListener('click', () => switchSubTab(btn.dataset.subTab as StorySubTab));
+  }
 
   const renderLore = (loreId: string): HTMLElement => {
     const view = describeLoreEntry(loreId);
@@ -150,6 +211,21 @@ export function createStoryPanel(): StoryPanelHandles {
         row.appendChild(replayBtn);
       }
 
+      if (view.timelineReplay) {
+        const { shardId } = view.timelineReplay;
+        const replayBtn = document.createElement('button');
+        replayBtn.type = 'button';
+        replayBtn.className = 'home-story__replay';
+        replayBtn.dataset.testid = `home-story-replay-${shardId}`;
+        replayBtn.textContent = I18nManager.t('home.story.replay');
+        replayBtn.addEventListener('click', () => {
+          const uiRoot = uiRootEl();
+          if (!uiRoot) return;
+          openTimelineShardReader(uiRoot, { shardId, onFinished: () => {} });
+        });
+        row.appendChild(replayBtn);
+      }
+
       list.appendChild(row);
     }
 
@@ -159,9 +235,66 @@ export function createStoryPanel(): StoryPanelHandles {
     }
 
     refreshBestiary(bestiary);
+    renderDaoScroll();
   };
 
-  refresh();
+  function renderDaoScroll(): void {
+    const save = gameStore.getState().save;
+    const timelineSeen = save?.progress.timelineSeen ?? [];
+    const shards = listTimelineShardsInRoadOrder();
+
+    daoScrollList.replaceChildren();
+
+    for (const shard of shards) {
+      const unlocked = timelineSeen.includes(shard.id);
+      const row = document.createElement('div');
+      row.className = `home-story__row home-path__row home-dao-scroll__row${unlocked ? '' : ' home-dao-scroll__row--locked'}`;
+      row.dataset.testid = `home-dao-scroll-row-${shard.id}`;
+
+      const main = document.createElement('div');
+      main.className = 'home-path__main';
+
+      const kind = document.createElement('span');
+      kind.className = 'home-path__kind home-dao-scroll__intent';
+      kind.style.color = intentRimColor(shard.intentLesson);
+      kind.textContent = I18nManager.t(`intent.${shard.intentLesson}`);
+
+      const shardTitle = document.createElement('p');
+      shardTitle.className = 'home-story__title home-path__title';
+      shardTitle.textContent = unlocked ? I18nManager.t(`${shard.id}.title`) : '???';
+
+      main.append(kind, shardTitle);
+
+      const detail = document.createElement('p');
+      detail.className = 'home-path__detail home-dao-scroll__punchline';
+      detail.textContent = unlocked
+        ? I18nManager.t(shard.punchlineKey)
+        : I18nManager.t('home.path.dao_scroll.locked');
+      main.appendChild(detail);
+
+      row.appendChild(main);
+
+      if (unlocked) {
+        const readBtn = document.createElement('button');
+        readBtn.type = 'button';
+        readBtn.className = 'home-story__replay';
+        readBtn.dataset.testid = `home-dao-scroll-read-${shard.id}`;
+        readBtn.textContent = I18nManager.t('home.story.replay');
+        readBtn.addEventListener('click', () => {
+          const uiRoot = uiRootEl();
+          if (!uiRoot) return;
+          openTimelineShardReader(uiRoot, { shardId: shard.id, onFinished: () => {} });
+        });
+        row.appendChild(readBtn);
+      }
+
+      daoScrollList.appendChild(row);
+    }
+
+    daoScrollEmpty.hidden = timelineSeen.length > 0;
+  }
+
+  switchSubTab('my_path');
 
   return { root, refresh, destroy: () => root.remove() };
 }

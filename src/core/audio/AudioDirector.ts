@@ -11,11 +11,11 @@ const SCENE_BGM: Record<SceneId, string> = {
 
 const SKILL_SFX: Record<string, string> = {
   sword: 'skill.sword',
-  void: 'skill.void',
+  truth_falsehood: 'skill.void',
   flame: 'skill.flame',
   lightning: 'skill.thunder',
-  time: 'skill.time',
-  life: 'skill.heal',
+  cause_effect: 'skill.time',
+  life_death: 'skill.heal',
 };
 
 const ATTACK_SFX: Record<number, string> = {

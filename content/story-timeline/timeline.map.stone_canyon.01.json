@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.stone_canyon.01",
+  "mapId": "map.stone_canyon.01",
+  "chapterId": "chapter.03.stone_canyon",
+  "wangLinPhase": "fortuitous_inheritance",
+  "intentLesson": "sword",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch03.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch03.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch03.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

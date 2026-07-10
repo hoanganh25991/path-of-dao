@@ -4,7 +4,7 @@ import { checksumOf } from '@/core/save/checksum';
 import { migrate } from '@/core/save/SaveMigration';
 import { SAVE_VERSION, type PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { DB_NAME, DB_VERSION, DEFAULT_SLOT, STORE_NAME, slotKey } from '@/core/save/SaveSlot';
-import { emptyEquippedSkills } from '@/progression/SkillSlots';
+import { emptyDivineArts } from '@/progression/SkillSlots';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { buildPlayerStats } from '@/progression/playerStats';
 
@@ -95,7 +95,7 @@ export class SaveManager {
       xp: 0,
       realm: { id: 'mortal_body', tier: 'early', breakthroughReady: false },
       insights: seedDefaultInsights(),
-      equippedSkills: emptyEquippedSkills(),
+      divineArts: emptyDivineArts(),
       unlockedSkills: [],
       inventory: {
         items: [
@@ -115,6 +115,7 @@ export class SaveManager {
         clearedBosses: [],
         unlockedChapters: ['chapter.01.fallen_village'],
         storySeen: [],
+        timelineSeen: [],
         encountersFound: [],
         bestiary: [],
         loreUnlocked: [],

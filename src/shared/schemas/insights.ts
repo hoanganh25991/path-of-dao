@@ -7,8 +7,20 @@ export const insightXpSourcesSchema = z.object({
   shrineDiscovery: z.number().positive(),
 });
 
+/** Gate-flow unlock rule (plan 14 redesign) — independent milestone, not part of the main chain. */
+export const insightGateSchema = z.object({
+  kind: z.enum(['weaponMilestone', 'bossCleared']),
+  value: z.string().min(1),
+});
+
 export const insightIntentSchema = z.object({
   displayKey: z.string().min(1),
+  /** main = sequential curriculum (life_death → cause_effect → truth_falsehood); gate = independent milestone. */
+  flow: z.enum(['main', 'gate']),
+  /** Main-flow position (1-based) — next intent locked until the previous order's is awakened. */
+  order: z.number().int().min(1).optional(),
+  /** Required when flow is "gate" — the road milestone that unlocks this intent. */
+  gate: insightGateSchema.optional(),
   baseSkillId: z.string().min(1),
   awakenedSkillId: z.string().min(1),
   awakenRequirement: z.object({

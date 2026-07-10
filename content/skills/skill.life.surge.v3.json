@@ -1,6 +1,6 @@
 {
   "id": "skill.life.surge.v3",
-  "intent": "life",
+  "intent": "life_death",
   "nameKey": "skill.life.surge.v3.name",
   "kind": "heal",
   "manaCost": 24,

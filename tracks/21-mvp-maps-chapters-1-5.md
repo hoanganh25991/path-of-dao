@@ -7,7 +7,7 @@
 
 ## Summary
 
-First half of the cultivation road: ten maps across five regions (explore + ordeal each). **Runtime shifted to procedural endless** (`spawnMode: procedural`, `worldProfile`) with seeded cells + wild bosses — playable and fun, but **not yet** full `map-design-canon` (16k bounds, settlements, signature trees on every JSON).
+First half of the cultivation road: ten maps across five regions (explore + ordeal each). **Runtime shifted to procedural endless** (`spawnMode: procedural`, `worldProfile`) with seeded cells + wild bosses — playable and fun. Settlement clusters + signature tree now spawn procedurally on every `worldProfile` (auto-default or authored); still **not** full `map-design-canon` 16k Tiled bounds (user decision C1: keep procedural).
 
 ## Done
 
@@ -25,10 +25,9 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 - [x] POI: ancient sword on ch1 + ch2 ordeal maps
 - [x] Tiên Nghịch copy: region blurbs, map flavor text (EN + VI), enemy names, bestiary notes
 - [x] World map detail sheet shows map `.desc`
+- [x] **Map canon (procedural path):** settlement clusters + signature tree spawn per `worldProfile` (`ProceduralSettlementGenerator`); authored on `world.fallen_village` (ruin_village) + `world.fallen_village.gate` (sect_courtyard), auto-default hamlet/tree elsewhere in ch1–5
 
 ## Remaining
-
-- **Map canon (procedural path):** spawn settlement clusters + signature tree per `worldProfile` — not Tiled 16k revert
 - **Dao Scroll** (plan 31): locale prose for ch1–5 maps **done** — still need `timelineShardId` on map JSON + shard files (see [31](./31-wang-lin-story-timeline.md) Phase B)
 - Ch1 explore star sub-zones (east/south/north) — **keep** per user decision
 - recommendedCp playtest pass (plan §11 manual QA)
@@ -39,10 +38,11 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 | # | Task | Track |
 |---|------|-------|
 | 1 | Add `timelineShardId` to 10 ch1–5 map JSONs | 31-B3 |
-| 2 | Settlement + signature tree in procedural spawn | 06 |
+| 2 | ~~Settlement + signature tree in procedural spawn~~ | `[x]` 06 |
 | 3 | Manual CP playtest doc — adjust `recommendedCp` if maps feel wrong | balance |
 | 4 | Ground seam pass on `EndlessGround` / palette transitions | 06, 29 |
 | 5 | Confirm ancient sword POI only on `.02` / ch2 per plan (not ch1 `.01` tutorial) | 15, 21 |
+| 6 | Author `settlements[]`/`signatureTree` per-map species (roster in `map-design-canon.md` §4.3) on remaining ch2–5 `world.*.json` — currently auto-default | 06, 21 |
 
 ## Verification
 

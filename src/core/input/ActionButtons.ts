@@ -2,11 +2,11 @@ import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
 import { isAncientCombatActive } from '@/progression/AncientCombatMode';
-import { canCastEquippedSkill } from '@/progression/SkillLoadout';
+import { canCastDivineArt } from '@/progression/SkillLoadout';
 import { cooldownReadyPct } from '@/progression/SkillCooldown';
 import {
   SKILL_SLOT_INDICES,
-  coerceEquippedSkills,
+  coerceDivineArts,
   skillActionId,
   skillSlotFromAction,
   type SkillActionId,
@@ -186,7 +186,7 @@ export class ActionButtons {
     this.element.classList.toggle('action-buttons--ancient', isAncientCombatActive());
     if (!save) return;
 
-    const loadout = coerceEquippedSkills(save.equippedSkills);
+    const loadout = coerceDivineArts(save.divineArts);
     const active: Array<{ id: SkillActionId; slot: SkillSlotIndex; skillId: string }> = [];
 
     for (const { id, slot } of SKILL_BUTTONS) {
@@ -194,7 +194,7 @@ export class ActionButtons {
       if (!state) continue;
 
       const skillId = loadout[slot];
-      if (!canCastEquippedSkill(save, slot)) {
+      if (!canCastDivineArt(save, slot)) {
         state.el.hidden = true;
         state.el.style.removeProperty('--arc-angle');
         state.el.style.removeProperty('--arc-radius');

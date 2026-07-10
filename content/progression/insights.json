@@ -1,10 +1,12 @@
 {
   "xpToFull": 200,
   "intents": {
-    "sword": {
-      "displayKey": "intent.sword",
-      "baseSkillId": "skill.sword.slash",
-      "awakenedSkillId": "skill.sword.slash.awakened",
+    "life_death": {
+      "displayKey": "intent.life_death",
+      "flow": "main",
+      "order": 1,
+      "baseSkillId": "skill.life.mend",
+      "awakenedSkillId": "skill.life.mend.awakened",
       "awakenRequirement": {
         "minRealm": "foundation_establishment",
         "minUses": 50,
@@ -17,8 +19,28 @@
         "shrineDiscovery": 15
       }
     },
-    "void": {
-      "displayKey": "intent.void",
+    "cause_effect": {
+      "displayKey": "intent.cause_effect",
+      "flow": "main",
+      "order": 2,
+      "baseSkillId": "skill.time.slow",
+      "awakenedSkillId": "skill.time.slow.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    },
+    "truth_falsehood": {
+      "displayKey": "intent.truth_falsehood",
+      "flow": "main",
+      "order": 3,
       "baseSkillId": "skill.void.slash",
       "awakenedSkillId": "skill.void.slash.awakened",
       "awakenRequirement": {
@@ -33,8 +55,28 @@
         "shrineDiscovery": 15
       }
     },
+    "sword": {
+      "displayKey": "intent.sword",
+      "flow": "gate",
+      "gate": { "kind": "weaponMilestone", "value": "ancient_sword" },
+      "baseSkillId": "skill.sword.slash",
+      "awakenedSkillId": "skill.sword.slash.awakened",
+      "awakenRequirement": {
+        "minRealm": "foundation_establishment",
+        "minUses": 50,
+        "xp": 100
+      },
+      "xpSources": {
+        "skillUse": 2,
+        "critKill": 5,
+        "bossHit": 8,
+        "shrineDiscovery": 15
+      }
+    },
     "flame": {
       "displayKey": "intent.flame",
+      "flow": "gate",
+      "gate": { "kind": "bossCleared", "value": "boss.desert_sovereign" },
       "baseSkillId": "skill.flame.bolt",
       "awakenedSkillId": "skill.flame.bolt.awakened",
       "awakenRequirement": {
@@ -51,40 +93,10 @@
     },
     "lightning": {
       "displayKey": "intent.lightning",
+      "flow": "gate",
+      "gate": { "kind": "bossCleared", "value": "boss.thunder_avatar" },
       "baseSkillId": "skill.lightning.strike",
       "awakenedSkillId": "skill.lightning.strike.awakened",
-      "awakenRequirement": {
-        "minRealm": "foundation_establishment",
-        "minUses": 50,
-        "xp": 100
-      },
-      "xpSources": {
-        "skillUse": 2,
-        "critKill": 5,
-        "bossHit": 8,
-        "shrineDiscovery": 15
-      }
-    },
-    "time": {
-      "displayKey": "intent.time",
-      "baseSkillId": "skill.time.slow",
-      "awakenedSkillId": "skill.time.slow.awakened",
-      "awakenRequirement": {
-        "minRealm": "foundation_establishment",
-        "minUses": 50,
-        "xp": 100
-      },
-      "xpSources": {
-        "skillUse": 2,
-        "critKill": 5,
-        "bossHit": 8,
-        "shrineDiscovery": 15
-      }
-    },
-    "life": {
-      "displayKey": "intent.life",
-      "baseSkillId": "skill.life.mend",
-      "awakenedSkillId": "skill.life.mend.awakened",
       "awakenRequirement": {
         "minRealm": "foundation_establishment",
         "minUses": 50,

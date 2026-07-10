@@ -15,7 +15,7 @@ describe('describeJourneyEntry', () => {
       at: new Date().toISOString(),
     });
 
-    expect(view.title).toBe('Ancient Inheritance');
+    expect(view.title).toBe("Ancient Cultivator's Legacy");
     expect(view.kindLabel).toBe('Fortune');
   });
 
@@ -31,7 +31,7 @@ describe('describeJourneyEntry', () => {
       at: new Date().toISOString(),
     });
 
-    expect(view.title).toBe('Bandit Lord');
+    expect(view.title).toBe('Bandit Chief');
     expect(view.kindLabel).toBe('Boss');
   });
 });

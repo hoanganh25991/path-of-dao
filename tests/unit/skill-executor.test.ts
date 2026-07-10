@@ -66,7 +66,7 @@ describe('resolveSkillEffects', () => {
 describe('insight on skill use', () => {
   it('accumulates XP via record path used by CombatComponent', () => {
     const save = SaveManager.createNew();
-    const { insights } = grantInsightXp(save, 'void', 'skillUse');
-    expect(insights.void?.xp).toBeGreaterThan(0);
+    const { insights } = grantInsightXp(save, 'life_death', 'skillUse');
+    expect(insights.life_death?.xp).toBeGreaterThan(0);
   });
 });

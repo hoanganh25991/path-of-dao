@@ -10,7 +10,7 @@ import { stopPathWalk } from '@/progression/PathWalkManager';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { normalizeLoadout } from '@/progression/SkillLoadout';
-import { coerceEquippedSkills } from '@/progression/SkillSlots';
+import { coerceDivineArts } from '@/progression/SkillSlots';
 import { buildPlayerStats } from '@/progression/playerStats';
 import {
   ancientsFileSchema,
@@ -77,7 +77,7 @@ export function buildAncientSave(ancientId: string): PlayerSaveV1 {
     xp: template.level * 100,
     realm,
     insights,
-    equippedSkills: normalizeLoadout(coerceEquippedSkills(template.equippedSkills), profile.unlockedSkills),
+    divineArts: normalizeLoadout(coerceDivineArts(template.divineArts), profile.unlockedSkills),
     unlockedSkills: [...profile.unlockedSkills],
     inventory: {
       gold: template.gold,
@@ -204,7 +204,7 @@ export function hasMeaningfulProgress(save: PlayerSaveV1): boolean {
 }
 
 export interface EnterAncientDemoOptions {
-  equippedSkills?: AncientSaveTemplate['equippedSkills'];
+  divineArts?: AncientSaveTemplate['divineArts'];
   /** Run the echo on this map instead of the profile's default — lets the player
    *  relive the exact map they are currently on, feeling the power gap. */
   mapId?: string;
@@ -215,7 +215,7 @@ export async function enterAncientDemo(
   ancientId: string,
   options: EnterAncientDemoOptions = {},
 ): Promise<void> {
-  const { equippedSkills, mapId } = options;
+  const { divineArts, mapId } = options;
   const store = gameStore.getState();
   const current = store.save;
   if (!current) throw new Error('AncientDemoManager: no save loaded');
@@ -232,9 +232,9 @@ export async function enterAncientDemo(
     demoSave.progress = { ...demoSave.progress, currentMapId: mapId };
     mutated = true;
   }
-  if (equippedSkills) {
-    demoSave.equippedSkills = normalizeLoadout(
-      coerceEquippedSkills(equippedSkills),
+  if (divineArts) {
+    demoSave.divineArts = normalizeLoadout(
+      coerceDivineArts(divineArts),
       profileById(ancientId).unlockedSkills,
     );
     mutated = true;
@@ -244,7 +244,7 @@ export async function enterAncientDemo(
   }
   store.patch(demoSave);
 
-  EventBus.emit('loadout:changed', { equippedSkills: demoSave.equippedSkills });
+  EventBus.emit('loadout:changed', { divineArts: demoSave.divineArts });
   EventBus.emit('demo:entered', { ancientId });
 }
 
@@ -263,12 +263,12 @@ export async function exitAncientDemo(): Promise<void> {
   if (backup) {
     store.patch(backup);
     await store.persist();
-    EventBus.emit('loadout:changed', { equippedSkills: backup.equippedSkills });
+    EventBus.emit('loadout:changed', { divineArts: backup.divineArts });
   } else {
     const fresh = SaveManager.createNew();
     store.patch(fresh);
     await store.persist();
-    EventBus.emit('loadout:changed', { equippedSkills: fresh.equippedSkills });
+    EventBus.emit('loadout:changed', { divineArts: fresh.divineArts });
   }
 
   EventBus.emit('demo:exited', undefined);

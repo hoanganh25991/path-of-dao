@@ -1,6 +1,6 @@
 {
   "id": "skill.void.abyss.v5",
-  "intent": "void",
+  "intent": "truth_falsehood",
   "nameKey": "skill.void.abyss.v5.name",
   "kind": "bolt",
   "manaCost": 32,

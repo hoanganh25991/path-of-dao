@@ -1,6 +1,6 @@
 {
   "id": "skill.time.halt.v1",
-  "intent": "time",
+  "intent": "cause_effect",
   "nameKey": "skill.time.halt.v1.name",
   "kind": "bolt",
   "manaCost": 16,

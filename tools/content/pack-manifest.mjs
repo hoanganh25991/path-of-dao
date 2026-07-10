@@ -33,8 +33,18 @@ const items = listIds('items', true);
 const encounters = listIds('encounters', true);
 const fortuitous = listFortuitous();
 const stories = listIds('story');
+const timelineShards = listIds('story-timeline');
 
-const payload = JSON.stringify({ maps, enemies, skills, items, encounters, fortuitous, stories });
+const payload = JSON.stringify({
+  maps,
+  enemies,
+  skills,
+  items,
+  encounters,
+  fortuitous,
+  stories,
+  timelineShards,
+});
 const checksum = createHash('sha256').update(payload).digest('hex').slice(0, 16);
 const today = new Date().toISOString().slice(0, 10);
 
@@ -48,6 +58,7 @@ const manifest = {
   encounters,
   fortuitous,
   stories,
+  timelineShards,
   checksum,
 };
 

@@ -1,0 +1,22 @@
+{
+  "id": "timeline.map.thunder_peaks.01",
+  "mapId": "map.thunder_peaks.01",
+  "chapterId": "chapter.06.thunder_peaks",
+  "wangLinPhase": "heavenly_tribulation",
+  "intentLesson": "lightning",
+  "illustration": null,
+  "slides": [
+    {
+      "illustration": null,
+      "textKey": "timeline.ch06.map01.body",
+      "durationMs": 0
+    },
+    {
+      "illustration": null,
+      "textKey": "timeline.ch06.map01.wang_lin",
+      "durationMs": 0
+    }
+  ],
+  "punchlineKey": "timeline.ch06.map01.punchline",
+  "punchlineAttributionKey": "timeline.attribution.wang_lin"
+}

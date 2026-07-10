@@ -22,13 +22,13 @@
 - **Tu Chân Tinh sub-zones:** `spawnMode: roam`, `portals[]`, `portalSpawns`, `ZonePortalManager` door transitions via BootScene reload; `RoamingSpawnManager` placed enemies with respawn
 - **Scene lifecycle guard:** `MapScene.teardown()` now safely checks `this.scene?.isPaused()` before resuming, fixing a null-scene crash during shutdown/destroy
 - **Procedural world** — `ProceduralWorldLoader`, `ProceduralCellGenerator`, `ProceduralRoamingSpawnManager`, `EndlessGround`, `WorldFog`, `world.*.json` profiles
+- **Procedural settlements + signature tree** — `ProceduralWorldConfig` gained optional `settlements[]` / `signatureTree`; `ProceduralSettlementGenerator` deterministically places ≥1 settlement cluster + exactly one landmark tree per map from `worldSeed` (seeded default hamlet + generic tree when a profile omits them); `SettlementDecorator` renders clusters as non-colliding sprites/rects (house/hut sprite reuse + colored-rect well/wall/watchtower/pavilion/shrine/sect_gate) in `MapScene`; authored on `world.fallen_village` (ruin_village) and `world.fallen_village.gate` (sect_courtyard) matching `map-design-canon.md` roster
 - **Per-map terrain themes** — `groundPalette` primary tile per region (grass / dirt / sand / gravel / rock); biome tints sand·rock·gravel; camera fill follows dominant tile; **Heng Yue Gate** (`world.fallen_village.gate`) uses dirt/gravel mountain trail vs village grass
 - **Combat camera director** — engage zoom (`CombatCameraDirector`)
 - Cultivator **defeat** flow (in-place sit + recovery) — partial vs [combat-defeat-canon.md](../plans/combat-defeat-canon.md)
 
 ## Remaining
 
-- Procedural **settlement clusters + signature tree** per `worldProfile` (user: keep procedural, add props)
 - Cultivator defeat: optional `returnToOrigin` + `defeatRecoverMs` bands — simplified in-place OK for MVP
 - `opponentKind: beast|cultivator` in enemy JSON — beasts despawn, cultivators recover
 
@@ -36,11 +36,12 @@
 
 | # | Task | Files |
 |---|------|-------|
-| 1 | Spawn settlement cluster props from `worldProfile.settlements[]` (ruin_village, hamlet, …) | `ProceduralCellGenerator` or map bootstrap |
-| 2 | One **signature tree** sprite per map at seeded anchor | tie to DA-09 or reuse env tree sprites |
+| 1 | ~~Spawn settlement cluster props from `worldProfile.settlements[]` (ruin_village, hamlet, …)~~ | `[x]` `ProceduralSettlementGenerator`, `SettlementDecorator`, `MapScene` |
+| 2 | ~~One **signature tree** sprite per map at seeded anchor~~ | `[x]` `ProceduralSettlementGenerator.generateSignatureTreePlacement`, `SettlementDecorator.renderSignatureTree` (scaled `STRUCTURE_TEXTURES.tree`) |
 | 3 | Add `opponentKind` to enemy schema + content JSON | `content/enemies/*.json`, validator |
 | 4 | Beasts: defeat → despawn/pool; cultivators: sit-recover (current partial flow) | `Cultivator.ts`, spawn managers |
 | 5 | Optional: `defeatRecoverMs` per enemy tier | `combat-defeat-canon.md` — defer if MVP tight |
+| 6 | Art polish: dedicated per-species tree sprites (roster in `map-design-canon.md` §4.3) instead of shared scaled-up biome tree; richer structure art beyond colored rects | `design-arts`, `StructureRegistry` |
 
 ## Verification
 
@@ -51,3 +52,4 @@
 - Death → Try Again respawns wave; Return Home saves and retreats
 - Runtime stats persist across combat ↔ Home round trip
 - Star zone unit tests: `star-zone-map`, `roam-loader`, `star-constants`
+- Procedural settlements: `settlement-generator.test.ts` — deterministic placements (same seed → identical layout), ≥1 settlement + 1 signature tree for profiles with and without authored `settlements`/`signatureTree`, distinct anchors across seeds

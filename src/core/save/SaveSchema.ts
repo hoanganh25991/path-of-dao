@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { coerceEquippedSkills, emptyEquippedSkills } from '@/progression/SkillSlots';
+import { coerceDivineArts, emptyDivineArts } from '@/progression/SkillSlots';
 
 export const SAVE_VERSION = 1 as const;
 
 /** One recorded milestone on the player's cultivation road (My Path scroll). */
 export const journeyEntrySchema = z.object({
-  kind: z.enum(['map_clear', 'boss', 'breakthrough', 'encounter', 'story']),
+  kind: z.enum(['map_clear', 'boss', 'breakthrough', 'encounter', 'story', 'timeline_shard']),
   /** What was reached: mapId / bossId / realmId / encounterId / storySceneId. */
   refId: z.string(),
   /** Where it happened, when known. */
@@ -54,7 +54,8 @@ export const playerSaveV1Schema = z.object({
       totalUses: z.number().int().min(0).default(0),
     }),
   ),
-  equippedSkills: z
+  /** Renamed from `equippedSkills` (track 30) — see `SaveMigration` for the v1 alias. */
+  divineArts: z
     .union([
       z.tuple([z.string(), z.string(), z.string(), z.string(), z.string(), z.string()]),
       z.object({
@@ -63,8 +64,8 @@ export const playerSaveV1Schema = z.object({
         ultimate: z.string(),
       }),
     ])
-    .transform(coerceEquippedSkills)
-    .default(emptyEquippedSkills()),
+    .transform(coerceDivineArts)
+    .default(emptyDivineArts()),
   unlockedSkills: z.array(z.string()).default([]),
   inventory: z.object({
     items: z.array(z.object({ id: z.string(), qty: z.number().int().min(0) })),
@@ -81,6 +82,8 @@ export const playerSaveV1Schema = z.object({
     clearedBosses: z.array(z.string()),
     unlockedChapters: z.array(z.string()),
     storySeen: z.array(z.string()),
+    // default([]) keeps pre-timeline v1 saves loadable (added in sub-plan 31).
+    timelineSeen: z.array(z.string()).default([]),
     encountersFound: z.array(z.string()),
     // default([]) keeps pre-bestiary v1 saves loadable (added in sub-plan 08).
     bestiary: z.array(z.string()).default([]),

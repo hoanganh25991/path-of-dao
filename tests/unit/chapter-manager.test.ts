@@ -24,7 +24,10 @@ describe('tryClearMap', () => {
 
   it('chapter 1 map 1 clears without story', () => {
     const save = SaveManager.createNew();
-    expect(tryClearMap(save, 'map.fallen_village.01', true)).toEqual({ newlyCleared: true });
+    expect(tryClearMap(save, 'map.fallen_village.01', true)).toEqual({
+      newlyCleared: true,
+      pendingTimelineShard: 'timeline.map.fallen_village.01',
+    });
   });
 
   it('chapter final first clear queues story', () => {
@@ -99,7 +102,7 @@ describe('applyMapClearPatch', () => {
     const save = SaveManager.createNew();
     const { patch } = applyMapClearPatch(save, 'map.fallen_village.01', true);
     expect(patch.unlockedSkills).toContain('skill.void.slash');
-    expect(Object.values(patch.equippedSkills ?? {})).toContain('skill.void.slash');
+    expect(Object.values(patch.divineArts ?? {})).toContain('skill.void.slash');
   });
 
   it('chapter 1 loop clears explore, boss, story, then opens chapter 2', () => {
@@ -126,6 +129,6 @@ describe('applyMapClearPatch', () => {
   it('chapter 2 explore clear teaches a road technique', () => {
     const save = SaveManager.createNew();
     const { patch } = applyMapClearPatch(save, 'map.mist_forest.01', true);
-    expect(patch.unlockedSkills).toContain('skill.sword.slash');
+    expect(patch.unlockedSkills).toContain('skill.flame.bolt');
   });
 });

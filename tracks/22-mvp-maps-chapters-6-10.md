@@ -18,10 +18,9 @@ Endgame half of the road: tribulation peaks through void throne finale.
 - Hidden cave POIs on chapters 6, 8, and 10 explore maps
 - Generation CLI for rebuilding chapter 6–10 content
 - **Endless procedural** — `world.thunder_peaks` … `world.void_throne`; seeded cells + wild bosses + region fog
+- [x] **Map canon:** procedural settlement clusters + signature trees per `worldProfile` (`ProceduralSettlementGenerator`, auto-default hamlet/tree — ch6–10 profiles not yet individually authored) — not 16k Tiled revert
 
 ## Remaining
-
-- **Map canon:** procedural settlement clusters + signature trees per `worldProfile` (not 16k Tiled revert)
 - **Dao Scroll** (plan 31): locale prose for ch6–10 **done** — `timelineShardId` + shard JSON pending
 - Boss pattern and phase tuning per map
 - Playthrough balance on recommended CP bands
@@ -34,6 +33,7 @@ Endgame half of the road: tribulation peaks through void throne finale.
 | 2 | Boss pattern pass: Heaven Fate I/II/III, void sovereign, gate trial | 23 |
 | 3 | CP band playtest ch6–10 — retreat/farm lower maps still feels fair | balance |
 | 4 | Hidden cave POI rewards smoke-tested on ch6, 8, 10 | 15 |
+| 5 | Author `settlements[]`/`signatureTree` per-map species (roster in `map-design-canon.md` §4.3) on ch6–10 `world.*.json` — currently auto-default | 06, 22 |
 
 ## Verification
 

@@ -1,6 +1,6 @@
 {
   "id": "skill.life.bloom.v1",
-  "intent": "life",
+  "intent": "life_death",
   "nameKey": "skill.life.bloom.v1.name",
   "kind": "heal",
   "manaCost": 16,

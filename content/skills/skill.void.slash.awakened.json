@@ -1,6 +1,6 @@
 {
   "id": "skill.void.slash.awakened",
-  "intent": "void",
+  "intent": "truth_falsehood",
   "nameKey": "skill.void.slash.awakened.name",
   "kind": "bolt",
   "manaCost": 20,

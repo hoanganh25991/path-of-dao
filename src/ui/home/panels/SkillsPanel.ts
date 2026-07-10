@@ -11,11 +11,11 @@ import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
 
 const SIGNATURE_INTENT_ICONS: Record<string, string> = {
   sword: '⚔',
-  void: '◈',
+  truth_falsehood: '◈',
   flame: '🔥',
   lightning: '⚡',
-  time: '⏳',
-  life: '✦',
+  cause_effect: '⏳',
+  life_death: '✦',
 };
 
 export interface SkillsPanelHandles {

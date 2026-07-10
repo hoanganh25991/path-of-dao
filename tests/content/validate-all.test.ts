@@ -45,7 +45,7 @@ describe('ContentLoader', () => {
   });
 
   it('throws on missing enemy id', () => {
-    expect(() => ContentLoader.getEnemy('enemy.missing')).toThrow(/no enemy config/);
+    expect(() => ContentLoader.getEnemy('enemy.missing')).toThrow(/no cultivator config/);
   });
 });
 
