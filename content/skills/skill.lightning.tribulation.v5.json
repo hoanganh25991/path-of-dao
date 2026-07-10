@@ -8,14 +8,15 @@
   "cooldownMs": 5800,
   "effects": [
     {
-      "type": "projectile",
+      "type": "thunder_chain",
+      "maxJumps": 5,
+      "chainRadius": 180,
+      "acquireRange": 360,
+      "jumpDamageFalloff": 0.82,
       "damage": {
         "skillMultiplier": 1.85,
         "damageType": "spirit"
-      },
-      "speed": 420,
-      "rangePx": 400,
-      "hitRadius": 12
+      }
     }
   ],
   "vfx": {

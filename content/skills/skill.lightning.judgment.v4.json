@@ -8,14 +8,14 @@
   "cooldownMs": 7800,
   "effects": [
     {
-      "type": "projectile",
+      "type": "thunder_strike",
+      "strikeRange": 320,
+      "fallHeight": 200,
+      "radius": 48,
       "damage": {
         "skillMultiplier": 2,
         "damageType": "spirit"
-      },
-      "speed": 420,
-      "rangePx": 400,
-      "hitRadius": 12
+      }
     }
   ],
   "vfx": {

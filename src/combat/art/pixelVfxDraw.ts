@@ -25,6 +25,14 @@ export const VFX_TEXTURE_KEYS = {
   thunderColumn: 'vfx-thunder-column',
   lifePulse: 'vfx-life-pulse',
   timeVortex: 'vfx-time-vortex',
+  flameLotus: 'vfx-flame-lotus',
+  flamePillar: 'vfx-flame-pillar',
+  voidNova: 'vfx-void-nova',
+  voidAbyss: 'vfx-void-abyss',
+  lightningFork: 'vfx-lightning-fork',
+  swordHeaven: 'vfx-sword-heaven',
+  timeStasis: 'vfx-time-stasis',
+  lifeSpirit: 'vfx-life-spirit',
 } as const;
 
 function px(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size = 1): void {
@@ -458,6 +466,139 @@ export function drawTimeVortexCanvas(): HTMLCanvasElement {
   });
 }
 
+/** Flame lotus — layered petal burst for v4 AoE. */
+export function drawFlameLotusCanvas(): HTMLCanvasElement {
+  const size = 48;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    const petals = 8;
+    for (let p = 0; p < petals; p++) {
+      const a = (p / petals) * Math.PI * 2;
+      for (let d = 4; d <= 18; d++) {
+        const px2 = c + Math.round(Math.cos(a) * d);
+        const py = c + Math.round(Math.sin(a) * d * 0.75);
+        px(ctx, px2, py, d < 8 ? '#ffd080' : d < 13 ? '#ff9040' : '#ff5020');
+      }
+    }
+    pixelArc(ctx, c, c, 6, 0, Math.PI * 2, '#fff0c0', 2);
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+  });
+}
+
+/** Vertical flame pillar — ground eruption. */
+export function drawFlamePillarCanvas(): HTMLCanvasElement {
+  const w = 20;
+  const h = 52;
+  return withCtx(w, h, (ctx) => {
+    const cx = w / 2;
+    pixelLine(ctx, cx, h - 2, cx - 3, 8, '#ff5020', 2);
+    pixelLine(ctx, cx, h - 2, cx + 3, 6, '#ff8040', 2);
+    pixelLine(ctx, cx, h - 2, cx, 2, '#ffffff', 2);
+    px(ctx, cx - 1, 4, '#fff0c0', 2);
+    pixelArc(ctx, cx, h - 3, 6, Math.PI, Math.PI * 2, '#ff6020', 2);
+  });
+}
+
+/** Void nova — radial collapse burst. */
+export function drawVoidNovaCanvas(): HTMLCanvasElement {
+  const size = 44;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    pixelRing(ctx, c, c, 8, '#c0a0ff', 2);
+    pixelRing(ctx, c, c, 14, '#8060c0', 1);
+    pixelRing(ctx, c, c, 18, '#5030a0', 1);
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * Math.PI * 2;
+      pixelLine(ctx, c, c, c + Math.round(Math.cos(a) * 20), c + Math.round(Math.sin(a) * 20), '#e0c0ff', 1);
+    }
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+  });
+}
+
+/** Void abyss — inward spiral pull. */
+export function drawVoidAbyssCanvas(): HTMLCanvasElement {
+  const size = 40;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    for (let i = 0; i < 20; i++) {
+      const a = (i / 20) * Math.PI * 4;
+      const r = 16 - i * 0.7;
+      px(ctx, c + Math.round(Math.cos(a) * r), c + Math.round(Math.sin(a) * r), i % 2 === 0 ? '#9060ff' : '#402060');
+    }
+    pixelRing(ctx, c, c, 14, '#281040', 2);
+    px(ctx, c - 1, c - 1, '#c0a0ff', 2);
+  });
+}
+
+/** Forked lightning — branching bolt for storm/fork arts. */
+export function drawLightningForkCanvas(): HTMLCanvasElement {
+  const size = 30;
+  return withCtx(size, size, (ctx) => {
+    pixelLine(ctx, 2, 24, 12, 14, '#ffffff', 2);
+    pixelLine(ctx, 12, 14, 10, 6, '#ffe880', 2);
+    pixelLine(ctx, 12, 14, 22, 10, '#ffffff', 2);
+    pixelLine(ctx, 22, 10, 28, 4, '#fff0a0', 2);
+    pixelLine(ctx, 12, 14, 18, 22, '#ffe040', 2);
+    px(ctx, 28, 4, '#ffffff', 2);
+  });
+}
+
+/** Heaven sword arc — wide golden crescent with crown flare. */
+export function drawSwordHeavenCanvas(): HTMLCanvasElement {
+  const size = 64;
+  return withCtx(size, size, (ctx) => {
+    const cy = size / 2;
+    pixelArc(ctx, 4, cy, 52, -0.72, 0.72, '#304060', 4);
+    pixelArc(ctx, 4, cy, 51, -0.7, 0.7, '#e8c878', 3);
+    pixelArc(ctx, 4, cy, 49, -0.68, 0.68, '#f8fcff', 2);
+    px(ctx, 58, cy - 10, '#ffffff', 2);
+    px(ctx, 60, cy - 4, '#fff8e0', 2);
+    px(ctx, 56, cy + 8, '#ffe8a0');
+    px(ctx, 30, cy - 22, '#fff0c0', 2);
+    px(ctx, 32, cy - 18, '#ffffff', 2);
+  });
+}
+
+/** Time stasis — frozen crystal field. */
+export function drawTimeStasisCanvas(): HTMLCanvasElement {
+  const size = 36;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    const pts: [number, number][] = [];
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+      pts.push([c + Math.round(Math.cos(a) * 12), c + Math.round(Math.sin(a) * 12)]);
+    }
+    for (let i = 0; i < pts.length; i++) {
+      const [x1, y1] = pts[i]!;
+      const [x2, y2] = pts[(i + 1) % pts.length]!;
+      pixelLine(ctx, x1, y1, x2, y2, '#b0e8ff', 2);
+    }
+    pixelRing(ctx, c, c, 5, '#ffffff', 1);
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      px(ctx, c + Math.round(Math.cos(a) * 8), c + Math.round(Math.sin(a) * 8), '#d0f8ff');
+    }
+  });
+}
+
+/** Life spirit — ascending wisps. */
+export function drawLifeSpiritCanvas(): HTMLCanvasElement {
+  const size = 40;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    for (let w = 0; w < 3; w++) {
+      const ox = c + (w - 1) * 8;
+      for (let d = 0; d <= 14; d++) {
+        px(ctx, ox + ((d % 3) - 1), size - 4 - d, d < 5 ? '#e0fff0' : '#60e890');
+      }
+      px(ctx, ox, 6, '#ffffff', 2);
+    }
+    pixelRing(ctx, c, c + 8, 10, '#80ffb0', 1);
+  });
+}
+
 /** Flower bloom burst — petal shape, green/yellow. */
 export function drawLifeBloomCanvas(): HTMLCanvasElement {
   const size = 40;
@@ -535,6 +676,14 @@ export function registerPixelVfxAssets(scene: Phaser.Scene): void {
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.thunderColumn, drawThunderColumnCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.lifePulse, drawLifePulseCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.timeVortex, drawTimeVortexCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.flameLotus, drawFlameLotusCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.flamePillar, drawFlamePillarCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.voidNova, drawVoidNovaCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.voidAbyss, drawVoidAbyssCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.lightningFork, drawLightningForkCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.swordHeaven, drawSwordHeavenCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.timeStasis, drawTimeStasisCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.lifeSpirit, drawLifeSpiritCanvas());
 }
 
 /** Round world position so scaled sprites land on pixel grid. */

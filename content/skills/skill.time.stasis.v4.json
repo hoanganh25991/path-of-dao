@@ -13,9 +13,10 @@
         "skillMultiplier": 1.7,
         "damageType": "spirit"
       },
-      "speed": 420,
-      "rangePx": 400,
-      "hitRadius": 12
+      "speed": 280,
+      "rangePx": 360,
+      "hitRadius": 18,
+      "pullForce": 130
     }
   ],
   "vfx": {

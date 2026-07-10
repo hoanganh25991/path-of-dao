@@ -2,6 +2,7 @@ import type Phaser from 'phaser';
 import type { InsightIntentId, SkillDefinition } from '@/progression/SkillDefinition';
 import { VFX_TEXTURE_KEYS, snapVfxPosition } from '@/combat/art/pixelVfxDraw';
 import { skillVfxPower } from '@/combat/skills/skillVfxPower';
+import { getSkillVfxProfile } from '@/combat/skills/skillVfxProfile';
 import { getIntentVisual } from '@/ui/skills/SkillIcon';
 
 const SLASH_OFFSET_PX = 26;
@@ -16,8 +17,15 @@ const TIME_RIPPLE_TEX = 40;
 const LIFE_BLOOM_TEX = 40;
 const LIFE_PULSE_TEX = 40;
 const ICE_SPIKE_TEX = 36;
+const FLAME_LOTUS_TEX = 48;
+const FLAME_PILLAR_TEX = 52;
+const VOID_NOVA_TEX = 44;
+const VOID_ABYSS_TEX = 40;
+const TIME_STASIS_TEX = 36;
+const LIFE_SPIRIT_TEX = 40;
 
-function slashTexture(intent: InsightIntentId): string {
+function slashTexture(intent: InsightIntentId, skillId?: string): string {
+  if (skillId) return getSkillVfxProfile(skillId, intent).meleeTexture ?? VFX_TEXTURE_KEYS.slash;
   switch (intent) {
     case 'void':
       return VFX_TEXTURE_KEYS.voidRift;
@@ -28,11 +36,12 @@ function slashTexture(intent: InsightIntentId): string {
   }
 }
 
-function slashTexSize(intent: InsightIntentId): number {
-  return intent === 'void' || intent === 'sword' ? SLASH_TEX_SIZE : SLASH_TEX_SIZE;
+function slashTexSize(_intent: InsightIntentId): number {
+  return SLASH_TEX_SIZE;
 }
 
-function projectileTexture(intent: InsightIntentId): string {
+function projectileTexture(intent: InsightIntentId, skillId?: string): string {
+  if (skillId) return getSkillVfxProfile(skillId, intent).projectileTexture ?? VFX_TEXTURE_KEYS.bolt;
   switch (intent) {
     case 'flame':
       return VFX_TEXTURE_KEYS.flameOrb;
@@ -61,31 +70,54 @@ export function playSkillImpactVfx(
   y: number,
   intent: InsightIntentId,
   power: number,
+  skillId?: string,
 ): void {
   const { glow, color } = getIntentVisual(intent);
   const tint = parseColor(glow);
   const core = parseColor(color);
   const radius = 28 + power * 10;
+  const profile = skillId ? getSkillVfxProfile(skillId, intent) : null;
 
-  switch (intent) {
-    case 'void':
-      VFXLibrary.voidCrack(scene, x, y, radius);
+  switch (profile?.impact ?? 'intent') {
+    case 'void_nova':
+      VFXLibrary.voidNova(scene, x, y, radius);
       break;
-    case 'flame':
-      VFXLibrary.flamePetal(scene, x, y, radius * 0.85);
+    case 'void_abyss':
+      VFXLibrary.voidAbyss(scene, x, y, radius);
       break;
-    case 'lightning':
-      VFXLibrary.lightningBolt(scene, x, y, radius);
-      scene.cameras.main.shake(60, 0.004 + power * 0.001);
-      break;
-    case 'time':
+    case 'time_echo':
       VFXLibrary.timeRipple(scene, x, y, radius);
+      scene.time.delayedCall(90, () => VFXLibrary.timeRipple(scene, x, y, radius * 0.75));
+      scene.time.delayedCall(180, () => VFXLibrary.timeRipple(scene, x, y, radius * 0.5));
       break;
-    case 'life':
-      VFXLibrary.lifeBloom(scene, x, y, radius * 0.9);
+    case 'time_stasis':
+      VFXLibrary.timeStasisField(scene, x, y, radius);
       break;
+    case 'sword_burst':
+      VFXLibrary.swordBurst(scene, x, y, radius, tint);
+      break;
+    case 'intent':
     default:
-      expandRing(scene, x, y, tint, 0.4, 2.2 + power * 0.35, 200, 22, 0.85);
+      switch (intent) {
+        case 'void':
+          VFXLibrary.voidCrack(scene, x, y, radius);
+          break;
+        case 'flame':
+          VFXLibrary.flamePetal(scene, x, y, radius * 0.85);
+          break;
+        case 'lightning':
+          expandThunderColumn(scene, x, y, 32 + power * 10, power);
+          scene.cameras.main.shake(60, 0.004 + power * 0.001);
+          break;
+        case 'time':
+          VFXLibrary.timeRipple(scene, x, y, radius);
+          break;
+        case 'life':
+          VFXLibrary.lifeBloom(scene, x, y, radius * 0.9);
+          break;
+        default:
+          expandRing(scene, x, y, tint, 0.4, 2.2 + power * 0.35, 200, 22, 0.85);
+      }
   }
 
   spawnPixelSparks(scene, x, y, tint, Math.floor(3 + power * 1.5), 12 + power * 4, 24);
@@ -248,10 +280,11 @@ export const VFXLibrary = {
     reach: number,
     intent: InsightIntentId,
     power = 1,
+    skillId?: string,
   ): void {
     const { glow } = getIntentVisual(intent);
     const tint = parseColor(glow);
-    const texKey = slashTexture(intent);
+    const texKey = slashTexture(intent, skillId);
     const texSize = slashTexSize(intent);
     const scale = (reach / texSize) * 1.15 * (0.95 + power * 0.1);
     const cx = x + facing * SLASH_OFFSET_PX;
@@ -281,6 +314,10 @@ export const VFXLibrary = {
       default:
         expandRing(scene, hitX, cy, tint, 0.3, 1.4 + power * 0.25, 140, 20, 0.6);
     }
+
+    if (skillId && getSkillVfxProfile(skillId, intent).impact === 'sword_burst') {
+      VFXLibrary.swordBurst(scene, hitX, cy, 36 + power * 12, tint);
+    }
   },
 
   intentProjectile(
@@ -290,9 +327,10 @@ export const VFXLibrary = {
     facing: number,
     intent: InsightIntentId,
     power = 1,
+    skillId?: string,
   ): Phaser.Physics.Arcade.Image {
     const { glow } = getIntentVisual(intent);
-    const texture = projectileTexture(intent);
+    const texture = projectileTexture(intent, skillId);
     const scale = projectileScale(intent, power);
     const originY = intent === 'lightning' ? 0.85 : 0.5;
     const bolt = scene.physics.add
@@ -321,26 +359,124 @@ export const VFXLibrary = {
     return VFXLibrary.intentProjectile(scene, x, y, facing, intent, amp);
   },
 
-  healBloom(scene: Phaser.Scene, x: number, y: number, intent: InsightIntentId, power = 1): void {
+  healBloom(scene: Phaser.Scene, x: number, y: number, intent: InsightIntentId, power = 1, skillId?: string): void {
+    const profile = skillId ? getSkillVfxProfile(skillId, intent) : null;
     const { glow } = getIntentVisual(intent);
     const tint = parseColor(glow);
     const radius = 38 + power * 12;
-    VFXLibrary.lifeBloom(scene, x, y - 8, radius);
-    expandSprite(
-      scene,
-      x,
-      y - 14,
-      VFX_TEXTURE_KEYS.lifePulse,
-      LIFE_PULSE_TEX,
-      radius * 0.9,
-      tint,
-      340 + power * 30,
-      23,
-      0.4,
-      1.05,
-    );
+
+    switch (profile?.heal ?? 'life_bloom') {
+      case 'life_spirit':
+        expandSprite(
+          scene, x, y - 10, VFX_TEXTURE_KEYS.lifeSpirit, LIFE_SPIRIT_TEX,
+          radius, tint, 400 + power * 30, 24, 0.45, 1.05,
+        );
+        VFXLibrary.lifeBloom(scene, x, y - 8, radius);
+        break;
+      case 'life_pulse':
+        expandSprite(
+          scene, x, y - 14, VFX_TEXTURE_KEYS.lifePulse, LIFE_PULSE_TEX,
+          radius * 0.9, tint, 340 + power * 30, 23, 0.4, 1.05,
+        );
+        VFXLibrary.lifeBloom(scene, x, y - 8, radius * 0.85);
+        break;
+      case 'life_bloom':
+      default:
+        VFXLibrary.lifeBloom(scene, x, y - 8, radius);
+        expandSprite(
+          scene, x, y - 14, VFX_TEXTURE_KEYS.lifePulse, LIFE_PULSE_TEX,
+          radius * 0.9, tint, 340 + power * 30, 23, 0.4, 1.05,
+        );
+    }
+
     expandRing(scene, x, y - 20, tint, 0.5 + power * 0.05, 2.8 + power * 0.5, 360 + power * 40, 22, 0.9);
     spawnPixelSparks(scene, x, y - 28, tint, Math.floor(4 + power * 2), 16 + power * 5, 23);
+  },
+
+  flameLotus(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y, VFX_TEXTURE_KEYS.flameLotus, FLAME_LOTUS_TEX,
+      radius, 0xff9040, 380, 21, 0.4, 1.0,
+    );
+    spawnPixelSparks(scene, x, y, 0xffb040, 6, radius * 0.55, 22);
+  },
+
+  flamePillar(scene: Phaser.Scene, x: number, y: number, height: number): void {
+    const targetScale = height / FLAME_PILLAR_TEX;
+    const img = scene.add
+      .image(Math.round(x), Math.round(y), VFX_TEXTURE_KEYS.flamePillar)
+      .setOrigin(0.5, 1)
+      .setScale(targetScale * 0.4)
+      .setTint(0xff8030)
+      .setDepth(22);
+    scene.tweens.add({
+      targets: img,
+      scaleX: targetScale * 0.95,
+      scaleY: targetScale * 1.1,
+      alpha: 0,
+      duration: 340,
+      ease: 'Quad.easeOut',
+      onComplete: () => img.destroy(),
+    });
+    spawnPixelSparks(scene, x, y - height * 0.5, 0xffb040, 5, height * 0.35, 23);
+  },
+
+  voidNova(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y, VFX_TEXTURE_KEYS.voidNova, VOID_NOVA_TEX,
+      radius, 0xc0a0ff, 360, 21, 0.35, 1.05,
+    );
+    VFXLibrary.voidCrack(scene, x, y, radius * 0.85);
+    spawnPixelSparks(scene, x, y, 0x9060ff, 5, radius * 0.45, 22);
+  },
+
+  voidAbyss(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y, VFX_TEXTURE_KEYS.voidAbyss, VOID_ABYSS_TEX,
+      radius, 0x9060ff, 420, 20, 0.5, 1.1,
+    );
+    VFXLibrary.voidCrack(scene, x, y, radius * 1.1);
+    spawnPixelSparks(scene, x, y, 0xc0a0ff, 4, radius * 0.4, 19);
+  },
+
+  timeStasisField(scene: Phaser.Scene, x: number, y: number, radius: number): void {
+    expandSprite(
+      scene, x, y, VFX_TEXTURE_KEYS.timeStasis, TIME_STASIS_TEX,
+      radius, 0x90d8ff, 400, 20, 0.45, 1.0,
+    );
+    VFXLibrary.timeRipple(scene, x, y, radius * 0.9);
+    spawnPixelSparks(scene, x, y, 0xd0f0ff, 4, radius * 0.35, 21);
+  },
+
+  swordBurst(scene: Phaser.Scene, x: number, y: number, radius: number, tint: number): void {
+    expandSprite(
+      scene, x, y, VFX_TEXTURE_KEYS.swordQi, SLASH_TEX_SIZE,
+      radius, tint, 260, 22, 0.35, 0.9,
+    );
+    expandRing(scene, x, y, tint, 0.35, 2.4, 200, 21, 0.75);
+    spawnPixelSparks(scene, x, y, tint, 4, radius * 0.4, 23);
+  },
+
+  skillAoeTick(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    intent: InsightIntentId,
+    radius: number,
+    skillId: string,
+  ): void {
+    const profile = getSkillVfxProfile(skillId, intent);
+    switch (profile.aoe) {
+      case 'flame_lotus':
+        VFXLibrary.flameLotus(scene, x, y, radius);
+        break;
+      case 'flame_pillar':
+        VFXLibrary.flamePillar(scene, x, y, radius * 1.4);
+        break;
+      case 'flame_petal':
+      default:
+        VFXLibrary.flamePetal(scene, x, y, radius);
+    }
   },
 
   flamePetal(scene: Phaser.Scene, x: number, y: number, radius: number): void {
@@ -447,12 +583,34 @@ export function playSkillCastVfx(
       break;
   }
 
+  playSkillArtCastExtra(scene, skill, x, y, power);
+
   if (power >= 2) {
     scene.cameras.main.shake(90, 0.003 + power * 0.0015);
   }
 
   if (power >= 4) {
     playAncientIntentFlourish(scene, skill.intent, x, y - 18, power);
+  }
+}
+
+/** Art-specific cast flourishes for v3–v5 cultivation skills. */
+export function playSkillArtCastExtra(
+  scene: Phaser.Scene,
+  skill: SkillDefinition,
+  x: number,
+  y: number,
+  power: number,
+): void {
+  const profile = getSkillVfxProfile(skill.id, skill.intent);
+  if (profile.castStormBolts) {
+    const spread = 36 + power * 4;
+    for (let i = 0; i < profile.castStormBolts; i++) {
+      const ox = (i - (profile.castStormBolts - 1) / 2) * spread;
+      scene.time.delayedCall(i * 60, () => {
+        expandThunderColumn(scene, x + ox, y + 10, 44 + power * 6, power * 0.7);
+      });
+    }
   }
 }
 

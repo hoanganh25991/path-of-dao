@@ -2,7 +2,7 @@
 
 **Status:** `[~]` In progress  
 **Plan:** [plans/23-mvp-enemies-bosses-skills.md](../plans/23-mvp-enemies-bosses-skills.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -14,6 +14,7 @@ Full MVP roster: 40 skills, 41 enemies, loot tables, boss phases, and skill unlo
 - English and Vietnamese skill name/description strings
 - Forty-one enemy files including training dummy, elite shadow, spirit fox
 - Loot tables for five rarity tiers
+- **Combat item drops** — `rollCultivatorLoot()` + magnet pickups; rates in `content/loot/_drop_rates.json`
 - Boss phase tracking wired into wave spawner
 - Skill unlock hooks: level up, boss clear, chapter story completion
 - **Road techniques** — `byMapClear` on all ten explore maps (`.01`); `byChapter` rewards for all ten finales

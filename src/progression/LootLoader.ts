@@ -1,4 +1,5 @@
-import { lootTableSchema, type LootTable } from '@/shared/schemas/loot';
+import dropRatesJson from '../../content/loot/_drop_rates.json';
+import { lootTableSchema, lootDropRatesSchema, type LootTable, type LootDropRates } from '@/shared/schemas/loot';
 
 const lootModules = import.meta.glob('../../content/loot/*.json', {
   eager: true,
@@ -18,6 +19,11 @@ function indexLoot(): Map<string, unknown> {
 }
 
 const rawLoot = indexLoot();
+const dropRatesData = lootDropRatesSchema.parse(dropRatesJson);
+
+export function getLootDropRates(): LootDropRates {
+  return dropRatesData;
+}
 
 export function listLootTableIds(): string[] {
   return [...rawLoot.keys()].sort();

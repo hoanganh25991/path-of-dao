@@ -173,6 +173,15 @@ Pose data: `stickyManDraw.ts` (`POSES_WALK`, `POSES_ATTACK_*`, `POSES_HIT`) and 
 | Heavenly thunder | Vertical column + sky-to-ground zigzag (not horizontal bolt) |
 | Life mend | Bloom + rising life-pulse spiral |
 | Time slow | Time vortex orb + ripple trail |
+| Flame lotus (v4) | Layered lotus petal burst |
+| Flame pillar (v3) | Vertical fire column eruption |
+| Void nova (v4) | Radial void nova + crack |
+| Void abyss (v5) | Inward spiral + pull crack |
+| Sword heaven (v5) | Wide golden heaven arc |
+| Sword rain (v3) | Triple qi slash flurry |
+| Lightning storm (v3) | Fork bolts + sky columns on cast |
+| Lightning judgment (v4) | Massive vertical thunder strike |
+| Lightning tribulation (v5) | 5-jump thunder chain |
 | Telegraph | Enemy red tint (unchanged; works over anims) |
 
 Procedural VFX textures: `src/combat/art/pixelVfxDraw.ts` → `registerPixelVfxAssets()` in BootScene.

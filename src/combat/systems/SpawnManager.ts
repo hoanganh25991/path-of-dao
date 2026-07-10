@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { EventBus } from '@/core/EventBus';
-import { AudioDirector } from '@/core/audio/AudioDirector';
 import { gameStore } from '@/core/store/gameStore';
 import type { Player } from '@/combat/entities/Player';
 import { Cultivator, STRIKE_MS } from '@/combat/entities/Cultivator';
@@ -10,6 +9,8 @@ import { getEncounterConfig, getCultivatorConfig } from '@/combat/cultivators/Cu
 import type { EncounterConfig } from '@/combat/cultivators/CultivatorConfig';
 import { CultivatorPool } from '@/combat/systems/CultivatorPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
+import { rollCultivatorLoot } from '@/combat/systems/lootRoll';
+import { CombatPickupController } from '@/combat/systems/CombatPickupController';
 import { syncRealmProgress } from '@/progression/BreakthroughManager';
 import { emitKillProgressionEvents } from '@/combat/systems/killProgressionEvents';
 import { recordJourney } from '@/progression/JourneyLog';
@@ -31,11 +32,6 @@ const ARROW_SPEED = 300;
 const ARROW_TTL_MS = 2000;
 const ARROW_HIT_RADIUS = 16;
 
-const PICKUP_MAGNET_DELAY_MS = 500;
-const PICKUP_MAGNET_RANGE = 60;
-const PICKUP_MAGNET_SPEED = 280;
-const PICKUP_COLLECT_RADIUS = 18;
-
 interface QueuedSpawn {
   cultivatorId: string;
   x: number;
@@ -48,15 +44,9 @@ interface Arrow {
   ttlMs: number;
 }
 
-interface GoldPickup {
-  img: Phaser.GameObjects.Image;
-  value: number;
-  ageMs: number;
-}
-
 /**
  * Owns the map's encounter: wave spawning (scaled live cap, queue overflow),
- * cultivator strike hitboxes, arrows, gold pickups, and defeat rewards.
+ * cultivator strike hitboxes, arrows, loot pickups, and defeat rewards.
  */
 export class SpawnManager {
   private readonly pool: CultivatorPool;
@@ -67,7 +57,7 @@ export class SpawnManager {
   private waveIndex = -1;
   private waveActive = false;
   private arrows: Arrow[] = [];
-  private pickups: GoldPickup[] = [];
+  private pickups!: CombatPickupController;
   private readonly unsubPlayerDied: () => void;
   private destroyed = false;
 
@@ -110,6 +100,7 @@ export class SpawnManager {
     ];
     this.pool.prewarm(cultivatorIds);
 
+    this.pickups = new CombatPickupController(scene, player);
     this.unsubPlayerDied = EventBus.on('player:died', () => this.onPlayerDied());
   }
 
@@ -129,7 +120,7 @@ export class SpawnManager {
     }
 
     this.updateArrows(dtMs);
-    this.updatePickups(dtMs);
+    this.pickups.update(dtMs);
   }
 
   /** Alive cultivators registered as hurtbox targets each frame. */
@@ -165,8 +156,7 @@ export class SpawnManager {
     this.unsubPlayerDied();
     for (const arrow of this.arrows) arrow.img.destroy();
     this.arrows = [];
-    for (const pickup of this.pickups) pickup.img.destroy();
-    this.pickups = [];
+    this.pickups.destroy();
     this.pool.destroy();
   }
 
@@ -451,7 +441,12 @@ export class SpawnManager {
     emitKillProgressionEvents(rewards, xpBefore, gameStore.getState().save?.realm.id ?? save.realm.id);
 
     if (rewards.gold > 0) {
-      this.spawnGoldPickup(cultivator.x, cultivator.y, rewards.gold);
+      this.pickups.spawnGold(cultivator.x, cultivator.y, rewards.gold);
+    }
+
+    const itemDrops = rollCultivatorLoot(cultivator.config, { isBoss, wasRematch });
+    if (itemDrops.length > 0) {
+      this.pickups.spawnItems(cultivator.x, cultivator.y, itemDrops);
     }
 
     EventBus.emit('map:cultivator-defeated', {
@@ -469,50 +464,6 @@ export class SpawnManager {
     if (bossClearId && !wasRematch) {
       EventBus.emit('boss:defeated', { bossId: bossClearId });
     }
-  }
-
-  private spawnGoldPickup(x: number, y: number, value: number): void {
-    const img = this.scene.add
-      .image(x + (Math.random() * 16 - 8), y + (Math.random() * 16 - 8), TEXTURE_KEYS.coin)
-      .setDepth(8);
-    this.pickups.push({ img, value, ageMs: 0 });
-  }
-
-  private updatePickups(dtMs: number): void {
-    this.pickups = this.pickups.filter((pickup) => {
-      pickup.ageMs += dtMs;
-      if (pickup.ageMs < PICKUP_MAGNET_DELAY_MS) return true;
-
-      const dist = Phaser.Math.Distance.Between(
-        pickup.img.x,
-        pickup.img.y,
-        this.player.x,
-        this.player.y,
-      );
-
-      if (dist <= PICKUP_COLLECT_RADIUS) {
-        this.collectGold(pickup.value);
-        pickup.img.destroy();
-        return false;
-      }
-
-      if (dist <= PICKUP_MAGNET_RANGE) {
-        const step = (PICKUP_MAGNET_SPEED * dtMs) / 1000;
-        const angle = Math.atan2(this.player.y - pickup.img.y, this.player.x - pickup.img.x);
-        pickup.img.x += Math.cos(angle) * step;
-        pickup.img.y += Math.sin(angle) * step;
-      }
-      return true;
-    });
-  }
-
-  private collectGold(value: number): void {
-    const store = gameStore.getState();
-    if (!store.save) return;
-    store.patch((current) => ({
-      inventory: { ...current.inventory, gold: current.inventory.gold + value },
-    }));
-    AudioDirector.playLootPickup();
   }
 
   private flashAoeRing(cultivator: Cultivator): void {

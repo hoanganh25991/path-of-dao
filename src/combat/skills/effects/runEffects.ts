@@ -13,6 +13,7 @@ import {
   spawnProjectileTrail,
 } from '@/combat/skills/VFXLibrary';
 import { skillVfxPower } from '@/combat/skills/skillVfxPower';
+import { getSkillVfxProfile } from '@/combat/skills/skillVfxProfile';
 import { buildMeleeArcShape } from '@/combat/combat/geometry';
 import { scaledMeleeHalfArc } from '@/combat/combat/AoeScaling';
 
@@ -23,6 +24,7 @@ const COMBO_FINISHER_KNOCKBACK = 180;
 export interface SkillBolt {
   img: Phaser.Physics.Arcade.Image;
   hitboxId: string;
+  skillId: string;
   ttlMs: number;
   hitRadius: number;
   intent: SkillDefinition['intent'];
@@ -60,17 +62,24 @@ export function runMeleeArc(effect: Extract<SkillEffect, { type: 'melee_arc' }>,
   const reach = (effect.reach + effect.reachBonus) * amp * aoeScale;
   const { facing } = player;
   const vfxCx = player.x + facing * SLASH_OFFSET_PX;
-  const vfxCy = player.y;
+  const vfxCy = player.y - player.sprite.displayHeight * 0.45;
+  const profile = getSkillVfxProfile(skill.id, skill.intent);
+  const flurry = profile.meleeFlurry ?? 1;
 
-  VFXLibrary.slashArc(
-    player.scene,
-    vfxCx,
-    vfxCy - player.sprite.displayHeight * 0.45,
-    facing,
-    reach,
-    skill.intent,
-    power,
-  );
+  for (let i = 0; i < flurry; i++) {
+    player.scene.time.delayedCall(i * 75, () => {
+      VFXLibrary.slashArc(
+        player.scene,
+        vfxCx,
+        vfxCy,
+        facing,
+        reach * (1 - i * 0.06),
+        skill.intent,
+        power * (1 - i * 0.08),
+        skill.id,
+      );
+    });
+  }
 
   hitboxes.spawn({
     ownerId: player.id,
@@ -92,15 +101,23 @@ export function runProjectile(effect: Extract<SkillEffect, { type: 'projectile' 
   const rangePx = effect.rangePx * amp * aoeScale;
   const hitRadius = effect.hitRadius * amp * aoeScale;
 
+  const boltIndex = bolts.length;
+  const spawnY = sprite.y - sprite.displayHeight * 0.55 + (boltIndex % 2 === 1 ? (boltIndex % 4 === 1 ? -14 : 14) : 0);
+
   const bolt = VFXLibrary.intentProjectile(
     scene,
     sprite.x,
-    sprite.y - sprite.displayHeight * 0.55,
+    spawnY,
     facing,
     skill.intent,
     power,
+    skill.id,
   );
-  bolt.setVelocity(facing * speed, 0);
+  const vy =
+    skill.id.includes('lightning.storm') && boltIndex > 0
+      ? (boltIndex % 2 === 0 ? 1 : -1) * 90
+      : 0;
+  bolt.setVelocity(facing * speed, vy);
 
   const lifetimeMs = (rangePx / speed) * 1000;
   const pullForce = effect.pullForce ?? skill.awakenedOverrides?.pullForce;
@@ -119,6 +136,7 @@ export function runProjectile(effect: Extract<SkillEffect, { type: 'projectile' 
   bolts.push({
     img: bolt,
     hitboxId: hitbox.id,
+    skillId: skill.id,
     ttlMs: lifetimeMs,
     hitRadius,
     intent: skill.intent,
@@ -133,7 +151,7 @@ export function runHeal(effect: Extract<SkillEffect, { type: 'heal' }>, ctx: Eff
   const power = skillVfxPower(skill.id, amp);
   const amount = Math.floor(player.stats.runtime.hpMax * Math.min(effect.healPct * amp, 1));
   player.heal(amount);
-  VFXLibrary.healBloom(player.scene, player.sprite.x, player.sprite.y, skill.intent, power);
+  VFXLibrary.healBloom(player.scene, player.sprite.x, player.sprite.y, skill.intent, power, skill.id);
 }
 
 export function runPullField(effect: Extract<SkillEffect, { type: 'pull_field' }>, ctx: EffectRunnerContext): void {
@@ -320,7 +338,7 @@ export function runAoeCircle(effect: Extract<SkillEffect, { type: 'aoe_circle' }
 
   const spawnTick = (delayMs: number): void => {
     player.scene.time.delayedCall(delayMs, () => {
-      VFXLibrary.flamePetal(player.scene, player.x, player.y, radius);
+      VFXLibrary.skillAoeTick(player.scene, player.x, player.y, skill.intent, radius, skill.id);
       hitboxes.spawn({
         ownerId: player.id,
         team: 'player',
@@ -378,7 +396,7 @@ export function tickSkillBolts(bolts: SkillBolt[], hitboxes: HitboxManager, dtMs
     const hitbox = hitboxes.getHitbox(bolt.hitboxId);
     if (hitbox && hitbox.alreadyHit.size > 0 && !bolt.impacted) {
       bolt.impacted = true;
-      playSkillImpactVfx(bolt.img.scene, bolt.img.x, bolt.img.y, bolt.intent, bolt.power);
+      playSkillImpactVfx(bolt.img.scene, bolt.img.x, bolt.img.y, bolt.intent, bolt.power, bolt.skillId);
     }
 
     if (bolt.ttlMs <= 0 || !bolt.img.active) {

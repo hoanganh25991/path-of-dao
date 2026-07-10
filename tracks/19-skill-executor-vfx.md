@@ -21,6 +21,8 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 - Enemy target provider wired MapScene → CombatComponent → SkillExecutor for chain targeting
 - **Intent-unique pixel textures** — void rift arc, sword qi, thunder column, life pulse, time vortex, flame comet orb
 - **Ancient echo flourishes** — god-mode casts add per-intent elemental burst via `playAncientIntentFlourish`
+- **v3–v5 art profiles** — `skillVfxProfile.ts` maps lotus/pillar/nova/abyss/heaven/storm/tribulation etc. to unique pixel textures
+- **Advanced lightning** — judgment v4 = vertical strike; tribulation v5 = 5-jump chain; storm/fork use fork-bolt sprite
 - Cooldown manager per skill slot
 - Awakened void: pull field then projectile
 - Awakened flame: twin AoE damage ticks
