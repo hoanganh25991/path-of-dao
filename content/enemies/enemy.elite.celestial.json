@@ -21,6 +21,7 @@
   "spriteKey": "enemy_gate_sentinel",
   "archetype": "patrol",
   "category": "elite",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_elite_celestial.desc",
   "weakness": "spirit",
   "resistance": "none"

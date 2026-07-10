@@ -22,6 +22,7 @@
   "spriteKey": "boss_frost_queen",
   "bossClearId": "boss.frost_queen",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_frost_queen.desc",
   "weakness": "spirit",
   "resistance": "physical",

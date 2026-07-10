@@ -22,6 +22,7 @@
   "spriteKey": "boss_bandit_lord",
   "bossClearId": "boss.bandit_lord",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_bandit_lord.desc",
   "weakness": "spirit",
   "resistance": "none",

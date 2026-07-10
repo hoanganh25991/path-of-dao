@@ -204,6 +204,9 @@ export class SpawnManager {
     } else if (this.isWaveFullyDefeated()) {
       this.finishWave();
       return;
+    } else if (cultivator.isBeast) {
+      // Beasts despawn to pool on defeat — no gather-qi sit-recover (combat-defeat-canon.md §1).
+      this.pool.release(cultivator);
     } else {
       cultivator.beginRecovery();
       return;

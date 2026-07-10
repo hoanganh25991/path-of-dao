@@ -21,6 +21,7 @@
   "spriteKey": "enemy_spirit_moth",
   "archetype": "ranged_kiter",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_spirit_moth.desc",
   "weakness": "spirit",
   "resistance": "none"

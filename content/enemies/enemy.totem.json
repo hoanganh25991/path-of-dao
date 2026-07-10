@@ -21,6 +21,7 @@
   "lootTable": "loot.tier.rare",
   "spriteKey": "enemy_totem",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_totem.desc",
   "weakness": "lightning",
   "resistance": "none"

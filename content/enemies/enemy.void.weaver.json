@@ -21,6 +21,7 @@
   "spriteKey": "enemy_void_weaver",
   "archetype": "stationary",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_void_weaver.desc",
   "weakness": "lightning",
   "resistance": "none"

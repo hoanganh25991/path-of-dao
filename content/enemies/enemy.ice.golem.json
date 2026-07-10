@@ -21,6 +21,7 @@
   "spriteKey": "enemy_ice_golem",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_ice_golem.desc",
   "weakness": "spirit",
   "resistance": "physical"

@@ -21,6 +21,7 @@
   "spriteKey": "enemy_desert_spirit",
   "archetype": "ranged_kiter",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_sand_wisp.desc",
   "weakness": "spirit",
   "resistance": "none"

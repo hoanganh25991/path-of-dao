@@ -13,11 +13,15 @@
   "attackRange": 44,
   "attackCooldownMs": 1150,
   "xpReward": 18,
-  "goldReward": [2, 6],
+  "goldReward": [
+    2,
+    6
+  ],
   "lootTable": "loot.tier.common",
   "spriteKey": "enemy_disciple",
   "archetype": "patrol",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_heng_yue_disciple.desc",
   "weakness": "spirit",
   "resistance": "none"

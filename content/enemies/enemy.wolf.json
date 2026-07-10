@@ -21,6 +21,7 @@
   "spriteKey": "enemy_wolf_beast",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_wolf.desc",
   "weakness": "spirit",
   "resistance": "none"

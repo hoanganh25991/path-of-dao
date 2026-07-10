@@ -21,6 +21,7 @@
   "spriteKey": "enemy_void_shade",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_void_shade.desc",
   "weakness": "spirit",
   "resistance": "none"

@@ -22,6 +22,7 @@
   "spriteKey": "boss_mist_stalker",
   "bossClearId": "boss.mist_stalker",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_mist_stalker.desc",
   "weakness": "spirit",
   "resistance": "none",

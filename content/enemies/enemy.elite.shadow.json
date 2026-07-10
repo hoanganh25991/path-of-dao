@@ -3,6 +3,7 @@
   "displayNameKey": "enemy.elite.shadow.name",
   "archetype": "melee_chaser",
   "category": "elite",
+  "opponentKind": "cultivator",
   "stats": {
     "hpMax": 180,
     "atk": 22,

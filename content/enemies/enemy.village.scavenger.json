@@ -21,6 +21,7 @@
   "lootTable": "loot.tier.common",
   "spriteKey": "enemy_villager",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_village_scavenger.desc",
   "weakness": "spirit",
   "resistance": "none"

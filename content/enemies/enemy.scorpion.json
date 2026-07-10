@@ -21,6 +21,7 @@
   "spriteKey": "enemy_scorpion",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_scorpion.desc",
   "weakness": "spirit",
   "resistance": "none"

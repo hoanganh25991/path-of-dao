@@ -21,6 +21,7 @@
   "lootTable": "loot.tier.common",
   "spriteKey": "enemy_villager",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_village_spirit_pest.desc",
   "weakness": "spirit",
   "resistance": "none"

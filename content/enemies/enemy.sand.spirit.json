@@ -21,6 +21,7 @@
   "spriteKey": "enemy_desert_spirit",
   "archetype": "stationary",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_sand_spirit.desc",
   "weakness": "lightning",
   "resistance": "none"

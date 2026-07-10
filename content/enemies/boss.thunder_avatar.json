@@ -22,6 +22,7 @@
   "spriteKey": "boss_thunder_avatar",
   "bossClearId": "boss.thunder_avatar",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_thunder_avatar.desc",
   "weakness": "spirit",
   "resistance": "none",

@@ -21,6 +21,7 @@
   "spriteKey": "enemy_lightning_spirit",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_lightning_sprite.desc",
   "weakness": "spirit",
   "resistance": "none"

@@ -21,6 +21,7 @@
   "spriteKey": "enemy_ice_golem",
   "archetype": "melee_chaser",
   "category": "elite",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_elite_frost.desc",
   "weakness": "spirit",
   "resistance": "physical"

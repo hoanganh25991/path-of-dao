@@ -22,6 +22,7 @@
   "spriteKey": "boss_desert_sovereign",
   "bossClearId": "boss.desert_sovereign",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_desert_sovereign.desc",
   "weakness": "spirit",
   "resistance": "none",

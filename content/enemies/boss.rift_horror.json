@@ -22,6 +22,7 @@
   "spriteKey": "boss_rift_horror",
   "bossClearId": "boss.rift_horror",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_rift_horror.desc",
   "weakness": "spirit",
   "resistance": "none",

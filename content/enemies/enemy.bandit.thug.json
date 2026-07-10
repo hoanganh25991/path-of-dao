@@ -21,6 +21,7 @@
   "spriteKey": "enemy_bandit_thug",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_bandit_thug.desc",
   "weakness": "spirit",
   "resistance": "none"

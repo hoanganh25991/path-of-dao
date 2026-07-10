@@ -21,6 +21,7 @@
   "spriteKey": "enemy_rift_spawn",
   "archetype": "ranged_kiter",
   "category": "elite",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_elite_rift.desc",
   "weakness": "spirit",
   "resistance": "none"

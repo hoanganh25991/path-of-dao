@@ -22,6 +22,7 @@
   "spriteKey": "boss_seal_warden",
   "bossClearId": "boss.seal_warden",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_seal_warden.desc",
   "weakness": "spirit",
   "resistance": "none",

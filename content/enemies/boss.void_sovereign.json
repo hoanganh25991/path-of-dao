@@ -22,6 +22,7 @@
   "spriteKey": "boss_void_sovereign",
   "bossClearId": "boss.void_sovereign",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_void_sovereign.desc",
   "weakness": "spirit",
   "resistance": "none",

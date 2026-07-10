@@ -21,6 +21,7 @@
   "spriteKey": "enemy_frost_shade",
   "archetype": "ranged_kiter",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_frost_shade.desc",
   "weakness": "spirit",
   "resistance": "physical"

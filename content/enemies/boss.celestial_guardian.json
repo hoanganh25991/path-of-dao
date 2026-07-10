@@ -22,6 +22,7 @@
   "spriteKey": "boss_celestial_guardian",
   "bossClearId": "boss.celestial_guardian",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_celestial_guardian.desc",
   "weakness": "spirit",
   "resistance": "none",

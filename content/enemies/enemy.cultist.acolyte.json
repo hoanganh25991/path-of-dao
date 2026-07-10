@@ -21,6 +21,7 @@
   "spriteKey": "enemy_sand_demon",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_cultist_acolyte.desc",
   "weakness": "spirit",
   "resistance": "none"

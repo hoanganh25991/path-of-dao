@@ -21,6 +21,7 @@
   "spriteKey": "enemy_mist_wisp",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_spirit_wisp.desc",
   "weakness": "spirit",
   "resistance": "none"

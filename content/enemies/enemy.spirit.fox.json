@@ -3,6 +3,7 @@
   "displayNameKey": "enemy.spirit.fox.name",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "stats": {
     "hpMax": 1,
     "atk": 0,

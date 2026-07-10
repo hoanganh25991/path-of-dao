@@ -135,6 +135,11 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     return !!this.config.bossClearId;
   }
 
+  /** Beast opponents despawn to pool on defeat — no gather-qi sit-recover (combat-defeat-canon.md §1). */
+  get isBeast(): boolean {
+    return this.config.opponentKind === 'beast';
+  }
+
   getDefenderStats(): BaseStats {
     return this.stats.resolved;
   }

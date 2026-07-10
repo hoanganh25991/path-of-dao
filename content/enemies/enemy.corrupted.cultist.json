@@ -21,6 +21,7 @@
   "spriteKey": "enemy_corrupted_cultist",
   "archetype": "ranged_kiter",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_corrupted_cultist.desc",
   "weakness": "spirit",
   "resistance": "none"

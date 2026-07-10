@@ -21,6 +21,7 @@
   "spriteKey": "enemy_water_sprite",
   "archetype": "ranged_kiter",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_water_sprite.desc",
   "weakness": "spirit",
   "resistance": "none"

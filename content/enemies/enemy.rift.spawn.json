@@ -21,6 +21,7 @@
   "spriteKey": "enemy_rift_spawn",
   "archetype": "melee_chaser",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_rift_spawn.desc",
   "weakness": "spirit",
   "resistance": "none"

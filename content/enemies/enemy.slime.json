@@ -21,6 +21,7 @@
   "lootTable": "loot.tier.common",
   "spriteKey": "enemy_slime",
   "category": "grunt",
+  "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_slime.desc",
   "weakness": "spirit",
   "resistance": "none"

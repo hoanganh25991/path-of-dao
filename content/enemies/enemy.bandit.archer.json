@@ -21,6 +21,7 @@
   "spriteKey": "enemy_bandit_thug",
   "archetype": "ranged_kiter",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_bandit_archer.desc",
   "weakness": "spirit",
   "resistance": "none"

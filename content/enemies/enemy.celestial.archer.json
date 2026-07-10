@@ -21,6 +21,7 @@
   "spriteKey": "enemy_gate_sentinel",
   "archetype": "ranged_kiter",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_celestial_archer.desc",
   "weakness": "spirit",
   "resistance": "none"

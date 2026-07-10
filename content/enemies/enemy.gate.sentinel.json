@@ -21,6 +21,7 @@
   "spriteKey": "enemy_gate_sentinel",
   "archetype": "patrol",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_gate_sentinel.desc",
   "weakness": "spirit",
   "resistance": "none"

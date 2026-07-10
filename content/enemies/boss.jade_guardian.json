@@ -22,6 +22,7 @@
   "spriteKey": "enemy_totem",
   "bossClearId": "boss.jade_guardian",
   "category": "boss",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.boss_jade_guardian.desc",
   "weakness": "spirit",
   "resistance": "none",

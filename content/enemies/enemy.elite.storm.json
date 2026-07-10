@@ -21,6 +21,7 @@
   "spriteKey": "enemy_tribulation_elite",
   "archetype": "melee_chaser",
   "category": "elite",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_elite_storm.desc",
   "weakness": "spirit",
   "resistance": "none"

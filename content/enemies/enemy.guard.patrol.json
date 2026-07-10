@@ -21,6 +21,7 @@
   "spriteKey": "enemy_zhao_guard",
   "archetype": "patrol",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_guard_patrol.desc",
   "weakness": "spirit",
   "resistance": "none"

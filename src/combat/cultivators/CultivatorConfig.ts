@@ -25,12 +25,21 @@ const bossPhaseSchema = z.object({
 
 export type BossPhaseConfig = z.infer<typeof bossPhaseSchema>;
 
+/**
+ * Defeat-flow branch (combat-defeat-canon.md §1):
+ * - `cultivator` — gather-qi recovery in place, may re-aggro (bandits, disciples, bosses)
+ * - `beast` — despawns/returns to pool on defeat, no sit-recover (wolves, slimes, spirit fodder)
+ */
+export const OPPONENT_KINDS = ['beast', 'cultivator'] as const;
+export type OpponentKind = (typeof OPPONENT_KINDS)[number];
+
 /** Validates content/enemies/{id}.json at load (sub-plan 08 §4). */
 export const cultivatorConfigSchema = z.object({
   id: z.string().min(1),
   displayNameKey: z.string().min(1),
   archetype: z.enum(CULTIVATOR_ARCHETYPES),
   category: z.enum(['grunt', 'elite', 'boss']).optional(),
+  opponentKind: z.enum(OPPONENT_KINDS).default('cultivator'),
   stats: z.object({
     hpMax: z.number().positive(),
     atk: z.number().min(0),

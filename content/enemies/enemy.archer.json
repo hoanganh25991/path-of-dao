@@ -21,6 +21,7 @@
   "lootTable": "loot.tier.common",
   "spriteKey": "enemy_archer",
   "category": "grunt",
+  "opponentKind": "cultivator",
   "bestiaryKey": "bestiary.enemy_archer.desc",
   "weakness": "spirit",
   "resistance": "none"

@@ -262,7 +262,9 @@ export class ProceduralRoamingSpawnManager {
       const slot = cellSlots.find((s) => s.cultivator === cultivator);
       if (!slot) continue;
 
-      if (cultivator.config.bossClearId) {
+      // Boss slots stay down for the session; beasts despawn to pool on defeat —
+      // no gather-qi sit-recover (combat-defeat-canon.md §1).
+      if (cultivator.config.bossClearId || cultivator.isBeast) {
         slot.defeated = true;
         this.pool.release(cultivator);
         slot.cultivator = null;

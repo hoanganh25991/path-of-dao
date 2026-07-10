@@ -3,6 +3,7 @@
   "displayNameKey": "enemy.training.dummy.name",
   "archetype": "stationary",
   "category": "grunt",
+  "opponentKind": "beast",
   "stats": {
     "hpMax": 9999,
     "atk": 0,

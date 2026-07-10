@@ -16,7 +16,7 @@ import { EquipmentManager } from '@/progression/EquipmentManager';
 import type { EquipmentSlot, EquipmentSlots } from '@/progression/ItemDefinition';
 
 /** Extra lift so boots clear the visible ground. */
-const HERO_GROUND_CLEARANCE_PX = 20;
+const HERO_GROUND_CLEARANCE_PX = 40;
 
 /**
  * Hero model for the 3D Home viewer.
@@ -177,6 +177,30 @@ export class HeroViewer {
     return hand;
   }
 
+  /** Low-poly boot: sole + toe box + ankle cuff; origin at the ground contact. */
+  private buildFoot(side: -1 | 1, bootMat: MeshStandardMaterial): Group {
+    const foot = new Group();
+
+    const sole = new Mesh(new BoxGeometry(0.1, 0.028, 0.18), bootMat);
+    sole.position.set(0.008 * side, 0.014, 0.03);
+    foot.add(sole);
+
+    const toe = new Mesh(new BoxGeometry(0.092, 0.04, 0.07), bootMat);
+    toe.position.set(0.008 * side, 0.032, 0.085);
+    toe.rotation.x = -0.08;
+    foot.add(toe);
+
+    const vamp = new Mesh(new BoxGeometry(0.088, 0.055, 0.09), bootMat);
+    vamp.position.set(0.006 * side, 0.045, 0.01);
+    foot.add(vamp);
+
+    const ankle = new Mesh(new CylinderGeometry(0.042, 0.048, 0.06, 8), bootMat);
+    ankle.position.set(0, 0.07, -0.02);
+    foot.add(ankle);
+
+    return foot;
+  }
+
   /** Tapered limb from the group origin — down for arms, up for legs. */
   private buildLimbSegment(
     topRadius: number,
@@ -254,37 +278,31 @@ export class HeroViewer {
       const leg = new Group();
       leg.position.set(0.11 * side, 0, 0);
 
-      const foot = new Mesh(new BoxGeometry(0.09, 0.05, 0.16), bootMat);
-      foot.position.set(0, 0.025, 0.02);
+      const foot = this.buildFoot(side, bootMat);
       leg.add(foot);
 
       const shin = this.buildLimbSegment(0.066, 0.054, shinLen, trouserMat, 0.06, 'up');
-      shin.position.y = 0.05;
+      shin.position.y = 0.1;
       leg.add(shin);
 
       const thigh = this.buildLimbSegment(0.096, 0.072, thighLen, trouserMat, 0.082, 'up');
-      thigh.position.y = 0.05 + shinLen;
+      thigh.position.y = 0.1 + shinLen;
       leg.add(thigh);
 
       this.root.add(leg);
     }
 
-    // Split robe panels — hem sits above the boot line.
+    // Split robe panels — hang above the boots (no gold hem ring at the feet).
     for (const [sx, sz, ry] of [
       [-0.16, 0.04, 0.22],
       [0.16, 0.04, -0.22],
       [0, -0.08, 0],
     ] as const) {
       const panel = new Mesh(new BoxGeometry(0.14, 0.36, 0.03), robeMat);
-      panel.position.set(sx, 0.24, sz);
+      panel.position.set(sx, 0.28, sz);
       panel.rotation.y = ry;
       this.root.add(panel);
     }
-
-    const hem = new Mesh(new TorusGeometry(0.24, 0.022, 8, 18), goldMat);
-    hem.position.set(0, 0.1, 0.02);
-    hem.rotation.x = Math.PI / 2;
-    this.root.add(hem);
 
     // Tapered torso.
     const torso = new Mesh(new CylinderGeometry(0.19, 0.26, 0.46, 12), robeMat);
