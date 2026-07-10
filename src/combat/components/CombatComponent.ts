@@ -4,6 +4,7 @@ import { ATTACK_STEP_MULTIPLIERS, MAX_COMBO_STEP } from '@/combat/state/PlayerSt
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
 import { VFX_TEXTURE_KEYS } from '@/combat/art/pixelVfxDraw';
 import type { Player } from '@/combat/entities/Player';
+import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { recordSkillInsight } from '@/progression/InsightSystem';
 import { getSkillDefinition, resolveEffectiveSkillId } from '@/progression/SkillLoader';
@@ -47,6 +48,10 @@ export class CombatComponent {
     private readonly hitboxes: HitboxManager,
   ) {
     this.skills = new SkillExecutor(player, hitboxes);
+  }
+
+  setEnemyTargetProvider(provider: () => HurtboxEntity[]): void {
+    this.skills.setEnemyTargetProvider(provider);
   }
 
   tryAttack(): boolean {

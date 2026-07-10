@@ -189,6 +189,10 @@ export class MapScene extends Phaser.Scene {
       }
     }
 
+    this.player.combat.setEnemyTargetProvider(
+      () => this.spawnManager?.getHurtboxTargets() ?? [],
+    );
+
     if (config.bgm) {
       AudioManager.playBgm(config.bgm);
     }

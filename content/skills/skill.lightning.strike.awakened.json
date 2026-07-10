@@ -5,6 +5,19 @@
   "kind": "bolt",
   "manaCost": 20,
   "skillMultiplier": 2.0,
+  "effects": [
+    {
+      "type": "thunder_chain",
+      "maxJumps": 4,
+      "chainRadius": 150,
+      "acquireRange": 300,
+      "jumpDamageFalloff": 0.78,
+      "damage": {
+        "skillMultiplier": 2.0,
+        "damageType": "spirit"
+      }
+    }
+  ],
   "vfx": {
     "cast": "vfx_lightning_cast"
   }

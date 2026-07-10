@@ -1,9 +1,17 @@
 import type Phaser from 'phaser';
 import type { Player } from '@/combat/entities/Player';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
+import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { SkillDefinition, SkillEffect } from '@/progression/SkillDefinition';
 import { resolveSkillEffects } from '@/combat/skills/resolveSkillEffects';
-import { VFXLibrary, playSkillCastVfx, playSkillImpactVfx, spawnProjectileTrail } from '@/combat/skills/VFXLibrary';
+import {
+  VFXLibrary,
+  playSkillCastVfx,
+  playSkillImpactVfx,
+  playThunderChainLink,
+  playVerticalThunderStrike,
+  spawnProjectileTrail,
+} from '@/combat/skills/VFXLibrary';
 import { skillVfxPower } from '@/combat/skills/skillVfxPower';
 import { buildMeleeArcShape } from '@/combat/combat/geometry';
 import { scaledMeleeHalfArc } from '@/combat/combat/AoeScaling';
@@ -30,6 +38,7 @@ export interface EffectRunnerContext {
   amp: number;
   aoeScale: number;
   bolts: SkillBolt[];
+  getEnemyTargets?: () => HurtboxEntity[];
 }
 
 function damagePayload(ctx: EffectRunnerContext, multiplier: number, damageType: 'physical' | 'spirit') {
@@ -148,6 +157,163 @@ export function runPullField(effect: Extract<SkillEffect, { type: 'pull_field' }
   });
 }
 
+export function pickThunderChainTargets(
+  player: Player,
+  enemies: HurtboxEntity[],
+  acquireRange: number,
+  chainRadius: number,
+  maxJumps: number,
+): HurtboxEntity[] {
+  const { facing, x: px, y: py } = player;
+  const candidates = enemies.filter((enemy) => {
+    const dx = enemy.x - px;
+    const dy = enemy.y - py;
+    if (Math.hypot(dx, dy) > acquireRange) return false;
+    return dx * facing >= -24;
+  });
+  if (candidates.length === 0) return [];
+
+  candidates.sort(
+    (a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py),
+  );
+
+  const chain: HurtboxEntity[] = [candidates[0]!];
+  const used = new Set([candidates[0]!.id]);
+
+  while (chain.length < maxJumps) {
+    const last = chain[chain.length - 1]!;
+    let next: HurtboxEntity | null = null;
+    let bestDist = Infinity;
+    for (const enemy of candidates) {
+      if (used.has(enemy.id)) continue;
+      const dist = Math.hypot(enemy.x - last.x, enemy.y - last.y);
+      if (dist <= chainRadius && dist < bestDist) {
+        bestDist = dist;
+        next = enemy;
+      }
+    }
+    if (!next) break;
+    chain.push(next);
+    used.add(next.id);
+  }
+
+  return chain;
+}
+
+function pickThunderStrikePoint(
+  player: Player,
+  enemies: HurtboxEntity[],
+  strikeRange: number,
+): { x: number; y: number } {
+  const { facing, x: px, y: py } = player;
+  const inFront = enemies.filter((enemy) => {
+    const dx = enemy.x - px;
+    const dy = enemy.y - py;
+    if (Math.hypot(dx, dy) > strikeRange) return false;
+    return dx * facing >= -24;
+  });
+  if (inFront.length === 0) {
+    return { x: px + facing * strikeRange, y: py };
+  }
+  inFront.sort(
+    (a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py),
+  );
+  const target = inFront[0]!;
+  return { x: target.x, y: target.y };
+}
+
+export function runThunderStrike(
+  effect: Extract<SkillEffect, { type: 'thunder_strike' }>,
+  ctx: EffectRunnerContext,
+): void {
+  const { player, hitboxes, skill, amp, aoeScale, getEnemyTargets } = ctx;
+  const power = skillVfxPower(skill.id, amp);
+  const range = effect.strikeRange * amp * aoeScale;
+  const radius = effect.radius * amp * aoeScale;
+  const enemies = getEnemyTargets?.() ?? [];
+  const { x: strikeX, y: strikeY } = pickThunderStrikePoint(player, enemies, range);
+
+  playVerticalThunderStrike(player.scene, strikeX, strikeY, effect.fallHeight, power);
+
+  hitboxes.spawn({
+    ownerId: player.id,
+    team: 'player',
+    shape: { kind: 'circle', radius, x: strikeX, y: strikeY },
+    damage: damagePayload(ctx, effect.damage.skillMultiplier, effect.damage.damageType),
+    lifetimeMs: 100,
+    knockback: 120 * amp,
+    pierce: Math.floor(4 * amp),
+    insightIntent: skill.intent,
+  });
+}
+
+export function runThunderChain(
+  effect: Extract<SkillEffect, { type: 'thunder_chain' }>,
+  ctx: EffectRunnerContext,
+): void {
+  const { player, hitboxes, skill, amp, aoeScale, getEnemyTargets } = ctx;
+  const power = skillVfxPower(skill.id, amp);
+  const enemies = getEnemyTargets?.() ?? [];
+  const chain = pickThunderChainTargets(
+    player,
+    enemies,
+    effect.acquireRange * amp * aoeScale,
+    effect.chainRadius * amp * aoeScale,
+    effect.maxJumps,
+  );
+
+  if (chain.length === 0) {
+    runThunderStrike(
+      {
+        type: 'thunder_strike',
+        strikeRange: effect.acquireRange * 0.65,
+        fallHeight: 168,
+        radius: 34,
+        damage: effect.damage,
+      },
+      ctx,
+    );
+    return;
+  }
+
+  let fromX = player.x;
+  let fromY = player.y - player.sprite.displayHeight * 0.45;
+  let jumpMul = 1;
+
+  for (const target of chain) {
+    const toX = target.x;
+    const toY = target.y - 12;
+    playThunderChainLink(player.scene, fromX, fromY, toX, toY, power);
+    playVerticalThunderStrike(player.scene, toX, toY, 120 + power * 12, power * 0.85);
+
+    hitboxes.spawn({
+      ownerId: player.id,
+      team: 'player',
+      shape: {
+        kind: 'circle',
+        radius: 28 * amp * aoeScale,
+        x: toX,
+        y: toY,
+      },
+      damage: damagePayload(
+        ctx,
+        effect.damage.skillMultiplier * jumpMul,
+        effect.damage.damageType,
+      ),
+      lifetimeMs: 90,
+      knockback: 100 * amp,
+      pierce: 1,
+      insightIntent: skill.intent,
+    });
+
+    fromX = toX;
+    fromY = toY;
+    jumpMul *= effect.jumpDamageFalloff;
+  }
+
+  player.scene.cameras.main.shake(100, 0.006 + power * 0.002);
+}
+
 export function runAoeCircle(effect: Extract<SkillEffect, { type: 'aoe_circle' }>, ctx: EffectRunnerContext): void {
   const { player, hitboxes, skill, amp, aoeScale } = ctx;
   const radius = effect.radius * amp * aoeScale;
@@ -188,6 +354,12 @@ export function runSkillEffect(effect: SkillEffect, ctx: EffectRunnerContext): v
       break;
     case 'aoe_circle':
       runAoeCircle(effect, ctx);
+      break;
+    case 'thunder_strike':
+      runThunderStrike(effect, ctx);
+      break;
+    case 'thunder_chain':
+      runThunderChain(effect, ctx);
       break;
   }
 }

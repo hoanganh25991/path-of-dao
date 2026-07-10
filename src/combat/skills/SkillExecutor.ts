@@ -1,5 +1,6 @@
 import { EventBus } from '@/core/EventBus';
 import type { Player } from '@/combat/entities/Player';
+import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import type { SkillDefinition } from '@/progression/SkillDefinition';
 import { getAncientSkillAmp, burstAncientSkill } from '@/combat/vfx/AncientSkillVfx';
@@ -18,11 +19,16 @@ export type { CastBlockReason } from '@/combat/skills/castGuards';
 /** Data-driven skill cast pipeline (sub-plan 19 §5). */
 export class SkillExecutor {
   private readonly bolts: SkillBolt[] = [];
+  private getEnemyTargets: (() => HurtboxEntity[]) | null = null;
 
   constructor(
     private readonly player: Player,
     private readonly hitboxes: HitboxManager,
   ) {}
+
+  setEnemyTargetProvider(provider: () => HurtboxEntity[]): void {
+    this.getEnemyTargets = provider;
+  }
 
   canCast(skill: SkillDefinition, cooldownRemainingMs: number): boolean {
     return canAffordCast(
@@ -59,6 +65,7 @@ export class SkillExecutor {
       amp,
       aoeScale,
       bolts: this.bolts,
+      getEnemyTargets: this.getEnemyTargets ?? undefined,
     };
     executeSkillEffects(ctx);
   }

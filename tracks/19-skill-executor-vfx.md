@@ -15,7 +15,10 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 - VFX presets: cast ring, slash arc, spirit bolt, heal bloom, flame petal, void crack
 - **Elemental projectiles** — flame orb, void shard, lightning bolt, time orb (not one generic bolt)
 - **Tier scaling** — `skillVfxPower()` maps base → v2–v4 → v5/awakened → god mode juice
-- **First hero arts** — void slash = melee rift; flame/lightning/time tuned projectiles + trails + impact bursts
+- **First hero arts** — void slash = melee rift; flame/time tuned projectiles + trails + impact bursts
+- **Heavenly Thunder** — `thunder_strike` vertical bolt from sky (not horizontal projectile sprite)
+- **Thunder Chain (awakened)** — `thunder_chain` jumps between in-range foes with link VFX
+- Enemy target provider wired MapScene → CombatComponent → SkillExecutor for chain targeting
 - Cooldown manager per skill slot
 - Awakened void: pull field then projectile
 - Awakened flame: twin AoE damage ticks

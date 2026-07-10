@@ -44,6 +44,23 @@ describe('resolveSkillEffects', () => {
       expect(aoe.ticks).toBe(2);
     }
   });
+
+  it('heavenly thunder strike uses vertical thunder_strike effect', () => {
+    const skill = getSkillDefinition('skill.lightning.strike');
+    const effects = resolveSkillEffects(skill);
+    expect(effects).toHaveLength(1);
+    expect(effects[0]?.type).toBe('thunder_strike');
+  });
+
+  it('awakened thunder chain uses thunder_chain effect', () => {
+    const skill = getSkillDefinition('skill.lightning.strike.awakened');
+    const effects = resolveSkillEffects(skill);
+    expect(effects).toHaveLength(1);
+    expect(effects[0]?.type).toBe('thunder_chain');
+    if (effects[0]?.type === 'thunder_chain') {
+      expect(effects[0].maxJumps).toBe(4);
+    }
+  });
 });
 
 describe('insight on skill use', () => {

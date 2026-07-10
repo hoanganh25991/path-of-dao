@@ -48,6 +48,21 @@ const skillEffectSchema = z.discriminatedUnion('type', [
     tickIntervalMs: z.number().positive().default(300),
     damage: skillDamageSchema,
   }),
+  z.object({
+    type: z.literal('thunder_strike'),
+    strikeRange: z.number().positive().default(200),
+    fallHeight: z.number().positive().default(168),
+    radius: z.number().positive().default(36),
+    damage: skillDamageSchema,
+  }),
+  z.object({
+    type: z.literal('thunder_chain'),
+    maxJumps: z.number().int().positive().default(4),
+    chainRadius: z.number().positive().default(150),
+    acquireRange: z.number().positive().default(300),
+    jumpDamageFalloff: z.number().min(0).max(1).default(0.78),
+    damage: skillDamageSchema,
+  }),
 ]);
 
 export const skillVfxSchema = z.object({

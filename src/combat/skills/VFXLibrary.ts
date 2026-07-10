@@ -418,3 +418,80 @@ export function playSkillCastVfx(
     scene.cameras.main.shake(90, 0.003 + power * 0.0015);
   }
 }
+
+/** Heavenly thunder — vertical bolt from sky to ground (not a sideways projectile). */
+export function playVerticalThunderStrike(
+  scene: Phaser.Scene,
+  x: number,
+  groundY: number,
+  fallHeight: number,
+  power: number,
+): void {
+  const topY = groundY - fallHeight;
+  const gfx = scene.add.graphics().setDepth(24);
+  const width = 2 + Math.min(4, Math.floor(power));
+  gfx.lineStyle(width, 0xfff0a0, 1);
+  gfx.fillStyle(0xffffff, 0.9);
+
+  let cx = Math.round(x);
+  let cy = Math.round(topY);
+  gfx.beginPath();
+  gfx.moveTo(cx, cy);
+  const segments = 5 + Math.floor(power * 1.2);
+  for (let i = 1; i <= segments; i++) {
+    const t = i / segments;
+    const ny = Math.round(topY + (groundY - topY) * t);
+    const nx = Math.round(x + (Math.random() - 0.5) * 28 * (1 - t * 0.35));
+    gfx.lineTo(nx, ny);
+    cx = nx;
+    cy = ny;
+  }
+  gfx.strokePath();
+  gfx.fillCircle(cx, cy, 2 + Math.floor(power * 0.5));
+
+  scene.tweens.add({
+    targets: gfx,
+    alpha: 0,
+    duration: 160 + power * 20,
+    ease: 'Quad.easeOut',
+    onComplete: () => gfx.destroy(),
+  });
+
+  VFXLibrary.lightningBolt(scene, x, groundY, 30 + power * 10);
+  spawnPixelSparks(scene, x, groundY, 0xffe040, 4 + Math.floor(power * 1.5), 18 + power * 5, 25);
+  scene.cameras.main.shake(70, 0.004 + power * 0.0015);
+}
+
+/** Chain arc between two struck targets. */
+export function playThunderChainLink(
+  scene: Phaser.Scene,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  power: number,
+): void {
+  const gfx = scene.add.graphics().setDepth(23);
+  gfx.lineStyle(2, 0xffe880, 0.95);
+
+  let cx = Math.round(x1);
+  let cy = Math.round(y1);
+  gfx.beginPath();
+  gfx.moveTo(cx, cy);
+  const segments = 4 + Math.floor(power);
+  for (let i = 1; i <= segments; i++) {
+    const t = i / segments;
+    const nx = Math.round(x1 + (x2 - x1) * t + (Math.random() - 0.5) * 18);
+    const ny = Math.round(y1 + (y2 - y1) * t + (Math.random() - 0.5) * 10);
+    gfx.lineTo(nx, ny);
+  }
+  gfx.strokePath();
+
+  scene.tweens.add({
+    targets: gfx,
+    alpha: 0,
+    duration: 140,
+    onComplete: () => gfx.destroy(),
+  });
+  spawnPixelSparks(scene, x2, y2, 0xffe040, 2 + Math.floor(power * 0.5), 10 + power * 3, 24);
+}
