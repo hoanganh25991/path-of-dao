@@ -924,7 +924,7 @@ function drawHead(
   headY: number,
   headR: number,
   palette: StickPalette,
-  variant: 'hero' | 'slime' | 'archer' | 'boss' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast' = 'hero',
+  variant: StickVariant = 'hero',
 ): void {
   switch (variant) {
     case 'slime':
@@ -957,6 +957,310 @@ function drawHead(
 }
 
 /** Draw one sticky-man frame (right-facing; flipX for left). */
+export type StickVariant =
+  | 'hero'
+  | 'slime'
+  | 'archer'
+  | 'boss'
+  | 'warrior'
+  | 'monk'
+  | 'ghost'
+  | 'demon'
+  | 'beast'
+  | 'arachnid'
+  | 'avian'
+  | 'drake';
+
+/** Non-human beast body shapes — never draw sticky-man limbs. */
+export type CreatureShape = 'blob' | 'quadruped' | 'arachnid' | 'avian' | 'spectral' | 'drake';
+
+export function creatureShapeForVariant(variant: StickVariant): CreatureShape | null {
+  switch (variant) {
+    case 'slime':
+      return 'blob';
+    case 'beast':
+      return 'quadruped';
+    case 'ghost':
+      return 'spectral';
+    case 'arachnid':
+      return 'arachnid';
+    case 'avian':
+      return 'avian';
+    case 'drake':
+      return 'drake';
+    default:
+      return null;
+  }
+}
+
+function fillEllipse(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  palette: StickPalette,
+): void {
+  const rxi = Math.max(1, Math.round(rx));
+  const ryi = Math.max(1, Math.round(ry));
+  for (let dy = -ryi; dy <= ryi; dy++) {
+    for (let dx = -rxi; dx <= rxi; dx++) {
+      const norm = (dx * dx) / (rxi * rxi) + (dy * dy) / (ryi * ryi);
+      if (norm > 1) continue;
+      const edge = norm > 0.78;
+      const lit = dx >= 1 && dy <= 0;
+      const shade = dx <= -1 && dy >= 0;
+      const color = edge
+        ? palette.outline
+        : lit
+          ? (palette.highlight ?? palette.accent)
+          : shade
+            ? palette.shadow
+            : palette.fill;
+      px(ctx, cx + dx, cy + dy, color);
+    }
+  }
+}
+
+function drawCreatureBlob(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  footY: number,
+  bob: number,
+  lean: number,
+  palette: StickPalette,
+): void {
+  const bodyCy = footY - 8 + bob;
+  const bodyCx = cx + Math.round(lean * 0.3);
+  fillEllipse(ctx, bodyCx, bodyCy, 9, 7, palette);
+  // Eyes on +X face
+  px(ctx, bodyCx + 2, bodyCy - 2, palette.outline);
+  px(ctx, bodyCx + 3, bodyCy - 2, palette.highlight ?? palette.accent);
+  px(ctx, bodyCx + 5, bodyCy - 2, palette.outline);
+  px(ctx, bodyCx + 6, bodyCy - 2, palette.highlight ?? palette.accent);
+  // Specular
+  px(ctx, bodyCx + 4, bodyCy - 4, palette.highlight ?? palette.accent);
+}
+
+function drawCreatureQuadruped(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  footY: number,
+  bob: number,
+  lean: number,
+  shift: number,
+  palette: StickPalette,
+): void {
+  const bodyCy = footY - 10 + bob;
+  const bodyCx = cx + shift + Math.round(lean * 0.25);
+  // Horizontal torso
+  fillEllipse(ctx, bodyCx, bodyCy, 10, 5, palette);
+  // Head / snout toward +X
+  const hx = bodyCx + 10;
+  const hy = bodyCy - 2;
+  fillEllipse(ctx, hx, hy, 4, 3, palette);
+  px(ctx, hx + 3, hy, palette.outline); // nose
+  px(ctx, hx + 1, hy - 1, palette.highlight ?? palette.accent); // eye
+  // Ears
+  px(ctx, hx - 1, hy - 4, palette.outline);
+  px(ctx, hx - 1, hy - 5, palette.skin);
+  px(ctx, hx + 1, hy - 4, palette.outline);
+  px(ctx, hx + 1, hy - 5, palette.skin);
+  // Tail toward -X
+  pixelLine(ctx, bodyCx - 10, bodyCy, bodyCx - 14, bodyCy - 3 - Math.abs(bob), palette.outline, 2);
+  pixelLine(ctx, bodyCx - 10, bodyCy, bodyCx - 13, bodyCy - 2 - Math.abs(bob), palette.fill, 1);
+  // Four stub legs
+  const gait = lean !== 0 ? 1 : bob;
+  const legs: [number, number][] = [
+    [bodyCx - 6, gait],
+    [bodyCx - 2, -gait],
+    [bodyCx + 2, gait],
+    [bodyCx + 6, -gait],
+  ];
+  for (const [lx, phase] of legs) {
+    const toeY = footY - Math.max(0, phase);
+    pixelLine(ctx, lx, bodyCy + 4, lx, toeY, palette.outline, 2);
+    pixelLine(ctx, lx, bodyCy + 4, lx, toeY, palette.shadow, 1);
+    px(ctx, lx + 1, toeY, palette.fill);
+  }
+}
+
+function drawCreatureArachnid(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  footY: number,
+  bob: number,
+  lean: number,
+  palette: StickPalette,
+): void {
+  const bodyCy = footY - 8 + bob;
+  const bodyCx = cx + Math.round(lean * 0.2);
+  fillEllipse(ctx, bodyCx, bodyCy, 7, 5, palette);
+  // Cephalothorax / pincers toward +X
+  fillEllipse(ctx, bodyCx + 7, bodyCy - 1, 3, 2, palette);
+  px(ctx, bodyCx + 10, bodyCy - 2, palette.accent);
+  px(ctx, bodyCx + 10, bodyCy, palette.accent);
+  // Raised stinger tail toward -X / up
+  pixelLine(ctx, bodyCx - 6, bodyCy, bodyCx - 10, bodyCy - 6, palette.outline, 2);
+  pixelLine(ctx, bodyCx - 6, bodyCy, bodyCx - 9, bodyCy - 5, palette.fill, 1);
+  px(ctx, bodyCx - 10, bodyCy - 7, palette.accent);
+  // Six legs
+  const spreads = [-5, -2, 1, 4, -4, 3];
+  for (let i = 0; i < spreads.length; i++) {
+    const side = i < 3 ? -1 : 1;
+    const lx = bodyCx + spreads[i]!;
+    const midX = lx + side * 4;
+    const midY = bodyCy + 2;
+    pixelLine(ctx, lx, bodyCy + 2, midX, midY + 2, palette.outline, 1);
+    pixelLine(ctx, midX, midY + 2, midX + side * 2, footY, palette.outline, 1);
+    px(ctx, midX + side * 2, footY, palette.shadow);
+  }
+}
+
+function drawCreatureAvian(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  footY: number,
+  bob: number,
+  lean: number,
+  palette: StickPalette,
+): void {
+  const bodyCy = footY - 14 + bob;
+  const bodyCx = cx + Math.round(lean * 0.3);
+  fillEllipse(ctx, bodyCx, bodyCy, 6, 5, palette);
+  // Head + beak
+  fillEllipse(ctx, bodyCx + 6, bodyCy - 3, 3, 3, palette);
+  px(ctx, bodyCx + 9, bodyCy - 2, palette.accent);
+  px(ctx, bodyCx + 10, bodyCy - 2, palette.outline);
+  px(ctx, bodyCx + 6, bodyCy - 4, palette.highlight ?? palette.accent); // eye
+  // Wings (flap with bob)
+  const wingLift = -4 - Math.abs(bob) * 2;
+  pixelLine(ctx, bodyCx - 2, bodyCy, bodyCx - 10, bodyCy + wingLift, palette.outline, 2);
+  pixelLine(ctx, bodyCx - 2, bodyCy, bodyCx - 9, bodyCy + wingLift + 1, palette.fill, 1);
+  pixelLine(ctx, bodyCx + 2, bodyCy, bodyCx + 8, bodyCy + wingLift - 1, palette.outline, 2);
+  pixelLine(ctx, bodyCx + 2, bodyCy, bodyCx + 7, bodyCy + wingLift, palette.fill, 1);
+  // Talons
+  pixelLine(ctx, bodyCx - 2, bodyCy + 5, bodyCx - 2, footY, palette.outline, 1);
+  pixelLine(ctx, bodyCx + 2, bodyCy + 5, bodyCx + 2, footY, palette.outline, 1);
+  px(ctx, bodyCx - 3, footY, palette.accent);
+  px(ctx, bodyCx + 3, footY, palette.accent);
+}
+
+function drawCreatureSpectral(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  footY: number,
+  bob: number,
+  lean: number,
+  palette: StickPalette,
+): void {
+  // Float above ground — no legs
+  const bodyCy = footY - 18 + bob;
+  const bodyCx = cx + Math.round(lean * 0.2);
+  fillEllipse(ctx, bodyCx, bodyCy, 6, 6, palette);
+  // Soft moth/wisp wings
+  px(ctx, bodyCx - 7, bodyCy - 1, palette.accent);
+  px(ctx, bodyCx - 8, bodyCy, palette.shadow);
+  px(ctx, bodyCx - 7, bodyCy + 1, palette.fill);
+  px(ctx, bodyCx + 7, bodyCy - 1, palette.accent);
+  px(ctx, bodyCx + 8, bodyCy, palette.shadow);
+  px(ctx, bodyCx + 7, bodyCy + 1, palette.fill);
+  // Eyes
+  px(ctx, bodyCx + 1, bodyCy - 1, palette.outline);
+  px(ctx, bodyCx + 2, bodyCy - 1, palette.highlight ?? palette.accent);
+  px(ctx, bodyCx + 4, bodyCy - 1, palette.outline);
+  px(ctx, bodyCx + 5, bodyCy - 1, palette.highlight ?? palette.accent);
+  // Trailing wisps toward feet
+  for (let i = 0; i < 5; i++) {
+    const ty = bodyCy + 7 + i * 2;
+    const spread = Math.floor(i / 2);
+    px(ctx, bodyCx - spread, ty, i % 2 === 0 ? palette.fill : palette.shadow);
+    px(ctx, bodyCx + spread, ty + 1, palette.outline);
+  }
+}
+
+function drawCreatureDrake(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  footY: number,
+  bob: number,
+  lean: number,
+  shift: number,
+  palette: StickPalette,
+): void {
+  const bodyCy = footY - 12 + bob;
+  const bodyCx = cx + shift + Math.round(lean * 0.25);
+  // Long body
+  fillEllipse(ctx, bodyCx, bodyCy, 11, 4, palette);
+  // Horned head
+  const hx = bodyCx + 11;
+  const hy = bodyCy - 3;
+  fillEllipse(ctx, hx, hy, 4, 3, palette);
+  px(ctx, hx + 1, hy - 5, palette.outline);
+  px(ctx, hx + 1, hy - 6, palette.accent);
+  px(ctx, hx - 1, hy - 4, palette.outline);
+  px(ctx, hx + 2, hy - 1, palette.highlight ?? palette.accent); // eye
+  px(ctx, hx + 4, hy, palette.outline); // snout
+  // Wing nubs
+  pixelLine(ctx, bodyCx - 2, bodyCy - 2, bodyCx - 6, bodyCy - 8, palette.outline, 2);
+  pixelLine(ctx, bodyCx + 2, bodyCy - 2, bodyCx + 5, bodyCy - 7, palette.outline, 2);
+  pixelLine(ctx, bodyCx - 2, bodyCy - 2, bodyCx - 5, bodyCy - 7, palette.fill, 1);
+  // Tail
+  pixelLine(ctx, bodyCx - 11, bodyCy, bodyCx - 15, bodyCy + 2, palette.outline, 2);
+  px(ctx, bodyCx - 16, bodyCy + 1, palette.accent);
+  // Legs
+  for (const lx of [bodyCx - 5, bodyCx + 4]) {
+    pixelLine(ctx, lx, bodyCy + 3, lx, footY, palette.outline, 2);
+    px(ctx, lx + 1, footY, palette.fill);
+  }
+}
+
+/**
+ * Draw a non-human beast silhouette (plan 29 §5 blob/quadruped).
+ * Same frame size + feet origin as sticky-man; no humanoid limbs.
+ */
+export function drawCreatureFrame(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  palette: StickPalette,
+  pose: StickPose,
+  shape: CreatureShape,
+): void {
+  ctx.clearRect(0, 0, w, h);
+  ctx.imageSmoothingEnabled = false;
+
+  const bob = pose.bob ?? 0;
+  const lean = pose.lean ?? 0;
+  const shift = pose.shiftX ?? 0;
+  const footY = h - 1;
+  const cx = w / 2;
+
+  drawGroundShadow(ctx, cx + Math.round(lean * 0.12), footY);
+
+  switch (shape) {
+    case 'blob':
+      drawCreatureBlob(ctx, cx, footY, bob, lean, palette);
+      break;
+    case 'quadruped':
+      drawCreatureQuadruped(ctx, cx, footY, bob, lean, shift, palette);
+      break;
+    case 'arachnid':
+      drawCreatureArachnid(ctx, cx, footY, bob, lean, palette);
+      break;
+    case 'avian':
+      drawCreatureAvian(ctx, cx, footY, bob, lean, palette);
+      break;
+    case 'spectral':
+      drawCreatureSpectral(ctx, cx, footY, bob, lean, palette);
+      break;
+    case 'drake':
+      drawCreatureDrake(ctx, cx, footY, bob, lean, shift, palette);
+      break;
+  }
+}
+
+/** Draw one sticky-man frame (right-facing; flipX for left). */
 export function drawStickyFrame(
   ctx: CanvasRenderingContext2D,
   w: number,
@@ -964,8 +1268,14 @@ export function drawStickyFrame(
   palette: StickPalette,
   pose: StickPose,
   scale: DrawScale = NORMAL,
-  variant: 'hero' | 'slime' | 'archer' | 'boss' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast' = 'hero',
+  variant: StickVariant = 'hero',
 ): void {
+  const creatureShape = creatureShapeForVariant(variant);
+  if (creatureShape) {
+    drawCreatureFrame(ctx, w, h, palette, pose, creatureShape);
+    return;
+  }
+
   ctx.clearRect(0, 0, w, h);
   ctx.imageSmoothingEnabled = false;
 
@@ -1128,7 +1438,7 @@ export function buildSheetCanvas(
   h: number,
   palette: StickPalette,
   scale: DrawScale = NORMAL,
-  variant: 'hero' | 'slime' | 'archer' | 'boss' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast' = 'hero',
+  variant: StickVariant = 'hero',
 ): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = w * frames.length;

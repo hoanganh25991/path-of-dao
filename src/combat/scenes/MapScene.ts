@@ -603,7 +603,11 @@ export class MapScene extends Phaser.Scene {
       this.cameraDirector?.setMeditating(false);
     });
     const offDefeat = EventBus.on('map:cultivator-defeated', ({ isBoss, isBeast }) => {
-      if (isBoss || isBeast) return;
+      if (isBoss) return;
+      if (isBeast) {
+        this.showCombatToast(I18nManager.t('combat.beast.defeated'));
+        return;
+      }
       this.showCombatToast(I18nManager.t('combat.cultivator.defeated'));
     });
     const offBoss = EventBus.on('boss:defeated', ({ bossId }) => {

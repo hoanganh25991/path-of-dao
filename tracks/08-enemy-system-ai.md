@@ -28,7 +28,8 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 - **Roaming rank scaling (distance + time):** `RoamingRankScaler` computes 0–3 rank per slot from player spawn distance + map elapsed time; capped by `recommendedRealmOrder` (map design ceiling). Ranked cultivators get +25%/rank stat multiplier via `StatModifier`, colored aura ring + orbit sparkles, and rank-colored HP bar.
 - **Enemy pool variety:** `RoamConfig` schema extended with optional `enemyPool` array; slot picks higher-index enemy at higher rank for natural difficulty progression. Backward compatible with single `enemyId`.
 - **`opponentKind: 'beast' | 'cultivator'`** — `cultivatorConfigSchema` field, `.default('cultivator')`; all 44 `content/enemies/*.json` set explicitly (19 beasts, 25 cultivators incl. all 10 bosses). `Cultivator.isBeast` getter; shared `shouldDespawnOnDefeat()` / `shouldStayDownOnDefeat()` (`src/combat/systems/defeatRouting.ts`) — **beasts** despawn to pool; **cultivators** `beginRecovery()` sit gather-qi; **bosses** sit stay-down (no pool release, no re-aggro; stayDownKeys survive cell unload)
-- Tests: `cultivator-pool`, `cultivator-config`, `encounter-scaling`, `aoe-scaling`, `defeat-routing`, `combat-camera-director`
+- **Beast creature silhouettes** — `drawCreatureFrame` shapes blob / quadruped / arachnid / avian / spectral / drake (never humanoid sticky-man); amber HP bar + `combat.beast.defeated` toast; table `BEAST_SPRITE_CREATURE_SHAPE`
+- Tests: `cultivator-pool`, `cultivator-config`, `encounter-scaling`, `aoe-scaling`, `defeat-routing`, `combat-camera-director`, `beast-creature-silhouettes`
 
 ## Remaining
 

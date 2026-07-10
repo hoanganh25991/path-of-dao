@@ -20,6 +20,8 @@
   "combat.death.return_home": "Return Home",
   "combat.cultivator.label": "Cultivator",
   "combat.cultivator.defeated": "Cultivator lost the exchange — sits to recover",
+  "combat.beast.label": "Beast",
+  "combat.beast.defeated": "Spirit beast fades — qi scatters into the wild",
   "combat.loot.item": "+{name} ×{qty}",
   "combat.loot.item_unknown": "Treasure ×{qty}",
   "combat.loot.hint.hud": "Gold each defeat · Gear ~{gruntPercent}% (elites ~{elitePercent}%)",

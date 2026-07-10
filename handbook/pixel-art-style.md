@@ -16,10 +16,11 @@
 | **Silhouette first** | Chibi head + two-segment limbs; readable at **32×56 px**, **2×** display |
 | **Sticky-man anatomy** | Compact torso block; shoulder/hip spread; upper+lower limbs + **2-segment hand/foot** (wrist→fist, ankle→toe) |
 | **Bottom-up rig** | Feet anchor at frame bottom; **17 px fixed leg chain**; torso sits above — no stretched stilts |
-| **Unified skeleton** | All characters share the same rig; slime = jelly overlay, archer = cape, boss = runes |
+| **Unified skeleton (cultivators)** | Hero, disciples, bandits, bosses share the sticky-man rig; differentiate by palette + props |
+| **Creature silhouettes (beasts)** | Beasts use `drawCreatureFrame` — blob / quadruped / arachnid / avian / spectral / drake — **never** humanoid limbs |
 | **Feet anchor** | Origin `(0.5, 1)` — locomotion bobs from ground |
 
-Distinct from generic stick figures: **joint dots** (shoulder, elbow, knee), **torso block**, **gold sash**, **gold headband**, and **body lean/shift** on attacks.
+Distinct from generic stick figures: **joint dots** (shoulder, elbow, knee), **torso block**, **gold sash**, **gold headband**, and **body lean/shift** on attacks. Beasts read as animals/spirits at a glance (wolf ≠ villager).
 
 ---
 

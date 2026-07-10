@@ -47,7 +47,9 @@ import {
   POSES_TOTEM_ATTACK,
   POSES_TOTEM_IDLE,
   POSES_WALK,
+  type CreatureShape,
   type HeroCombatStyle,
+  type StickVariant,
 } from '@/combat/art/stickyManDraw';
 import {
   STRIKE_ANIM,
@@ -312,7 +314,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 80 },
   );
 
-  // Ch1 — Wolf (beast variant, grey)
+  // Ch1 — Wolf (quadruped creature)
   registerEnemySheet(
     scene,
     'enemy_wolf_beast',
@@ -337,7 +339,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 100 },
   );
 
-  // Ch2 — Spirit moth (ghost variant, pale green)
+  // Ch2 — Spirit moth (spectral creature)
   registerEnemySheet(
     scene,
     'enemy_spirit_moth',
@@ -349,7 +351,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     'ghost',
   );
 
-  // Ch2 — Mist wisp (ghost variant, pale blue)
+  // Ch2 — Mist wisp (spectral creature)
   registerEnemySheet(
     scene,
     'enemy_mist_wisp',
@@ -362,7 +364,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 90 },
   );
 
-  // Ch2 — Spirit fox (beast variant, white)
+  // Ch2 — Spirit fox (quadruped creature)
   registerEnemySheet(
     scene,
     'enemy_spirit_fox',
@@ -400,7 +402,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 100 },
   );
 
-  // Ch4 — Water spirit (ghost variant, blue-green)
+  // Ch4 — Water spirit (spectral creature)
   registerEnemySheet(
     scene,
     'enemy_water_sprite',
@@ -425,7 +427,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 120 },
   );
 
-  // Ch5 — Fire scorpion (beast variant, red-orange)
+  // Ch5 — Fire scorpion (arachnid creature)
   registerEnemySheet(
     scene,
     'enemy_scorpion',
@@ -434,7 +436,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     POSES_SLIME_WALK,
     null,
     { idle: ANIM.beastIdle, walk: ANIM.beastWalk, sit: ANIM.beastSit },
-    'beast',
+    'arachnid',
   );
   // Ch5 — Sand demon (demon variant, fiery)
   registerEnemySheet(
@@ -449,7 +451,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 110 },
   );
 
-  // Ch5 — Desert spirit (ghost variant, orange-gold)
+  // Ch5 — Desert spirit (spectral creature)
   registerEnemySheet(
     scene,
     'enemy_desert_spirit',
@@ -462,7 +464,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 90 },
   );
 
-  // Ch6 — Storm hawk (beast variant, grey-blue)
+  // Ch6 — Storm hawk (avian creature)
   registerEnemySheet(
     scene,
     'enemy_storm_hawk',
@@ -471,10 +473,10 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     POSES_SLIME_WALK,
     null,
     { idle: ANIM.beastIdle, walk: ANIM.beastWalk, sit: ANIM.beastSit },
-    'beast',
+    'avian',
   );
 
-  // Ch6 — Lightning spirit (ghost variant, yellow-white)
+  // Ch6 — Lightning spirit (spectral creature)
   registerEnemySheet(
     scene,
     'enemy_lightning_spirit',
@@ -513,7 +515,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 110 },
   );
 
-  // Ch7 — Frost shade (ghost variant, pale blue)
+  // Ch7 — Frost shade (spectral creature)
   registerEnemySheet(
     scene,
     'enemy_frost_shade',
@@ -526,7 +528,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 90 },
   );
 
-  // Ch8 — Rift spawn (demon variant, dark purple)
+  // Ch8 — Rift spawn (drake creature)
   registerEnemySheet(
     scene,
     'enemy_rift_spawn',
@@ -535,7 +537,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     POSES_SLIME_WALK,
     POSES_ARCHER_ATTACK,
     { idle: ANIM.demonIdle, walk: ANIM.demonWalk, attack: ANIM.demonAttack, sit: ANIM.demonSit },
-    'demon',
+    'drake',
     { 2: 100 },
   );
 
@@ -568,7 +570,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
   // Ch9 — Celestial archer (warrior variant, silver-blue) — reuses enemy_gate_sentinel visual
   // Ch9 — Loi Tien elite (warrior variant, celestial look) — reuses enemy_gate_sentinel visual
 
-  // Ch10 — Void shade (ghost variant, deep purple)
+  // Ch10 — Void shade (spectral creature)
   registerEnemySheet(
     scene,
     'enemy_void_shade',
@@ -581,7 +583,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     { 2: 100 },
   );
 
-  // Ch10 — Void weaver (demon variant, violet glow)
+  // Ch10 — Void weaver (drake creature)
   registerEnemySheet(
     scene,
     'enemy_void_weaver',
@@ -590,7 +592,7 @@ export function registerStickyManAssets(scene: Phaser.Scene): void {
     POSES_ARCHER_WALK,
     POSES_ARCHER_ATTACK,
     { idle: ANIM.demonIdle, walk: ANIM.demonWalk, attack: ANIM.demonAttack, sit: ANIM.demonSit },
-    'demon',
+    'drake',
     { 2: 110 },
   );
 }
@@ -603,7 +605,7 @@ function registerEnemySheet(
   walk: typeof POSES_SLIME_WALK,
   attack: typeof POSES_ARCHER_ATTACK | null,
   animKeys: { idle: string; walk: string; attack?: string; sit?: string },
-  variant: 'slime' | 'archer' | 'warrior' | 'monk' | 'ghost' | 'demon' | 'beast',
+  variant: StickVariant,
   attackHolds?: Record<number, number>,
 ): void {
   const frames = attack
@@ -755,8 +757,18 @@ export function cultivatorAnimKeys(spriteKey: string): {
         sit: ANIM.monkSit,
       };
     case 'enemy_wolf_beast':
-    case 'enemy_storm_hawk':
     case 'enemy_spirit_fox':
+      return {
+        idle: ANIM.beastIdle,
+        walk: ANIM.beastWalk,
+        sit: ANIM.beastSit,
+      };
+    case 'enemy_storm_hawk':
+      return {
+        idle: ANIM.beastIdle,
+        walk: ANIM.beastWalk,
+        sit: ANIM.beastSit,
+      };
     case 'enemy_scorpion':
       return {
         idle: ANIM.beastIdle,
@@ -789,8 +801,14 @@ export function cultivatorAnimKeys(spriteKey: string): {
       };
     case 'enemy_sand_demon':
     case 'enemy_tribulation_elite':
-    case 'enemy_rift_spawn':
     case 'enemy_corrupted_cultist':
+      return {
+        idle: ANIM.demonIdle,
+        walk: ANIM.demonWalk,
+        attack: ANIM.demonAttack,
+        sit: ANIM.demonSit,
+      };
+    case 'enemy_rift_spawn':
     case 'enemy_void_weaver':
       return {
         idle: ANIM.demonIdle,
@@ -806,8 +824,48 @@ export function cultivatorAnimKeys(spriteKey: string): {
 /** @deprecated Use cultivatorAnimKeys */
 export const enemyAnimKeys = cultivatorAnimKeys;
 
+/**
+ * Sprite key → creature silhouette for beast-family sheets (plan 29 §5).
+ * Humanoid sticky-man variants are omitted.
+ */
+export const BEAST_SPRITE_CREATURE_SHAPE: Readonly<Record<string, CreatureShape>> = {
+  enemy_slime: 'blob',
+  enemy_wolf_beast: 'quadruped',
+  enemy_spirit_fox: 'quadruped',
+  enemy_scorpion: 'arachnid',
+  enemy_storm_hawk: 'avian',
+  enemy_spirit_moth: 'spectral',
+  enemy_mist_wisp: 'spectral',
+  enemy_desert_spirit: 'spectral',
+  enemy_lightning_spirit: 'spectral',
+  enemy_frost_shade: 'spectral',
+  enemy_void_shade: 'spectral',
+  enemy_water_sprite: 'spectral',
+  enemy_rift_spawn: 'drake',
+  enemy_void_weaver: 'drake',
+};
+
+/** StickVariant used when registering a beast sprite sheet. */
+export const BEAST_SPRITE_STICK_VARIANT: Readonly<Record<string, StickVariant>> = {
+  enemy_slime: 'slime',
+  enemy_wolf_beast: 'beast',
+  enemy_spirit_fox: 'beast',
+  enemy_scorpion: 'arachnid',
+  enemy_storm_hawk: 'avian',
+  enemy_spirit_moth: 'ghost',
+  enemy_mist_wisp: 'ghost',
+  enemy_desert_spirit: 'ghost',
+  enemy_lightning_spirit: 'ghost',
+  enemy_frost_shade: 'ghost',
+  enemy_void_shade: 'ghost',
+  enemy_water_sprite: 'ghost',
+  enemy_rift_spawn: 'drake',
+  enemy_void_weaver: 'drake',
+};
+
 export function isBossSpriteKey(spriteKey: string): boolean {
   return spriteKey === 'enemy_totem';
 }
 
 export { STRIKE_ANIM } from '@/combat/art/stickyManStrikes';
+export type { CreatureShape, StickVariant } from '@/combat/art/stickyManDraw';

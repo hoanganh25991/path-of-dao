@@ -12,14 +12,20 @@ import {
   POSES_SLIME_IDLE,
   POSES_TOTEM_IDLE,
   POSES_WALK,
+  type StickVariant,
 } from '@/combat/art/stickyManDraw';
 import {
   FRAME_H,
   FRAME_W,
   PALETTE_ARCHER,
   PALETTE_HERO,
+  PALETTE_RIFT_SPAWN,
+  PALETTE_SCORPION,
   PALETTE_SLIME,
+  PALETTE_STORM_HAWK,
   PALETTE_TOTEM,
+  PALETTE_WISP,
+  PALETTE_WOLF,
 } from '@/combat/art/stickyManPalette';
 
 const SCALE = 3;
@@ -32,7 +38,7 @@ interface ReviewRow {
   label: string;
   frames: StickPose[];
   palette: StickPalette;
-  variant: 'hero' | 'slime' | 'archer' | 'boss';
+  variant: StickVariant;
 }
 
 const ROWS: ReviewRow[] = [
@@ -45,7 +51,12 @@ const ROWS: ReviewRow[] = [
   { label: 'Heavy kick', frames: STRIKE_POSES.heavyKick, palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Sword attack (smooth)', frames: applyWeaponProp(POSES_ATTACK_1_SMOOTH, 'sword'), palette: PALETTE_HERO, variant: 'hero' },
   { label: 'Sword finisher', frames: applyWeaponProp(POSES_ATTACK_3_SMOOTH, 'sword'), palette: PALETTE_HERO, variant: 'hero' },
-  { label: 'Slime idle', frames: POSES_SLIME_IDLE, palette: PALETTE_SLIME, variant: 'slime' },
+  { label: 'Slime (blob)', frames: POSES_SLIME_IDLE, palette: PALETTE_SLIME, variant: 'slime' },
+  { label: 'Wolf (quadruped)', frames: POSES_SLIME_IDLE, palette: PALETTE_WOLF, variant: 'beast' },
+  { label: 'Scorpion (arachnid)', frames: POSES_SLIME_IDLE, palette: PALETTE_SCORPION, variant: 'arachnid' },
+  { label: 'Hawk (avian)', frames: POSES_SLIME_IDLE, palette: PALETTE_STORM_HAWK, variant: 'avian' },
+  { label: 'Wisp (spectral)', frames: POSES_SLIME_IDLE, palette: PALETTE_WISP, variant: 'ghost' },
+  { label: 'Drake (rift)', frames: POSES_SLIME_IDLE, palette: PALETTE_RIFT_SPAWN, variant: 'drake' },
   { label: 'Archer idle', frames: POSES_ARCHER_IDLE, palette: PALETTE_ARCHER, variant: 'archer' },
   { label: 'Archer attack', frames: POSES_ARCHER_ATTACK, palette: PALETTE_ARCHER, variant: 'archer' },
   { label: 'Totem boss idle', frames: POSES_TOTEM_IDLE, palette: PALETTE_TOTEM, variant: 'boss' },

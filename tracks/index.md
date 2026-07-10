@@ -163,7 +163,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | Save reload + settings | Continue Journey, fullscreen, version |
 
 - **599 unit tests passing, 0 failing** (2026-07-10 — +5 loot→item cross-ref lint + boss loot audit tests, track 33/20; +51 earlier from Dao Scroll Phase E2/E3 code hooks: `path-walk.test.ts` (+4), new `region-node.test.ts` (3), plus earlier Master Intent migration tests; see track 14 and 31) · **37 E2E**
-- **New since last track sync:** Dao Scroll Phase E2/E3 (31), Master Intent migration (14), procedural world profiles, 2.5D tiles, skill VFX tiers, plans 29–34; **procedural cultivator power halved** (`PROCEDURAL_BASE_POWER = 0.5`, tracks 06/21) after ch1 TTK playtest
+- **New since last track sync:** Dao Scroll Phase E2/E3 (31), Master Intent migration (14), procedural world profiles, 2.5D tiles, skill VFX tiers, plans 29–34; **procedural cultivator power halved** (`PROCEDURAL_BASE_POWER = 0.5`, tracks 06/21); **beast creature silhouettes** (blob/quadruped/arachnid/avian/spectral/drake — tracks 08/29)
 
 **Next priorities:** plan **31** Dao Scroll **Phase E1** (illustrations only — code hooks done) → ship **26** (`divineArts` rename done 2026-07-10, track 30)
 

@@ -38,6 +38,10 @@ export const DEFEAT_STAGGER_MS = 450;
 export const DEFAULT_RECOVERY_MS = 6000;
 const HP_BAR_WIDTH = 26;
 const HP_BAR_HEIGHT = 3;
+/** Cultivator HP bar (red). */
+const HP_BAR_CULTIVATOR = 0xd94a3a;
+/** Beast HP bar (amber) — distinct from cultivator red. */
+const HP_BAR_BEAST = 0xd4a040;
 
 type AttackPhase = 'none' | 'telegraph' | 'strike';
 
@@ -126,7 +130,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
       .setDepth(21)
       .setVisible(false);
     this.hpBarFill = scene.add
-      .rectangle(0, 0, HP_BAR_WIDTH, HP_BAR_HEIGHT, 0xd94a3a)
+      .rectangle(0, 0, HP_BAR_WIDTH, HP_BAR_HEIGHT, this.defaultHpBarColor)
       .setOrigin(0, 0.5)
       .setDepth(22)
       .setVisible(false);
@@ -149,6 +153,10 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
   /** Beast opponents despawn to pool on defeat — no gather-qi sit-recover (combat-defeat-canon.md §1). */
   get isBeast(): boolean {
     return this.config.opponentKind === 'beast';
+  }
+
+  private get defaultHpBarColor(): number {
+    return this.isBeast ? HP_BAR_BEAST : HP_BAR_CULTIVATOR;
   }
 
   getDefenderStats(): BaseStats {
@@ -211,7 +219,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     this.rank = 0;
     this.stats.setModifiers([]);
     this.destroyRankVisuals();
-    this.hpBarFill.setFillStyle(0xd94a3a);
+    this.hpBarFill.setFillStyle(this.defaultHpBarColor);
   }
 
   /** Override patrol loop for roaming map spawns. */
@@ -548,7 +556,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
   private updateHpBar(): void {
     const { hp, hpMax } = this.stats.runtime;
     this.hpBarFill.setScale(Math.max(0, hp / hpMax), 1);
-    this.hpBarFill.setFillStyle(this.rank > 0 ? this.rankColor : 0xd94a3a);
+    this.hpBarFill.setFillStyle(this.rank > 0 ? this.rankColor : this.defaultHpBarColor);
   }
 
   private trackHpBar(): void {

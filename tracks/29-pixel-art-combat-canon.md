@@ -19,6 +19,7 @@ Combat art **integration** contract — y-sort, anim keys, hit-frame alignment, 
 - Intent-unique pixel VFX textures + `skillVfxProfile` tier mapping (plan 19)
 - Enemy anim keys per family (slime, archer, totem pattern)
 - Ancient echo aura ring + themed palette (not full-body tint wash)
+- **Beast creature silhouettes** (2026-07-10) — `drawCreatureFrame` for blob/quadruped/arachnid/avian/spectral/drake; cultivators stay sticky-man; amber beast HP + distinct defeat toast
 
 ## Remaining
 
@@ -28,6 +29,7 @@ Combat art **integration** contract — y-sort, anim keys, hit-frame alignment, 
 - Full anim contract QA on all 25 enemy types + 8 bosses
 - Wheel icon PNGs (DA-04) on combat HUD
 - Physics debug / anim debug flags documented — must stay off in smoke builds
+- Ice golem / totem beasts still humanoid stone (intentional); optional creature golem later
 
 ## What needs to do
 

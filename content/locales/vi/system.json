@@ -20,6 +20,8 @@
   "combat.death.return_home": "Về Nhà",
   "combat.cultivator.label": "Tu Sĩ",
   "combat.cultivator.defeated": "Tu Sĩ thua trận — ngồi tu luyện hồi phục",
+  "combat.beast.label": "Yêu Thú",
+  "combat.beast.defeated": "Yêu thú tan khí — linh khí tan vào hoang dã",
   "combat.loot.item": "+{name} ×{qty}",
   "combat.loot.item_unknown": "Bảo vật ×{qty}",
   "combat.loot.hint.hud": "Vàng mỗi trận · Trang bị ~{gruntPercent}% (tinh anh ~{elitePercent}%)",
