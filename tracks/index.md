@@ -1,10 +1,11 @@
 # Path of Dao — Master Track
 
-> **Spec:** [plans/index.md](../plans/index.md)  
-> **Detail notes:** [tracks/](./) (one file per sub-plan)  
-> **Last updated:** 2026-07-10 (master track sync)
+> **This file is the sole progress record** — what is done, in progress, and what needs to do.  
+> **Specs (what to build):** [plans/index.md](../plans/index.md)  
+> **Detail notes:** [tracks/](./) — one `tracks/NN-slug.md` per sub-plan  
+> **Last updated:** 2026-07-10
 
-This is the **master progress index**. Each sub-plan has a detailed track file under `tracks/` with done/remaining items, verification notes, and Renegade Immortal alignment gaps where relevant.
+Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where applicable) · **Verification**.
 
 ---
 
@@ -168,6 +169,48 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 
 ---
 
+## What needs to do (master backlog)
+
+Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in each sub-plan track.
+
+### P0 — Ship blockers
+
+| # | Task | Track | Notes |
+|---|------|-------|-------|
+| 1 | Fix **22 failing unit tests** | 34 | Run `pnpm test`; triage before sign-off |
+| 2 | **Dao Scroll runtime** — phases B→D (shard JSON, save unlock, Path sub-tab) | 31 | Prose done; not player-visible yet |
+| 3 | **Master Intent migration** — `MasterIntentSystem`, new `insights.json` | 14 | User decision: migrate plan 14 redesign |
+| 4 | Manual **SHIP_CHECKLIST** + Lighthouse + 30 FPS device | 26 | After tests green |
+
+### P1 — MVP completeness
+
+| # | Task | Track | Notes |
+|---|------|-------|-------|
+| 5 | Rename `equippedSkills` → `divineArts` (save + UI; keep `[0..5]`) | 30 | User decision: rename only |
+| 6 | **8 boss distinct patterns** — telegraphs, phases, punish windows | 23 | Phase tracker exists; polish open |
+| 7 | Procedural **settlement clusters + signature tree** per `worldProfile` | 06, 21, 22 | User decision: keep procedural |
+| 8 | Map-clear modal → offer timeline shard read | 18, 31 | Hooks chapter flow to Dao Scroll |
+| 9 | `opponentKind: beast\|cultivator` on enemies + recovery rules | 06, 08 | Beasts despawn; cultivators sit-recover |
+| 10 | Full **en/vi UI audit** + Vietnamese overflow | 24 | `timeline.json` / story done |
+
+### P2 — Polish & art (parallel)
+
+| # | Task | Track | Notes |
+|---|------|-------|-------|
+| 11 | **DA-01 hero** sprites → replace sticky-man | 32, 29 | Ship gate plan 29 §0 |
+| 12 | DA-02/03 enemies + bosses; DA-04 wheel icons | 32, 29, 30 | |
+| 13 | Chapter + timeline **illustrations** (webp or null) | 32, 18, 31 | Polish, not logic block |
+| 14 | Skill cast **audio sync** on impact frames | 19, 25 | |
+| 15 | Real **OGG** assets + file playback | 25 | Procedural OK for MVP if time short |
+| 16 | Validator: `timelineShardId` on all maps; CI `content:validate` | 20, 31 | |
+| 17 | Loot pity / full item roster lint | 33, 20 | |
+
+### Done — do not rework unless plan changes
+
+`01–05`, `07–13`, `15–17`, `27–28`, weapon arc **T1–T8**, base E2E flow, fortuitous encounters, procedural maps playable, 40 skills data, chapter story prose (6 slides × 10 ch).
+
+---
+
 ## How systems work together (plans snapshot)
 
 ```mermaid
@@ -213,6 +256,15 @@ flowchart LR
 
 ## Detail tracks — in progress
 
+### 06 — Map scene & procedural world `[~]`
+
+| Done | Remaining |
+|------|-----------|
+| Tiled/roam + procedural endless + camera + pause exit | Settlement clusters + signature tree props |
+| `CombatCameraDirector`, per-map ground palettes | `opponentKind` beast vs cultivator |
+
+→ [full track](./06-phaser-map-scene-base.md) — **What needs to do** table
+
 ### 14 — Master Intent `[~]`
 
 | Done | Remaining |
@@ -220,7 +272,7 @@ flowchart LR
 | Legacy 6-intent XP meter + awakening ceremony | Plan redesign: main-flow + gate intents |
 | Sword gate until ancient sword (T7) | `MasterIntentSystem` + `insights.json` migration |
 
-→ [full track](./14-insight-system.md)
+→ [full track](./14-insight-system.md) — **What needs to do** table
 
 ### 15 — Fortuitous encounters `[x]`
 
@@ -256,46 +308,43 @@ flowchart LR
 | Cast pipeline, tier VFX, thunder chain, intent textures | Audio sync; sprite-sheet art pass (32) |
 | Sword Intent gating in combat (T7) | |
 
-→ [full track](./19-skill-executor-vfx.md)
+→ [full track](./19-skill-executor-vfx.md) — **What needs to do** table
 
 ### 20 — Content pipeline `[~]`
 
 | Done | Remaining |
 |------|-----------|
-| Zod validate-all, cross-ref lint, content loader | Expand lint as MVP content grows |
+| Zod validate-all, cross-ref lint, content loader | Timeline shard + map lint (31, 20) |
 | Pack command, ID/CP/Tiled docs | Optional CI gate on `content:validate` |
-| 249+ unit tests green at last run | |
 
-→ [full track](./20-content-pipeline.md)
+→ [full track](./20-content-pipeline.md) — **What needs to do** table
 
 ### 21 — MVP maps ch1–5 `[~]`
 
 | Done | Remaining |
 |------|-----------|
-| 10 maps + procedural endless + 2.5D biomes | 16k bounds + settlements + signature trees |
-| Ancient sword POI; ch1 star sub-zones | Dao Scroll shards (plan 31) |
-| POI + roam + world profiles | CP playtest balance |
+| Procedural endless + 2.5D biomes + POIs | Settlement/tree props; `timelineShardId` |
+| Ancient sword POI; ch1 star sub-zones (keep) | CP playtest balance |
 
-→ [full track](./21-mvp-maps-chapters-1-5.md)
+→ [full track](./21-mvp-maps-chapters-1-5.md) — **What needs to do** table
 
 ### 22 — MVP maps ch6–10 `[~]`
 
 | Done | Remaining |
 |------|-----------|
-| 10 endgame maps, five visual themes | Arc copy/tone for tribulation → void (T5) |
-| Void Throne 56×42 finale; CP ~45k–320k | Boss pattern and phase tuning |
-| 19 enemies; hidden caves ch6, 8, 10 | Playthrough balance on CP bands |
+| 10 endgame maps + procedural profiles | Boss patterns; `timelineShardId` |
+| Hidden caves ch6, 8, 10 | CP band playtest |
 
-→ [full track](./22-mvp-maps-chapters-6-10.md)
+→ [full track](./22-mvp-maps-chapters-6-10.md) — **What needs to do** table
 
 ### 23 — Enemies, bosses, skills `[~]`
 
 | Done | Remaining |
 |------|-----------|
-| 40 skills, 41 enemies, loot, unlock hooks | Distinct patterns for all 8 MVP bosses |
-| Sword Intent gate (T7) | Awakening VFX art pass (29+32) |
+| 40 skills, 41 enemies, loot, unlock hooks | **8 boss distinct patterns** |
+| Sword Intent gate (T7) | Awakening VFX art (29+32) |
 
-→ [full track](./23-mvp-enemies-bosses-skills.md)
+→ [full track](./23-mvp-enemies-bosses-skills.md) — **What needs to do** table
 
 ### 24 — Localization en + vi `[~]`
 
@@ -306,7 +355,7 @@ flowchart LR
 | 41 bestiary entries; settings language picker | Vietnamese layout overflow pass |
 | 300+ unit tests green at last run | |
 
-→ [full track](./24-localization-en-vi.md)
+→ [full track](./24-localization-en-vi.md) — **What needs to do** table
 
 ### 25 — Audio & VFX polish `[~]`
 
@@ -320,18 +369,16 @@ flowchart LR
 | `ui.panel_open` + `loot.pickup` wired; UI bus tier | Dedicated UI volume slider |
 | Home aura pulse Core Formation+ | `player.land` (no jump mechanic) |
 
-→ [full track](./25-audio-vfx-polish.md)
+→ [full track](./25-audio-vfx-polish.md) — **What needs to do** table
 
 ### 26 — PWA & ship `[~]`
 
 | Done | Remaining |
 |------|-----------|
-| QualityProfile; low tier disables juice + aura particles | Real app icons |
-| vite-plugin-pwa, manifest, SW; CI unit + e2e jobs | Lighthouse PWA audit |
-| E2E smoke: home → ch1 combat → home → vi locale | Manual SHIP_CHECKLIST sign-off |
-| `handbook/SHIP_CHECKLIST.md`; version in settings | 30 FPS throttled Android verification |
+| QualityProfile, PWA, CI, 37 E2E, SHIP_CHECKLIST doc | Lighthouse, 30 FPS device, manual sign-off |
+| Fullscreen setting; app icons | Fix unit failures first (34) |
 
-→ [full track](./26-pwa-performance-ship.md)
+→ [full track](./26-pwa-performance-ship.md) — **What needs to do** table
 
 ### 28 — Path & Journey `[x]`
 
@@ -343,19 +390,16 @@ flowchart LR
 
 → [full track](./28-path-journey-system.md)
 
-### 29–34 — Cross-cutting `[~]` / `[ ]`
+### 29–34 — Cross-cutting
 
-| ID | Status | Highlight |
-|----|--------|-----------|
-| 29 | `[~]` | Sticky-man + camera + VFX integration; DA sprites pending |
-| 30 | `[~]` | 6-slot wheel works; `divineArts` rename open |
-| 31 | `[~]` | **Dao Scroll prose done**; phases B–E in track 31 |
-| 32 | `[~]` | design-arts tree; encounter art only |
-| 33 | `[~]` | Drops + equip baseline |
-| 34 | `[~]` | smoke:test; fix unit failures |
-| 34 | `[~]` | smoke:test; 22 unit failures |
-
-→ detail tracks in [tracks/](./)
+| ID | Status | What needs to do (summary) | Detail |
+|----|--------|---------------------------|--------|
+| 29 | `[~]` | DA-01 hero sprites; layered props; anim QA all families | [track](./29-pixel-art-combat-canon.md) |
+| 30 | `[~]` | Rename `equippedSkills` → `divineArts`; DA-04 wheel icons | [track](./30-divine-arts-wheel-loadout.md) |
+| 31 | `[~]` | **B→D:** shard JSON, save unlock, Dao Scroll Path tab | [track](./31-wang-lin-story-timeline.md) |
+| 32 | `[~]` | DA-01…09 art pipeline; auto-wire on drop | [track](./32-design-arts.md) |
+| 33 | `[~]` | Loot lint; item roster; DA-05 icons | [track](./33-item-loot-system.md) |
+| 34 | `[~]` | Fix 22 unit failures; smoke + DevTools gate | [track](./34-quick-check-smoke-devtools.md) |
 
 ---
 
@@ -391,9 +435,10 @@ Sub-plans **01–05**, **07–13**, **15–17**, **27–28** meet their **origin
 
 ---
 
-## How to update this file
+## How to update
 
-1. Implement work against a sub-plan in `plans/`.
-2. Update the matching detail file in `tracks/` (done / remaining / verification).
-3. Refresh status symbols and this master table when a sub-plan crosses done or picks up new gaps.
-4. For Renegade Immortal weapon arc (T1–T8), update [tracks/tien-nghich-alignment.md](./tien-nghich-alignment.md).
+1. **Ship code** against a sub-plan in `plans/`.
+2. **Update the detail track** `tracks/NN-slug.md` — Done / Remaining / **What needs to do** / Verification.
+3. **Refresh this file** (`tracks/index.md`) — snapshot table, master backlog, MVP DoD checkboxes.
+4. **Do not** mark progress only in `plans/` — plans are spec; **tracks are truth** for implementation state.
+5. Renegade Immortal weapon arc (T1–T8): [tien-nghich-alignment.md](./tien-nghich-alignment.md).

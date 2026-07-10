@@ -24,6 +24,17 @@ One model for assigning up to **6 Divine Arts** to the combat wheel — hero jou
 - Pause-menu loadout editor (optional MVP per plan §4)
 - DA-04 wheel icon keys on HUD buttons
 
+## What needs to do
+
+| # | Task | Files |
+|---|------|-------|
+| 1 | Rename save field `equippedSkills` → `divineArts` + migration v1→v1 alias | `SaveSchema.ts`, `SaveManager.ts` |
+| 2 | Grep-replace types: `EquippedSkills` → keep type alias or `DivineArtsLoadout` | `SkillSlots.ts`, consumers |
+| 3 | EventBus `loadout:changed` payload key rename | `EventBus.ts` |
+| 4 | Locale: ensure `home.divine.*` keys used in UI (not "Skills") | `home.json` |
+| 5 | Ancient demo template: `equippedSkills` in JSON → `divineArts` or map at load | `ancients.json`, `AncientDemoManager.ts` |
+| 6 | Unit + E2E: save round-trip, echo walk loadout unchanged | tests |
+
 ## Verification
 
 - E2E: ancient sword → Sword Slash visible on home divine intent row

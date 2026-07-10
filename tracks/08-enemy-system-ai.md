@@ -34,6 +34,14 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 - Rename content folder `content/enemies/` → `content/cultivators/` (optional; IDs stay `enemy.*` for saves)
 - Visual polish: distinct sit pose per sprite variant (shared `POSES_SIT` today)
 
+## What needs to do (follow-up — ties to track 06)
+
+| # | Task |
+|---|------|
+| 1 | Add `opponentKind: 'beast' \| 'cultivator'` to enemy JSON schema + all 41 files |
+| 2 | Beasts: defeat → despawn to pool (no sit-recover); cultivators: keep current flow |
+| 3 | Boss flag + `defeatRecoverMs` optional override per `combat-defeat-canon.md` |
+
 ## Verification
 
 - `pnpm test` — cultivator-pool, cultivator-config, encounter-scaling, aoe-scaling, rewards, combat-resolver

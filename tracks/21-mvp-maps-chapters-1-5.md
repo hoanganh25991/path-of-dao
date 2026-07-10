@@ -34,6 +34,16 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 - recommendedCp playtest pass (plan §11 manual QA)
 - Tile seam / void-hole polish on procedural ground
 
+## What needs to do
+
+| # | Task | Track |
+|---|------|-------|
+| 1 | Add `timelineShardId` to 10 ch1–5 map JSONs | 31-B3 |
+| 2 | Settlement + signature tree in procedural spawn | 06 |
+| 3 | Manual CP playtest doc — adjust `recommendedCp` if maps feel wrong | balance |
+| 4 | Ground seam pass on `EndlessGround` / palette transitions | 06, 29 |
+| 5 | Confirm ancient sword POI only on `.02` / ch2 per plan (not ch1 `.01` tutorial) | 15, 21 |
+
 ## Verification
 
 - Dedicated map JSON per region/stage; ch1 sub-zones load with roam tables

@@ -29,6 +29,20 @@
 - Rename player-facing copy Insight → **Master Intent (Ý Cảnh)** in remaining UI
 - Dao Scroll Intent lessons (plan 31) depend on this curriculum
 
+## What needs to do
+
+| # | Task | Files / notes |
+|---|------|----------------|
+| 1 | Add `MasterIntentSystem` with `isIntentUnlocked(intentId, save)` | `src/progression/MasterIntentSystem.ts` |
+| 2 | Rewrite `insights.json` — 3 main-flow + 3 gate intents; map old skills → new tags | `content/progression/insights.json` |
+| 3 | Main-flow: next intent locked until previous **awakened** | gate: sword=ancient sword, flame=ch5 boss, lightning=ch6 boss |
+| 4 | Wire unlock check into cast (`CombatComponent`), equip (`SkillUnlockManager`), Home Divine Arts rows | replace ad-hoc sword-only gate where duplicated |
+| 5 | Migrate `InsightSystem` XP sources to new intent ids; keep meter HUD | combat HUD + awakening modal |
+| 6 | Locale: `intent.life_death` etc. in glossary | `content/locales/glossary.md` |
+| 7 | Unit tests: sequential unlock, gate milestones, awakening swap on loadout | `tests/unit/master-intent.test.ts` |
+
+**Depends on:** plan 31 Dao Scroll uses same Intent lesson ids — align §5 table before authoring shard `intentLesson` fields.
+
 ## Verification
 
 - XP accumulates and caps correctly; realm gate enforced

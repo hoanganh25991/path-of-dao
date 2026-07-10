@@ -22,6 +22,16 @@ Validate all game content at build time; catch broken cross-references before sh
 - Expand lint rules as MVP content grows
 - CI gate on content:validate before merge (optional)
 
+## What needs to do
+
+| # | Task |
+|---|------|
+| 1 | `TimelineShard` Zod schema + validate 20 `content/story-timeline/*.json` (blocks 31-B) |
+| 2 | Lint: every `content/maps/*.json` has `timelineShardId` matching shard file |
+| 3 | Lint: `story.chNN.slide01`…`slide06` keys exist for all wired chapter scenes |
+| 4 | Lint: `loot.*` → valid `item.*`; `skill.*` on wheel → valid skill defs |
+| 5 | Optional CI job: `pnpm content:validate --strict-i18n` on PR |
+
 ## Verification
 
 - Full validation suite passes; 249+ unit tests green at last run

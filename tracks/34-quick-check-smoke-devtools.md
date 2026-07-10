@@ -23,6 +23,16 @@ Fast gate before hand-off: automated smoke + manual Chrome DevTools console pass
 - **Unit suite:** 22 failing / 500 passing at 2026-07-10 — fix before ship gate
 - 10-minute manual playthrough + console clean (plan 26)
 
+## What needs to do
+
+| # | Task | Command / tool |
+|---|------|----------------|
+| 1 | Run full unit suite; fix or quarantine each failure | `pnpm test` |
+| 2 | Run smoke gate before any track marked `[x]` | `pnpm smoke:test` |
+| 3 | Add Playwright assert: `window.__podErrors.length === 0` after combat entry | `tests/e2e/smoke.spec.ts` |
+| 4 | Manual DevTools pass at **844×390** — Home tabs + combat **C** | plan 34 §2 |
+| 5 | Document "batch sign-off" checklist in PR template or SHIP_CHECKLIST | handbook |
+
 ## Verification
 
 - `pnpm smoke:test` green when dev server available

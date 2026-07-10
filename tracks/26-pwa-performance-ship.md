@@ -2,7 +2,7 @@
 
 **Status:** `[~]` E2E smoke landed — manual sign-off pending  
 **Plan:** [plans/26-pwa-performance-ship.md](../plans/26-pwa-performance-ship.md)  
-**Last updated:** 2026-07-04 (fullscreen On/Off setting)
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -31,10 +31,23 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 - Lighthouse PWA audit + 30 FPS throttled device sign-off
 - Manual SHIP_CHECKLIST walkthrough (10-min playthrough)
 - GitHub Pages deploy + `assetlinks.json` for TWA
+- **22 unit test failures** — fix before ship sign-off (see track 34)
+
+## What needs to do
+
+| # | Task | How |
+|---|------|-----|
+| 1 | `pnpm test` — triage and fix all failing unit tests | track 34 |
+| 2 | `pnpm test:e2e` — full 37-case suite green | CI |
+| 3 | Lighthouse PWA audit on production build (`docs/` or deploy URL) | manual |
+| 4 | Chrome **CPU 6× slowdown** — combat 30 FPS for 5 min on Android mid-tier | manual |
+| 5 | Walk [handbook/SHIP_CHECKLIST.md](../handbook/SHIP_CHECKLIST.md) — sign each row | manual |
+| 6 | 10-min playthrough — zero console errors (plan 34 DevTools pass) | manual |
+| 7 | Deploy GitHub Pages + verify SW + landscape manifest | ops |
 
 ## Verification
 
 - `pnpm typecheck` — clean
-- `pnpm test` — **351 tests green**
-- `pnpm test:e2e` — **1 smoke green**
-- `pnpm build` — `docs/` + `sw.js` generated (GitHub Pages deploy folder)
+- `pnpm test` — all unit tests green (currently ~22 failures)
+- `pnpm test:e2e` — smoke + journey-flow green
+- `pnpm build` — `docs/` + `sw.js` generated

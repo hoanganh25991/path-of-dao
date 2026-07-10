@@ -32,6 +32,16 @@
 - Cultivator defeat: optional `returnToOrigin` + `defeatRecoverMs` bands — simplified in-place OK for MVP
 - `opponentKind: beast|cultivator` in enemy JSON — beasts despawn, cultivators recover
 
+## What needs to do
+
+| # | Task | Files |
+|---|------|-------|
+| 1 | Spawn settlement cluster props from `worldProfile.settlements[]` (ruin_village, hamlet, …) | `ProceduralCellGenerator` or map bootstrap |
+| 2 | One **signature tree** sprite per map at seeded anchor | tie to DA-09 or reuse env tree sprites |
+| 3 | Add `opponentKind` to enemy schema + content JSON | `content/enemies/*.json`, validator |
+| 4 | Beasts: defeat → despawn/pool; cultivators: sit-recover (current partial flow) | `Cultivator.ts`, spawn managers |
+| 5 | Optional: `defeatRecoverMs` per enemy tier | `combat-defeat-canon.md` — defer if MVP tight |
+
 ## Verification
 
 - Tilemap renders; walls block movement

@@ -83,6 +83,17 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 - `boss.telegraph` (manifest key exists; no telegraph EventBus event yet)
 - Dedicated UI volume slider in settings (currently UI bus scales off SFX slider)
 
+## What needs to do
+
+| # | Task | Files |
+|---|------|-------|
+| 1 | Emit `boss.telegraph` from boss AI telegraph phase → play manifest SFX | `Cultivator.ts` / boss configs · `AudioDirector.ts` |
+| 2 | Boss phase screen darken (visual juice) on phase transition | `CombatJuiceBridge` or MapScene overlay |
+| 3 | Skill `impactFrameMs` sync (pairs with track 19) | skill JSON + `AudioDirector` |
+| 4 | `AudioManager.playFile()` branch when OGG exists under `assets/audio/` | `AudioManager.ts` |
+| 5 | Optional: dedicated **UI volume** slider in settings modal | `SettingsModal.ts` |
+| 6 | Confirm low-tier `QualityProfile` disables hit-stop/shake (26) | already partial — verify on device |
+
 ## Verification
 
 - Audio unlock persistence tested

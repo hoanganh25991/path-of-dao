@@ -35,6 +35,15 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 - Higher-fidelity art pass (sprite sheets / short anim loops per tier) beyond pixel presets
 - BGM crossfade between scenes (owned partly by 25)
 
+## What needs to do
+
+| # | Task | Owner |
+|---|------|-------|
+| 1 | Read `impactFrameMs` / `castFrameMs` from skill JSON → `AudioDirector` one-shots | 19 |
+| 2 | Boss telegraph SFX hook when phase events emit | 25 |
+| 3 | Awakening VFX sprite sheets for 6 signature arts (ship target) | 32 + 29 |
+| 4 | After Master Intent migration (14): gate-specific cast VFX tint by intent id | 14 |
+
 ## Verification
 
 - Mana spend, cooldown, and effect dispatch unit tested

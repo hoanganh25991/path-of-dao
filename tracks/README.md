@@ -1,6 +1,14 @@
 # Sub-plan tracks
 
-Detailed implementation notes for each sub-plan. The master index lives in [index.md](./index.md).
+**Progress truth lives here** — not in `plans/`. Plans say *what to build*; tracks say *what is done* and *what needs to do*.
+
+| Role | Path |
+|------|------|
+| **Master progress index** | [index.md](./index.md) — snapshot, MVP DoD, master backlog |
+| **Per sub-plan detail** | `tracks/NN-slug.md` — Done · Remaining · **What needs to do** · Verification |
+| **Specs** | [plans/](../plans/) — do not use plans alone for ship status |
+
+## Track files
 
 | ID | Track file | Plan spec |
 |----|------------|-----------|
@@ -40,3 +48,9 @@ Detailed implementation notes for each sub-plan. The master index lives in [inde
 | 34 | [34-quick-check-smoke-devtools.md](./34-quick-check-smoke-devtools.md) | [plans/34-quick-check-smoke-devtools.md](../plans/34-quick-check-smoke-devtools.md) |
 
 **Cross-cutting:** [tien-nghich-alignment.md](./tien-nghich-alignment.md) (Renegade Immortal T1–T8 weapon arc)
+
+## Update workflow
+
+1. Ship code.
+2. Edit the detail track (`tracks/NN-slug.md`).
+3. Refresh [index.md](./index.md) master table + backlog.

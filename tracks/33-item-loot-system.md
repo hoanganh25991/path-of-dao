@@ -26,6 +26,16 @@ Dharma Treasures logic baseline — inventory, equip, drops, random rolls — **
 - Validator cross-ref lint for all `loot.*` → `item.*`
 - 3D attach preview polish (plan 11) for new treasure types
 
+## What needs to do
+
+| # | Task | Ref |
+|---|------|-----|
+| 1 | Lint every `loot.*.json` entry → valid `item.*` | IS-03, track 20 |
+| 2 | Boss vs normal drop table audit for 8 ordeal bosses | `content/loot/` |
+| 3 | Optional pity timer in `rollCultivatorLoot` | IS-04 |
+| 4 | Home grid: show placeholder glyph when `iconKey` PNG missing | already OK — verify |
+| 5 | Endgame spirit accessories content for ch8–10 | `content/items/` |
+
 ## Verification
 
 - `tests/unit/equipment-manager.test.ts`, loot-related unit tests green

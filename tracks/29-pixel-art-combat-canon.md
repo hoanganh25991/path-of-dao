@@ -29,6 +29,17 @@ Combat art **integration** contract — y-sort, anim keys, hit-frame alignment, 
 - Wheel icon PNGs (DA-04) on combat HUD
 - Physics debug / anim debug flags documented — must stay off in smoke builds
 
+## What needs to do
+
+| # | Task | Owner |
+|---|------|-------|
+| 1 | Export **DA-01** hero sheet — unarmed + sword; drop in `assets/sprites/hero/` | 32 |
+| 2 | Wire DA-08 auto-wire manifest so new PNGs replace sticky-man without code edit | 32 |
+| 3 | Per-enemy anim QA checklist (idle/walk/attack) for all 41 types | 29 §0.1 |
+| 4 | Layered prop test map — one building with roof/wall/trunk layers + y-sort | 06 + 32 DA-09 |
+| 5 | Combat HUD: consume DA-04 wheel icons when files exist | 30 |
+| 6 | Ship QA: plan 29 §0.2 five-point visual checklist on 844×390 | 34 |
+
 ## Verification
 
 - Hero shows limbs at 2× zoom (not fillRect) on test + ch1 maps

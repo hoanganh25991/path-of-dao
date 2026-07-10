@@ -23,7 +23,23 @@ Parallel **pixel art authoring** — hero, enemies, bosses, wheel icons, treasur
 - DA-04 wheel icons, DA-05 treasure icons
 - DA-06 ancient echoes portraits, DA-07 VFX sprite sheets
 - DA-08 auto-wire manifest pipeline on drop
-- DA-09 map props (structures, signature trees) — ties to `map-design-canon.md`
+- DA-09 map props (structures, signature trees) — ties to procedural world (06)
+
+## What needs to do
+
+| ID | Task | Output path |
+|----|------|-------------|
+| DA-01 | Hero unarmed + sword anim sheets | `assets/sprites/hero/` |
+| DA-02 | 25 minion families | `assets/sprites/enemies/` |
+| DA-03 | 8 ordeal boss silhouettes | `assets/sprites/bosses/` |
+| DA-04 | 24×24 wheel icons per Intent color | `assets/sprites/skills/` |
+| DA-05 | Treasure icons per `item.*` | `assets/sprites/items/` |
+| DA-06 | 6 ancient echo portraits | `assets/sprites/ancients/` |
+| DA-07 | VFX sprite sheets (tier Common/Signature) | `assets/sprites/vfx/` |
+| DA-08 | `pnpm art:manifest` auto-wire on PNG drop | `tools/` + manifest |
+| DA-09 | Structure + signature tree props for procedural spawn | `assets/sprites/props/` |
+
+**Priority order:** DA-01 → DA-04 → DA-05 → DA-02/03 (parallel) → DA-07 → DA-09
 
 ## Verification
 

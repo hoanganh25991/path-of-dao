@@ -21,10 +21,19 @@ Endgame half of the road: tribulation peaks through void throne finale.
 
 ## Remaining
 
-- **Map canon:** 16k bounds + settlements + signature trees (see C1 in master track)
-- **Dao Scroll** (plan 31): locale prose for ch6–10 maps **done** — `timelineShardId` + shard JSON pending
+- **Map canon:** procedural settlement clusters + signature trees per `worldProfile` (not 16k Tiled revert)
+- **Dao Scroll** (plan 31): locale prose for ch6–10 **done** — `timelineShardId` + shard JSON pending
 - Boss pattern and phase tuning per map
 - Playthrough balance on recommended CP bands
+
+## What needs to do
+
+| # | Task | Track |
+|---|------|-------|
+| 1 | `timelineShardId` on 10 ch6–10 map JSONs | 31-B3 |
+| 2 | Boss pattern pass: Heaven Fate I/II/III, void sovereign, gate trial | 23 |
+| 3 | CP band playtest ch6–10 — retreat/farm lower maps still feels fair | balance |
+| 4 | Hidden cave POI rewards smoke-tested on ch6, 8, 10 | 15 |
 
 ## Verification
 

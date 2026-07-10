@@ -29,6 +29,21 @@ Full MVP roster: 40 skills, 41 enemies, loot tables, boss phases, and skill unlo
 - Boss distinct patterns polish for all eight MVP bosses
 - Six skills with full awakening VFX sprite pass (plans 29 + 32)
 
+## What needs to do
+
+| # | Boss / map | Pattern gap |
+|---|------------|-------------|
+| 1 | `boss.jade_guardian` (ch1) | Ward phases, disciple adds |
+| 2 | `boss.mist_stalker` (ch2) | Fox spirit fog / teleport read |
+| 3 | `boss.bandit_lord` (ch3) | Height / bandit wave cadence |
+| 4 | `boss.seal_warden` (ch4) | Seal crack AoE tells |
+| 5 | `boss.desert_sovereign` (ch5) | Heat endurance + flame gate beat |
+| 6 | `boss.thunder_avatar` (ch6) | Lightning gate + tribulation telegraphs |
+| 7 | `boss.wang_yue` / memory (ch7) | Ice shade mirror pattern |
+| 8 | `boss.heaven_fate` variants (ch8–10) | Escalating phase kit per encounter |
+
+Also: map `skill.intent` tags when Master Intent migration (14) lands.
+
 ## Verification
 
 - MVP content data tests pass; **378 unit tests** green; road progression sim through ch10
