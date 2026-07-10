@@ -1,6 +1,8 @@
 import { SceneRouter } from '@/app/SceneRouter';
+import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { getChapterByStoryScene } from '@/progression/ChapterLoader';
 import { exitAncientDemo, getAncientPath } from '@/progression/AncientDemoManager';
+import { findTimelineShardByMapId } from '@/progression/TimelineLoader';
 import type { AncientPathStep } from '@/shared/schemas/ancient-demo';
 
 export type PathWalkRoute =
@@ -38,6 +40,23 @@ export function getPathWalkAncientId(): string | null {
 export function getCurrentPathStep(): AncientPathStep | null {
   if (!session) return null;
   return getAncientPath(session.ancientId)[session.stepIndex] ?? null;
+}
+
+/** Dao Scroll shard for a path-walk stop, if any — auto-read between maps, skippable
+ *  (sub-plan 31 §6.3). Pure lookup; caller (MapScene) owns opening the reader. */
+export function getPathWalkTimelineShardId(mapId: string): string | null {
+  return findTimelineShardByMapId(mapId)?.id ?? null;
+}
+
+/** Pure — mark a Dao Scroll shard seen (idempotent) on whichever save is active during
+ *  the walk. The ancient demo save is session-only and never persisted to IndexedDB, so
+ *  this never pollutes the player's real progress (track 28: "demo walks never persist"). */
+export function markPathWalkTimelineShardSeen(
+  save: PlayerSaveV1,
+  shardId: string,
+): PlayerSaveV1['progress'] {
+  if (save.progress.timelineSeen.includes(shardId)) return save.progress;
+  return { ...save.progress, timelineSeen: [...save.progress.timelineSeen, shardId] };
 }
 
 /** Map cleared during a guided ancient walk — queue story or advance to the next stop. */

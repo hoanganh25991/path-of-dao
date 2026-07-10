@@ -9,9 +9,16 @@ export interface DefeatRoutable {
  * in place to gather-qi recover.
  *
  * - Beasts (`opponentKind: 'beast'`) never recover — they despawn on every defeat.
- * - Bosses stay down for the session once defeated (ordeal cleared, no re-aggro).
- * - Everyone else (fodder/elite cultivators) recovers in place via `beginRecovery()`.
+ * - Cultivators (fodder/elite) and bosses sit gather-qi via `beginRecovery()`.
+ * - Bosses additionally stay down for the session (no re-aggro) — see `shouldStayDownOnDefeat`.
  */
 export function shouldDespawnOnDefeat(cultivator: DefeatRoutable): boolean {
-  return cultivator.isBeast || cultivator.isBoss;
+  return cultivator.isBeast;
+}
+
+/**
+ * Boss cultivators sit gather-qi after defeat but never return to combat this visit.
+ */
+export function shouldStayDownOnDefeat(cultivator: DefeatRoutable): boolean {
+  return cultivator.isBoss && !cultivator.isBeast;
 }

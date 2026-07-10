@@ -10,7 +10,13 @@ import { openTimelineShardReader } from '@/ui/story/TimelineShardReader';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { exitAncientDemo, getActiveAncientId, getAncientProfile } from '@/progression/AncientDemoManager';
 import { applyAncientGodMode, isAncientCombatActive } from '@/progression/AncientCombatMode';
-import { isPathWalkActive, onPathStepMapCleared, routePathWalk } from '@/progression/PathWalkManager';
+import {
+  getPathWalkTimelineShardId,
+  isPathWalkActive,
+  markPathWalkTimelineShardSeen,
+  onPathStepMapCleared,
+  routePathWalk,
+} from '@/progression/PathWalkManager';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import { resolveAttackStyle } from '@/progression/WeaponProgression';
 import { registerHeroCombatAssets } from '@/combat/art/stickyManAssets';
@@ -596,8 +602,8 @@ export class MapScene extends Phaser.Scene {
     const offMeditateEnd = EventBus.on('player:meditate-ended', () => {
       this.cameraDirector?.setMeditating(false);
     });
-    const offDefeat = EventBus.on('map:cultivator-defeated', ({ isBoss }) => {
-      if (isBoss) return;
+    const offDefeat = EventBus.on('map:cultivator-defeated', ({ isBoss, isBeast }) => {
+      if (isBoss || isBeast) return;
       this.showCombatToast(I18nManager.t('combat.cultivator.defeated'));
     });
     const offBoss = EventBus.on('boss:defeated', ({ bossId }) => {
@@ -650,6 +656,7 @@ export class MapScene extends Phaser.Scene {
     const save = gameStore.getState().save;
     if (isAncientCombatActive()) {
       if (isPathWalkActive() && wavesCleared) {
+        await this.playPathWalkTimelineShard(this.mapId);
         void routePathWalk(onPathStepMapCleared(this.mapId));
         return;
       }
@@ -676,6 +683,28 @@ export class MapScene extends Phaser.Scene {
     }
 
     void SceneRouter.instance.switchTo('home');
+  }
+
+  /** Ancient follow-walk — auto-open this map's Dao Scroll shard between stops, skippable
+   *  via the reader's own skip control (sub-plan 31 §6.3). */
+  private async playPathWalkTimelineShard(mapId: string): Promise<void> {
+    const shardId = getPathWalkTimelineShardId(mapId);
+    if (!shardId) return;
+
+    const store = gameStore.getState();
+    if (store.save) {
+      const progress = markPathWalkTimelineShardSeen(store.save, shardId);
+      if (progress !== store.save.progress) {
+        store.patch({ progress });
+      }
+    }
+
+    const uiRoot = document.getElementById('ui-root');
+    if (!uiRoot) return;
+
+    await new Promise<void>((resolve) => {
+      openTimelineShardReader(uiRoot, { shardId, onFinished: resolve });
+    });
   }
 
   /** "A page of the road opens" — offer, then read inline before returning home (sub-plan 31 §6.2). */

@@ -30,6 +30,12 @@ describe('AudioDirector', () => {
     expect(AudioManager.getSfxEntry('skill.heal')).toBeDefined();
   });
 
+  it('plays skill impact sfx via skill:impact event (audio sync on impact frame)', async () => {
+    await AudioManager.unlock();
+    expect(() => EventBus.emit('skill:impact', { intent: 'sword' })).not.toThrow();
+    expect(AudioManager.getSfxEntry('skill.sword')).toBeDefined();
+  });
+
   it('plays attack and dodge sfx from combat events', async () => {
     await AudioManager.unlock();
     expect(() => EventBus.emit('player:attack-started', { step: 2 })).not.toThrow();

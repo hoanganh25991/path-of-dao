@@ -28,6 +28,10 @@ export class I18nManager {
     if (Object.keys(I18nManager.strings).length === 0) {
       I18nManager.strings = getBundledLocaleStrings('en');
     }
+    // Drives `:lang(vi)` CSS overrides for longer Vietnamese UI labels — see home.css / skill-detail.css.
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = I18nManager.activeLocale;
+    }
   }
 
   /** Set an explicit locale (en/vi). */

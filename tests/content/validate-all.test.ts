@@ -36,6 +36,60 @@ describe('lintCrossrefs', () => {
       report.errors.some((e) => e.message.includes('enemy.does.not.exist')),
     ).toBe(true);
   });
+
+  it('catches loot table entry referencing missing item id', () => {
+    const index = loadContentIndex();
+    index.loot.set('loot.bad.entries', {
+      id: 'loot.bad.entries',
+      entries: [{ itemId: 'item.does.not.exist', weight: 10, qty: [1, 1] }],
+    });
+    const report = lintCrossrefs(index);
+    expect(
+      report.errors.some(
+        (e) => e.file === 'loot/loot.bad.entries.json' && e.message.includes('item.does.not.exist'),
+      ),
+    ).toBe(true);
+  });
+
+  it('catches loot table guaranteed drop referencing missing item id', () => {
+    const index = loadContentIndex();
+    index.loot.set('loot.bad.guaranteed', {
+      id: 'loot.bad.guaranteed',
+      entries: [],
+      guaranteed: [{ itemId: 'item.also.missing', qty: 1 }],
+    });
+    const report = lintCrossrefs(index);
+    expect(
+      report.errors.some(
+        (e) => e.file === 'loot/loot.bad.guaranteed.json' && e.message.includes('item.also.missing'),
+      ),
+    ).toBe(true);
+  });
+
+  it('catches a boss enemy missing a lootTable', () => {
+    const index = loadContentIndex();
+    index.enemies.set('boss.no.loot', {
+      ...(index.enemies.get('boss.bandit_lord') as Record<string, unknown>),
+      id: 'boss.no.loot',
+      lootTable: null,
+    });
+    const report = lintCrossrefs(index);
+    expect(
+      report.errors.some((e) => e.file === 'enemies/boss.no.loot.json' && e.message.includes('no lootTable')),
+    ).toBe(true);
+  });
+
+  it('confirms all current ordeal bosses have a valid lootTable', () => {
+    const index = loadContentIndex();
+    const bosses = [...index.enemies.entries()]
+      .map(([, raw]) => raw as { id: string; category?: string; lootTable?: string | null })
+      .filter((e) => e.category === 'boss');
+    expect(bosses.length).toBeGreaterThan(0);
+    for (const boss of bosses) {
+      expect(boss.lootTable, `boss "${boss.id}" should have a lootTable`).toBeTruthy();
+      expect(index.loot.has(boss.lootTable as string)).toBe(true);
+    }
+  });
 });
 
 describe('ContentLoader', () => {

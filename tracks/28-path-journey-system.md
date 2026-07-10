@@ -2,7 +2,7 @@
 
 > **Plan:** [plans/28-path-journey-system.md](../plans/28-path-journey-system.md)
 > **Status:** `[x]` Phase A + B landed
-> **Last updated:** 2026-07-03
+> **Last updated:** 2026-07-10
 
 Unifies world road + chapter stories + Echoes into one **Path** spine: an ordered
 journey of milestones, each stamped with strength (realm/level/CP) at that step.
@@ -33,7 +33,8 @@ My Path = your auto-recorded road; Ancient Paths = authored roads to "learn from
 | Combat hook | `MapScene` exit zone routes path-walk clears through `PathWalkManager` (skips real save patch) |
 | Story hook | `StorySceneHost` with `pathWalk: true` advances walk without polluting player story progress |
 | Locale | `demo.path.*` follow strings (en/vi) |
-| Tests | `tests/unit/path-walk.test.ts` — map-only stops, story interleave, finish → home; E2E guided walk in `journey-flow.spec.ts` |
+| Dao Scroll auto-read (2026-07-10) | `PathWalkManager.getPathWalkTimelineShardId` / `markPathWalkTimelineShardSeen` (pure) + `MapScene.playPathWalkTimelineShard` — auto-opens `TimelineShardReader` for each cleared stop's map, skippable via the reader's own skip control, before routing to the next stop (sub-plan 31 §6.3, Phase E3) |
+| Tests | `tests/unit/path-walk.test.ts` — map-only stops, story interleave, finish → home, Dao Scroll shard lookup/mark-seen; E2E guided walk in `journey-flow.spec.ts` |
 
 ### Verification (2026-07-03)
 

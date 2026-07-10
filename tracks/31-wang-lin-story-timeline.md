@@ -1,6 +1,6 @@
 # 31 — Wang Lin story timeline (Dao Scroll)
 
-**Status:** `[~]` Phases A–D done · Phase E (art/polish) pending  
+**Status:** `[~]` Phases A–D done · Phase E code hooks (E2/E3) done 2026-07-10 · E1 illustrations pending  
 **Plan:** [plans/31-wang-lin-story-timeline.md](../plans/31-wang-lin-story-timeline.md)  
 **Last updated:** 2026-07-10
 
@@ -47,13 +47,18 @@
 
 ---
 
-## Remaining — Phase E (art + polish, parallel)
+## Done (Phase E — code hooks, 2026-07-10)
+
+- [x] **E2** World map pin tooltip — `timelineTooltipFor()` in `src/ui/world/RegionNode.ts` + `tooltip` option on `src/ui/world/MapNode.ts`'s `createMapNode`: shows the punch-line one-liner (`I18nManager.t(shard.punchlineKey)`) when `save.progress.timelineSeen` contains the map's shard id, else literal `"?"`; falls back to the existing map-name tooltip when the map has no linked shard at all (plan 17 §6.4 / plan 31 §6.4)
+- [x] **E3** Ancient path-walk auto-open shard between maps, skippable — `getPathWalkTimelineShardId()` + `markPathWalkTimelineShardSeen()` in `src/progression/PathWalkManager.ts` (pure lookups/patch), orchestrated by `MapScene.playPathWalkTimelineShard()`: after each cleared stop in a guided follow-walk, opens `TimelineShardReader` for that map's shard (its built-in skip button lets the player fast-forward to the punch-line) before routing to the next stop; marks the shard into `timelineSeen` on the active save. The ancient-demo save is session-only and never persisted to IndexedDB (track 28: "demo walks never persist"), so this never pollutes the player's real Dao Scroll/journey progress — it only makes the shard read *during that walk* (plan 31 §6.3)
+- [x] `tests/unit/path-walk.test.ts` — `getPathWalkTimelineShardId` resolves/rejects, `markPathWalkTimelineShardSeen` appends once and is idempotent
+- [x] `tests/unit/region-node.test.ts` — pin tooltip is `"?"` when unseen, punch-line text when seen, falls back to map label with no shard
+
+## Remaining — Phase E (art only)
 
 | # | Task | Files |
 |---|------|-------|
 | E1 | `assets/story/timeline/*.webp` per map (shards currently ship with `illustration: null` — reader renders placeholder art panel) | encounter-art skill |
-| E2 | World map pin tooltip — punch-line one-liner if `timelineSeen`, else `"?"` (plan 31 §6.4) | `src/ui/world/WorldMap.ts` / `RegionNode` |
-| E3 | Ancient path-walk auto-open shard between maps, skippable (plan 31 §6.3) | `src/progression/PathWalkManager.ts` |
 
 ---
 
@@ -66,6 +71,14 @@
 - [x] Manual trace of the flow (code review, not live-browser): clear `map.fallen_village.01` → `tryClearMap` returns `pendingTimelineShard: 'timeline.map.fallen_village.01'` → `applyMapClearPatch` pushes it into `timelineSeen` + records `timeline_shard` journey entry → `MapScene` shows the offer modal → Read now opens `TimelineShardReader` → punch-line card (teal `life_death` rim) → Home
 - [ ] Live-browser/E2E pass of the above (not run this session — recommend `smoke-test` skill or a Playwright pass before ship)
 - [ ] Dao Scroll node marked read after first shard view, confirmed visually in the running app
+
+### Verification — Phase E code hooks (2026-07-10)
+
+- [x] `pnpm exec vitest run` — **594/594 unit tests pass** (0 failing), incl. new `region-node.test.ts` (3 tests) and extended `path-walk.test.ts` (+4 tests) for E2/E3
+- [x] `pnpm exec tsc --noEmit` — clean
+- [x] Manual trace E2: `RegionNode` renders `map.fallen_village.01` pin with `title="?"` on a fresh save; after adding `timeline.map.fallen_village.01` to `timelineSeen`, pin `title` becomes the localized punch-line; a map with no `timelineShardId` (e.g. `map.test.grove`) keeps its plain name tooltip
+- [x] Manual trace E3: guided follow-walk clears `map.fallen_village.01` while `isAncientCombatActive()` + `isPathWalkActive()` → `MapScene.playPathWalkTimelineShard` opens `TimelineShardReader` for `timeline.map.fallen_village.01` (skip button available), then patches the active (demo) save's `progress.timelineSeen`; no `store.persist()` call in this path, so the demo save's `timelineSeen` addition is discarded with the rest of the demo save on `exitAncientDemo()` — the real player's `timelineSeen` is untouched unless they clear that map for real
+- [ ] Live-browser/E2E pass of E2/E3 (not run this session)
 
 ---
 

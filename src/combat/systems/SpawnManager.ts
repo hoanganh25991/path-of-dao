@@ -459,12 +459,14 @@ export class SpawnManager {
       cultivatorId: cultivator.config.id,
       isBoss,
       wasRematch,
+      isBeast: cultivator.isBeast,
     });
     // Back-compat for audio / juice listeners during migration.
     EventBus.emit('map:enemy-killed', {
       enemyId: cultivator.config.id,
       isBoss,
       wasRematch,
+      isBeast: cultivator.isBeast,
     });
 
     if (bossClearId && !wasRematch) {

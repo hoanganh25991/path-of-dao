@@ -26,11 +26,12 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 - [x] Tiên Nghịch copy: region blurbs, map flavor text (EN + VI), enemy names, bestiary notes
 - [x] World map detail sheet shows map `.desc`
 - [x] **Map canon (procedural path):** settlement clusters + signature tree spawn per `worldProfile` (`ProceduralSettlementGenerator`); authored on `world.fallen_village` (ruin_village) + `world.fallen_village.gate` (sect_courtyard), auto-default hamlet/tree elsewhere in ch1–5
+- [x] **Ch1 TTK balance** — procedural `mapBaseMultiplier` halved (`PROCEDURAL_BASE_POWER = 0.5`); scavenger near spawn ~55 HP / ~6 hits instead of ~109 / ~13 (L1 atk)
 
 ## Remaining
 - **Dao Scroll** (plan 31): locale prose for ch1–5 maps **done** — still need `timelineShardId` on map JSON + shard files (see [31](./31-wang-lin-story-timeline.md) Phase B)
 - Ch1 explore star sub-zones (east/south/north) — **keep** per user decision
-- recommendedCp playtest pass (plan §11 manual QA)
+- recommendedCp playtest pass (plan §11 manual QA) — first pass: half procedural base power 2026-07-10; re-check after more maps
 - Tile seam / void-hole polish on procedural ground
 
 ## What needs to do

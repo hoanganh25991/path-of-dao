@@ -13,6 +13,7 @@ import {
 } from '@/combat/skills/effects/runEffects';
 import { canAffordCast, getCastBlockReason } from '@/combat/skills/castGuards';
 import { resolveSkillEffects } from '@/combat/skills/resolveSkillEffects';
+import { resolveSkillAudioFrames, scheduleSkillAudio } from '@/combat/skills/skillAudioSync';
 
 export type { CastBlockReason } from '@/combat/skills/castGuards';
 
@@ -56,7 +57,12 @@ export class SkillExecutor {
       burstAncientSkill(this.player.scene, this.player.x, this.player.y, skill.intent, skill.kind);
     }
 
-    EventBus.emit('skill:cast', { intent: skill.intent });
+    scheduleSkillAudio(
+      { delay: (ms, fn) => this.player.scene.time.delayedCall(ms, fn) },
+      skill.intent,
+      resolveSkillAudioFrames(skill),
+      (event, intent) => EventBus.emit(event, { intent }),
+    );
 
     const ctx: EffectRunnerContext = {
       player: this.player,

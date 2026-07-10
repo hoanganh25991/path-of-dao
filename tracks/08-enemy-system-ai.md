@@ -11,7 +11,7 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 ## Done
 
 - `Cultivator` entity (renamed from Enemy) with health, AI, telegraphed attacks
-- Non-lethal defeat: 0 HP → sit/meditation at spawn → recover in place → fight again (roaming stays in world)
+- Non-lethal defeat: 0 HP → sit/meditation **in place** → recover → fight again (roaming stays in world). Instant spawn-teleport removed 2026-07-10 (read as despawn).
 - **Defeat UX polish** — HP bar empties (`setScale(0,1)`) and hides on defeat; reappears when cultivator fully recovers; grey tint + alpha fade during defeat state
 - `EncounterScaling`: solo 1 · squad 10 · horde 100 · mass 500 by player realm vs map `recommendedRealmOrder`
 - `CultivatorPool` prewarms 20/type; live cap up to 18 during mass-tier queue drain
@@ -27,7 +27,7 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 - i18n: EN Cultivator / VI Tu Sĩ; defeat copy uses "lose exchange" not kill/die
 - **Roaming rank scaling (distance + time):** `RoamingRankScaler` computes 0–3 rank per slot from player spawn distance + map elapsed time; capped by `recommendedRealmOrder` (map design ceiling). Ranked cultivators get +25%/rank stat multiplier via `StatModifier`, colored aura ring + orbit sparkles, and rank-colored HP bar.
 - **Enemy pool variety:** `RoamConfig` schema extended with optional `enemyPool` array; slot picks higher-index enemy at higher rank for natural difficulty progression. Backward compatible with single `enemyId`.
-- **`opponentKind: 'beast' | 'cultivator'`** — `cultivatorConfigSchema` field, `.default('cultivator')`; all 44 `content/enemies/*.json` set explicitly (19 beasts, 25 cultivators incl. all 10 bosses). `Cultivator.isBeast` getter; shared `shouldDespawnOnDefeat()` (`src/combat/systems/defeatRouting.ts`) routes `onDefeatHoldComplete` in all three spawn managers — beasts despawn/release to pool immediately (no sit pose), cultivators keep the gather-qi `beginRecovery()` flow, bosses stay down for the session
+- **`opponentKind: 'beast' | 'cultivator'`** — `cultivatorConfigSchema` field, `.default('cultivator')`; all 44 `content/enemies/*.json` set explicitly (19 beasts, 25 cultivators incl. all 10 bosses). `Cultivator.isBeast` getter; shared `shouldDespawnOnDefeat()` / `shouldStayDownOnDefeat()` (`src/combat/systems/defeatRouting.ts`) — **beasts** despawn to pool; **cultivators** `beginRecovery()` sit gather-qi; **bosses** sit stay-down (no pool release, no re-aggro; stayDownKeys survive cell unload)
 - Tests: `cultivator-pool`, `cultivator-config`, `encounter-scaling`, `aoe-scaling`, `defeat-routing`, `combat-camera-director`
 
 ## Remaining
@@ -46,6 +46,6 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 ## Verification
 
 - `pnpm test` — cultivator-pool, cultivator-config, encounter-scaling, aoe-scaling, rewards, combat-resolver, defeat-routing
-- Roaming: defeated cultivator returns to spawn sit pose and recovers without despawn; **boss roam slots stay down** (no recovery) for the session
+- Roaming: defeated cultivator returns to spawn sit pose and recovers without despawn; **boss roam slots sit gather-qi and stay down** (no re-aggro, no pool release) for the session
 - Boss ordeal maps: `requiredBossId` on map config gates depart portal until the gate boss is defeated
 - Over-leveled return visit: first wave scales toward 100–500 cultivators per tier

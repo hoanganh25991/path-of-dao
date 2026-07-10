@@ -79,6 +79,10 @@ export const skillDefinitionSchema = z.object({
   skillMultiplier: z.number().positive(),
   cooldownMs: z.number().int().positive().optional(),
   castTimeMs: z.number().int().min(0).optional(),
+  /** Ms after cast trigger to fire the cast-frame one-shot (wind-up sync). Default 0 = immediate. */
+  castFrameMs: z.number().int().min(0).optional(),
+  /** Ms after cast trigger to fire the impact-frame one-shot (strike sync). Undefined = kind default (see `skillAudioSync.ts`). */
+  impactFrameMs: z.number().int().min(0).optional(),
   effects: z.array(skillEffectSchema).optional(),
   vfx: skillVfxSchema.optional(),
   awakenedOverrides: skillAwakenedOverridesSchema.optional(),

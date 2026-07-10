@@ -53,6 +53,11 @@ describe('procedural rank scaling', () => {
     expect(chapterTierFromCp(6000)).toBeGreaterThan(chapterTierFromCp(800));
   });
 
+  it('ch1 map base power is half of authored JSON (early-map TTK)', () => {
+    const ch1 = buildProceduralRankConfig(800, 1, 640);
+    expect(ch1.mapBaseMultiplier).toBeCloseTo(0.5, 5);
+  });
+
   it('far cells on ch3 map hit much harder than near cells on ch1', () => {
     const ch1 = buildProceduralRankConfig(800, 1, 640);
     const ch3 = buildProceduralRankConfig(6000, 2, 800);
@@ -65,6 +70,6 @@ describe('procedural rank scaling', () => {
     const ch3 = buildProceduralRankConfig(6000, 2, 800);
     const boss = computeProceduralRank(8000, 0, 8, 6, 'boss', ch3);
     expect(boss.rank).toBeGreaterThanOrEqual(10);
-    expect(boss.statMultiplier).toBeGreaterThan(8);
+    expect(boss.statMultiplier).toBeGreaterThan(4);
   });
 });

@@ -14,7 +14,7 @@ import {
   type GeneratedSpawn,
 } from '@/combat/world/ProceduralCellGenerator';
 import { CultivatorPool } from '@/combat/systems/CultivatorPool';
-import { shouldDespawnOnDefeat } from '@/combat/systems/defeatRouting';
+import { shouldDespawnOnDefeat, shouldStayDownOnDefeat } from '@/combat/systems/defeatRouting';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { rollCultivatorLoot } from '@/combat/systems/lootRoll';
 import { CombatPickupController } from '@/combat/systems/CombatPickupController';
@@ -57,6 +57,8 @@ export class ProceduralRoamingSpawnManager {
   private readonly pool: CultivatorPool;
   private readonly slots = new Map<string, CellSlot[]>();
   private readonly layouts = new Map<string, ReturnType<typeof generateCellLayout>>();
+  /** Boss slots that stay down for the session (survive cell unload/reload). */
+  private readonly stayDownKeys = new Set<string>();
   private arrows: Arrow[] = [];
   private pickups!: CombatPickupController;
   private destroyed = false;
@@ -197,18 +199,26 @@ export class ProceduralRoamingSpawnManager {
       return;
     }
 
-    const cellSlots: CellSlot[] = layout.spawns.map((spawn) => ({
-      ...spawn,
-      cellX,
-      cellY,
-      cultivator: null,
-      defeated: false,
-    }));
+    const cellSlots: CellSlot[] = layout.spawns.map((spawn) => {
+      const slot: CellSlot = {
+        ...spawn,
+        cellX,
+        cellY,
+        cultivator: null,
+        defeated: false,
+      };
+      slot.defeated = this.stayDownKeys.has(this.stayDownKey(slot));
+      return slot;
+    });
 
     for (const slot of cellSlots) {
       this.activateSlot(slot);
     }
     this.slots.set(key, cellSlots);
+  }
+
+  private stayDownKey(slot: CellSlot): string {
+    return `${cellKey(slot.cellX, slot.cellY)}:${slot.enemyId}:${slot.x}:${slot.y}`;
   }
 
   private despawnCell(key: string): void {
@@ -264,8 +274,8 @@ export class ProceduralRoamingSpawnManager {
       const slot = cellSlots.find((s) => s.cultivator === cultivator);
       if (!slot) continue;
 
-      // Boss slots stay down for the session; beasts despawn to pool on defeat —
-      // no gather-qi sit-recover (combat-defeat-canon.md §1).
+      // Beasts despawn to pool — no gather-qi. Cultivators (incl. bosses) sit recover;
+      // bosses stay down for the session (combat-defeat-canon.md §1).
       if (shouldDespawnOnDefeat(cultivator)) {
         slot.defeated = true;
         this.pool.release(cultivator);
@@ -273,6 +283,10 @@ export class ProceduralRoamingSpawnManager {
         return;
       }
 
+      if (shouldStayDownOnDefeat(cultivator)) {
+        slot.defeated = true;
+        this.stayDownKeys.add(this.stayDownKey(slot));
+      }
       cultivator.beginRecovery();
       return;
     }
@@ -462,11 +476,13 @@ export class ProceduralRoamingSpawnManager {
       cultivatorId: cultivator.config.id,
       isBoss,
       wasRematch,
+      isBeast: cultivator.isBeast,
     });
     EventBus.emit('map:enemy-killed', {
       enemyId: cultivator.config.id,
       isBoss,
       wasRematch,
+      isBeast: cultivator.isBeast,
     });
 
     if (bossClearId && !wasRematch) {

@@ -177,7 +177,7 @@ Each chapter review checklist in `content/locales/vi/REVIEW.md`.
 
 ## 13. Acceptance Criteria
 
-- [~] All UI strings localized both languages — combat HUD + home nav aria wired; map intro overlay and story reader prev/next aria still English-only
+- [x] All UI strings localized both languages — combat HUD + home nav aria wired via locale keys (2026-07-10 audit: `src/ui` grep for hardcoded strings found only 1 remaining hit, the dev-only FPS counter aria-label, intentionally left English); map intro overlay and story reader controls have no separate aria-label (accessible name comes from already-localized visible button text), so this note from an earlier pass was stale
 - [x] Story ch1–10 complete in vi
 - [x] Glossary consistent across files
 - [x] strict-i18n validator passes

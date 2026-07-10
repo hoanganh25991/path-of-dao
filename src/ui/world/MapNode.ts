@@ -7,10 +7,13 @@ export interface MapNodeOptions {
   x: number;
   y: number;
   onSelect(mapId: string): void;
+  /** Dao Scroll pin tooltip override — punch-line one-liner if shard seen, "?" if locked
+   *  (sub-plan 31 §6.4). Falls back to `label` when the map has no timeline shard. */
+  tooltip?: string;
 }
 
 export function createMapNode(options: MapNodeOptions): HTMLElement {
-  const { mapId, label, state, x, y, onSelect } = options;
+  const { mapId, label, state, x, y, onSelect, tooltip } = options;
 
   const btn = document.createElement('button');
   btn.type = 'button';
@@ -20,7 +23,10 @@ export function createMapNode(options: MapNodeOptions): HTMLElement {
   btn.dataset.state = state;
   btn.style.left = `${x}px`;
   btn.style.top = `${y}px`;
-  btn.title = label;
+  btn.title = tooltip ?? label;
+  if (tooltip) {
+    btn.dataset.timelineTooltip = tooltip;
+  }
 
   const pin = document.createElement('span');
   pin.className = 'world-map-node__pin';

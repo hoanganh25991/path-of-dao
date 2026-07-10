@@ -17,7 +17,7 @@ Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where
 | In progress | **14** (incl. 06 procedural fork, 29–34 cross-cutting) |
 | Pending | **0** (31 content partial — UI pending) |
 | Alignment T1–T8 | **8 / 8 done** (weapon arc) |
-| **Plan vs code gaps** | Dao Scroll **art/tooltip/auto-walk** (31 Phase E) · `divineArts` rename (30) |
+| **Plan vs code gaps** | Dao Scroll **illustrations** (31 Phase E1 — tooltip/auto-walk code hooks done 2026-07-10) · `divineArts` rename (30) |
 | Active thread | **Procedural road playable** — reconcile with `map-design-canon` + ship checklist (26) |
 
 ### By phase
@@ -122,7 +122,7 @@ Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where
 | C1 | **Map runtime** | **Keep procedural endless** — add settlements/signature trees as procedural props; relax Tiled 16k as hard gate | 21/22/06 remaining updated |
 | C2 | **Master Intent** | **Migrated** plan 14 redesign (`MasterIntentSystem`, main-flow + gate) — `[x]` done 2026-07-10 | 14 done |
 | C3 | **Wheel save** | **Renamed** `equippedSkills` → `divineArts` in save/UI (`[x]` done 2026-07-10) — kept indexed shape + `''` empty as decided | 30 remaining (pause editor, DA-04 icons) |
-| C4 | **Dao Scroll** | **Phases B→D shipped 2026-07-10** — shard JSON, save unlock, Path sub-tab all playable; Phase E (art/tooltip/auto-walk) remains | 31 `[~]` |
+| C4 | **Dao Scroll** | **Phases B→D shipped 2026-07-10** — shard JSON, save unlock, Path sub-tab all playable; **Phase E2/E3 code hooks shipped 2026-07-10** (world map tooltip, ancient auto-walk); only E1 illustrations remain | 31 `[~]` |
 | C5 | **Defeat canon** | Simplified defeat-in-place OK for MVP; full origin tween optional later | 06 note |
 | C6 | **Ch1 star zones** | Keep star sub-zones (east/south/north) — no revert | 21 done note |
 
@@ -142,7 +142,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 - [~] 8 boss fights with distinct patterns (23 — phase tracker wired; pattern polish open)
 - [~] 40 Divine Arts equippable; Sword Intent gated until ancient sword (T7 done)
 - [x] **Master Intent** — plan 14 redesign migrated: main-flow (`life_death`→`cause_effect`→`truth_falsehood`) + gate-flow (`sword`/`flame`/`lightning`)
-- [~] **Dao Scroll** — 20 shards playable (offer modal → read → Path tab **Dao Scroll** sub-tab, replay-safe); illustrations + world map tooltip + ancient auto-walk pending (31 Phase E)
+- [~] **Dao Scroll** — 20 shards playable (offer modal → read → Path tab **Dao Scroll** sub-tab, replay-safe); world map tooltip + ancient auto-walk shipped 2026-07-10; illustrations still pending (31 Phase E1)
 - [ ] **Fake 2.5D ship gate** — authored sprites replace sticky-man (plans 29 + 32)
 - [ ] Full UI in English and Vietnamese (24)
 - [ ] PWA installable; 30 FPS on mid-range Android (26)
@@ -162,10 +162,10 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 | World map portal + lock | Free jump + chapter gate UI |
 | Save reload + settings | Continue Journey, fullscreen, version |
 
-- **543 unit tests passing, 0 failing** (2026-07-10 — +14 from Master Intent migration: `master-intent.test.ts`, save migration case, timeline/ancient-demo/skill-loadout updates; see track 14) · **37 E2E**
-- **New since last track sync:** Master Intent migration (14), procedural world profiles, 2.5D tiles, skill VFX tiers, plans 29–34
+- **599 unit tests passing, 0 failing** (2026-07-10 — +5 loot→item cross-ref lint + boss loot audit tests, track 33/20; +51 earlier from Dao Scroll Phase E2/E3 code hooks: `path-walk.test.ts` (+4), new `region-node.test.ts` (3), plus earlier Master Intent migration tests; see track 14 and 31) · **37 E2E**
+- **New since last track sync:** Dao Scroll Phase E2/E3 (31), Master Intent migration (14), procedural world profiles, 2.5D tiles, skill VFX tiers, plans 29–34; **procedural cultivator power halved** (`PROCEDURAL_BASE_POWER = 0.5`, tracks 06/21) after ch1 TTK playtest
 
-**Next priorities:** plan **31** Dao Scroll **Phase E** (art/tooltip/auto-walk) → ship **26** (`divineArts` rename done 2026-07-10, track 30)
+**Next priorities:** plan **31** Dao Scroll **Phase E1** (illustrations only — code hooks done) → ship **26** (`divineArts` rename done 2026-07-10, track 30)
 
 ---
 
@@ -190,8 +190,8 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 | 6 | ~~**10 boss distinct patterns** — telegraphs, phases, punish windows~~ | 23 | `[x]` Done 2026-07-10 — `combat:boss-phase-changed` event (juice shake + audio on real phase shifts, not just defeat); per-phase `telegraphMs`/`strikeMs`/`telegraphColor`; content `attackShape` (circle/aoe_ring/projectile) drives `SpawnManager.resolveStrike`; all 10 bosses tuned distinct (shape/range/cooldown/adds). Unique move scripts + enrage timer still open as polish |
 | 7 | ~~Procedural **settlement clusters + signature tree** per `worldProfile`~~ | 06, 21, 22 | `[x]` Done 2026-07-10 — `ProceduralSettlementGenerator` + `SettlementDecorator`; auto-defaults + authored fallen_village pair |
 | 8 | ~~Map-clear modal → offer timeline shard read~~ | 18, 31 | `[x]` Done 2026-07-10 — `TimelineOfferModal` in `MapScene.finishMapExit` |
-| 9 | ~~`opponentKind: beast\|cultivator` on enemies + recovery rules~~ | 06, 08 | `[x]` Done 2026-07-10 — schema `.default('cultivator')`, all 44 `content/enemies/*.json` explicit; beasts despawn to pool, cultivators/bosses keep sit-recover / stay-down |
-| 10 | Full **en/vi UI audit** + Vietnamese overflow | 24 | `timeline.json` / story done |
+| 9 | ~~`opponentKind: beast\|cultivator` on enemies + recovery rules~~ | 06, 08 | `[x]` Done 2026-07-10 — beasts despawn; cultivators sit gather-qi; bosses sit stay-down (no pool release — fixed same day) |
+| 10 | ~~Full **en/vi UI audit** + Vietnamese overflow~~ | 24 | `[x]` Done 2026-07-10 — `i18n:lint --strict` was failing on 38 missing vi keys (Dharma/Divine/Intent rename labels), now 0 errors; 3 hardcoded aria-label strings fixed in `src/ui` (nav, dharma close, skill picker); `:lang(vi)` CSS + smaller font added for the two riskiest multi-tab bars (Profile sub-tabs, Path sub-tabs). On-device visual QA still open |
 
 ### P2 — Polish & art (parallel)
 
@@ -200,10 +200,10 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 | 11 | **DA-01 hero** sprites → replace sticky-man | 32, 29 | Ship gate plan 29 §0 |
 | 12 | DA-02/03 enemies + bosses; DA-04 wheel icons | 32, 29, 30 | |
 | 13 | Chapter + timeline **illustrations** (webp or null) | 32, 18, 31 | Polish, not logic block |
-| 14 | Skill cast **audio sync** on impact frames | 19, 25 | |
+| 14 | ~~Skill cast **audio sync** on impact frames~~ | 19, 25 | `[x]` Done 2026-07-10 — `castFrameMs`/`impactFrameMs` schema fields; `SkillExecutor` schedules `skill:cast`/`skill:impact` via scene timer (kind default: melee `impactFrameMs` 140ms); boss telegraph SFX verified already wired (`combat:boss-phase-changed` → `boss.telegraph`) |
 | 15 | Real **OGG** assets + file playback | 25 | Procedural OK for MVP if time short |
 | 16 | ~~Validator: `timelineShardId` on all maps; CI `content:validate`~~ | 20, 31 | `[x]` Done 2026-07-10 — `lintCrossrefs` + schema validate all 20 shards |
-| 17 | Loot pity / full item roster lint | 33, 20 | |
+| 17 | ~~Loot→item cross-ref lint + boss loot audit~~; full item roster + pity still open | 33, 20 | `[x]` lint+audit done 2026-07-10 — 10/10 bosses had valid loot tables, no broken refs found; pity (IS-04) skipped as underspecified (see track 33 note); full item roster pass remains |
 
 ### Done — do not rework unless plan changes
 
@@ -244,10 +244,10 @@ flowchart LR
 | Layer | Plans | Track status |
 |-------|-------|--------------|
 | **Controls** | Wheel + Dash + Gather Qi (§1.2) | `[x]` 03, 07 |
-| **Divine Arts** | Cast pipeline + 6 slots (19, 30) | `[~]` VFX strong; save rename open |
+| **Divine Arts** | Cast pipeline + 6 slots (19, 30) | `[~]` VFX + audio sync strong; save rename open |
 | **Master Intent** | Emergent awakenings (14) | `[x]` main-flow + gate-flow migrated |
 | **Level design** | 20 maps + settlements + trees | `[x]` procedural fork (C1) — auto + authored |
-| **Story** | Chapter finales (18) prose `[x]` · Dao Scroll runtime B→D (31) `[x]` · Phase E art `[ ]` | `[~]` |
+| **Story** | Chapter finales (18) prose `[x]` · Dao Scroll runtime B→D (31) `[x]` · Phase E2/E3 code hooks `[x]` · Phase E1 art `[ ]` | `[~]` |
 | **Art** | design-arts (32) → combat hooks (29) | `[~]` placeholders |
 | **Loot** | item-system (33) | `[~]` drops work |
 | **Ship** | 24–26 + quick check (34) | `[~]` |
@@ -289,9 +289,10 @@ flowchart LR
 
 | Done | Remaining |
 |------|-----------|
-| 20-map locale prose (`timeline.json` en+vi) | Illustrations (`assets/story/timeline/*.webp`) |
-| **Phases B→D shipped 2026-07-10** — shard JSON + `TimelineLoader`, `timelineSeen` save + unlock-on-clear, offer modal, `TimelineShardReader`, Path tab **Dao Scroll** sub-tab | World map pin punch-line tooltip (17 §6.4) |
-| Journey `timeline_shard` entries + replay from My Path and Dao Scroll | Ancient follow-walk auto-open shard between maps (28) |
+| 20-map locale prose (`timeline.json` en+vi) | Illustrations (`assets/story/timeline/*.webp`) — Phase E1 only |
+| **Phases B→D shipped 2026-07-10** — shard JSON + `TimelineLoader`, `timelineSeen` save + unlock-on-clear, offer modal, `TimelineShardReader`, Path tab **Dao Scroll** sub-tab | — |
+| Journey `timeline_shard` entries + replay from My Path and Dao Scroll | — |
+| **Phase E2/E3 shipped 2026-07-10** — world map pin punch-line tooltip (17 §6.4); ancient follow-walk auto-opens shard between maps, skippable, marks `timelineSeen` (28) | — |
 
 → [full track](./31-wang-lin-story-timeline.md) — **What needs to do** checklist
 
@@ -299,7 +300,8 @@ flowchart LR
 
 | Done | Remaining |
 |------|-----------|
-| Cast pipeline, tier VFX, thunder chain, intent textures | Audio sync; sprite-sheet art pass (32) |
+| Cast pipeline, tier VFX, thunder chain, intent textures | Sprite-sheet art pass (32) |
+| **Audio sync on cast/impact frames** (2026-07-10) — `castFrameMs`/`impactFrameMs` on skill schema; `SkillExecutor` schedules `skill:cast`/`skill:impact` via `skillAudioSync.ts` | |
 | Sword Intent gating in combat (T7) | |
 
 → [full track](./19-skill-executor-vfx.md) — **What needs to do** table
@@ -390,9 +392,9 @@ flowchart LR
 |----|--------|---------------------------|--------|
 | 29 | `[~]` | DA-01 hero sprites; layered props; anim QA all families | [track](./29-pixel-art-combat-canon.md) |
 | 30 | `[~]` | ~~Rename `equippedSkills` → `divineArts`~~ `[x]` done 2026-07-10; DA-04 wheel icons + optional pause editor remain | [track](./30-divine-arts-wheel-loadout.md) |
-| 31 | `[~]` | **Phase E:** illustrations, world map tooltip, ancient auto-walk hook | [track](./31-wang-lin-story-timeline.md) |
+| 31 | `[~]` | **Phase E1 only:** illustrations (tooltip + ancient auto-walk hook shipped 2026-07-10) | [track](./31-wang-lin-story-timeline.md) |
 | 32 | `[~]` | DA-01…09 art pipeline; auto-wire on drop | [track](./32-design-arts.md) |
-| 33 | `[~]` | Loot lint; item roster; DA-05 icons | [track](./33-item-loot-system.md) |
+| 33 | `[~]` | ~~Loot→item lint + boss audit~~ `[x]` done 2026-07-10; item roster; DA-05 icons | [track](./33-item-loot-system.md) |
 | 34 | `[~]` | Fix 22 unit failures; smoke + DevTools gate | [track](./34-quick-check-smoke-devtools.md) |
 
 ---

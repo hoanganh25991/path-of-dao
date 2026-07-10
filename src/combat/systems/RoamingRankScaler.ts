@@ -26,7 +26,7 @@ export interface RoamingRankResult {
 
 /** Procedural endless maps — steeper distance curve + map CP tier base power. */
 export interface ProceduralRankConfig extends RoamingRankConfig {
-  /** Multiplier from map recommendedCp vs ch1 baseline. */
+  /** Multiplier from map recommendedCp vs ch1 baseline (includes PROCEDURAL_BASE_POWER). */
   mapBaseMultiplier: number;
   /** Per-rank stat growth (procedural uses ~0.42). */
   rankStatStep: number;
@@ -37,6 +37,12 @@ export interface ProceduralRankConfig extends RoamingRankConfig {
 const DEFAULT_DIST_PER_RANK = 800;
 const DEFAULT_SEC_PER_RANK = 45;
 const CH1_CP_BASELINE = 800;
+/**
+ * Ch1 baseline power vs authored enemy JSON — procedural rank used to stack
+ * ~3–6× near spawn, so L1 atk (~9 dmg) barely moved HP bars. Half keeps
+ * distance/cell growth but brings early-map TTK back to a few hits.
+ */
+const PROCEDURAL_BASE_POWER = 0.5;
 
 /**
  * Chapter power band from recommended CP — ch1 ≈ 1, ch3 ≈ 3, ch10 ≈ 10.
@@ -55,7 +61,7 @@ export function buildProceduralRankConfig(
     maxRank: 6 + tier * 5 + recommendedRealmOrder * 2,
     distPerRank: Math.max(280, Math.floor(cellSize * 0.4)),
     secPerRank: 90,
-    mapBaseMultiplier: (recommendedCp / CH1_CP_BASELINE) ** 0.42,
+    mapBaseMultiplier: PROCEDURAL_BASE_POWER * (recommendedCp / CH1_CP_BASELINE) ** 0.42,
     rankStatStep: 0.42,
     cellRankFactor: 1.75,
   };

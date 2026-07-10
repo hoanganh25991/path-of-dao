@@ -8,6 +8,7 @@ import { timelineShardSchema } from '@/shared/schemas/timeline';
 import { worldMapFileSchema } from '@/shared/schemas/world-map';
 import { encounterDefinitionSchema } from '@/shared/schemas/fortuitous-encounters';
 import { realmsFileSchema } from '@/shared/schemas/realms';
+import { lootTableSchema } from '@/shared/schemas/loot';
 import type { ContentIndex } from '@/shared/content/validateSchemas';
 import type { ValidationReport } from '@/shared/content/types';
 
@@ -257,12 +258,44 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
         severity: 'error',
       });
     }
+    if (enemy.category === 'boss' && !enemy.lootTable) {
+      errors.push({
+        file: `enemies/${fileId}.json`,
+        message: `boss "${enemy.id}" has no lootTable`,
+        severity: 'error',
+      });
+    }
     if (enemy.bestiaryKey && !localeHasKey(index.locales, enemy.bestiaryKey, 'en')) {
       warnings.push({
         file: `enemies/${fileId}.json`,
         message: `bestiaryKey "${enemy.bestiaryKey}" missing in en locale`,
         severity: 'warning',
       });
+    }
+  }
+
+  for (const [fileId, raw] of index.loot) {
+    const parsed = lootTableSchema.safeParse(raw);
+    if (!parsed.success) continue;
+    const table = parsed.data;
+    const path = `loot/${fileId}.json`;
+    for (const entry of table.entries) {
+      if (!itemIds.has(entry.itemId)) {
+        errors.push({
+          file: path,
+          message: `entries itemId "${entry.itemId}" not found in content/items`,
+          severity: 'error',
+        });
+      }
+    }
+    for (const entry of table.guaranteed ?? []) {
+      if (!itemIds.has(entry.itemId)) {
+        errors.push({
+          file: path,
+          message: `guaranteed itemId "${entry.itemId}" not found in content/items`,
+          severity: 'error',
+        });
+      }
     }
   }
 

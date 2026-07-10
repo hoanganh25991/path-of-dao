@@ -1,8 +1,20 @@
 import { I18nManager } from '@/core/i18n/I18nManager';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 import { getMapTravelState, getRegionClearDots } from '@/progression/WorldProgression';
+import { findTimelineShardByMapId } from '@/progression/TimelineLoader';
 import type { WorldRegion } from '@/shared/schemas/world-map';
 import { createMapNode } from '@/ui/world/MapNode';
+
+/** Dao Scroll pin tooltip — punch-line one-liner if the shard has been read,
+ *  "?" while it is still locked; `undefined` when the map has no timeline shard
+ *  at all (sub-plan 31 §6.4). */
+function timelineTooltipFor(mapId: string, save: PlayerSaveV1): string | undefined {
+  const shard = findTimelineShardByMapId(mapId);
+  if (!shard) return undefined;
+  return save.progress.timelineSeen.includes(shard.id)
+    ? I18nManager.t(shard.punchlineKey)
+    : '?';
+}
 
 export interface RegionNodeOptions {
   region: WorldRegion;
@@ -71,6 +83,7 @@ export function createRegionNode(options: RegionNodeOptions): HTMLElement {
       x: node.position.x,
       y: node.position.y,
       onSelect: onSelectMap,
+      tooltip: timelineTooltipFor(node.mapId, save),
     });
     mapsLayer.append(mapEl);
   }

@@ -109,6 +109,9 @@ export class AudioDirector {
       EventBus.on('skill:cast', ({ intent }) => {
         this.playSkillCast(intent);
       }),
+      EventBus.on('skill:impact', ({ intent }) => {
+        this.playSkillImpact(intent);
+      }),
       EventBus.on('insight:awakened', () => {
         AudioManager.playSfx('encounter.awaken', 'ui');
         AudioManager.duckMusic(0.5, 500);
@@ -123,6 +126,12 @@ export class AudioDirector {
   }
 
   static playSkillCast(intent: string): void {
+    const key = SKILL_SFX[intent];
+    if (key) AudioManager.playSfx(key);
+  }
+
+  /** Impact-frame one-shot — reuses the intent's cast key (sub-plan 19/25 audio sync). */
+  static playSkillImpact(intent: string): void {
     const key = SKILL_SFX[intent];
     if (key) AudioManager.playSfx(key);
   }

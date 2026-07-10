@@ -20,9 +20,15 @@ export type GameEvents = {
   'insight:ready-to-awaken': { intentId: string };
   'insight:awakened': { intentId: string; skillId: string };
   'encounter:completed': { encounterId: string; poiKey?: string };
-  'map:cultivator-defeated': { cultivatorId: string; isBoss: boolean; wasRematch: boolean };
+  'map:cultivator-defeated': {
+    cultivatorId: string;
+    isBoss: boolean;
+    wasRematch: boolean;
+    /** When true, opponent despawned (beast) — no sit-recover toast. */
+    isBeast: boolean;
+  };
   /** @deprecated Back-compat alias — prefer map:cultivator-defeated */
-  'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
+  'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean; isBeast?: boolean };
   'boss:defeated': { bossId: string };
   /** Boss HP crossed a phase threshold (sub-plan 23 — distinct boss patterns). */
   'combat:boss-phase-changed': { bossId: string; phaseIndex: number; hpThreshold: number };
@@ -40,6 +46,8 @@ export type GameEvents = {
   'player:meditate-started': undefined;
   'player:meditate-ended': undefined;
   'skill:cast': { intent: string };
+  /** Fires at the skill's authored/inferred impact frame — audio sync, not hit detection (sub-plan 19/25). */
+  'skill:impact': { intent: string };
   /** Player tried to cast but was blocked (e.g. out of mana). */
   'skill:cast-blocked': { reason: 'action' | 'cooldown' | 'mana' };
   'progression:xp-gained': { xpTotal: number; xpGained: number; level: number };

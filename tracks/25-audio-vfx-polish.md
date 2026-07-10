@@ -62,6 +62,8 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - **Real BGM files shipped** under `public/audio/bgm/` (MP3 + OGG) — oriental/cultivation loops replace procedural “è è è” drones
 - **File-based BGM playback** in `AudioManager` (fetch → decode → loop/crossfade; MP3 preferred for Safari; buffer cache)
 - Licenses documented in `assets/audio/README.md`
+- **Skill cast/impact frame audio sync** (2026-07-10, pairs with 19) — `skill:impact` EventBus event; `AudioDirector.playSkillImpact` wired; fires from `SkillExecutor` at the skill's resolved `impactFrameMs` (kind default or JSON override), not just at cast start
+- **Boss telegraph SFX confirmed wired** — `combat:boss-phase-changed` → `boss.telegraph` + `boss.phase_change` + music duck in `AudioDirector.mount()` (already shipped from earlier boss work; docs were stale)
 
 ### Combat juice
 - Hit-stop on heavy hits
@@ -82,16 +84,16 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - Map ambience loops per region (optional) — Fallen Village star shipped; ch2–10 deferred
 - Performance profile to disable juice on low-end devices (ties to 26)
 - `player.land` SFX (manifest key exists; no jump/land mechanic yet)
-- `boss.telegraph` (manifest key exists; no telegraph EventBus event yet)
 - Dedicated UI volume slider in settings (currently UI bus scales off SFX slider)
+- Dedicated impact-frame SFX flavor per intent (currently reuses the cast key — fine for MVP procedural placeholders, revisit once real OGG one-shots ship)
 
 ## What needs to do
 
 | # | Task | Files |
 |---|------|-------|
-| 1 | Emit `boss.telegraph` from boss AI telegraph phase → play manifest SFX | `Cultivator.ts` / boss configs · `AudioDirector.ts` |
+| 1 | ~~Emit `boss.telegraph` from boss AI telegraph phase → play manifest SFX~~ | `[x]` Verified already wired 2026-07-10 — `combat:boss-phase-changed` → `AudioDirector.mount()` |
 | 2 | Boss phase screen darken (visual juice) on phase transition | `CombatJuiceBridge` or MapScene overlay |
-| 3 | Skill `impactFrameMs` sync (pairs with track 19) | skill JSON + `AudioDirector` |
+| 3 | ~~Skill `impactFrameMs` sync (pairs with track 19)~~ | `[x]` Done 2026-07-10 — `skillAudioSync.ts` · `SkillExecutor.ts` · `AudioDirector.ts` |
 | 4 | Optional: dedicated **UI volume** slider in settings modal | `SettingsModal.ts` |
 | 5 | Confirm low-tier `QualityProfile` disables hit-stop/shake (26) | already partial — verify on device |
 | 6 | Ship real SFX OGG one-shots (combat/UI) when ready | `public/audio/sfx/` · manifest · `AudioManager` |
@@ -101,4 +103,5 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - Audio unlock persistence tested
 - Audio manifest, director, UI sound, and juice profile unit tests pass
 - iOS autoplay: overlay once per device; silent resume on return
-- `npm test -- tests/content/audio-manifest.test.ts tests/unit/audio-manager.test.ts tests/unit/audio-director.test.ts tests/unit/audio-unlock.test.ts`
+- Skill cast/impact frame audio sync: `tests/unit/skill-audio-sync.test.ts`, `tests/unit/audio-director.test.ts` (`skill:impact` case)
+- `npm test -- tests/content/audio-manifest.test.ts tests/unit/audio-manager.test.ts tests/unit/audio-director.test.ts tests/unit/audio-unlock.test.ts tests/unit/skill-audio-sync.test.ts`

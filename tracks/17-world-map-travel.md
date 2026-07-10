@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/17-world-map-travel.md](../plans/17-world-map-travel.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -23,6 +23,7 @@ Non-linear world map with 20 destinations, unlock rules, and difficulty hints. C
 - **Cosmic map expansion** — 1800×2000 canvas, star field, chân tinh road inside Phong Giới ellipse
 - **Phong Giới Đại Trận** SVG barrier layer with progressive reveal (`whisper` → `revealed`) tied to chapter progress
 - **Phong Tôn lore** — detail link at Lôi Tiên Điện + barrier lore pin (封); persists `lore.phong_gioi.phong_ton` to save
+- **Dao Scroll pin tooltip (2026-07-10)** — `RegionNode.timelineTooltipFor()` sets each map pin's tooltip to the Intent punch-line one-liner once its timeline shard is in `timelineSeen`, else `"?"`; falls back to the plain map-name tooltip when the map has no shard (sub-plan 31 §6.4, Phase E2)
 
 ## Remaining
 

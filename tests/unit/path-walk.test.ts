@@ -1,8 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { SaveManager } from '@/core/save/SaveManager';
 import { resetAncientDemoSession } from '@/progression/AncientDemoManager';
 import {
   getCurrentPathStep,
+  getPathWalkTimelineShardId,
   isPathWalkActive,
+  markPathWalkTimelineShardSeen,
   onPathStepMapCleared,
   onPathStepStoryFinished,
   resetPathWalkSession,
@@ -76,5 +79,37 @@ describe('PathWalkManager', () => {
     stopPathWalk();
     expect(isPathWalkActive()).toBe(false);
     expect(onPathStepMapCleared('map.stone_canyon.02')).toEqual({ action: 'home' });
+  });
+
+  describe('Dao Scroll auto-read between maps (sub-plan 31 §6.3)', () => {
+    it('resolves the timeline shard id for a map on the road', () => {
+      expect(getPathWalkTimelineShardId('map.fallen_village.01')).toBe(
+        'timeline.map.fallen_village.01',
+      );
+    });
+
+    it('returns null for a map with no timeline shard', () => {
+      expect(getPathWalkTimelineShardId('map.test.grove')).toBeNull();
+    });
+
+    it('marks a shard seen when not already in timelineSeen', () => {
+      const save = SaveManager.createNew();
+      expect(save.progress.timelineSeen).toEqual([]);
+
+      const progress = markPathWalkTimelineShardSeen(save, 'timeline.map.fallen_village.01');
+      expect(progress.timelineSeen).toEqual(['timeline.map.fallen_village.01']);
+    });
+
+    it('is idempotent — does not duplicate or re-allocate when already seen', () => {
+      const save = SaveManager.createNew();
+      save.progress = {
+        ...save.progress,
+        timelineSeen: ['timeline.map.fallen_village.01'],
+      };
+
+      const progress = markPathWalkTimelineShardSeen(save, 'timeline.map.fallen_village.01');
+      expect(progress).toBe(save.progress);
+      expect(progress.timelineSeen).toEqual(['timeline.map.fallen_village.01']);
+    });
   });
 });

@@ -188,8 +188,8 @@ export class RoamingSpawnManager {
   private onDefeatHoldComplete(cultivator: Cultivator): void {
     const slot = this.slots.find((s) => s.cultivator === cultivator);
     if (!slot || this.destroyed) return;
-    // Boss slots stay down for the session; beasts despawn to pool on defeat —
-    // no gather-qi sit-recover (combat-defeat-canon.md §1).
+    // Beasts despawn to pool — no gather-qi. Cultivators (incl. bosses) sit recover
+    // (combat-defeat-canon.md §1). Bosses never re-aggro (Cultivator.update stay-down).
     if (shouldDespawnOnDefeat(cultivator)) {
       this.pool.release(cultivator);
       slot.cultivator = null;
@@ -382,11 +382,13 @@ export class RoamingSpawnManager {
       cultivatorId: cultivator.config.id,
       isBoss,
       wasRematch,
+      isBeast: cultivator.isBeast,
     });
     EventBus.emit('map:enemy-killed', {
       enemyId: cultivator.config.id,
       isBoss,
       wasRematch,
+      isBeast: cultivator.isBeast,
     });
 
     if (bossClearId && !wasRematch) {

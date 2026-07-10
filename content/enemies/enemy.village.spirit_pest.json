@@ -19,7 +19,7 @@
     3
   ],
   "lootTable": "loot.tier.common",
-  "spriteKey": "enemy_villager",
+  "spriteKey": "enemy_mist_wisp",
   "category": "grunt",
   "opponentKind": "beast",
   "bestiaryKey": "bestiary.enemy_village_spirit_pest.desc",

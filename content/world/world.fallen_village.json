@@ -3,9 +3,9 @@
   "cellSize": 640,
   "safeRadiusCells": 2,
   "mobPool": [
-    "enemy.slime",
-    "enemy.wolf",
     "enemy.village.scavenger",
+    "enemy.heng_yue.disciple",
+    "enemy.bandit.thug",
     "enemy.village.spirit_pest"
   ],
   "strongPool": [

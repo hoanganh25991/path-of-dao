@@ -207,9 +207,19 @@ Extend `PathPanel` (plan 28):
 Between maps in `PathWalkManager`: auto-play timeline shard for that `mapId` (skippable) before
 combat — player **reads Wang Lin's road** while walking an ancient's road.
 
+**Done 2026-07-10:** `getPathWalkTimelineShardId` / `markPathWalkTimelineShardSeen` (pure) in
+`PathWalkManager.ts`; `MapScene.playPathWalkTimelineShard` opens `TimelineShardReader` (skip via
+its own skip control) after each cleared stop, then marks `timelineSeen` on the active save. The
+ancient-demo save is session-only (never persisted), so this never pollutes the real player's
+Dao Scroll progress or journey.
+
 ### 6.4 World map (plan 17)
 
 Star portal pin tooltip: show punch-line **one-liner** if shard read; `"?"` if locked.
+
+**Done 2026-07-10:** `RegionNode.timelineTooltipFor` (`src/ui/world/RegionNode.ts`) + `tooltip`
+option on `createMapNode` (`src/ui/world/MapNode.ts`) — checks `save.progress.timelineSeen`
+against the map's shard id; falls back to the map-name tooltip when the map has no shard.
 
 ---
 
@@ -258,9 +268,9 @@ Pixel combat stays separate (plan 29). Timeline is **HTML story layer** only.
 - [x] Dao Scroll lists all maps in road order; locked until cleared (silhouette + `home.path.dao_scroll.locked` hint)
 - [x] Read-through: image (placeholder until Phase E) + body + Wang Lin parallel + punch-line slide
 - [x] Replay from Dao Scroll without re-granting rewards
-- [ ] Ancient follow-walk plays shard between maps (plan 28) — Phase E3
+- [x] Ancient follow-walk plays shard between maps (plan 28) — Phase E3 done 2026-07-10 (`PathWalkManager` + `MapScene.playPathWalkTimelineShard`)
 - [x] `timelineSeen` persists; journey records `timeline_shard` entries
-- [ ] World map pin shows punch-line when shard read (plan 17 §6.4) — Phase E2
+- [x] World map pin shows punch-line when shard read (plan 17 §6.4) — Phase E2 done 2026-07-10 (`RegionNode.timelineTooltipFor` + `MapNode` `tooltip` option)
 - [x] Chapter stories (plan 18) still fire on `.02` — **complemented**, not replaced
 
 ---
@@ -273,9 +283,9 @@ Pixel combat stays separate (plan 29). Timeline is **HTML story layer** only.
 | **B — Shard JSON + maps hook** | `[x]` Done 2026-07-10 | 31 + 20 |
 | **C — Save + unlock on map clear** | `[x]` Done 2026-07-10 | 31 + 05 |
 | **D — Dao Scroll UI (Path sub-tab)** | `[x]` Done 2026-07-10 | 31 + 12 |
-| **E — Illustrations, world map tooltip, ancient auto-walk** | `[ ]` Next (parallel) | 32 / encounter-art · 17 · 28 |
+| **E — Illustrations, world map tooltip, ancient auto-walk** | `[~]` Code hooks (E2/E3) done 2026-07-10 · E1 illustrations pending | 32 / encounter-art · 17 · 28 |
 
-**Suggested implement order:** B → C → D → E (art can land anytime after D accepts null illus). **B–D shipped 2026-07-10** — Dao Scroll is player-visible now; E is polish, not a logic blocker.
+**Suggested implement order:** B → C → D → E (art can land anytime after D accepts null illus). **B–D shipped 2026-07-10** — Dao Scroll is player-visible now; **E2/E3 code hooks shipped 2026-07-10** (world map tooltip + ancient auto-walk); only E1 illustrations remain.
 
 **Track:** [tracks/31-wang-lin-story-timeline.md](../tracks/31-wang-lin-story-timeline.md)
 

@@ -320,21 +320,50 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
       this.defeatMs += dtMs;
       if (this.recovering) {
         this.recoveryMs += dtMs;
-        const regen = computeHealthRegenPerSec({
-          realmOrder: 1,
-          level: this.stats.resolved.level,
-          state: 'meditate',
-        });
-        const healed = regen * (dtMs / 1000);
-        if (healed > 0) {
-          this.stats.heal(healed);
-          this.updateHpBar();
-        }
-        const t = Math.min(1, this.recoveryMs / this.recoveryDurationMs);
-        this.sprite.setAlpha(0.55 + t * 0.45);
         const atFullHp = this.stats.runtime.hp >= this.stats.resolved.hpMax;
-        if (atFullHp || this.recoveryMs >= this.recoveryDurationMs) {
-          this.recoverFromDefeat();
+
+        // Bosses gather-qi in place for the visit — never re-aggro (combat-defeat-canon.md §1).
+        if (this.isBoss && (atFullHp || this.recoveryMs >= this.recoveryDurationMs)) {
+          if (!atFullHp) {
+            this.stats.refill();
+            this.updateHpBar();
+          }
+          this.sprite.setAlpha(1);
+          clearHitFlash(this.sprite);
+          this.sprite.clearTint();
+          if (this.animKeys.sit && this.sprite.anims.currentAnim?.key !== this.animKeys.sit) {
+            this.sprite.play(this.animKeys.sit);
+          }
+        } else if (!this.isBoss) {
+          const regen = computeHealthRegenPerSec({
+            realmOrder: 1,
+            level: this.stats.resolved.level,
+            state: 'meditate',
+          });
+          const healed = regen * (dtMs / 1000);
+          if (healed > 0) {
+            this.stats.heal(healed);
+            this.updateHpBar();
+          }
+          const t = Math.min(1, this.recoveryMs / this.recoveryDurationMs);
+          this.sprite.setAlpha(0.55 + t * 0.45);
+          const fullNow = this.stats.runtime.hp >= this.stats.resolved.hpMax;
+          if (fullNow || this.recoveryMs >= this.recoveryDurationMs) {
+            this.recoverFromDefeat();
+          }
+        } else {
+          const regen = computeHealthRegenPerSec({
+            realmOrder: 1,
+            level: this.stats.resolved.level,
+            state: 'meditate',
+          });
+          const healed = regen * (dtMs / 1000);
+          if (healed > 0) {
+            this.stats.heal(healed);
+            this.updateHpBar();
+          }
+          const t = Math.min(1, this.recoveryMs / this.recoveryDurationMs);
+          this.sprite.setAlpha(0.55 + t * 0.45);
         }
       } else if (!this.defeatHoldDispatched && this.defeatMs >= DEFEAT_STAGGER_MS) {
         this.defeatHoldDispatched = true;
@@ -501,7 +530,8 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     this.attackPhase = 'none';
     this.body.enable = false;
     this.body.stop();
-    this.sprite.setPosition(this.spawnX, this.spawnY);
+    // Sit gather-qi where they fell — do NOT teleport to spawn (that looked like a despawn
+    // when the fight drifted away from the slot origin). Spawn is still used for AI return-home.
     clearHitFlash(this.sprite);
     this.sprite.setTint(0x9a9a9a);
     this.sprite.setAlpha(0.75);
