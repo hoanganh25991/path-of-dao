@@ -47,6 +47,27 @@ describe('FortuitousEncounterManager', () => {
     expect(rollOnKillStreak(10, save)?.id).toBe('encounter.forgotten_memory');
   });
 
+  it('skips forgotten memory after lore is already unlocked', () => {
+    setEncounterRng(() => 0.005);
+    const save = makeSave({
+      progress: {
+        ...makeSave().progress,
+        encountersFound: ['encounter.forgotten_memory'],
+        loreUnlocked: ['lore.fallen_village.memory_01'],
+      },
+    });
+    expect(rollOnKillStreak(10, save)).toBeNull();
+  });
+
+  it('apply forgotten memory unlocks lore once', () => {
+    const save = makeSave();
+    const encounter = getEncounterDefinition('encounter.forgotten_memory');
+    const next = { ...save, ...applyEncounterReward(encounter, save) };
+
+    expect(wasFound(encounter.id, next)).toBe(true);
+    expect(next.progress.loreUnlocked).toContain('lore.fallen_village.memory_01');
+  });
+
   it('apply inheritance adds epic item to inventory', () => {
     setEncounterRng(() => 0.99);
     const save = makeSave();

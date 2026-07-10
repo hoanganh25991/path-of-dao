@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/15-fortuitous-encounters.md](../plans/15-fortuitous-encounters.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -23,6 +23,7 @@ Random and POI-triggered cultivation encounters with rewards, lore, and cosmetic
 - **My Path:** `recordJourney('encounter', …)` on claim; localized titles in journey scroll
 - **Fortune toast** after accepting encounter reward
 - **Defensive pause/resume** in `EncounterTrigger.presentEncounter` — skips modal if scene shuts down and avoids crash on null `physics.world`
+- **Wang Family Memory repeat fix** — `encounter.forgotten_memory` marked `unique: true`; lore encounters skip roll when `loreUnlocked` already contains reward id
 
 ## Remaining
 

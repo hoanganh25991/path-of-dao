@@ -5,7 +5,7 @@
   "theme": "memory",
   "illustration": "assets/encounters/forgotten_memory.png",
   "trigger": "killStreak",
-  "unique": false,
+  "unique": true,
   "rate": 0.01,
   "killStreakThreshold": 10,
   "reward": {

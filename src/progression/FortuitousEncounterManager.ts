@@ -79,6 +79,14 @@ function addInventoryItem(
   return [...items, { id: itemId, qty: 1 }];
 }
 
+function isEncounterExhausted(def: EncounterDefinition, save: PlayerSaveV1): boolean {
+  if (def.unique && wasFound(def.id, save)) return true;
+  if (def.reward.type === 'lore' && save.progress.loreUnlocked.includes(def.reward.loreId)) {
+    return true;
+  }
+  return false;
+}
+
 function rollFromPool(
   trigger: EncounterTriggerKind,
   save: PlayerSaveV1,
@@ -88,7 +96,7 @@ function rollFromPool(
   if (pool.length === 0) return null;
 
   for (const def of pool) {
-    if (def.unique && wasFound(def.id, save)) continue;
+    if (isEncounterExhausted(def, save)) continue;
     if (def.killStreakThreshold && (opts?.killStreak ?? 0) < def.killStreakThreshold) {
       continue;
     }
