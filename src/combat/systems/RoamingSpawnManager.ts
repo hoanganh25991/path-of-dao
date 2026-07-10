@@ -8,6 +8,7 @@ import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { getCultivatorConfig } from '@/combat/cultivators/CultivatorLoader';
 import type { RoamConfig } from '@/combat/map/RoamConfig';
 import { CultivatorPool } from '@/combat/systems/CultivatorPool';
+import { shouldDespawnOnDefeat } from '@/combat/systems/defeatRouting';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { rollCultivatorLoot } from '@/combat/systems/lootRoll';
 import { CombatPickupController } from '@/combat/systems/CombatPickupController';
@@ -186,9 +187,9 @@ export class RoamingSpawnManager {
   private onDefeatHoldComplete(cultivator: Cultivator): void {
     const slot = this.slots.find((s) => s.cultivator === cultivator);
     if (!slot || this.destroyed) return;
-    // Boss slots stay down for the session — no in-place recovery.
-    // Beasts despawn to pool on defeat — no gather-qi sit-recover (combat-defeat-canon.md §1).
-    if (cultivator.config.bossClearId || cultivator.isBeast) {
+    // Boss slots stay down for the session; beasts despawn to pool on defeat —
+    // no gather-qi sit-recover (combat-defeat-canon.md §1).
+    if (shouldDespawnOnDefeat(cultivator)) {
       this.pool.release(cultivator);
       slot.cultivator = null;
       return;

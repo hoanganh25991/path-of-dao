@@ -13,6 +13,7 @@ import {
   type GeneratedSpawn,
 } from '@/combat/world/ProceduralCellGenerator';
 import { CultivatorPool } from '@/combat/systems/CultivatorPool';
+import { shouldDespawnOnDefeat } from '@/combat/systems/defeatRouting';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { rollCultivatorLoot } from '@/combat/systems/lootRoll';
 import { CombatPickupController } from '@/combat/systems/CombatPickupController';
@@ -264,7 +265,7 @@ export class ProceduralRoamingSpawnManager {
 
       // Boss slots stay down for the session; beasts despawn to pool on defeat —
       // no gather-qi sit-recover (combat-defeat-canon.md §1).
-      if (cultivator.config.bossClearId || cultivator.isBeast) {
+      if (shouldDespawnOnDefeat(cultivator)) {
         slot.defeated = true;
         this.pool.release(cultivator);
         slot.cultivator = null;

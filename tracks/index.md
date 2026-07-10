@@ -190,7 +190,7 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 | 6 | **8 boss distinct patterns** — telegraphs, phases, punish windows | 23 | Phase tracker exists; polish open |
 | 7 | ~~Procedural **settlement clusters + signature tree** per `worldProfile`~~ | 06, 21, 22 | `[x]` Done 2026-07-10 — `ProceduralSettlementGenerator` + `SettlementDecorator`; auto-defaults + authored fallen_village pair |
 | 8 | ~~Map-clear modal → offer timeline shard read~~ | 18, 31 | `[x]` Done 2026-07-10 — `TimelineOfferModal` in `MapScene.finishMapExit` |
-| 9 | `opponentKind: beast\|cultivator` on enemies + recovery rules | 06, 08 | Beasts despawn; cultivators sit-recover |
+| 9 | ~~`opponentKind: beast\|cultivator` on enemies + recovery rules~~ | 06, 08 | `[x]` Done 2026-07-10 — schema `.default('cultivator')`, all 44 `content/enemies/*.json` explicit; beasts despawn to pool, cultivators/bosses keep sit-recover / stay-down |
 | 10 | Full **en/vi UI audit** + Vietnamese overflow | 24 | `timeline.json` / story done |
 
 ### P2 — Polish & art (parallel)

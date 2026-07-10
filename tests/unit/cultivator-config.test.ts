@@ -34,6 +34,22 @@ describe('cultivatorConfigSchema', () => {
     const { stats: _stats, ...withoutStats } = validCultivator;
     expect(cultivatorConfigSchema.safeParse(withoutStats).success).toBe(false);
   });
+
+  it('defaults opponentKind to cultivator when omitted (combat-defeat-canon.md §4)', () => {
+    const result = cultivatorConfigSchema.parse(validCultivator);
+    expect(result.opponentKind).toBe('cultivator');
+  });
+
+  it('accepts an explicit beast opponentKind', () => {
+    const result = cultivatorConfigSchema.safeParse({ ...validCultivator, opponentKind: 'beast' });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.opponentKind).toBe('beast');
+  });
+
+  it('rejects an unknown opponentKind', () => {
+    const result = cultivatorConfigSchema.safeParse({ ...validCultivator, opponentKind: 'ghost' });
+    expect(result.success).toBe(false);
+  });
 });
 
 describe('encounterConfigSchema', () => {
@@ -64,5 +80,31 @@ describe('CultivatorLoader', () => {
   it('throws with the id in the message for unknown content', () => {
     expect(() => getCultivatorConfig('enemy.missing')).toThrowError(/enemy\.missing/);
     expect(() => getEncounterConfig('encounters.missing')).toThrowError(/encounters\.missing/);
+  });
+});
+
+describe('opponentKind content population (combat-defeat-canon.md §1, tracks 06/08)', () => {
+  it('sets every bundled enemy/boss to a valid opponentKind', () => {
+    for (const id of listCultivatorIds()) {
+      expect(['beast', 'cultivator']).toContain(getCultivatorConfig(id).opponentKind);
+    }
+  });
+
+  it('marks all bosses as cultivator — ordeals are never despawn-on-defeat', () => {
+    for (const id of listCultivatorIds().filter((cid) => cid.startsWith('boss.'))) {
+      expect(getCultivatorConfig(id).opponentKind).toBe('cultivator');
+    }
+  });
+
+  it('marks animal/spirit fodder as beast (despawn, no sit-recover)', () => {
+    for (const id of ['enemy.wolf', 'enemy.spirit.fox', 'enemy.spirit.moth', 'enemy.slime']) {
+      expect(getCultivatorConfig(id).opponentKind).toBe('beast');
+    }
+  });
+
+  it('marks named humanoid opponents as cultivator (gather-qi recovery)', () => {
+    for (const id of ['enemy.bandit.thug', 'enemy.heng_yue.disciple', 'enemy.guard.patrol']) {
+      expect(getCultivatorConfig(id).opponentKind).toBe('cultivator');
+    }
   });
 });

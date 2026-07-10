@@ -1,11 +1,12 @@
 import { PerspectiveCamera, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-const MIN_DISTANCE = 2.5;
-const MAX_DISTANCE = 6.0;
-const MIN_POLAR = Math.PI / 4;
-const MAX_POLAR = Math.PI / 2.1;
-const ROTATE_SPEED = 0.5;
+const MIN_DISTANCE = 2.2;
+const MAX_DISTANCE = 7.5;
+const MIN_POLAR = Math.PI / 5;
+const MAX_POLAR = Math.PI / 2.05;
+const ROTATE_SPEED = 0.7;
+const ZOOM_SPEED = 1.1;
 const TARGET_Y = 0.9;
 const HOME_CAMERA_FOV = 50;
 const HOME_CAMERA_POSITION = { x: 0, y: 1.8, z: 4.2 } as const;
@@ -28,6 +29,9 @@ export class CameraRig {
   readonly controls: OrbitControls;
 
   constructor(camera: PerspectiveCamera, domElement: HTMLElement) {
+    // Let OrbitControls own touch gestures (drag + pinch); body uses touch-action: manipulation.
+    domElement.style.touchAction = 'none';
+
     this.controls = new OrbitControls(camera, domElement);
     this.controls.target.set(0, TARGET_Y, 0);
     this.controls.minDistance = MIN_DISTANCE;
@@ -35,7 +39,10 @@ export class CameraRig {
     this.controls.minPolarAngle = MIN_POLAR;
     this.controls.maxPolarAngle = MAX_POLAR;
     this.controls.enablePan = false;
+    this.controls.enableRotate = true;
+    this.controls.enableZoom = true;
     this.controls.rotateSpeed = ROTATE_SPEED;
+    this.controls.zoomSpeed = ZOOM_SPEED;
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
     this.controls.update();

@@ -23,6 +23,7 @@
   object-position: center center;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  touch-action: none;
 }
 
 .canvas--inactive {

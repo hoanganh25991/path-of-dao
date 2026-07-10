@@ -207,11 +207,6 @@ export class HomeUI {
       HomeUI.panelSheet.classList.remove('home-panel-sheet--open');
       HomeUI.bottomNav.setActive(null);
     }
-
-    const canvas = document.getElementById('canvas-3d');
-    if (canvas) {
-      canvas.style.pointerEvents = tab ? 'none' : '';
-    }
   }
 
   private static refreshAll(): void {
