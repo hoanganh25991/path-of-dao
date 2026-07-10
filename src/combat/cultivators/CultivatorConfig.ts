@@ -72,6 +72,14 @@ export const cultivatorConfigSchema = z.object({
   bestiaryKey: z.string().optional(),
   weakness: z.string().optional(),
   resistance: z.string().optional(),
+  /** Attack telegraph duration in ms — overrides the engine default; phases may override further. */
+  telegraphMs: z.number().positive().optional(),
+  /** Strike/active-hitbox duration in ms — overrides the engine default. */
+  strikeMs: z.number().positive().optional(),
+  /** Sprite tint during telegraph — overrides the engine default red flash. */
+  telegraphColor: z.number().int().min(0).optional(),
+  /** Strike shape SpawnManager resolves to: melee circle, wide aoe ring, or thrown projectile. */
+  attackShape: attackShapeSchema.default('circle'),
 });
 
 export type CultivatorConfig = z.infer<typeof cultivatorConfigSchema>;

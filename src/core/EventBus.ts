@@ -24,6 +24,8 @@ export type GameEvents = {
   /** @deprecated Back-compat alias — prefer map:cultivator-defeated */
   'map:enemy-killed': { enemyId: string; isBoss: boolean; wasRematch: boolean };
   'boss:defeated': { bossId: string };
+  /** Boss HP crossed a phase threshold (sub-plan 23 — distinct boss patterns). */
+  'combat:boss-phase-changed': { bossId: string; phaseIndex: number; hpThreshold: number };
   'combat:hit-landed': {
     isCrit: boolean;
     finalDamage: number;

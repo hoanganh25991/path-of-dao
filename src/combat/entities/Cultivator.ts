@@ -18,12 +18,21 @@ import {
   cultivatorAnimKeys,
 } from '@/combat/art/stickyManAssets';
 import { BossPhaseTracker } from '@/combat/ai/BossPhaseTracker';
+import { emitBossPhaseCrossings } from '@/combat/ai/bossPhaseEvents';
 import { PatrolAI } from '@/combat/ai/PatrolAI';
 import { DISPLAY_SCALE } from '@/combat/art/stickyManPalette';
 import { type RoamingRankResult } from '@/combat/systems/RoamingRankScaler';
+import type { AttackShape, BossPhaseConfig } from '@/combat/cultivators/CultivatorConfig';
+import {
+  DEFAULT_STRIKE_MS,
+  DEFAULT_TELEGRAPH_MS,
+  resolveAttackTiming,
+} from '@/combat/cultivators/attackTiming';
 
-export const TELEGRAPH_MS = 300;
-export const STRIKE_MS = 100;
+/** @deprecated Use `attackTiming.DEFAULT_TELEGRAPH_MS` / `Cultivator.effectiveTelegraphMs` — kept for existing imports. */
+export const TELEGRAPH_MS = DEFAULT_TELEGRAPH_MS;
+/** @deprecated Use `attackTiming.DEFAULT_STRIKE_MS` / `Cultivator.effectiveStrikeMs` — kept for existing imports. */
+export const STRIKE_MS = DEFAULT_STRIKE_MS;
 /** Brief stagger after HP hits zero before recovery timer runs. */
 export const DEFEAT_STAGGER_MS = 450;
 export const DEFAULT_RECOVERY_MS = 6000;
@@ -82,6 +91,8 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
   private readonly hpBarBg: Phaser.GameObjects.Rectangle;
   private readonly hpBarFill: Phaser.GameObjects.Rectangle;
   private bossPhases: BossPhaseTracker | null = null;
+  /** Most recently crossed boss phase — drives telegraph/strike/shape overrides until the next crossing. */
+  private currentBossPhase: BossPhaseConfig | null = null;
 
   /** Visual rank — aura ring, orbit sparkles, HP bar color. */
   private rank = 0;
@@ -144,6 +155,28 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     return this.stats.resolved;
   }
 
+  /** Current telegraph/strike/shape resolved from active boss phase → cultivator config → engine default. */
+  private get attackTiming() {
+    return resolveAttackTiming(this.config, this.currentBossPhase);
+  }
+
+  get effectiveTelegraphMs(): number {
+    return this.attackTiming.telegraphMs;
+  }
+
+  get effectiveStrikeMs(): number {
+    return this.attackTiming.strikeMs;
+  }
+
+  get effectiveTelegraphColor(): number {
+    return this.attackTiming.telegraphColor;
+  }
+
+  /** Content-driven strike shape (circle/aoe_ring/projectile) — SpawnManager resolves the final dispatch with archetype. */
+  get effectiveAttackShape(): AttackShape {
+    return this.attackTiming.attackShape;
+  }
+
   /** Reset + activate at a position (pool acquire). */
   spawnAt(x: number, y: number): void {
     this.spawnX = x;
@@ -160,6 +193,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     this.knockback = null;
     this.brain = createDecider(this.config.archetype);
     this.bossPhases = this.config.phases?.length ? new BossPhaseTracker(this.config.phases) : null;
+    this.currentBossPhase = null;
     this.stats.refill();
 
     this.sprite.setPosition(x, y);
@@ -377,6 +411,12 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
       const ratio = this.stats.runtime.hp / this.stats.resolved.hpMax;
       const spawns = this.bossPhases.onHpRatio(ratio);
       if (spawns.length > 0) this.callbacks.onBossPhaseSpawns?.(this, spawns);
+
+      const crossings = this.bossPhases.consumeCrossings();
+      if (crossings.length > 0) {
+        this.currentBossPhase = crossings[crossings.length - 1]!.phase;
+        emitBossPhaseCrossings(this.config.bossClearId ?? this.config.id, crossings);
+      }
     }
 
     if (this.stats.isDead) {
