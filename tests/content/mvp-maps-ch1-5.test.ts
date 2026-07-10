@@ -35,12 +35,9 @@ describe('MVP maps chapters 1–5', () => {
   for (const mapId of CH1_5_MAPS) {
     it(`loads ${mapId} with dedicated tiled asset`, () => {
       const config = getMapConfig(mapId);
-      if (config.spawnMode === 'roam') {
-        expect(config.roamTable).toMatch(/^roam\./);
-        expect(config.encounterTable).toBeNull();
-      } else {
-        expect(config.encounterTable).toMatch(/^encounter\./);
-      }
+      expect(config.spawnMode).toBe('procedural');
+      expect(config.worldProfile).toMatch(/^world\./);
+      expect(config.encounterTable).toBeNull();
       expect(config.tiledPath).not.toContain('test-grove');
       expect(resolveTiledUrl(config)).toMatch(new RegExp(config.tiledPath.replace(/^.*\//, '')));
 

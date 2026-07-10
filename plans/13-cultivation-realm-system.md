@@ -9,7 +9,7 @@
 
 ## 1. Objective
 
-Implement the cultivation realm ladder, breakthrough requirements, cinematic breakthrough flow, and stat scaling that makes realm jumps feel transformative.
+Implement the cultivation realm ladder, breakthrough requirements, cinematic breakthrough flow, and stat scaling that makes realm jumps feel transformative. Hero visual stage 4–5 (aura ring, crown glyph) triggers from realm progression: [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §4.1.
 
 ---
 
@@ -151,13 +151,13 @@ Emit `realm:breakthrough-ready` for UI glow.
 
 ## 11. Acceptance Criteria
 
-- [ ] Player starts Mortal Body
-- [ ] Breakthrough button appears when conditions met (dev cheat to test)
-- [ ] Ceremony plays without errors
-- [ ] Aura updates in Home after breakthrough
-- [ ] Stats increase per realm multipliers
-- [ ] Save persists realm state
-- [ ] Unit tests pass
+- [x] Player starts Mortal Body
+- [x] Breakthrough button appears when conditions met (ProfileHeader CTA + `breakthrough-ceremony.test.ts`)
+- [x] Ceremony plays without errors — `BreakthroughModal` unit-tested
+- [x] Aura updates in Home after breakthrough — `HeroViewer.setRealm` + `homeSceneRefreshRealm` hook tested
+- [x] Stats increase per realm multipliers
+- [x] Save persists realm state
+- [x] Unit tests pass
 
 ---
 

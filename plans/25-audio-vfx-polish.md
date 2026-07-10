@@ -9,7 +9,7 @@
 
 ## 1. Objective
 
-Add audio (BGM + SFX), enhance realm aura VFX, combat juice (screen shake, hit-stop), and encounter/breakthrough stings. Player should *feel* cultivation power growth.
+Add audio (BGM + SFX), enhance realm aura VFX, combat juice (screen shake, hit-stop), and encounter/breakthrough stings. Player should *feel* cultivation power growth. Visual juice tiers align with [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §3.
 
 ---
 
@@ -57,8 +57,8 @@ Placeholder: generate silent 1s clips or use royalty-free temp with LICENSE note
 | Category | Keys |
 |----------|------|
 | UI | ui.tap, ui.panel_open, ui.breakthrough |
-| Player | player.attack1-3, player.dodge, player.hit |
-| Skills | skill.sword, skill.void, skill.flame, skill.thunder, skill.time, skill.heal |
+| Player | player.attack1-3, **player.dash** (was `player.dodge`), **player.gather_qi_loop**, player.hit |
+| Divine Arts | skill.sword, skill.void, skill.flame, skill.thunder, skill.time, skill.heal |
 | Enemy | enemy.hit, enemy.death |
 | Boss | boss.telegraph, boss.phase_change |
 | Encounter | encounter.rare, encounter.awaken |
@@ -70,14 +70,33 @@ Use game-sound-effects skill optionally for generation — document paths.
 
 ## 5. Combat Juice
 
+Centralize in `src/combat/juice/JuiceController.ts` (disable on low quality). **Camera zoom**
+states live in `CombatCameraController` (plan 29 §2.6); this section covers shake + hit-stop.
+
 | Effect | Trigger | Implementation |
 |--------|---------|----------------|
-| Hit-stop | player hit connects | freeze 40ms time scale |
-| Screen shake | heavy hit, Mountain Palm | camera offset random 4px 100ms |
+| Hit-stop | player hit connects | freeze 40–120 ms time scale (tier with shake) |
+| **Gather Qi flow** | `player:gather-qi` channel | `QiFlowVFX` particles + `player.gather_qi_loop` SFX (plan `29` §2.7) |
+| Screen shake | hit impact, Divine Art power | `JuiceKit.screenShake(tier)` — plan 29 §2.6.4 |
+| Engage zoom | attack / cast wind-up | `combat:camera` → `CombatCameraController` |
+| Explore zoom | move after combat idle ≥350 ms | auto zoom-out tween |
 | Crit flash | crit damage | brief full-screen white 5% alpha |
-| Boss phase | hp threshold | shake + sfx + darken 0.5s |
+| Boss phase | hp threshold | shake (medium) + sfx + darken 0.5s |
 
-`src/combat/juice/JuiceController.ts` — centralize, disable on low quality.
+### 5.1 Shake × power matrix (authoritative: plan 29 §2.6.4)
+
+| Source | Shake tier | Hit-stop |
+|--------|------------|----------|
+| Combo step 1 | micro | optional |
+| Combo step 2 | light | 40 ms |
+| Combo step 3 | medium | 80 ms |
+| Divine Art L | micro–light | 40 ms |
+| Divine Art M | light–medium | 60 ms |
+| Divine Art S / awakened finisher | heavy | 100 ms |
+| Showcase (Echoes) | boss | 120 ms |
+| Boss ult landing | boss | 120 ms |
+
+`QualityProfile.low`: skip Dramatic zoom; cap shake at **light**; hit-stop max 40 ms.
 
 ---
 
@@ -154,13 +173,14 @@ Returning visits skip the overlay; first tap silently resumes audio and replays 
 
 ## 13. Acceptance Criteria
 
-- [ ] BGM crossfade Home ↔ combat
-- [ ] Boss BGM triggers on boss spawn
-- [ ] All combat actions have sfx
-- [ ] Hit-stop + shake on heavy hits
-- [ ] Aura visible upgrade per realm tier
-- [ ] Breakthrough/encounter audio plays
-- [ ] Volumes persist in save
+- [x] BGM crossfade Home ↔ combat
+- [x] Boss BGM triggers on boss spawn
+- [x] All combat actions have sfx
+- [x] Hit-stop + shake on heavy hits (tiered per plan 29 §2.6.4)
+- [x] Engage zoom on attack/cast; auto zoom-out when moving again
+- [x] Aura visible upgrade per realm tier
+- [x] Breakthrough/encounter audio plays
+- [x] Volumes persist in save
 - [ ] No audio leak after 10 scene switches
 - [x] iOS audio unlock works — overlay once per device; silent resume + BGM restart on return
 

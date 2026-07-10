@@ -1,0 +1,31 @@
+# 32 — Design Arts (directory track)
+
+**Status:** `[~]` In progress  
+**Plan:** [plans/design-arts/index.md](../plans/design-arts/index.md) · [32-design-arts.md](../plans/32-design-arts.md)  
+**Last updated:** 2026-07-10
+
+## Summary
+
+Parallel **pixel art authoring** — hero, enemies, bosses, wheel icons, treasure icons, map props, VFX sheets. Code ships with procedural placeholders until PNGs land (DA-08 auto-wire).
+
+## Done
+
+- Handbook + character sheets (`handbook/character-sheets/`)
+- Encounter card illustrations (6 PNGs, `pnpm art:encounters`)
+- Procedural sticky-man combat placeholders (plan 29 integration)
+- 2.5D tileset + biome sprite decorations in combat
+- `plans/design-arts/` tree specced (DA-01…08)
+
+## Remaining
+
+- DA-01 hero authored sprites (unarmed + sword stages)
+- DA-02 minions (25 types), DA-03 ordeal bosses
+- DA-04 wheel icons, DA-05 treasure icons
+- DA-06 ancient echoes portraits, DA-07 VFX sprite sheets
+- DA-08 auto-wire manifest pipeline on drop
+- DA-09 map props (structures, signature trees) — ties to `map-design-canon.md`
+
+## Verification
+
+- Missing PNG = validator warning, not crash (baseline hook-up rule)
+- When DA-01 lands: re-run plan 29 §0.2 visual QA checklist

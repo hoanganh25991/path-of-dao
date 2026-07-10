@@ -1,0 +1,101 @@
+{
+  "id": "roam.moon_lake.01",
+  "spawns": [
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 5216,
+      "y": 4805,
+      "patrolRadius": 52
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 5192,
+      "y": 4826,
+      "patrolRadius": 56
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 5164,
+      "y": 4789,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 5205,
+      "y": 4784,
+      "patrolRadius": 64
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 7215,
+      "y": 4205,
+      "patrolRadius": 50
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 7192,
+      "y": 4225,
+      "patrolRadius": 54
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 7165,
+      "y": 4189,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 7205,
+      "y": 4185,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 4015,
+      "y": 5605,
+      "patrolRadius": 48
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 3982,
+      "y": 5617,
+      "patrolRadius": 52
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 3992,
+      "y": 5566,
+      "patrolRadius": 56
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 3200,
+      "y": 4400,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 6000,
+      "y": 3600,
+      "patrolRadius": 61
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 8800,
+      "y": 5200,
+      "patrolRadius": 67
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 4800,
+      "y": 6800,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.water.sprite",
+      "x": 7600,
+      "y": 6800,
+      "patrolRadius": 61
+    }
+  ]
+}

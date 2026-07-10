@@ -1,14 +1,14 @@
-# Tiên Nghịch alignment
+# Renegade Immortal alignment (T1–T8)
 
-**Status:** `[~]` In progress  
+> **Filename legacy:** `tien-nghich-alignment.md` — content tracks the *Renegade Immortal* (仙逆) weapon arc.
+
+**Status:** `[x]` T1–T8 weapon arc complete · `[~]` broader plan deltas in master [index.md](./index.md) § Conflicts  
 **Spec:** [plans/index.md §1.1, §7.7, §7.8](../plans/index.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
-Design north star: *Tiên Nghịch* (Renegade Immortal) — **Vương Lâm** (Wang Lin), mortal start, chân tinh → tinh vực → ngoại giới → Lôi Tiên Giới cosmology, Thiên Nghịch Kiếm earned late.
+Design north star: *Renegade Immortal* — **Wang Lin**, mortal start, cultivation road, Ancient Spirit Sword earned late.
 
-**Story reference:** [handbook/tien-nghich-reference.md](../handbook/tien-nghich-reference.md) · **Skill:** `tien-nghich`
-
-**Suggested order:** T4 → T1 → T2 → T3 → T7 → T6 → T5 → T8
+**Story reference:** [handbook/renegade-immortal-reference.md](../handbook/renegade-immortal-reference.md) · **Skill:** `renegade-immortal`
 
 ---
 
@@ -60,15 +60,15 @@ Design north star: *Tiên Nghịch* (Renegade Immortal) — **Vương Lâm** (Wa
 
 ## T6 — Story tone pass
 
-**Goal:** Chapter-end scenes as Vương Lâm cultivation diary — Hằng Nhạc rejection, U Linh Thiên Nghịch Kiếm, La Thiên tribulation, Ngoại Giới, Lôi Tiên Điện.
+**Goal:** Chapter-end scenes + Dao Scroll as Wang Lin cultivation diary — all 10 chapters, Wang Lin road beats.
 
-**Current state:** `[x]` Implemented 2026-07-04.
+**Current state:** `[x]` Prose expanded 2026-07-10.
 
-- All 10 chapters: `content/locales/{en,vi}/story.json` — Vương Lâm first-person (vi) / Wang Lin (en)
-- Ch2 adds slide03 for Thiên Nghịch Kiếm beat (`story.ch02.spirit_fox.json`)
-- Enemies/skills/encounters/bestiary locale pass aligned to story cast
+- All 10 chapters: `content/locales/{en,vi}/story.json` — **6 slides/chapter**, Wang Lin aligned (Heng Yue → Lôi Tiên Điện)
+- Dao Scroll: `content/locales/{en,vi}/timeline.json` — **20 maps** body + Wang Lin parallel + punchline
+- Ch2 sword beat in slides + timeline ch02.map02
 
-**Remaining:** Story illustrations (null placeholders); expand ch3–10 slides if more beats needed post-playtest.
+**Remaining:** Story illustrations; Dao Scroll **in-game UI** (plan 31 phases B–D).
 
 ---
 

@@ -1,0 +1,32 @@
+{
+  "id": "world.stone_canyon",
+  "cellSize": 800,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.guard.patrol",
+    "enemy.bandit.thug"
+  ],
+  "strongPool": [
+    "enemy.bandit.thug",
+    "enemy.bandit.archer",
+    "enemy.guard.patrol"
+  ],
+  "bossPool": [
+    "boss.bandit_lord",
+    "boss.jade_guardian",
+    "boss.mist_stalker"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.06,
+  "fog": null,
+  "groundPalette": {
+    "primary": 2,
+    "variants": [15],
+    "gravel": 15,
+    "rock": 13,
+    "sand": 3,
+    "waterMacroThreshold": 0,
+    "dirtMacroThreshold": 0.68,
+    "rockMacroThreshold": 0.88
+  }
+}

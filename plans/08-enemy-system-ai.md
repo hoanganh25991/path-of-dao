@@ -9,7 +9,10 @@
 
 ## 1. Objective
 
-Spawn enemies from map encounter tables, run AI behavior trees (5 archetypes MVP), handle death/loot drops, and object pooling for mobile performance.
+Spawn enemies from map encounter tables, run AI behavior trees (5 archetypes MVP), handle
+**defeat + gather-qi recovery** for cultivators (not kill), loot/XP on defeat, and object pooling.
+Canon: [`combat-defeat-canon.md`](./combat-defeat-canon.md). Each enemy **y-sorts** in Fake 2.5D
+space ([`fake-2.5d.md`](./fake-2.5d.md) §3.1).
 
 ---
 
@@ -29,7 +32,9 @@ Spawn enemies from map encounter tables, run AI behavior trees (5 archetypes MVP
 
 | File | Purpose |
 |------|---------|
-| `src/combat/entities/Enemy.ts` | Enemy entity |
+| `src/combat/components/DefeatRecoveryComponent.ts` | Cultivator: origin return + gather-qi timer |
+| `src/combat/state/EnemyStateMachine.ts` | fighting / defeated / gatherQiRecover / idle |
+| `src/combat/entities/Enemy.ts` | Enemy entity — routes HP=0 by `opponentKind` |
 | `src/combat/ai/AIBrain.ts` | Archetype dispatcher |
 | `src/combat/ai/MeleeChaserAI.ts` | ... |
 | `src/combat/ai/RangedKiterAI.ts` | ... |
@@ -64,9 +69,14 @@ Spawn enemies from map encounter tables, run AI behavior trees (5 archetypes MVP
   "xpReward": 15,
   "goldReward": [1, 5],
   "lootTable": "loot.slime",
-  "spriteKey": "enemy_slime"
+  "spriteKey": "enemy_slime",
+  "opponentKind": "beast"
 }
 ```
+
+Cultivator example — add `"opponentKind": "cultivator"`, optional `"defeatRecoverMs": 12000`,
+`"canReAggro": true`. Bosses: `"defeatRecoverMs": 90000`, `"canReAggro": false`. See
+[`combat-defeat-canon.md`](./combat-defeat-canon.md) §4.
 
 ---
 
@@ -94,7 +104,7 @@ Spawn enemies from map encounter tables, run AI behavior trees (5 archetypes MVP
 
 - Spawn at random offset ±spread from trigger zone center
 - Max alive: 8 on screen; queue rest
-- On player death → reset wave (MVP)
+- On player **defeated** → pause spawns; existing cultivators keep recovery state (plan `07` §10)
 
 ---
 
@@ -155,19 +165,29 @@ Reuse CombatComponent pattern:
 
 ---
 
-## 9. Death Flow
+## 9. Defeat flow (not kill)
 
-1. Play death anim 400ms
-2. Drop gold pickup (magnetic collect within 60px after 500ms)
-3. Grant XP to save → level up check via LevelCurve
-4. Release to pool
-5. If wave complete → emit `map:wave-cleared`
+> **Canon:** [`combat-defeat-canon.md`](./combat-defeat-canon.md) §2
 
----
+### 9.1 Beast (`opponentKind: beast`)
 
-## 10. Bestiary Hook
+1. Defeat stagger anim 400ms
+2. XP + gold + loot on defeat
+3. Release to pool
+4. Wave cleared when all beasts defeated / recovering
 
-On first kill: `progress.encountersFound` — actually `bestiary` separate list:
+### 9.2 Cultivator (`opponentKind: cultivator`)
+
+1. HP = 0 → `defeated` — brief stagger, **no** death dissolve
+2. Grant XP + loot **on defeat**
+3. Tween to **`spawnOrigin`** (stored at spawn)
+4. Enter **`gatherQiRecover`** — meditation sit + qi-flow VFX; regen for `defeatRecoverMs`
+5. Boss: emit `map:boss-defeated`; **no re-aggro**. Fodder: `canReAggro` → idle + fight again
+6. Wave cleared when all opponents defeated or in recovery
+
+### 9.3 Bestiary hook
+
+On first **defeat** (not kill wording): `progress.encountersFound` — actually `bestiary` separate list:
 
 ```typescript
 if (!save.progress.bestiary.includes(enemyId)) patch bestiary
@@ -189,13 +209,14 @@ Add `bestiary: string[]` to save schema in migration note (v1 patch OK if not sh
 
 ## 12. Acceptance Criteria
 
-- [ ] 3 slimes spawn on test map enter
-- [ ] Melee enemies chase and attack player
-- [ ] Ranged enemy maintains distance (1 archer in test encounter)
-- [ ] Enemies return to pool on death, no GC spike after 50 kills
-- [ ] XP and gold update save
-- [ ] Max 8 concurrent enemies enforced
-- [ ] Unit tests pass
+- [x] 3 slimes spawn on test map enter
+- [x] Melee enemies chase and attack player — chase math unit-tested (`meleeChaserMath`, `ai-brain.test.ts`, `melee-chaser-ai.test.ts`); live attack telegraph manual
+- [x] Ranged enemy maintains distance (1 archer in test encounter)
+- [x] Cultivator defeat → origin gather-qi recovery; boss **≥ 60s** recover band ([`combat-defeat-canon.md`](./combat-defeat-canon.md))
+- [x] Beasts still pool-release on defeat
+- [x] XP and gold update save
+- [x] Max 8 concurrent enemies enforced
+- [x] Unit tests pass
 
 ---
 

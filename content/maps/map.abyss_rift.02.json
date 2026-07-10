@@ -13,9 +13,13 @@
     "height": 14592
   },
   "connections": [],
-  "encounterTable": "encounter.abyss_rift.02",
+  "encounterTable": null,
   "bgm": null,
   "pois": [],
   "recommendedCp": 220000,
-  "recommendedRealmOrder": 5
+  "recommendedRealmOrder": 5,
+  "spawnMode": "procedural",
+  "worldProfile": "world.abyss_rift",
+  "roamTable": null,
+  "requiredBossId": null
 }

@@ -4,11 +4,13 @@ import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { Player } from '@/combat/entities/Player';
 
 function mockEnemy(id: string, x: number, y: number): HurtboxEntity {
+  const displayHeight = 48;
   return {
     id,
     team: 'cultivator',
     x,
     y,
+    hurtCenterY: y - displayHeight * 0.45,
     hurtRadius: 20,
     invulnerable: false,
     sprite: { displayHeight: 48 } as HurtboxEntity['sprite'],

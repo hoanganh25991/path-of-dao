@@ -24,6 +24,7 @@ Ship MVP as installable PWA, hit performance targets on mid-range mobile, CI gre
 | `src/app/QualityProfile.ts` | low/mid/high settings |
 | `.github/workflows/ci.yml` | typecheck, test, validate, build |
 | `handbook/SHIP_CHECKLIST.md` | Manual QA script |
+| `src/ui/hud/FpsOverlay.ts` | Always-on FPS for ship QA (plan `02` §4.1) |
 
 ---
 
@@ -38,12 +39,15 @@ Ship MVP as installable PWA, hit performance targets on mid-range mobile, CI gre
   "description": "Cultivation action RPG",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
   "icons": [...]
 }
 ```
+
+`orientation: "any"` — players may rotate freely; **design and QA target landscape** (844×390)
+per [`plans/index.md`](./index.md) §2.1. Do not lock manifest to portrait.
 
 vite-plugin-pwa:
 
@@ -64,8 +68,16 @@ interface QualitySettings {
   juiceHitStop: boolean;
   screenShake: boolean;
   shadowMap: boolean;
+  light2D: boolean;           // Phaser Light2D — off on low ([`fake-2.5d.md`](./fake-2.5d.md) §6)
+  propLayerCull: boolean;     // off-screen LayeredProp layer skip
 }
 ```
+
+| Tier | `light2D` | Notes |
+|------|-----------|-------|
+| `low` | `false` | Sprite shadows only |
+| `mid` | `true` | Ambient + 1 POI light |
+| `high` | `true` | + normal maps where authored |
 
 Auto-detect:
 
@@ -100,8 +112,27 @@ Manual override in settings save.settings.quality.
 
 ### 6.2 Runtime
 
-- Object pools verified (enemies, projectiles, damage numbers)
-- Phaser `roundPixels: true` for crisp pixel art
+Validated 2026-07 against a Phaser-vs-alternatives deep re-evaluation (`plans/index.md` §3.2;
+**Fake 2.5D** on Phaser 3.60+): engine choice was never the mobile bottleneck — overdraw/fill-rate, draw-call count, and GC
+pressure are, regardless of engine. These are the concrete disciplines that actually move FPS:
+
+- **One shared texture atlas** per scene across sprites *and* VFX, so combat batches into
+  Phaser's Mobile Pipeline single-texture path (don't fragment atlases per-enemy-type).
+- **Object pools verified** (enemies, projectiles, damage numbers, particle emitters) — never
+  `new`/destroy mid-fight.
+- **Cull/skip off-screen entities** from AI and collision loops, not just from rendering — this
+  was the #1 real-world win in the source postmortem, not just a rendering optimization.
+- **Fake 2.5D prop cull** — `LayeredProp` layers outside camera bounds + margin skipped
+  ([`fake-2.5d.md`](./fake-2.5d.md) §10); hundreds of sprites target with stable FPS.
+- **Light2D off on `low`** — `QualityProfile.light2D === false`; sprite shadows remain.
+- **Cap simultaneous particle counts per Divine Art cast**; budget VFX like a fill-rate expense
+  (overlapping additive layers), not a sprite-count expense — see `plans/index.md` §4.4 overdraw budget.
+- Phaser `pixelArt: true` + `roundPixels: true`; **integer camera zoom only**, letterbox the
+  remainder — avoid fractional zoom/scale (extra bilinear sampling + overdraw on pixel art).
+  Combat camera Engage/Dramatic caps on low quality: [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §2.6.
+- **Trim transparent padding** on sprites to shrink actually-overdrawn area per draw.
+- **Profile on real mid-range Android hardware early** (Chrome remote debugging + GPU overdraw
+  overlay) — desktop Chrome FPS counters do not predict mobile fill-rate behavior.
 - Three dispose on unmount audited (Chrome heap snapshot dev)
 
 ### 6.3 Content
@@ -156,6 +187,7 @@ Manual 30-item checklist covering master plan §12 Definition of Done:
 - vi UI pass
 - PWA install Android + iOS Add to Home
 - 10-min no console errors
+- **FPS overlay** visible top-right on Home + combat; left of menu in combat (plan `02` §4.1)
 
 ---
 
@@ -189,13 +221,19 @@ About panel in settings: version, licenses (Phaser, Three, Howler MIT).
 
 ## 13. Acceptance Criteria
 
-- [ ] Lighthouse PWA installable badge
-- [ ] CI green on clean clone
-- [ ] Quality low disables shake/hit-stop
-- [ ] 30 FPS on throttled test device profile
-- [ ] SHIP_CHECKLIST all items checked
-- [ ] Definition of Done (master plan §12) complete
-- [ ] Version displayed in settings
+- [ ] Lighthouse PWA installable badge — **manual before deploy** (manifest installability covered in `preflight.test.ts`; Lighthouse not in CI — see `handbook/SHIP_CHECKLIST.md` §A)
+- [x] CI green on clean clone — workflow + `pnpm typecheck && pnpm test && pnpm build` pass locally
+- [x] Quality low disables shake/hit-stop and **Dramatic** camera zoom (Engage-only or Explore-only per plan 29 §2.6)
+- [ ] 30 FPS on throttled test device profile (read from **FPS overlay**, plan `02` §4.1) — **manual** (`handbook/SHIP_CHECKLIST.md` §B #30)
+- [ ] No overdraw hotspots on GPU overlay during a horde encounter (§6.2 disciplines) — **manual**
+- [x] Camera zoom stays integer at every tested viewport; no fractional-scale shimmer — `computeIntegerZoom` / `computeEngageZoom` unit tests
+- [ ] SHIP_CHECKLIST all items checked — **manual §B** (`handbook/SHIP_CHECKLIST.md`); **automated §A** via `pnpm ship:preflight`
+- [ ] Definition of Done (master plan §12) complete — blocked on manual §B pass
+- [x] Version displayed in settings
+- [x] FPS overlay mounted at app init (plan `02` §4.1)
+- [x] PWA manifest + icons on disk (`preflight.test.ts`, `validate-static.mjs`)
+- [x] Error reporting ring buffer (`errorReporting.ts`, static preflight)
+- [x] `handbook/SHIP_CHECKLIST.md` — 30-item manual QA + automated §A table
 
 ---
 

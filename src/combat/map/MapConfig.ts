@@ -35,8 +35,12 @@ export const mapConfigSchema = z.object({
   encounterTable: z.string().nullable(),
   /** Roaming spawn table for explore stars (`content/roam/{id}.json`). */
   roamTable: z.string().nullable().default(null),
-  /** `wave` = legacy wave spawner; `roam` = placed enemies with respawn. */
-  spawnMode: z.enum(['wave', 'roam']).default('wave'),
+  /** Endless procedural world profile (`content/world/{id}.json`). */
+  worldProfile: z.string().nullable().default(null),
+  /** `wave` = legacy wave spawner; `roam` = placed enemies; `procedural` = endless seeded cells. */
+  spawnMode: z.enum(['wave', 'roam', 'procedural']).default('wave'),
+  /** Boss ordeal maps — depart portal unlocks after this boss is defeated. */
+  requiredBossId: z.string().nullable().default(null),
   /** Door/portals to other sub-zones on the same star. */
   portals: z.array(portalSchema).default([]),
   /** Spawn positions keyed by portal id (destination side). */

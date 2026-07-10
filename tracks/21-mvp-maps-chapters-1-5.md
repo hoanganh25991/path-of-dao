@@ -1,12 +1,13 @@
 # 21 — MVP maps: chapters 1–5
 
-**Status:** `[x]` Done  
+**Status:** `[~]` In progress  
 **Plan:** [plans/21-mvp-maps-chapters-1-5.md](../plans/21-mvp-maps-chapters-1-5.md)  
-**Last updated:** 2026-07-05
+**Related:** [map-design-canon.md](../plans/map-design-canon.md) · [31](./31-wang-lin-story-timeline.md) (timeline shards)  
+**Last updated:** 2026-07-10
 
 ## Summary
 
-First half of the cultivation road: ten maps across five regions (explore + ordeal each). All maps now use 2.5D pixel-art tileset with 25 tile types across 8 biome palettes.
+First half of the cultivation road: ten maps across five regions (explore + ordeal each). **Runtime shifted to procedural endless** (`spawnMode: procedural`, `worldProfile`) with seeded cells + wild bosses — playable and fun, but **not yet** full `map-design-canon` (16k bounds, settlements, signature trees on every JSON).
 
 ## Done
 
@@ -15,7 +16,7 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 - [x] 17+ enemy definitions with correct pixel-art variants per chapter design
 - [x] All enemy spriteKeys aligned to design table (spirit fox=beast white, scorpion=beast red, desert spirit=ghost orange-gold, water sprite=ghost blue-green)
 - [x] Water sprite attack animations fixed (ranged_kiter needs attack poses)
-- [x] Encounter configs rewritten for swarm combat: 6-10 enemies per wave, 2 waves per map, MAX_ALIVE=24
+- [x] **All playable maps endless procedural** — ch1–10 explore + ordeal + test grove; seeded cells, wild bosses, region fog
 - [x] 2.5D pixel-art tileset system: seamless ground tiles + depth-faced structures
 - [x] 8 biome palettes: village, mist, canyon, lake, desert, storm, ice, void
 - [x] Sprite-based environment decorations replace Phaser primitives (trees, bushes, rocks, flowers, lanterns)
@@ -27,12 +28,15 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 
 ## Remaining
 
-- Ch1–3 balance pass after large-map roam pacing
-- Large explore stars for ch2–3 (zone doors)
+- **Map canon (procedural path):** spawn settlement clusters + signature tree per `worldProfile` — not Tiled 16k revert
+- **Dao Scroll** (plan 31): locale prose for ch1–5 maps **done** — still need `timelineShardId` on map JSON + shard files (see [31](./31-wang-lin-story-timeline.md) Phase B)
+- Ch1 explore star sub-zones (east/south/north) — **keep** per user decision
+- recommendedCp playtest pass (plan §11 manual QA)
+- Tile seam / void-hole polish on procedural ground
 
 ## Verification
 
 - Dedicated map JSON per region/stage; ch1 sub-zones load with roam tables
 - Content validation passes
 - World map: tap node → flavor blurb + recommended CP
-- In-game: ch1 west ruins → roam slimes/hounds; ch1.02 → Heng Yue disciples → jade guardian; ch2.02 → backup sword POI
+- In-game: ch1–5 explore → walk endlessly, cultivators/bosses appear by seeded cell; mist forest has fog; ch1.02 Heng Yu Gate → fixed roam disciple clusters + jade guardian

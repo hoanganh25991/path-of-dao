@@ -1,8 +1,9 @@
 # 06 — Phaser map scene base & camera
 
-**Status:** `[x]` Done  
+**Status:** `[~]` In progress  
 **Plan:** [plans/06-phaser-map-scene-base.md](../plans/06-phaser-map-scene-base.md)  
-**Last updated:** 2026-07-04
+**Related:** [fake-2.5d.md](../plans/fake-2.5d.md) · [map-design-canon.md](../plans/map-design-canon.md)  
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -20,11 +21,16 @@
 - **Pause menu integration:** `combat:request-exit` / `combat:request-save` / `combat:pause-changed` wired in MapScene; shared `finishMapExit()` for EXIT zone, pause, and death Return Home
 - **Tu Chân Tinh sub-zones:** `spawnMode: roam`, `portals[]`, `portalSpawns`, `ZonePortalManager` door transitions via BootScene reload; `RoamingSpawnManager` placed enemies with respawn
 - **Scene lifecycle guard:** `MapScene.teardown()` now safely checks `this.scene?.isPaused()` before resuming, fixing a null-scene crash during shutdown/destroy
+- **Procedural world** — `ProceduralWorldLoader`, `ProceduralCellGenerator`, `ProceduralRoamingSpawnManager`, `EndlessGround`, `WorldFog`, `world.*.json` profiles
+- **Per-map terrain themes** — `groundPalette` primary tile per region (grass / dirt / sand / gravel / rock); biome tints sand·rock·gravel; camera fill follows dominant tile; **Heng Yue Gate** (`world.fallen_village.gate`) uses dirt/gravel mountain trail vs village grass
+- **Combat camera director** — engage zoom (`CombatCameraDirector`)
+- Cultivator **defeat** flow (in-place sit + recovery) — partial vs [combat-defeat-canon.md](../plans/combat-defeat-canon.md)
 
 ## Remaining
 
-- Migrate remaining explore maps (ch2–5) to star zone architecture
-- Star zone visual identity per region (unique tilesets beyond grove palette)
+- Procedural **settlement clusters + signature tree** per `worldProfile` (user: keep procedural, add props)
+- Cultivator defeat: optional `returnToOrigin` + `defeatRecoverMs` bands — simplified in-place OK for MVP
+- `opponentKind: beast|cultivator` in enemy JSON — beasts despawn, cultivators recover
 
 ## Verification
 

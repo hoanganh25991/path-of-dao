@@ -1,0 +1,32 @@
+{
+  "id": "world.moon_lake",
+  "cellSize": 840,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.water.sprite",
+    "enemy.cultist.acolyte"
+  ],
+  "strongPool": [
+    "enemy.cultist.acolyte",
+    "enemy.water.sprite"
+  ],
+  "bossPool": [
+    "boss.seal_warden",
+    "boss.mist_stalker",
+    "boss.bandit_lord"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.055,
+  "fog": null,
+  "groundPalette": {
+    "primary": 0,
+    "variants": [
+      1
+    ],
+    "dirt": 2,
+    "waterShallow": 4,
+    "waterDeep": 5,
+    "waterMacroThreshold": 0.07,
+    "dirtMacroThreshold": 0.9
+  }
+}

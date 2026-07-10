@@ -3,13 +3,14 @@
 **Phase:** 5 — World & Content  
 **Estimated effort:** 8–10 hours  
 **Depends on:** `05-save-system-foundation`  
+**Parallel with:** `06–12` (combat + home tracks) — **start as soon as save exists**; see [`index.md`](./index.md) §5.1 Track C  
 **Blocks:** `21`, `22`, `23`
 
 ---
 
 ## 1. Objective
 
-Build tooling to author, validate, and bundle game content JSON. Catch broken references before runtime. Enable content iteration without code changes.
+Build tooling to author, validate, and bundle game content JSON. Catch broken references before runtime. Enable content iteration without code changes. Validate optional `visual` blocks on skills/enemies per [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §11 and **timeline shards** per [`plans/31-wang-lin-story-timeline.md`](./31-wang-lin-story-timeline.md) §4.
 
 ---
 
@@ -30,17 +31,32 @@ Build tooling to author, validate, and bundle game content JSON. Catch broken re
 
 | Type | Directory | Key refs |
 |------|-----------|----------|
-| Map | content/maps/ | tiledPath, encounterTable, chapterId |
+| Map | content/maps/ | tiledPath, encounterTable, chapterId, **timelineShardId**, **bounds**, **environment**, **settlements**, **signatureTree** |
 | Enemy | content/enemies/ | lootTable, spriteKey |
 | Skill | content/skills/ | intent, effects |
-| Item | content/items/ | slot, modelId |
+| Item | content/items/ | slot, modelId, **iconKey**, lootTags |
+| Loot | content/loot/ | weighted `itemId` entries — plan `33` |
 | Chapter | content/chapters/ | storySceneId, maps[] |
 | Story | content/story/ | slides, rewards |
+| **Timeline** | content/story-timeline/ | mapId, intentLesson, punchlineKey, slides |
 | Encounter | content/encounters/ | enemy ids |
 | Fortuitous | content/encounters/fortuitous/ | reward items |
 | World | content/world/ | mapIds |
 | Realms | content/progression/ | boss ids |
 | Locales | content/locales/ | key coverage |
+
+### 3.1 Map schema extensions ([`map-design-canon.md`](./map-design-canon.md))
+
+Required on every `content/maps/*.json`:
+
+| Field | Rule |
+|-------|------|
+| `bounds` | `{ width: 16000, height: 12160 }` — 100× prototype stub area |
+| `environment` | `regionId`, `palette`, `weather`, `parallaxTint`, `groundAccent`, `uniqueness[]` (2–4 tags) |
+| `settlements[]` | ≥1 cluster: `id`, `type`, `center`, `radius`, `structures[]`, optional `encounterZone` |
+| `signatureTree` | `propId`, `position`, `displayNameKey`, optional `loreKey`, `minHeightPx`, `canopyRadius` |
+
+Zod rejects maps missing any of the above; sibling `.01`/`.02` pairs must differ on `environment.uniqueness` and `signatureTree.propId`.
 
 ---
 
@@ -68,8 +84,13 @@ Run in CI (sub-plan 26).
 | Rule | Example error |
 |------|---------------|
 | map.chapterId exists | chapter.99 missing |
+| map bounds 16k×12k | map.foo — bounds not 16000×12160 |
+| map signatureTree | missing on map.* |
+| map settlements | empty settlements[] |
+| map environment.uniqueness | duplicate vs sibling .01/.02 |
 | encounter enemy id exists | enemy.dragon undefined |
 | loot item id exists | item.foo missing |
+| item icon file (warn) | item.foo.json — no assets/sprites/items/item.foo.png |
 | story textKey in locale | story.ch01.slide99 missing in vi |
 | world mapId exists | map.typo.01 |
 | boss required by realm exists | boss.x undefined |
@@ -146,12 +167,12 @@ Fixtures in `tests/fixtures/content/`.
 
 ## 11. Acceptance Criteria
 
-- [ ] `pnpm content:validate` runs on empty/minimal content without crash
-- [ ] Schemas reject malformed JSON with path in error
-- [ ] Crossref lint catches dangling enemy id (unit test)
-- [ ] ContentLoader loads test map in MapScene
-- [ ] pack-manifest generates file list
-- [ ] Documentation in tools/content/README.md
+- [x] `pnpm content:validate` runs on empty/minimal content without crash
+- [x] Schemas reject malformed JSON with path in error
+- [x] Crossref lint catches dangling enemy id (unit test)
+- [x] ContentLoader loads test map in MapScene
+- [x] pack-manifest generates file list
+- [x] Documentation in tools/content/README.md
 
 ---
 

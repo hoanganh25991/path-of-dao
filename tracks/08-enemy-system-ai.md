@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/08-enemy-system-ai.md](../plans/08-enemy-system-ai.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -37,5 +37,6 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 ## Verification
 
 - `pnpm test` — cultivator-pool, cultivator-config, encounter-scaling, aoe-scaling, rewards, combat-resolver
-- Roaming: defeated cultivator returns to spawn sit pose and recovers without despawn
+- Roaming: defeated cultivator returns to spawn sit pose and recovers without despawn; **boss roam slots stay down** (no recovery) for the session
+- Boss ordeal maps: `requiredBossId` on map config gates depart portal until the gate boss is defeated
 - Over-leveled return visit: first wave scales toward 100–500 cultivators per tier

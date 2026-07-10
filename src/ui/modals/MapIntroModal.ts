@@ -12,7 +12,7 @@ export interface MapIntroModalOptions {
 
 function encounterTierHint(mapId: string): string | null {
   const config = getMapConfig(mapId);
-  if (config.spawnMode === 'roam' || !config.encounterTable) return null;
+  if (config.spawnMode === 'roam' || config.spawnMode === 'procedural' || !config.encounterTable) return null;
 
   const save = gameStore.getState().save;
   if (!save) return null;

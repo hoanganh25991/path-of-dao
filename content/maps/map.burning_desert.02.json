@@ -13,9 +13,13 @@
     "height": 10944
   },
   "connections": [],
-  "encounterTable": "encounter.burning_desert.02",
+  "encounterTable": null,
   "bgm": null,
   "pois": [],
   "recommendedCp": 35000,
-  "recommendedRealmOrder": 3
+  "recommendedRealmOrder": 3,
+  "roamTable": null,
+  "spawnMode": "procedural",
+  "requiredBossId": null,
+  "worldProfile": "world.burning_desert"
 }

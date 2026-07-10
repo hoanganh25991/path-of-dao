@@ -48,6 +48,19 @@ export function resolveDamage(input: DamageInput, random: () => number = Math.ra
   };
 }
 
+/** Hero baseline speed stat — roam pacing is tuned relative to this. */
+export const HERO_BASE_SPEED_STAT = 100;
+
+/**
+ * Cultivator speed stat near hero pace: slower is fine, slightly faster OK,
+ * but high base stats + rank scaling must not sprint past the player.
+ */
+export function cultivatorSpeedStat(raw: number): number {
+  if (raw <= 0) return 0;
+  if (raw <= HERO_BASE_SPEED_STAT) return raw;
+  return Math.min(110, HERO_BASE_SPEED_STAT + (raw - HERO_BASE_SPEED_STAT) * 0.25);
+}
+
 /** Speed stat → movement pixels/sec (base 100 speed = 180 px/s). */
 export function moveSpeedPxPerSec(speed: number): number {
   return 180 * (speed / 100);

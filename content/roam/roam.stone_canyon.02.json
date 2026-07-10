@@ -1,0 +1,96 @@
+{
+  "id": "roam.stone_canyon.02",
+  "spawns": [
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 5615,
+      "y": 4405,
+      "patrolRadius": 68
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 5592,
+      "y": 4425,
+      "patrolRadius": 72
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 5565,
+      "y": 4389,
+      "patrolRadius": 76
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 5605,
+      "y": 4385,
+      "patrolRadius": 80
+    },
+    {
+      "enemyId": "enemy.bandit.archer",
+      "x": 6817,
+      "y": 4005,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.bandit.archer",
+      "x": 6779,
+      "y": 4019,
+      "patrolRadius": 59
+    },
+    {
+      "enemyId": "enemy.bandit.archer",
+      "x": 6791,
+      "y": 3961,
+      "patrolRadius": 63
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 4415,
+      "y": 5005,
+      "patrolRadius": 65
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 4382,
+      "y": 5017,
+      "patrolRadius": 69
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 4392,
+      "y": 4966,
+      "patrolRadius": 73
+    },
+    {
+      "enemyId": "enemy.bandit.archer",
+      "x": 3800,
+      "y": 4200,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.bandit.archer",
+      "x": 7600,
+      "y": 5200,
+      "patrolRadius": 64
+    },
+    {
+      "enemyId": "enemy.bandit.archer",
+      "x": 5200,
+      "y": 6200,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 8400,
+      "y": 4600,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "boss.bandit_lord",
+      "x": 9600,
+      "y": 4600,
+      "patrolRadius": 0,
+      "respawnMs": 999999
+    }
+  ]
+}

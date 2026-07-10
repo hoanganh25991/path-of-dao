@@ -170,6 +170,9 @@ export interface BiomePalette {
   grass: { surface: string; edge: string; detail: string; highlight: string; shadow: string; speckle: string };
   grassAlt: { surface: string; edge: string; detail: string; highlight: string; shadow: string; speckle: string };
   dirt: { surface: string; edge: string; detail: string; highlight: string; shadow: string; speckle: string };
+  sand: { surface: string; edge: string; detail: string; highlight: string; shadow: string; speckle: string };
+  rock: { surface: string; edge: string; detail: string; highlight: string; shadow: string; speckle: string };
+  gravel: { surface: string; edge: string; detail: string; highlight: string; shadow: string; speckle: string };
   waterShallow: { surface: string; edge: string; highlight: string; speckle: string };
   waterDeep: { surface: string; edge: string; highlight: string; speckle: string };
 }
@@ -180,6 +183,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#4a8c3f', edge: '#2d5a26', detail: '#3d7334', highlight: '#5ea852', shadow: '#1e3e1a', speckle: '#69b85c' },
     grassAlt: { surface: '#529444', edge: '#31602a', detail: '#427a38', highlight: '#66b059', shadow: '#224522', speckle: '#72c265' },
     dirt: { surface: '#8b7355', edge: '#5a4a35', detail: '#6e5c44', highlight: '#a0886a', shadow: '#3d3022', speckle: '#9e8770' },
+    sand: { surface: '#c4a878', edge: '#907858', detail: '#a89068', highlight: '#dcc898', shadow: '#685840', speckle: '#d0b888' },
+    rock: { surface: '#7a7068', edge: '#504840', detail: '#605850', highlight: '#908880', shadow: '#383028', speckle: '#868078' },
+    gravel: { surface: '#9a9088', edge: '#686058', detail: '#807870', highlight: '#b0a898', shadow: '#484038', speckle: '#a89c90' },
     waterShallow: { surface: '#5898b0', edge: '#386878', highlight: '#6cb8d0', speckle: '#78c8e0' },
     waterDeep: { surface: '#306080', edge: '#204060', highlight: '#4888a8', speckle: '#5098b8' },
   },
@@ -188,6 +194,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#3d7840', edge: '#265028', detail: '#326838', highlight: '#4c9048', shadow: '#183818', speckle: '#5ca858' },
     grassAlt: { surface: '#458048', edge: '#2a582c', detail: '#38703c', highlight: '#54984c', shadow: '#1c4020', speckle: '#64b060' },
     dirt: { surface: '#7a6850', edge: '#4e4030', detail: '#605038', highlight: '#908068', shadow: '#342820', speckle: '#8c7858' },
+    sand: { surface: '#8a7860', edge: '#5c5040', detail: '#706050', highlight: '#a09078', shadow: '#403830', speckle: '#988870' },
+    rock: { surface: '#687060', edge: '#404840', detail: '#505850', highlight: '#808878', shadow: '#303028', speckle: '#787870' },
+    gravel: { surface: '#788070', edge: '#505850', detail: '#606860', highlight: '#909890', shadow: '#383840', speckle: '#889088' },
     waterShallow: { surface: '#48a090', edge: '#307060', highlight: '#60c0a8', speckle: '#70d0b8' },
     waterDeep: { surface: '#286860', edge: '#184840', highlight: '#389080', speckle: '#48a898' },
   },
@@ -196,6 +205,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#6a8040', edge: '#445028', detail: '#587038', highlight: '#809858', shadow: '#304020', speckle: '#8ca860' },
     grassAlt: { surface: '#728848', edge: '#4a582c', detail: '#5e783c', highlight: '#88a05c', shadow: '#344824', speckle: '#94b068' },
     dirt: { surface: '#a08860', edge: '#685840', detail: '#807048', highlight: '#b8a878', shadow: '#504030', speckle: '#ac9870' },
+    sand: { surface: '#c09868', edge: '#886848', detail: '#a08058', highlight: '#d8b080', shadow: '#604830', speckle: '#c8a070' },
+    rock: { surface: '#987860', edge: '#685040', detail: '#806850', highlight: '#b09878', shadow: '#483828', speckle: '#a88868' },
+    gravel: { surface: '#a89078', edge: '#706050', detail: '#887868', highlight: '#c0a890', shadow: '#504838', speckle: '#b09880' },
     waterShallow: { surface: '#609088', edge: '#406058', highlight: '#78b0a0', speckle: '#88c0b0' },
     waterDeep: { surface: '#385858', edge: '#203838', highlight: '#508080', speckle: '#609090' },
   },
@@ -204,6 +216,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#3a7038', edge: '#244826', detail: '#2e602e', highlight: '#489048', shadow: '#183018', speckle: '#58a858' },
     grassAlt: { surface: '#427840', edge: '#28502a', detail: '#346832', highlight: '#50984c', shadow: '#1c3820', speckle: '#60b05c' },
     dirt: { surface: '#706050', edge: '#484030', detail: '#585038', highlight: '#887860', shadow: '#302820', speckle: '#807058' },
+    sand: { surface: '#b0a080', edge: '#807058', detail: '#988868', highlight: '#c8b898', shadow: '#585040', speckle: '#c0b088' },
+    rock: { surface: '#787880', edge: '#505058', detail: '#606068', highlight: '#9898a0', shadow: '#383840', speckle: '#888890' },
+    gravel: { surface: '#909088', edge: '#606058', detail: '#787870', highlight: '#a8a8a0', shadow: '#484840', speckle: '#989890' },
     waterShallow: { surface: '#3098a0', edge: '#206868', highlight: '#40b8c0', speckle: '#50c8d0' },
     waterDeep: { surface: '#185860', edge: '#103838', highlight: '#288088', speckle: '#389898' },
   },
@@ -212,6 +227,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#a08050', edge: '#685830', detail: '#887040', highlight: '#c0a068', shadow: '#484020', speckle: '#b89860' },
     grassAlt: { surface: '#a88858', edge: '#6c6038', detail: '#907848', highlight: '#c8a870', shadow: '#4c4428', speckle: '#c0a068' },
     dirt: { surface: '#d4b080', edge: '#a08860', detail: '#c0a070', highlight: '#e8cc98', shadow: '#887048', speckle: '#dcc090' },
+    sand: { surface: '#e8c890', edge: '#b89868', detail: '#d0b080', highlight: '#f8e0a8', shadow: '#987848', speckle: '#f0d098' },
+    rock: { surface: '#c09870', edge: '#886848', detail: '#a88060', highlight: '#d8b088', shadow: '#684830', speckle: '#c8a078' },
+    gravel: { surface: '#d0a878', edge: '#987850', detail: '#b89068', highlight: '#e8c090', shadow: '#806040', speckle: '#d8b080' },
     waterShallow: { surface: '#60a090', edge: '#407060', highlight: '#78c0b0', speckle: '#88d0c0' },
     waterDeep: { surface: '#387068', edge: '#204840', highlight: '#509890', speckle: '#60a8a0' },
   },
@@ -220,6 +238,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#5a6a50', edge: '#384830', detail: '#485840', highlight: '#6e8060', shadow: '#283820', speckle: '#7a9070' },
     grassAlt: { surface: '#627258', edge: '#3c5034', detail: '#4e6044', highlight: '#768868', shadow: '#2c4024', speckle: '#829878' },
     dirt: { surface: '#7a7060', edge: '#504838', detail: '#605848', highlight: '#908878', shadow: '#383028', speckle: '#8a8070' },
+    sand: { surface: '#908878', edge: '#605850', detail: '#787068', highlight: '#a8a090', shadow: '#484038', speckle: '#989080' },
+    rock: { surface: '#686870', edge: '#404048', detail: '#505058', highlight: '#888890', shadow: '#282830', speckle: '#787880' },
+    gravel: { surface: '#787880', edge: '#505058', detail: '#606068', highlight: '#9898a0', shadow: '#383840', speckle: '#888890' },
     waterShallow: { surface: '#507088', edge: '#384860', highlight: '#6890a8', speckle: '#78a0b8' },
     waterDeep: { surface: '#304858', edge: '#203038', highlight: '#487080', speckle: '#588090' },
   },
@@ -228,6 +249,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#98b0c8', edge: '#6888a0', detail: '#80a0b8', highlight: '#b0c8e0', shadow: '#506878', speckle: '#a8c0d8' },
     grassAlt: { surface: '#a0b8d0', edge: '#6c8ca8', detail: '#88a8c0', highlight: '#b8d0e8', shadow: '#547080', speckle: '#b0c8e0' },
     dirt: { surface: '#b0c0d0', edge: '#8098a8', detail: '#98b0c0', highlight: '#c8d8e8', shadow: '#687888', speckle: '#c0d0e0' },
+    sand: { surface: '#d8e8f0', edge: '#a8c0d0', detail: '#c0d8e8', highlight: '#f0f8ff', shadow: '#88a0b0', speckle: '#e8f0f8' },
+    rock: { surface: '#8898a8', edge: '#586878', detail: '#708088', highlight: '#a0b0c0', shadow: '#405060', speckle: '#98a8b8' },
+    gravel: { surface: '#a0b0c0', edge: '#708088', detail: '#8898a8', highlight: '#b8c8d8', shadow: '#586878', speckle: '#b0c0d0' },
     waterShallow: { surface: '#80a8c8', edge: '#5880a0', highlight: '#98c8e0', speckle: '#a8d8f0' },
     waterDeep: { surface: '#507090', edge: '#305068', highlight: '#6898b8', speckle: '#78a8c8' },
   },
@@ -236,6 +260,9 @@ export const BIOME_PALETTES: Record<string, BiomePalette> = {
     grass: { surface: '#383848', edge: '#202030', detail: '#282838', highlight: '#484858', shadow: '#181828', speckle: '#424252' },
     grassAlt: { surface: '#404050', edge: '#242434', detail: '#303040', highlight: '#505060', shadow: '#1c1c2c', speckle: '#4a4a5a' },
     dirt: { surface: '#484858', edge: '#282838', detail: '#383848', highlight: '#585868', shadow: '#181828', speckle: '#505060' },
+    sand: { surface: '#585868', edge: '#383848', detail: '#484858', highlight: '#686878', shadow: '#282830', speckle: '#606070' },
+    rock: { surface: '#404058', edge: '#202030', detail: '#303048', highlight: '#505070', shadow: '#101020', speckle: '#484868' },
+    gravel: { surface: '#505068', edge: '#303040', detail: '#404058', highlight: '#606080', shadow: '#202030', speckle: '#585870' },
     waterShallow: { surface: '#303060', edge: '#202048', highlight: '#4848a0', speckle: '#585098' },
     waterDeep: { surface: '#202048', edge: '#101030', highlight: '#383878', speckle: '#484888' },
   },
@@ -249,6 +276,13 @@ export function applyBiomeToTile(def: TileDef, biome: BiomePalette): TileDef {
       return { ...def, ...biome.grassAlt };
     case 'Dirt':
       return { ...def, ...biome.dirt };
+    case 'Sand':
+      return { ...def, ...biome.sand };
+    case 'Rock':
+    case 'Space Border':
+      return { ...def, ...biome.rock };
+    case 'Gravel':
+      return { ...def, ...biome.gravel };
     case 'Shallow Water':
       return { ...def, surface: biome.waterShallow.surface, edge: biome.waterShallow.edge, highlight: biome.waterShallow.highlight, speckle: biome.waterShallow.speckle };
     case 'Deep Water':

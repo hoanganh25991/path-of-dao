@@ -1,0 +1,34 @@
+{
+  "id": "world.fallen_village",
+  "cellSize": 640,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.slime",
+    "enemy.wolf",
+    "enemy.village.scavenger",
+    "enemy.village.spirit_pest"
+  ],
+  "strongPool": [
+    "enemy.heng_yue.disciple",
+    "enemy.bandit.thug",
+    "enemy.wolf"
+  ],
+  "bossPool": [
+    "boss.jade_guardian",
+    "boss.bandit_lord",
+    "boss.mist_stalker"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.07,
+  "fog": null,
+  "groundPalette": {
+    "primary": 0,
+    "variants": [
+      1
+    ],
+    "dirt": 2,
+    "waterShallow": 4,
+    "waterMacroThreshold": 0.035,
+    "dirtMacroThreshold": 0.91
+  }
+}

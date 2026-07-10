@@ -2,6 +2,8 @@
 
 > Canonical visual direction for **2D combat** characters and enemies.  
 > Implementation: `src/combat/art/` (procedural spritesheets at boot).  
+> **Character identity (silhouette, costume, pose):** [character-sheets/](./character-sheets/README.md)  
+> **Systems & roster (stages, Intent, power UI):** [plans/29-pixel-art-combat-canon.md](../plans/29-pixel-art-combat-canon.md)  
 > Linked from [plans/index.md](../plans/index.md) §3.2 Rendering.  
 > Live preview: `sticky-man-review.html` (Vite dev server) · screenshot: [handbook/screenshots/sticky-man-review.png](./screenshots/sticky-man-review.png)
 
@@ -81,6 +83,35 @@ Spritesheets are generated in `registerStickyManAssets()` (BootScene) and rebuil
 | highlight | `#ffb060` |
 
 Boss variants add **crown** + **aura** props on select idle/attack frames.
+
+### 3.1 Divine Art Intent VFX Palettes
+
+Six **Master Intents** (Ý Cảnh) — Sword, Void, Flame, Lightning, Time, Life — each gets one base
+hue family shared by every Divine Art tagged to that Intent (`plans/index.md` §1.2, §7.3;
+cultivation-flavored VFX spec §4.3; sub-plan 19). Chosen to stay in the game's existing hue
+family while remaining distinguishable from the four character accents above (gold `#d4a840`,
+green `#9ef56a`, purple `#6a48a0`, red-orange `#ff5038`) and — deliberately — from the card-art
+brand accents (teal `#2dd4a8`, gold `#c9a227`, see `encounter-art` skill), reused below for Life
+and Time so combat VFX and UI/story art read as one world.
+
+| Intent | Base | Highlight/glow | VFX read |
+|--------|------|-----------------|----------|
+| **Sword** (Kiếm) | `#6fd6e8` | `#eafcff` | Cold steel-cyan qi; a thin line cuts the air, edge blooms pale near-white |
+| **Void** (Hư) | `#2a1a4a` | `#9a7cff` | Deep indigo-black; space fractures along cracks glowing violet-blue |
+| **Flame** (Hỏa) | `#ff7a2e` | `#ffe066` | Hot orange ember core fading to gold-yellow at the flare edge |
+| **Lightning** (Lôi) | `#f0e64a` | `#ffffff` | Electric yellow arc that punches to a pure-white flash frame on impact |
+| **Time** (Thời) | `#c9a227` | `#fff3c2` | Amber/bronze — **reuses the card-art gold accent**; sepia-toned freeze shimmer |
+| **Life** (Sinh) | `#2dd4a8` | `#eafff5` | Teal-jade — **reuses the card-art teal accent**; softer/cooler than slime's grass green |
+
+**Base vs. awakened rule:** the awakened form of a Divine Art never changes hue — it pushes the
+*same* base toward its highlight (larger glow radius, higher-saturation core, highlight biased
+closer to white/near-white) plus an added screen-level accent (Bloom/Glow FX per plans/index.md
+§4.2–4.3). A player should recognize "still Flame, now awakened" at a glance, never "a different
+element."
+
+Apply the checklist below to each Intent's VFX the same as any character piece — one rig/light
+convention doesn't apply to particles, but **silhouette-first readability** and **≤16 colors per
+effect** still do.
 
 ---
 
@@ -168,20 +199,9 @@ Pose data: `stickyManDraw.ts` (`POSES_WALK`, `POSES_ATTACK_*`, `POSES_HIT`) and 
 | Skill cast | Expanding pixel ring + intent-colored sparks |
 | Melee arc | Pixel slash arc texture + contact sparks (armed); punch/kick reach tables when unarmed |
 | Spirit bolt | Pixel bolt sprite (tinted by intent) |
-| Void slash | Purple void-rift arc + crack burst |
-| Sword slash | Gold qi crescent arc |
-| Heavenly thunder | Vertical column + sky-to-ground zigzag (not horizontal bolt) |
-| Life mend | Bloom + rising life-pulse spiral |
-| Time slow | Time vortex orb + ripple trail |
-| Flame lotus (v4) | Layered lotus petal burst |
-| Flame pillar (v3) | Vertical fire column eruption |
-| Void nova (v4) | Radial void nova + crack |
-| Void abyss (v5) | Inward spiral + pull crack |
-| Sword heaven (v5) | Wide golden heaven arc |
-| Sword rain (v3) | Triple qi slash flurry |
-| Lightning storm (v3) | Fork bolts + sky columns on cast |
-| Lightning judgment (v4) | Massive vertical thunder strike |
-| Lightning tribulation (v5) | 5-jump thunder chain |
+| Heal | Expanding pixel ring bloom |
+| Flame AOE | Pixel flame burst + sparks |
+| Void pull | Jagged void-crack texture + purple sparks |
 | Telegraph | Enemy red tint (unchanged; works over anims) |
 
 Procedural VFX textures: `src/combat/art/pixelVfxDraw.ts` → `registerPixelVfxAssets()` in BootScene.

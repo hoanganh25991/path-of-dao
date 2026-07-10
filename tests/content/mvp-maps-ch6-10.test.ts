@@ -35,7 +35,9 @@ describe('MVP maps chapters 6–10', () => {
   for (const mapId of CH6_10_MAPS) {
     it(`loads ${mapId} with dedicated tiled asset`, () => {
       const config = getMapConfig(mapId);
-      expect(config.encounterTable).toMatch(/^encounter\./);
+      expect(config.spawnMode).toBe('procedural');
+      expect(config.worldProfile).toMatch(/^world\./);
+      expect(config.encounterTable).toBeNull();
       expect(config.tiledPath).not.toContain('test-grove');
       expect(resolveTiledUrl(config)).toMatch(new RegExp(config.tiledPath.replace(/^.*\//, '')));
 
@@ -50,7 +52,7 @@ describe('MVP maps chapters 6–10', () => {
 
   it('assigns endgame recommended CP bands', () => {
     expect(getMapConfig('map.thunder_peaks.01').recommendedCp).toBe(45000);
-    expect(getMapConfig('map.void_throne.02').recommendedCp).toBe(320000);
+    expect(getMapConfig('map.void_throne.02').recommendedCp).toBe(750000);
   });
 
   it('uses larger bounds for void throne finale', () => {

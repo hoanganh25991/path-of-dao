@@ -58,15 +58,4 @@ describe('CombatHUD', () => {
       true,
     );
   });
-
-  it('shows loot drop rate hint in combat', () => {
-    const uiRoot = document.getElementById('ui-root')!;
-    TopRightHud.init(uiRoot);
-    CombatHUD.init(uiRoot);
-    EventBus.emit('scene:changed', { id: 'combat', payload: { mapId: 'test' } });
-
-    const hint = uiRoot.querySelector('[data-testid="combat-loot-hint"]');
-    expect(hint?.textContent).toContain('12%');
-    expect(hint?.textContent).toContain('28%');
-  });
 });

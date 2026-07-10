@@ -31,5 +31,12 @@ Detailed implementation notes for each sub-plan. The master index lives in [inde
 | 25 | [25-audio-vfx-polish.md](./25-audio-vfx-polish.md) | [plans/25-audio-vfx-polish.md](../plans/25-audio-vfx-polish.md) |
 | 26 | [26-pwa-performance-ship.md](./26-pwa-performance-ship.md) | [plans/26-pwa-performance-ship.md](../plans/26-pwa-performance-ship.md) |
 | 27 | [27-ancient-echo-demo.md](./27-ancient-echo-demo.md) | [plans/27-ancient-echo-demo.md](../plans/27-ancient-echo-demo.md) |
+| 28 | [28-path-journey-system.md](./28-path-journey-system.md) | [plans/28-path-journey-system.md](../plans/28-path-journey-system.md) |
+| 29 | [29-pixel-art-combat-canon.md](./29-pixel-art-combat-canon.md) | [plans/29-pixel-art-combat-canon.md](../plans/29-pixel-art-combat-canon.md) |
+| 30 | [30-divine-arts-wheel-loadout.md](./30-divine-arts-wheel-loadout.md) | [plans/30-divine-arts-wheel-loadout.md](../plans/30-divine-arts-wheel-loadout.md) |
+| 31 | [31-wang-lin-story-timeline.md](./31-wang-lin-story-timeline.md) | [plans/31-wang-lin-story-timeline.md](../plans/31-wang-lin-story-timeline.md) |
+| 32 | [32-design-arts.md](./32-design-arts.md) | [plans/design-arts/index.md](../plans/design-arts/index.md) |
+| 33 | [33-item-loot-system.md](./33-item-loot-system.md) | [plans/item-system/index.md](../plans/item-system/index.md) |
+| 34 | [34-quick-check-smoke-devtools.md](./34-quick-check-smoke-devtools.md) | [plans/34-quick-check-smoke-devtools.md](../plans/34-quick-check-smoke-devtools.md) |
 
-**Cross-cutting:** [tien-nghich-alignment.md](./tien-nghich-alignment.md)
+**Cross-cutting:** [tien-nghich-alignment.md](./tien-nghich-alignment.md) (Renegade Immortal T1–T8 weapon arc)

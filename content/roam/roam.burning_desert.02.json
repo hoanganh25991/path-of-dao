@@ -1,0 +1,84 @@
+{
+  "id": "roam.burning_desert.02",
+  "spawns": [
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 6813,
+      "y": 5604,
+      "patrolRadius": 35
+    },
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 6783,
+      "y": 5615,
+      "patrolRadius": 39
+    },
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 6793,
+      "y": 5569,
+      "patrolRadius": 43
+    },
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 9013,
+      "y": 5204,
+      "patrolRadius": 32
+    },
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 8984,
+      "y": 5215,
+      "patrolRadius": 36
+    },
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 8993,
+      "y": 5171,
+      "patrolRadius": 40
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 5216,
+      "y": 6405,
+      "patrolRadius": 50
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 5180,
+      "y": 6419,
+      "patrolRadius": 54
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 5192,
+      "y": 6363,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 4400,
+      "y": 5200,
+      "patrolRadius": 38
+    },
+    {
+      "enemyId": "enemy.sand.spirit",
+      "x": 10400,
+      "y": 6000,
+      "patrolRadius": 44
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 7600,
+      "y": 6800,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "boss.desert_sovereign",
+      "x": 12200,
+      "y": 5600,
+      "patrolRadius": 0,
+      "respawnMs": 999999
+    }
+  ]
+}

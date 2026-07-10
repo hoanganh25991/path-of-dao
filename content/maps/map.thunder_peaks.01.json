@@ -13,7 +13,7 @@
     "height": 12160
   },
   "connections": [],
-  "encounterTable": "encounter.thunder_peaks.01",
+  "encounterTable": null,
   "bgm": null,
   "pois": [
     {
@@ -25,5 +25,9 @@
     }
   ],
   "recommendedCp": 45000,
-  "recommendedRealmOrder": 4
+  "recommendedRealmOrder": 4,
+  "spawnMode": "procedural",
+  "worldProfile": "world.thunder_peaks",
+  "roamTable": null,
+  "requiredBossId": null
 }

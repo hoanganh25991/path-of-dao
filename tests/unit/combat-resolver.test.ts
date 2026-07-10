@@ -41,13 +41,18 @@ function mockTarget(overrides: Partial<HurtboxEntity> & { stats?: BaseStats }): 
   let hp = overrides.stats?.hpMax ?? 40;
   const stats = overrides.stats ?? makeStats();
   const hits: DamageResult[] = [];
+  const y = overrides.y ?? 0;
+  const displayHeight = overrides.sprite
+    ? (overrides.sprite as { displayHeight?: number }).displayHeight ?? 112
+    : 112;
 
   return {
     id: overrides.id ?? 'target_1',
     team: overrides.team ?? 'cultivator',
-    sprite: { active: true, setTint: vi.fn(), setTintMode: vi.fn(), clearTint: vi.fn(), tintTopLeft: 0xffffff } as unknown as HurtboxEntity['sprite'],
+    sprite: { active: true, setTint: vi.fn(), setTintMode: vi.fn(), clearTint: vi.fn(), tintTopLeft: 0xffffff, displayHeight } as unknown as HurtboxEntity['sprite'],
     x: overrides.x ?? 0,
-    y: overrides.y ?? 0,
+    y,
+    hurtCenterY: overrides.hurtCenterY ?? y - displayHeight * 0.45,
     hurtRadius: overrides.hurtRadius ?? 12,
     invulnerable: overrides.invulnerable ?? false,
     getDefenderStats: () => ({ ...stats, hpMax: stats.hpMax, manaMax: stats.manaMax }),

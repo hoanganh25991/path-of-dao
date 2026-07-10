@@ -13,9 +13,13 @@
     "height": 17024
   },
   "connections": [],
-  "encounterTable": "encounter.void_throne.02",
+  "encounterTable": null,
   "bgm": null,
   "pois": [],
   "recommendedCp": 750000,
-  "recommendedRealmOrder": 7
+  "recommendedRealmOrder": 7,
+  "spawnMode": "procedural",
+  "worldProfile": "world.void_throne",
+  "roamTable": null,
+  "requiredBossId": null
 }

@@ -63,6 +63,10 @@ function formatMultiplier(value: number): string {
   return `${value.toFixed(2)}×`;
 }
 
+function formatPool(current: number, max: number): string {
+  return `${Math.round(current)} / ${Math.round(max)}`;
+}
+
 const RARITY_COLORS: Record<string, string> = {
   common: '#9d9d9d',
   uncommon: '#2dd4a8',
@@ -240,8 +244,8 @@ export function createProfilePanel(): ProfilePanelHandles {
     addStatRow('home.profile.level', String(save.stats.level));
     addStatRow('home.profile.realm', I18nManager.t(realmLabelKey(save)));
     addStatRow('home.combat_power', formatCombatPower(cp, I18nManager.locale));
-    addStatRow('home.profile.hp', `${save.runtime.hp} / ${resolved.hpMax}`);
-    addStatRow('home.profile.mana', `${save.runtime.mana} / ${resolved.manaMax}`);
+    addStatRow('home.profile.hp', formatPool(save.runtime.hp, resolved.hpMax));
+    addStatRow('home.profile.mana', formatPool(save.runtime.mana, resolved.manaMax));
     addStatRow('home.profile.atk', String(resolved.atk));
     addStatRow('home.profile.def', String(resolved.def));
     addStatRow('home.profile.crit', formatPercent(resolved.crit));

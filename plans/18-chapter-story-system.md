@@ -9,7 +9,12 @@
 
 ## 1. Objective
 
-Deliver end-of-chapter narrated story scenes (not just rewards), chapter completion flow, Story Archive replay, and integration with map clear events.
+Deliver end-of-chapter narrated story scenes (not just rewards), chapter completion flow, Story Archive replay, and integration with map clear events. Story cards use painterly house style; combat cultivators on cleared maps follow regional palette §5.2 in [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md).
+
+> **Per-map story:** plan 18 covers **chapter finales** only (10 scenes). **Every map** also gets a
+> shorter **timeline shard** (image + Wang Lin parallel + Intent punch-line) per
+> [`plans/31-wang-lin-story-timeline.md`](./31-wang-lin-story-timeline.md). Shard plays on map
+> clear; chapter scene plays after on `.02`.
 
 ---
 
@@ -81,14 +86,19 @@ On map clear event for final stage map:
 1. Combat victory overlay (2s)
 2. Save: clearedMaps push
 3. If boss map → clearedBosses push
-4. If chapter final → ChapterManager.onChapterComplete(chapterId)
-5. SceneRouter.switchTo('story', { chapterId, sceneId })
-6. StoryReader plays slides
-7. Apply rewards + unlock next chapter
-8. storySeen push
-9. autosave
-10. Continue → Home (or next chapter prompt)
+4. Record JourneyLog entry, kind 'map_clear' (sub-plan 28) — snapshot current Realm/Lv/CP now,
+   before any story rewards below can change them
+5. If chapter final → ChapterManager.onChapterComplete(chapterId)
+6. SceneRouter.switchTo('story', { chapterId, sceneId })
+7. StoryReader plays slides
+8. Apply rewards + unlock next chapter
+9. storySeen push; record a second JourneyLog entry, kind 'story', for the chapter finale beat
+10. autosave
+11. Continue → Home (or next chapter prompt)
 ```
+
+Both journey entries are **snapshot-once** — see sub-plan 28's snapshot rule: never recompute
+Realm/Lv/CP for a past entry, even if the player's stats change later.
 
 ---
 
@@ -127,11 +137,13 @@ Update sub-plan 02 enum if not already including `story`.
 
 ## 9. Localization
 
-All slide text via keys in `content/locales/{en,vi}/story/ch01.json` etc.
+All slide text via keys in `content/locales/{en,vi}/story.json` (single bundle per locale; keys `story.chNN.slideMM`).
+
+**Wang Lin alignment (2026-07-10):** all 10 chapters expanded to **6 slides** each — first-person cultivation diary mirroring [handbook/renegade-immortal-reference.md](../handbook/renegade-immortal-reference.md) §Story phases (Heng Yue rejection → Lôi Tiên Điện). Ordeal cultivators named per [world-road-bosses.md](../handbook/world-road-bosses.md). Original prose only — no novel paste.
 
 Example en slide:
 
-> "When the jade pulse faded, you understood — the village did not fall by accident."
+> "The Heng Yue Sect elders measured my roots and laughed. Poor talent, they said — unworthy of discipleship."
 
 ---
 
@@ -148,23 +160,52 @@ Example en slide:
 
 ## 11. Acceptance Criteria
 
-- [ ] Clearing test chapter final map triggers story scene
-- [ ] Slides advance with typewriter + tap
-- [ ] Rewards granted once
-- [ ] Next chapter appears on world map
-- [ ] Story Archive replays without rewards
-- [ ] Skip works with confirmation
-- [ ] Works in both en and vi (keys present for ch01 minimum)
-- [ ] Unit tests pass
+**Runtime (shipped):**
+
+- [x] Clearing test chapter final map triggers story scene
+- [x] Slides advance with typewriter + tap
+- [x] Rewards granted once
+- [x] Next chapter appears on world map
+- [x] Story Archive replays without rewards (Path tab → Replay)
+- [x] Skip works with confirmation
+- [x] Works in both en and vi
+- [x] Unit tests pass
+
+**Content — Wang Lin road (2026-07-10):**
+
+- [x] **10 chapters × 6 slides** — en+vi in `content/locales/{en,vi}/story.json`
+- [x] `content/story/story.ch*.json` wired to 6 slides each
+- [x] Story beats match handbook phase table (Tu Sen, Liu Mei, Hong Die, …)
+- [ ] Chapter illustrations (`assets/story/*.webp`) — null placeholders
+- [ ] Optional: 8–10 slides for ch1–2 if playtest wants more depth
+
+**Integration with plan 31:**
+
+- [ ] Map-clear offers Dao Scroll shard read (`.01` and `.02`) — owned by plan 31
+- [ ] Chapter finale + timeline shard on same `.02` clear — complementary, not duplicate rewards
 
 ---
 
-## 12. Content Authoring Note
+## 12. Implementation status (2026-07-10)
 
-Write 4–6 slides per chapter, 2–3 sentences each. End with hook to next region per GDD narrative beats.
+| Layer | Status | Notes |
+|-------|--------|-------|
+| StoryReader + SceneRouter | `[x]` | Typewriter, skip, replay |
+| Chapter flow + rewards | `[x]` | `ChapterManager` |
+| **Prose content** | `[x]` | 60 slides total (10×6), Wang Lin aligned |
+| Illustrations | `[ ]` | `encounter-art` / painterly pipeline |
+| Dao Scroll hook | `[ ]` | See [31](./31-wang-lin-story-timeline.md) |
+
+**Track:** [tracks/18-chapter-story-system.md](../tracks/18-chapter-story-system.md)
 
 ---
 
-## 13. Handoff
+## 13. Content Authoring Note
+
+Target **4–6 slides** per chapter, **2–4 sentences** each. End with hook to next region per GDD narrative beats. **Shipped 2026-07-10** at 6 slides/chapter — expand individual chapters if playtest asks for more beats (e.g. Heng Yue examination, sword cave).
+
+---
+
+## 14. Handoff
 
 Sub-plans 21–22 implement maps that fire chapter completion. Sub-plan 24 completes all story strings.

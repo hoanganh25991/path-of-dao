@@ -9,7 +9,7 @@
 
 ## 1. Objective
 
-Implement rare, memorable random events during map exploration — not common loot. Six encounter types for MVP with unique UI and lasting save consequences.
+Implement rare, memorable random events during map exploration — not common loot. Six encounter types for MVP with unique UI and lasting save consequences. Encounter modal art uses painterly cards; Dharma Treasure reward icons: [`design-arts/items/`](../design-arts/items/index.md). **Reward application API** shares [`item-system/encounter-rewards.md`](../item-system/encounter-rewards.md) with loot drops.
 
 ---
 
@@ -17,14 +17,30 @@ Implement rare, memorable random events during map exploration — not common lo
 
 | ID | Name | Trigger | Reward |
 |----|------|---------|--------|
-| `encounter.ancient_inheritance` | Ancient Inheritance | 3% on map enter, once per save | Random epic item |
-| `encounter.hidden_cave` | Hidden Cave | interactable sparkle tile | Gold + insight XP |
+| `encounter.ancient_inheritance` | Ancient Inheritance | 3% on map enter, once per save | Random epic Dharma Treasure |
+| `encounter.hidden_cave` | Hidden Cave | interactable sparkle tile | Gold + Master Intent XP |
 | `encounter.spirit_beast` | Spirit Beast | 2% after wave clear | Pet cosmetic unlock (Home) |
-| `encounter.ancient_sword` | Ancient Sword | fixed POI per map max 1 | Weapon item |
+| `encounter.ancient_sword` | **Ancient Sword** | fixed POI per map max 1, ch1–2 only | **Grants `item.sword.ancient`** — the Ancient Spirit Sword milestone (see §7.1 below), not a generic weapon drop |
 | `encounter.forgotten_memory` | Forgotten Memory | 1% on kill streak 10 | Story lore entry |
-| `encounter.secret_manual` | Secret Manual | 2% on boss kill rematch | Skill variant unlock |
+| `encounter.secret_manual` | Secret Manual | 2% on boss kill rematch | Divine Art variant unlock |
 
 Rates tunable in JSON — must feel **rare** (player sees ~1 per 15–20 min).
+
+### 2.1 `encounter.ancient_sword` — the fortuitous encounter (Renegade Immortal T2/T3)
+
+This is *the* milestone encounter (`plans/index.md` §7.7), not interchangeable with the other
+five. On apply, `FortuitousEncounterManager.apply()` must, atomically:
+
+1. Add `item.sword.ancient` to inventory **and equip it** to the weapon slot (this is not left
+   for the player to equip later — the story beat is the sword awakening, immediate).
+2. Set `save.progress.weaponMilestone = 'ancient_sword'`.
+3. Flip `CombatComponent.attackStyle` to `'sword'` (sub-plan 07) for the active player entity.
+4. Unlock Sword Intent's Divine Arts on the wheel picker (sub-plan 14's sword gate check now
+   passes; sub-plan 12's Divine Arts panel shows sword arts as assignable).
+5. Play the story shard / sting associated with `encounter.ancient_sword` (sub-plan 18/25).
+
+Steps 1–4 must land in the same save transaction — never a partial state where the sword is in
+inventory but the milestone flag or attack-style swap hasn't happened.
 
 ---
 
@@ -153,13 +169,13 @@ Use seeded RNG injectable for deterministic tests.
 
 ## 12. Acceptance Criteria
 
-- [ ] At least 3 encounter types functional end-to-end
-- [ ] Encounter modal pauses player input during display
-- [ ] Rewards persist in save
-- [ ] encountersFound prevents exact duplicate (where designed)
-- [ ] Hidden cave POI works on test map
-- [ ] Encounter rate feels rare in 10-min manual test (dev multiplier for QA)
-- [ ] Unit tests pass
+- [x] At least 3 encounter types functional end-to-end
+- [x] Encounter modal pauses player input during display — `EncounterTrigger` + `EncounterModal` unit-tested
+- [x] Rewards persist in save
+- [x] encountersFound prevents exact duplicate (where designed)
+- [x] Hidden cave POI works on test map — `encounterForPoi` + `map.test.grove` POI id tested
+- [ ] Encounter rate feels rare in 10-min manual test (dev multiplier for QA) — **manual only**
+- [x] Unit tests pass (includes rate bounds + `peekEffectiveRate` cap)
 
 ---
 

@@ -1,0 +1,32 @@
+{
+  "id": "world.burning_desert",
+  "cellSize": 880,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.scorpion",
+    "enemy.sand.wisp"
+  ],
+  "strongPool": [
+    "enemy.sand.spirit",
+    "enemy.scorpion",
+    "enemy.sand.wisp"
+  ],
+  "bossPool": [
+    "boss.desert_sovereign",
+    "boss.bandit_lord",
+    "boss.seal_warden"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.06,
+  "fog": null,
+  "groundPalette": {
+    "primary": 3,
+    "variants": [
+      2
+    ],
+    "sand": 3,
+    "dirt": 2,
+    "waterMacroThreshold": 0.025,
+    "dirtMacroThreshold": 0.8
+  }
+}

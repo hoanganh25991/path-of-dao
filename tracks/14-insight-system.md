@@ -1,12 +1,13 @@
 # 14 — Insight progression & awakenings
 
-**Status:** `[x]` Done  
+**Status:** `[~]` In progress — **plan redesigned, code not migrated**  
 **Plan:** [plans/14-insight-system.md](../plans/14-insight-system.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-10
 
 ## Summary
 
-Six insight intents gain XP in combat; at 100% the skill awakens with new behavior. Skills tab and loadout show **earned techniques only** — learned on the road, not a full catalog.
+**Shipped:** legacy six-intent meter (`sword`, `void`, `flame`, `lightning`, `time`, `life`) via `InsightSystem` + `content/progression/insights.json`.  
+**Plan (2026-07-06):** **Master Intent** — 3 **main-flow** (`life_death` → `cause_effect` → `truth_falsehood`, sequential) + 3 **gate** (`sword`, `flame`, `lightning`); `MasterIntentSystem.isIntentUnlocked()` — **not implemented in code yet**.
 
 ## Done
 
@@ -23,7 +24,10 @@ Six insight intents gain XP in combat; at 100% the skill awakens with new behavi
 
 ## Remaining
 
-None for core awakening flow.
+- **Active work (user decision):** migrate to plan 14 redesign — `MasterIntentSystem`, main-flow sequential + gate milestones
+- Update `content/progression/insights.json` roster (`life_death`, `cause_effect`, `truth_falsehood` + gate)
+- Rename player-facing copy Insight → **Master Intent (Ý Cảnh)** in remaining UI
+- Dao Scroll Intent lessons (plan 31) depend on this curriculum
 
 ## Verification
 

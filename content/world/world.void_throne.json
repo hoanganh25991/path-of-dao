@@ -1,0 +1,39 @@
+{
+  "id": "world.void_throne",
+  "cellSize": 1080,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.void.shade",
+    "enemy.void.weaver"
+  ],
+  "strongPool": [
+    "enemy.void.weaver",
+    "enemy.void.shade",
+    "enemy.elite.shadow"
+  ],
+  "bossPool": [
+    "boss.void_sovereign",
+    "boss.rift_horror",
+    "boss.celestial_guardian",
+    "boss.frost_queen"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.075,
+  "fog": {
+    "enabled": true,
+    "color": "#2a2040",
+    "alpha": 0.45
+  },
+  "groundPalette": {
+    "primary": 13,
+    "variants": [14, 15],
+    "rock": 13,
+    "gravel": 15,
+    "dirt": 2,
+    "waterShallow": 5,
+    "waterDeep": 5,
+    "waterMacroThreshold": 0.055,
+    "dirtMacroThreshold": 0.80,
+    "rockMacroThreshold": 0.93
+  }
+}

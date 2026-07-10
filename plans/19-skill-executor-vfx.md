@@ -1,4 +1,4 @@
-# Sub-Plan 19: Skill Executor & Cultivation VFX
+# Sub-Plan 19: Divine Art Executor & Cultivation VFX
 
 **Phase:** 5 — World & Content  
 **Estimated effort:** 12–16 hours  
@@ -9,7 +9,12 @@
 
 ## 1. Objective
 
-Data-driven skill execution system with cultivation-themed VFX primitives. Supports 6 signature skills + awakened variants; extensible to 40 skills via JSON.
+Data-driven **Divine Art** execution system (content IDs stay `skill.*` internally, per
+`plans/index.md` §1.2) with cultivation-themed VFX primitives, gated by **Master Intent** rules
+(sub-plan 14), cast from the **6-slot combat wheel** (sub-plan 03/12). Supports 6 signature
+Divine Arts + awakened variants; extensible to 40 arts via JSON (sub-plan 23). VFX tiers and
+juice kit follow `plans/index.md` §3.6 and [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §3–§9; Intent colors follow `handbook/pixel-art-style.md`
+§3.1.
 
 ---
 
@@ -63,12 +68,13 @@ Data-driven skill execution system with cultivation-themed VFX primitives. Suppo
 
 | File | Purpose |
 |------|---------|
-| `src/combat/skills/SkillExecutor.ts` | Cast pipeline |
-| `src/combat/skills/SkillRegistry.ts` | Load all skills |
+| `src/combat/skills/ArtExecutor.ts` | Cast pipeline (was `SkillExecutor`) |
+| `src/combat/skills/ArtRegistry.ts` | Load all Divine Arts (was `SkillRegistry`) |
 | `src/combat/skills/effects/*.ts` | Effect handlers |
-| `src/combat/skills/VFXLibrary.ts` | Particle/sprite presets |
-| `src/combat/skills/CooldownManager.ts` | Per-slot cooldowns |
-| `content/skills/_schema.json` | Zod validation |
+| `src/combat/skills/VFXLibrary.ts` | Particle/sprite presets, tiered per §4.2 |
+| `src/combat/skills/JuiceKit.ts` | Hit-stop, screen shake tiers, flash frames (§4.1 — build first) |
+| `src/combat/skills/CooldownManager.ts` | Per-**wheel-slot** cooldowns (all 6, not just 3) |
+| `content/skills/_schema.json` | Zod validation (already authored) |
 
 ---
 
@@ -98,24 +104,35 @@ const handlers: Record<string, EffectHandler> = {
 
 ---
 
-## 5. SkillExecutor Cast Pipeline
+## 5. ArtExecutor Cast Pipeline
 
 ```typescript
-class SkillExecutor {
-  tryCast(skillId: string, caster: Player, scene: MapScene): boolean;
+class ArtExecutor {
+  tryCast(slot: DivineArtSlot, caster: Player, scene: MapScene): boolean;
 }
 ```
 
 Steps:
 
-1. Load skill def (awakened if insight awakened for intent)
-2. Check cooldown + mana via CooldownManager
-3. Play cast anim + VFX cast
-4. Wait castTimeMs (player rooted or sliding per skill)
-5. Execute effects array sequentially or parallel per `parallel: true`
-6. Spend mana, start cooldown
-7. InsightSystem.onSkillUse(intent)
-8. Emit combat events
+1. Resolve the Divine Art id equipped at `slot` from `save.divineArts` (sub-plan 14 §10)
+2. **Sword Intent gate check:** if the resolved art's `intent === 'sword'` and
+   `save.progress.weaponMilestone !== 'ancient_sword'`, **fail the cast immediately** — this is
+   the actual enforcement point for the gate designed in sub-plan 14; the wheel-picker UI
+   (sub-plan 12) should already prevent equipping such an art, so this is a defense-in-depth
+   check, not the primary gate.
+3. Load art def (awakened variant if that Intent is awakened — sub-plan 14)
+4. Check cooldown + mana via CooldownManager (per-slot, all 6 tracked independently)
+5. Play cast anim + VFX cast (tier per §4.2: common = spritesheet + pooled burst; signature =
+   + object FX + telegraph; the Divine Art executor itself doesn't special-case Echoes' Showcase
+   tier — that's god-mode-only, sub-plan 27)
+5b. **Combat camera:** emit `combat:camera` — `powerUi: 'L'|'M'|'S'` from skill content maps to
+   Engage / Engage / Dramatic; on each damaging effect impact emit `shake` tier per plan 29 §2.6.4
+   (L→micro/light, M→light/medium, S→heavy; Showcase→boss).
+6. Wait castTimeMs (player rooted or sliding per art)
+7. Execute effects array sequentially or parallel per `parallel: true`
+8. Spend mana, start cooldown for that slot
+9. `MasterIntentSystem.onArtUse(intent)` (sub-plan 14)
+10. Emit combat events
 
 ---
 
@@ -168,18 +185,21 @@ Each preset params: color, scale, duration — no one-off code per skill.
 
 ## 8. CooldownManager
 
-Track primary + secondary + ultimate separately.
+Track all **6 wheel slots** (`primary, secondary, ultimate, skill3, skill4, skill5`) separately —
+not just primary/secondary/ultimate. Empty vs filled display: [`plans/30-divine-arts-wheel-loadout.md`](./30-divine-arts-wheel-loadout.md).
 
-HUD skill button shows radial cooldown overlay.
+Each wheel-slot button (sub-plan 03) shows its own radial cooldown overlay + mana-lock dim.
 
 ---
 
 ## 9. Integration with Player
 
-Replace sub-plan 07 skill stub:
+Replace sub-plan 07's single-slot stub:
 
-- Skill button casts `equippedSkills.primary`
-- Secondary on long-press skill button (optional MVP skip)
+- Each wheel slot casts its own equipped Divine Art via `ArtExecutor.tryCast(slot, ...)`
+- Dash and Gather Qi are **not** part of this executor — they're dedicated controls handled
+  directly by `DashComponent`/`GatherQiComponent` (sub-plan 07), never routed through
+  `ArtExecutor` or the cooldown/mana system here.
 
 ---
 
@@ -190,7 +210,8 @@ Replace sub-plan 07 skill stub:
 | insufficient mana | cast fails |
 | cooldown | blocks recast |
 | awakened override | pull_field runs |
-| insight hook | XP incremented |
+| intent XP hook | XP incremented |
+| sword gate | casting a sword-intent art with `weaponMilestone: 'none'` fails, even if equipped |
 
 Integration: load skill JSON, mock scene, verify effect count.
 
@@ -198,13 +219,14 @@ Integration: load skill JSON, mock scene, verify effect count.
 
 ## 11. Acceptance Criteria
 
-- [ ] All 6 signature skills castable in combat
-- [ ] Awakened void slash pulls enemies (visible)
-- [ ] Cooldown + mana enforced
-- [ ] VFX presets reused across skills
-- [ ] Skill JSON validates via Zod
-- [ ] Insight XP on cast
-- [ ] Unit/integration tests pass
+- [x] All 6 signature Divine Arts castable in combat, one per wheel slot
+- [x] Awakened void slash pulls enemies (visible)
+- [x] Cooldown + mana enforced per wheel slot independently
+- [x] Sword-intent arts uncastable until `weaponMilestone === 'ancient_sword'`
+- [x] VFX presets reused across arts; tiered per §4.2 (common/signature — Showcase is sub-plan 27)
+- [x] Divine Art JSON validates via Zod
+- [x] Master Intent XP on cast
+- [x] Unit/integration tests pass
 
 ---
 

@@ -29,6 +29,17 @@ At 32×56 (this project's frame), every pixel counts — spend them on shape, no
   - Highlights shift toward **warm** (yellow/orange).
   - Ramps that rotate hue read richer than pure lightness ramps.
 - Reuse shades across materials to keep the palette cohesive.
+- **Enemy variants from one rig — palette-swap-as-remap.** Since sprites are already generated
+  by drawing to canvas at boot, the cheapest way to make many enemy variants from the single
+  sticky-man rig is to **parameterize the ramp colors the draw routine already outputs**
+  (outline/shadow/fill/accent/highlight) rather than hand-authoring a new palette per enemy or
+  standing up a separate recolor system. Only reach for a true runtime palette-swap (canvas
+  `ImageData` remap, or a GPU palette-lookup shader) if you need to switch an *already-generated*
+  spritesheet's colors without regenerating frames (e.g. an "elite/corrupted" recolor at
+  runtime) — for MVP, draw-time parameterization is simpler and cheaper. (Validated 2026-07: no
+  current library does articulated-rig procedural generation better than this bespoke pipeline —
+  don't add one. An OKLCH-based ramp generator is a reasonable spike if hand-picked hue-shifts
+  ever feel inconsistent across many enemies, but isn't a gap today.)
 
 ## 3. Outlines — selective outline ("sel-out")
 

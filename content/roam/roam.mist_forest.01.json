@@ -1,0 +1,137 @@
+{
+  "id": "roam.mist_forest.01",
+  "spawns": [
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 4217,
+      "y": 3605,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 4192,
+      "y": 3627,
+      "patrolRadius": 59
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 4162,
+      "y": 3588,
+      "patrolRadius": 63
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 4205,
+      "y": 3583,
+      "patrolRadius": 67
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 5816,
+      "y": 3205,
+      "patrolRadius": 52
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 5780,
+      "y": 3219,
+      "patrolRadius": 56
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 5792,
+      "y": 3163,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 5017,
+      "y": 4805,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 4978,
+      "y": 4820,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 4991,
+      "y": 4760,
+      "patrolRadius": 66
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 7215,
+      "y": 4205,
+      "patrolRadius": 65
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 7192,
+      "y": 4225,
+      "patrolRadius": 69
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 7165,
+      "y": 4189,
+      "patrolRadius": 73
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 7205,
+      "y": 4185,
+      "patrolRadius": 77
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 3000,
+      "y": 4000,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 6400,
+      "y": 5600,
+      "patrolRadius": 66
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 8000,
+      "y": 3600,
+      "patrolRadius": 72
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 3600,
+      "y": 5200,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 7600,
+      "y": 5200,
+      "patrolRadius": 68
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 4800,
+      "y": 2800,
+      "patrolRadius": 68
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 8600,
+      "y": 4800,
+      "patrolRadius": 74
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 5400,
+      "y": 6200,
+      "patrolRadius": 80
+    }
+  ]
+}

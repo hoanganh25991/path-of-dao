@@ -27,7 +27,7 @@ Full MVP roster: 40 skills, 41 enemies, loot tables, boss phases, and skill unlo
 ## Remaining
 
 - Boss distinct patterns polish for all eight MVP bosses
-- Six skills with full awakening VFX (MVP ship target)
+- Six skills with full awakening VFX sprite pass (plans 29 + 32)
 
 ## Verification
 

@@ -20,6 +20,9 @@
     { "enemyId": "enemy.slime", "x": 6200, "y": 2800, "patrolRadius": 55 },
     { "enemyId": "enemy.slime", "x": 6600, "y": 5000, "patrolRadius": 58 },
     { "enemyId": "enemy.heng_yue.disciple", "x": 5400, "y": 2600, "patrolRadius": 80 },
-    { "enemyId": "enemy.heng_yue.disciple", "x": 7400, "y": 4400, "patrolRadius": 75 }
+    { "enemyId": "enemy.heng_yue.disciple", "x": 7400, "y": 4400, "patrolRadius": 75 },
+    { "enemyId": "enemy.bandit.thug", "x": 5800, "y": 3600, "patrolRadius": 70 },
+    { "enemyId": "enemy.slime", "x": 4600, "y": 3000, "patrolRadius": 58 },
+    { "enemyId": "enemy.wolf", "x": 6200, "y": 5200, "patrolRadius": 88 }
   ]
 }

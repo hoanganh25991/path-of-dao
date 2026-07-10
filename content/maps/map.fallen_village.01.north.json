@@ -16,8 +16,8 @@
   },
   "connections": [],
   "encounterTable": null,
-  "roamTable": "roam.fallen_village.01.north",
-  "spawnMode": "roam",
+  "roamTable": null,
+  "spawnMode": "procedural",
   "portals": [
     {
       "id": "portal.south",
@@ -43,5 +43,7 @@
   "bgm": "bgm.combat.fallen_village",
   "pois": [],
   "recommendedCp": 800,
-  "recommendedRealmOrder": 1
+  "recommendedRealmOrder": 1,
+  "worldProfile": "world.fallen_village",
+  "requiredBossId": null
 }

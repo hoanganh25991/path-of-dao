@@ -237,7 +237,7 @@ function pickThunderStrikePoint(
     (a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py),
   );
   const target = inFront[0]!;
-  return { x: target.x, y: target.y };
+  return { x: target.x, y: target.hurtCenterY };
 }
 
 export function runThunderStrike(
@@ -300,7 +300,7 @@ export function runThunderChain(
 
   for (const target of chain) {
     const toX = target.x;
-    const toY = target.y - 12;
+    const toY = target.hurtCenterY;
     playThunderChainLink(player.scene, fromX, fromY, toX, toY, power);
     playVerticalThunderStrike(player.scene, toX, toY, 120 + power * 12, power * 0.85);
 

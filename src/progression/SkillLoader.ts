@@ -54,5 +54,8 @@ export function resolveEffectiveSkillId(
   const insight = insights[def.intent];
   if (!insight?.awakened) return skillId;
   if (skillId.endsWith('.awakened')) return skillId;
-  return getInsightIntentConfig(def.intent).awakenedSkillId;
+  const config = getInsightIntentConfig(def.intent);
+  // Only the base art upgrades to awakened — v1–v5 variants keep their authored effects.
+  if (skillId === config.baseSkillId) return config.awakenedSkillId;
+  return skillId;
 }

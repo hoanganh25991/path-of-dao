@@ -1,6 +1,6 @@
 .ancient-echo-banner {
   position: absolute;
-  top: max(0.65rem, env(safe-area-inset-top));
+  top: calc(max(0.5rem, env(safe-area-inset-top)) + 2.4rem);
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;

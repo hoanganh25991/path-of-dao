@@ -72,6 +72,8 @@ class StatSheet {
   get runtime(): Readonly<RuntimeStats>;
   applyDamage(amount: number): number;  // returns actual HP lost
   heal(amount: number): void;
+  regenMana(amount: number): void;
+  regenTick(deltaMs: number, mode: 'gather' | 'passive' | 'none', multiplier?: number): void;
   spendMana(cost: number): boolean;
 }
 ```
@@ -163,6 +165,34 @@ Used by player controller sub-plan 07.
 
 ---
 
+## 7.1 Regeneration (HP + Mana)
+
+Cultivation **qi circulation** — passive recovery scales with **level**; Gather Qi multiplies it.
+
+### Base rate (by level)
+
+```typescript
+// content/curves/base-stats.json or regen curve — tune in balance pass
+function hpRegenPerSec(level: number): number {
+  return REGEN_HP_PER_LEVEL * level;   // e.g. 0.5 × level
+}
+function manaRegenPerSec(level: number): number {
+  return REGEN_MANA_PER_LEVEL * level; // e.g. 0.4 × level
+}
+```
+
+| Mode | HP / mana rate | Condition |
+|------|----------------|-----------|
+| **Gather Qi** | **3×** base | `gatherQi` channel — Buddha sit, stationary (plan `07` §7.1) |
+| **Slow walk** | **1×** base | Moving, speed &lt; **40%** of max (`moveSpeedPxPerSec`) |
+| **Idle** | **1×** base | `idle` — no move input |
+| **Normal move / combat** | **0×** | Sprint, attack, dash, hitstun |
+
+`StatSheet.regenTick(deltaMs, mode: 'gather' | 'passive' | 'none')` applies HP + mana restore.
+Gather Qi tuning also referenced from `content/skills/skill.basic.meditate.json` (`regenMultiplier: 3`).
+
+---
+
 ## 8. Zod Schemas
 
 `src/shared/schemas/curves.ts`:
@@ -194,11 +224,12 @@ Used by player controller sub-plan 07.
 
 ## 10. Acceptance Criteria
 
-- [ ] StatSheet recalculates correctly with stacked equipment modifiers (mock)
-- [ ] Damage calculator tests all pass with documented expected values
-- [ ] Level curve loads from JSON; invalid JSON throws in dev
-- [ ] No Phaser/Three imports in progression module
-- [ ] Exported types used by later sub-plans documented in `types.ts`
+- [x] StatSheet recalculates correctly with stacked equipment modifiers (mock)
+- [x] Damage calculator tests all pass with documented expected values
+- [x] Level curve loads from JSON; invalid JSON throws in dev
+- [x] `regenTick` applies 1× passive and 3× gather HP + mana scaled by level (§7.1)
+- [x] No Phaser/Three imports in progression module
+- [x] Exported types used by later sub-plans documented in `types.ts`
 
 ---
 

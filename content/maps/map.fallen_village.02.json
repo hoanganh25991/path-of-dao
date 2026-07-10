@@ -13,7 +13,7 @@
     "height": 6080
   },
   "connections": [],
-  "encounterTable": "encounter.fallen_village.02",
+  "encounterTable": null,
   "bgm": null,
   "pois": [
     {
@@ -25,5 +25,9 @@
     }
   ],
   "recommendedCp": 1500,
-  "recommendedRealmOrder": 1
+  "recommendedRealmOrder": 1,
+  "roamTable": null,
+  "spawnMode": "procedural",
+  "requiredBossId": null,
+  "worldProfile": "world.fallen_village.gate"
 }

@@ -9,24 +9,39 @@
 
 ## 1. Objective
 
-Complete remaining 10 maps (chapters 6–10), 3 final bosses, endgame epilogue story, and Void Throne finale map.
+Complete remaining 10 maps (chapters 6–10), 3 final bosses, endgame epilogue story, and Void Throne finale map. Same **map-design canon** as plan `21`: 100× scale, settlements, signature tree, unique environment — [`map-design-canon.md`](./map-design-canon.md).
 
 ---
 
 ## 2. Map Roster
 
-| Map ID | Chapter | Theme | Boss |
-|--------|---------|-------|------|
-| map.thunder_peaks.01 | 6 | Cliffs, lightning | — |
-| map.thunder_peaks.02 | 6 | Storm altar | boss.thunder_avatar |
-| map.frozen_palace.01 | 7 | Ice halls | — |
-| map.frozen_palace.02 | 7 | Throne room | boss.frost_queen |
-| map.abyss_rift.01 | 8 | Corrupted rift | — |
-| map.abyss_rift.02 | 8 | Void pit | boss.rift_horror |
-| map.heavenly_gate.01 | 9 | Celestial stairs | — |
-| map.heavenly_gate.02 | 9 | Gate trial | boss.celestial_guardian |
-| map.void_throne.01 | 10 | Void approach | — |
-| map.void_throne.02 | 10 | Final throne | boss.void_sovereign |
+| Map ID | Chapter | Theme | Ordeal cultivator (VI · EN) | Boss ID |
+|--------|---------|-------|----------------------------|---------|
+| map.thunder_peaks.01 | 6 | Cliffs, storm clouds | — | — |
+| map.thunder_peaks.02 | 6 | Storm altar | **Thiên Vận Tử** (I) · Heaven Fate Lord (I) | boss.thunder_avatar |
+| map.frozen_palace.01 | 7 | Ice halls | — | — |
+| map.frozen_palace.02 | 7 | Memory hall | **Vọng Nguyệt** · Wang Yue | boss.frost_queen |
+| map.abyss_rift.01 | 8 | Corrupted rift | — | — |
+| map.abyss_rift.02 | 8 | Heart demon chasm | **Thiên Vận Tử** (II · Tâm Ma) · Heaven Fate · Heart Demon | boss.rift_horror |
+| map.heavenly_gate.01 | 9 | Lôi Tiên steps | — | — |
+| map.heavenly_gate.02 | 9 | Gate trial | **Chu Tước Tử** (II · Ải Môn) · Vermillion Bird Heir · Gate Trial | boss.celestial_guardian |
+| map.void_throne.01 | 10 | Hall approach | — | — |
+| map.void_throne.02 | 10 | Lôi Tiên Điện | **Thiên Vận Tử** (III · Lôi Điện) · Heaven Fate · Thunder Hall | boss.void_sovereign |
+
+### 2.1 Settlements & signature trees (ch6–10)
+
+| Map | Settlement `type` | Structures (min) | Signature tree |
+|-----|-------------------|------------------|----------------|
+| `map.thunder_peaks.01` | `outpost` | watchtower, hut, wall_segment | `prop.tree.storm_pine` |
+| `map.thunder_peaks.02` | `sect_courtyard` | sect_gate, pavilion, shrine | `prop.tree.altar_cedar` |
+| `map.frozen_palace.01` | `palace_ruin` | wall_segment, pavilion, shrine | `prop.tree.frost_paulownia` |
+| `map.frozen_palace.02` | `palace_ruin` | shrine, pavilion, sect_gate | `prop.tree.memory_sakura` |
+| `map.abyss_rift.01` | `ruin_village` | house_ruin×2, well | `prop.tree.void_bristle` |
+| `map.abyss_rift.02` | `shrine_cluster` | shrine, pavilion | `prop.tree.heart_demon_wisteria` |
+| `map.heavenly_gate.01` | `outpost` | watchtower, wall_segment, sect_gate | `prop.tree.gate_cypress` |
+| `map.heavenly_gate.02` | `sect_courtyard` | sect_gate, pavilion, shrine | `prop.tree.trial_bodhi` |
+| `map.void_throne.01` | `palace_ruin` | wall_segment, pavilion, watchtower | `prop.tree.thunder_halberd` |
+| `map.void_throne.02` | `sect_courtyard` | sect_gate, shrine, pavilion | `prop.tree.dao_world_tree` |
 
 ---
 
@@ -41,6 +56,15 @@ Complete remaining 10 maps (chapters 6–10), 3 final bosses, endgame epilogue s
 | 10 | 260,000 | 320,000 |
 
 Player with full awakenings + realm 6–7 should feel challenged on 9–10, overpowered on 1–3.
+
+---
+
+## 4.1 Map design (inherits plan 21 + map canon)
+
+- **Bounds:** 16,000×12,160 px on **all** ch6–10 maps
+- **Settlements:** ice palace halls as `palace_ruin`, gate **sect_courtyard**, void **nomad_camp** / ruins as appropriate
+- **Signature trees:** ch6–10 roster in [`map-design-canon.md` §4.3](./map-design-canon.md#43-roster--all-20-maps)
+- **Environment:** storm, frost, void, gate — each map unique `weather` + `uniqueness[]`
 
 ---
 
@@ -64,33 +88,39 @@ Player with full awakenings + realm 6–7 should feel challenged on 9–10, over
 
 ## 5. Final Bosses
 
-### boss.thunder_avatar
+> Pixel identity per boss: [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §6.
 
-- Phase 1: lightning strikes telegraphed on ground
-- Phase 2: Thunder Step mimic dashes
+### boss.thunder_avatar — **Thiên Vận Tử** (I) · Heaven Fate Lord (I)
 
-### boss.frost_queen
+- Phase 1: fate lightning strikes telegraphed on ground
+- Phase 2: Thunder Step mimic dashes — near-death at on-level CP
 
-- Phase 1: ice shards cone
-- Phase 2: arena freeze zones (slow, not full freeze)
+### boss.frost_queen — **Vọng Nguyệt** · Wang Yue
 
-### boss.rift_horror
+- Phase 1: moon-void ice shards cone
+- Phase 2: memory freeze zones (slow, not full freeze)
 
-- Phase 1: void pulls
-- Phase 2: adds spawn continuously (cap 4)
+### boss.rift_horror — **Thiên Vận Tử** (II · Tâm Ma) · Heaven Fate · Heart Demon
 
-### boss.celestial_guardian
+- Phase 1: heart-demon void pulls
+- Phase 2: mirror adds spawn continuously (cap 4)
 
-- Phase 1: alternating sword/beam
-- Phase 2: Heavenly Domain mini (1s slow)
+### boss.celestial_guardian — **Chu Tước Tử** (II · Ải Môn) · Vermillion Bird Heir · Gate Trial
 
-### boss.void_sovereign (FINAL)
+- Phase 1: alternating vermillion sword/beam
+- Phase 2: Gate Trial mini-domain (1s slow)
+
+### boss.void_sovereign (FINAL) — **Thiên Vận Tử** (III · Lôi Điện) · Heaven Fate · Thunder Hall
 
 - Phase 1: void slash variants
 - Phase 2: realm suppression (player -20% atk unless awakened void)
 - Phase 3: enrage timer 3 min — soft DPS check
 
 Defeat triggers **epilogue story** + credits scroll.
+
+**Dao Scroll** (plan 31): ch6–10 map prose in `content/locales/{en,vi}/timeline.json` **(done 2026-07-10)**.
+Still need `timeline.map.*.json` shard files, `timelineShardId` on maps, illustrations. Ch10 `.02`
+punch-line synthesizes all six Master Intents — Wang Lin at Thunder Hall.
 
 ---
 
@@ -161,13 +191,13 @@ Playthrough checklist document `handbook/qa/full-playthrough.md`:
 
 ## 12. Acceptance Criteria
 
-- [ ] 10 maps complete (20 total with plan 21)
-- [ ] 8 bosses total functional
-- [ ] Epilogue story + credits play
-- [ ] gameComplete persisted
+- [x] 10 maps complete (20 total with plan 21)
+- [~] 8 bosses total functional
+- [x] Epilogue story + credits play
+- [x] gameComplete persisted
 - [ ] recommendedCp curve smooth on spreadsheet
-- [ ] Validator clean
-- [ ] Performance: void throne < 8 enemies on screen avg
+- [x] Validator clean
+- [~] Performance: void throne < 8 enemies on screen avg
 
 ---
 

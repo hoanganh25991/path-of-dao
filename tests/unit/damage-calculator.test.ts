@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { moveSpeedPxPerSec, resolveDamage } from '@/progression/DamageCalculator';
+import {
+  cultivatorSpeedStat,
+  moveSpeedPxPerSec,
+  resolveDamage,
+} from '@/progression/DamageCalculator';
 import type { BaseStats } from '@/progression/types';
 
 function makeStats(overrides: Partial<BaseStats> = {}): BaseStats {
@@ -147,6 +151,19 @@ describe('resolveDamage', () => {
       neverCrit,
     );
     expect(result.final).toBe(150);
+  });
+});
+
+describe('cultivatorSpeedStat', () => {
+  it('keeps stationary and slow enemies unchanged', () => {
+    expect(cultivatorSpeedStat(0)).toBe(0);
+    expect(cultivatorSpeedStat(70)).toBe(70);
+    expect(cultivatorSpeedStat(100)).toBe(100);
+  });
+
+  it('soft-compresses fast elites toward hero pace', () => {
+    expect(cultivatorSpeedStat(135)).toBe(108.75);
+    expect(cultivatorSpeedStat(117)).toBe(104.25);
   });
 });
 

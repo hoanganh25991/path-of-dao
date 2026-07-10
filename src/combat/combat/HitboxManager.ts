@@ -71,7 +71,7 @@ export class HitboxManager {
   private overlaps(hitbox: Hitbox, target: HurtboxEntity): boolean {
     const { shape } = hitbox;
     const tx = target.x;
-    const ty = target.y;
+    const ty = target.hurtCenterY;
     const tr = target.hurtRadius;
 
     switch (shape.kind) {

@@ -9,7 +9,7 @@
 
 ## 1. Objective
 
-Implement the application shell that hosts either the **2D combat canvas (Phaser)** or the **3D Home canvas (Three.js)**, with clean lifecycle management (init, pause, dispose). Player always lands on Home first.
+Implement the application shell that hosts either the **2D combat canvas (Phaser 3.60+ Fake 2.5D)** or the **3D Home canvas (Three.js)**, with clean lifecycle management (init, pause, dispose). Player always lands on Home first. Depth canon: [`fake-2.5d.md`](./fake-2.5d.md).
 
 ---
 
@@ -39,6 +39,8 @@ Only one engine active at a time to limit mobile GPU memory.
 | `src/home/HomeSceneHost.ts` | Stub Three scene (colored background) |
 | `src/combat/CombatSceneHost.ts` | Stub Phaser scene (colored background) |
 | `src/ui/LoadingOverlay.ts` | Fade during scene transitions |
+| `src/ui/hud/FpsOverlay.ts` | **Always-on FPS button** — viewport top-right; left of menu when present (§4.1) |
+| `src/ui/hud/top-right-chrome.css` | Shared top-right cluster layout (FPS + scene menu) |
 | `src/app/app.css` | Full-viewport layout, safe areas |
 
 ---
@@ -62,6 +64,30 @@ CSS rules:
 - Canvases: `position: absolute; inset: 0; width: 100%; height: 100%;`
 - Inactive canvas: `visibility: hidden; pointer-events: none;` (not `display:none` — avoids resize bugs)
 - `#ui-root`: `position: fixed; inset: 0; pointer-events: none;` — children re-enable pointer-events
+
+### 4.1 Top-right chrome (FPS + menu)
+
+`FpsOverlay` mounts once in `#ui-root` at app init — **never unmounts** on scene change.
+
+```
+Viewport top-right (safe-area inset):
+                    ┌─────┬───────┐
+                    │ FPS │ Menu  │  ← Menu flush right; FPS immediately left
+                    └─────┴───────┘
+                         ↑ 8px gap
+```
+
+| Rule | Detail |
+|------|--------|
+| **FPS button** | Always visible on every scene (Home, combat, story, overlays) |
+| **Menu button** | Scene-specific — combat pause menu, overlay Close, etc. |
+| **Order** | `[FPS]` left of `[Menu]`; **menu stays rightmost** (top-right anchor) |
+| **No menu** | FPS alone at top-right (same anchor row) |
+| **Z-index** | Above game canvases; below modals / pause veil |
+| **Target size** | `min 44×44px` each — same touch target as menu (plan 03 §6) |
+
+Scene hosts register their rightmost header button into `#top-right-chrome` (menu slot); `FpsOverlay`
+owns the FPS slot. Spec: plan `03` §6.1 · `12` §17.8 · `17` §7.1.
 
 ---
 
@@ -213,13 +239,14 @@ Create `MockSceneHost` implementing interface; verify:
 
 ## 12. Acceptance Criteria
 
-- [ ] App boots to Three.js stub (blue fog + box) on `#canvas-3d`
-- [ ] Dev key `C` switches to Phaser stub showing mapId; `H` returns Home
-- [ ] No WebGL context leak after 10 rapid switches (check `renderer.info.memory` or Phaser restart)
-- [ ] Tab hidden pauses render loops (verify via counter not incrementing)
-- [ ] Loading overlay visible during transition
-- [ ] `#ui-root` exists and overlays canvas without blocking inactive canvas pointer-events incorrectly
-- [ ] All unit tests pass
+- [x] App boots to Three.js stub (blue fog + box) on `#canvas-3d`
+- [x] Dev key `C` switches to Phaser stub showing mapId; `H` returns Home
+- [x] No WebGL context leak after 10 rapid switches (SceneRouter host disposal contract; `tests/integration/scene-router.test.ts`)
+- [x] Tab hidden pauses render loops (verify via counter not incrementing)
+- [x] Loading overlay visible during transition
+- [x] `#ui-root` exists and overlays canvas without blocking inactive canvas pointer-events incorrectly
+- [x] **`FpsOverlay`** mounted at init; visible on Home and combat; never unmounts on scene switch (§4.1)
+- [x] All unit tests pass
 
 ---
 

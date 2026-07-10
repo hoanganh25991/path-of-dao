@@ -1,0 +1,37 @@
+{
+  "id": "world.fallen_village.gate",
+  "cellSize": 640,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.heng_yue.disciple",
+    "enemy.wolf",
+    "enemy.village.spirit_pest"
+  ],
+  "strongPool": [
+    "enemy.heng_yue.disciple",
+    "enemy.bandit.thug",
+    "enemy.wolf"
+  ],
+  "bossPool": [
+    "boss.jade_guardian",
+    "boss.bandit_lord"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.08,
+  "fog": {
+    "enabled": true,
+    "color": "#8a9488",
+    "alpha": 0.18
+  },
+  "groundPalette": {
+    "primary": 2,
+    "variants": [15],
+    "gravel": 15,
+    "rock": 13,
+    "dirt": 2,
+    "sand": 3,
+    "waterMacroThreshold": 0,
+    "dirtMacroThreshold": 0.68,
+    "rockMacroThreshold": 0.86
+  }
+}

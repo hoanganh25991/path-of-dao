@@ -1,4 +1,4 @@
-# Sub-Plan 23: MVP Enemies, Bosses & Skill Data
+# Sub-Plan 23: MVP Enemies, Bosses & Divine Art Data
 
 **Phase:** 6 — MVP Content  
 **Estimated effort:** 12–16 hours  
@@ -9,7 +9,10 @@
 
 ## 1. Objective
 
-Complete content data for **25 enemy types**, **8 bosses**, and **40 skills** (6 signature fully authored + 34 variants). No new code unless executor lacks effect — extend handlers only if blocked.
+Complete content data for **25 enemy types**, **8 bosses**, and **40 Divine Arts** (content IDs
+stay `skill.*`; 6 signature fully authored + 34 variants; player-facing noun is always "Divine
+Art" per `plans/index.md` §1.2). No new code unless executor lacks effect — extend handlers only
+if blocked.
 
 ---
 
@@ -19,9 +22,9 @@ Complete content data for **25 enemy types**, **8 bosses**, and **40 skills** (6
 |----------|--------|---------------------|
 | Enemies | 25 | 22 authored in 21–22 |
 | Bosses | 8 | 8 authored |
-| Skills | 40 | 6 signature in 19 |
+| Divine Arts | 40 | 6 signature in 19 |
 
-This plan adds: **3 enemy types**, **34 skill JSON files**, balance pass loot tables.
+This plan adds: **3 enemy types**, **34 Divine Art JSON files**, balance pass loot tables.
 
 ---
 
@@ -35,19 +38,22 @@ This plan adds: **3 enemy types**, **34 skill JSON files**, balance pass loot ta
 
 ---
 
-## 4. Skill Set Structure (40 Total)
+## 4. Divine Art Set Structure (40 Total)
 
 ### 4.1 Signature (12 ids — base + awakened)
 
 Already defined in sub-plans 14 + 19.
 
-### 4.2 Variants (28 skills)
+### 4.2 Variants (28 Divine Arts)
 
 4 variants per intent × 7 intents = 28 (adjust Life to 4 variants, Time to 4 — total 28 + 12 = 40).
 
-Pattern naming: `skill.{intent}.{name}.v{1-4}`
+Pattern naming: `skill.{intent}.{name}.v{1-4}` (content ID stays internal per §1.2 canon).
 
-Example sword variants:
+Example sword variants — **all `skill.sword.*` variants inherit the Sword Intent gate**
+(sub-plan 14/19): unlocked in `unlockedArts` per the progression below, but **uncastable and
+unequippable** until `progress.weaponMilestone === 'ancient_sword'`, exactly like the signature
+Sword Flash art. Don't special-case variants — the gate checks `intent`, not the specific id.
 
 | ID | Multiplier | Cooldown | Notes |
 |----|------------|----------|-------|
@@ -60,22 +66,23 @@ Repeat pattern for void, flame, lightning, time, life with effect types from exe
 
 ---
 
-## 5. Skill Unlock Progression
+## 5. Divine Art Unlock Progression
 
-| Source | Skills unlocked |
-|--------|-----------------|
-| Level milestones | 1 skill every 4 levels |
+| Source | Divine Arts unlocked |
+|--------|-----------------------|
+| Level milestones | 1 art every 4 levels |
 | Chapter story rewards | 2 per chapter |
 | Secret manual encounter | 1 variant |
 | Boss first kill | 1 variant |
 
-Track in save:
+Track in save (`content/progression/skill-unlocks.json` already authors the source table):
 
 ```typescript
-unlockedSkills: string[];
+unlockedArts: string[];  // was `unlockedSkills`
 ```
 
-Skills panel shows locked/unlocked; equip only unlocked.
+Divine Arts panel (sub-plan 12) shows locked/unlocked; equip only unlocked **and** intent-gated
+arts (sword variants stay greyed out pre-milestone even once "unlocked" by level/story).
 
 ---
 
@@ -113,6 +120,12 @@ Standardize boss JSON `phases[]`:
 ```
 
 Extend enemy AI boss archetype to read phase config — if missing from sub-plan 08, add minimal `BossPhaseAI.ts` here (document in acceptance).
+
+### 7.1 Boss defeat (not kill)
+
+All bosses: `"opponentKind": "cultivator"`, `"canReAggro": false`, `"defeatRecoverMs": 90000`–`120000`.
+On HP = 0 → return to arena origin → **long gather-qi recovery** (visual) while `map:boss-defeated`
+fires. [`combat-defeat-canon.md`](./combat-defeat-canon.md) §2.2.
 
 ---
 
@@ -156,30 +169,33 @@ pnpm content:validate --strict-i18n
 Assert:
 
 - Exactly 25 enemy files
-- Exactly 40 skill files
+- Exactly 40 Divine Art (`skill.*`) files
 - 8 enemies with `"category": "boss"`
 
 ---
 
 ## 11. Acceptance Criteria
 
-- [ ] 25 enemy JSON files validate
-- [ ] 8 boss fights use phase scripts
-- [ ] 40 skill JSON files validate
-- [ ] unlockedSkills progression wired to story/level
-- [ ] Loot tables reference valid items
-- [ ] Bestiary entries show for all enemies after kill
-- [ ] No duplicate skill ids
-- [ ] Simulator or manual TTK doc completed
+- [x] 25 enemy JSON files validate
+- [x] 8 boss fights use phase scripts
+- [x] 40 Divine Art JSON files validate
+- [x] `unlockedArts` progression wired to story/level
+- [x] Sword-intent variants stay uncastable pre-milestone even when "unlocked"
+- [x] Loot tables reference valid Dharma Treasures (`item.*`)
+- [x] Bestiary entries show for all enemies after kill
+- [x] No duplicate Divine Art ids
+- [x] Simulator or manual TTK doc completed
 
 ---
 
 ## 12. Scope Guard
 
-Do NOT hand-author 40 unique VFX — reuse VFXLibrary presets with color/tint params in JSON `vfx.tint`.
+Do NOT hand-author 40 unique VFX — reuse VFXLibrary presets with color/tint params in JSON
+`vfx.tint`, drawing tints from the Intent VFX palette (`handbook/pixel-art-style.md` §3.1).
+Per-art **power UI (L/M/S)**, AOE radius, and uniqueness hooks: [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §9.
 
 ---
 
 ## 13. Handoff
 
-Sub-plan 25 adds audio cues per boss skill telegraph. Sub-plan 24 localizes skill/enemy names.
+Sub-plan 25 adds audio cues per boss Divine Art telegraph. Sub-plan 24 localizes Divine Art/enemy names.

@@ -1,0 +1,96 @@
+{
+  "id": "roam.moon_lake.02",
+  "spawns": [
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 5615,
+      "y": 5005,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 5593,
+      "y": 5024,
+      "patrolRadius": 66
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 5567,
+      "y": 4990,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 5605,
+      "y": 4985,
+      "patrolRadius": 74
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 7214,
+      "y": 4604,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 7193,
+      "y": 4623,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 7168,
+      "y": 4590,
+      "patrolRadius": 66
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 7204,
+      "y": 4586,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 4413,
+      "y": 5804,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 4383,
+      "y": 5815,
+      "patrolRadius": 64
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 4393,
+      "y": 5769,
+      "patrolRadius": 68
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 3600,
+      "y": 4800,
+      "patrolRadius": 65
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 8400,
+      "y": 5400,
+      "patrolRadius": 71
+    },
+    {
+      "enemyId": "enemy.cultist.acolyte",
+      "x": 6400,
+      "y": 6800,
+      "patrolRadius": 77
+    },
+    {
+      "enemyId": "boss.seal_warden",
+      "x": 10800,
+      "y": 5200,
+      "patrolRadius": 0,
+      "respawnMs": 999999
+    }
+  ]
+}

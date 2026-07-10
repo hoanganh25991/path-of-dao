@@ -58,6 +58,9 @@ export type GameEvents = {
   'combat:request-save': undefined;
   'combat:request-exit': { wavesCleared: boolean };
   'combat:request-retry': undefined;
+  'combat:map-loaded': {
+    displayNameKey: string;
+  };
 };
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

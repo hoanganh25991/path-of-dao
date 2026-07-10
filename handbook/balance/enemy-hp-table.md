@@ -1,13 +1,16 @@
-# Enemy HP Balance Reference
+# Enemy HP balance reference (sub-plan 23)
 
-Target TTK for normal grunts: **8–15 player hits** per chapter band.  
-Boss fights: **90–180 seconds** at recommended CP.
+Target TTK vs player DPS: **8–15 hits** per normal enemy; **90–180s** per boss at recommended CP.
 
-| Chapter band | Grunt HP (approx) | Boss HP |
-|--------------|-------------------|---------|
-| 1–2 | 40–120 | 320–480 |
-| 3–5 | 120–280 | 720–1280 |
-| 6–8 | 280–520 | 2400–4200 |
-| 9–10 | 520–800 | 5400–8000 |
+Tune with `pnpm cp:calc` after loadout changes.
 
-Tune with `pnpm cp:calc` and playtest. Regenerate enemy stats via `pnpm mvp:ch1-5` / `pnpm mvp:ch6-10`.
+| Chapter | Normal enemy HP | Boss HP | Notes |
+|---------|-----------------|---------|-------|
+| 1 | 24–40 | 320 (jade_guardian) | slime/wolf grunts |
+| 2 | 32–48 | 480 (mist_stalker) | spirit moths kiters |
+| 3 | 48–64 | 400 (bandit_lord) | patrol + archers |
+| 4 | 56–72 | 440 (seal_warden) | water sprites |
+| 5 | 64–80 | 520 (desert_sovereign) | scorpion/sand |
+| 6–10 | scale ×1.15/ch | see `content/enemies/boss.*.json` | elite variants |
+
+Boss `phases[]` spawn adds at 50% HP — see `BossPhaseController`.

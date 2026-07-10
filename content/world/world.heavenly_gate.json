@@ -1,0 +1,35 @@
+{
+  "id": "world.heavenly_gate",
+  "cellSize": 1040,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.celestial.archer",
+    "enemy.gate.sentinel"
+  ],
+  "strongPool": [
+    "enemy.elite.celestial",
+    "enemy.gate.sentinel",
+    "enemy.celestial.archer"
+  ],
+  "bossPool": [
+    "boss.celestial_guardian",
+    "boss.thunder_avatar",
+    "boss.rift_horror"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.06,
+  "fog": {
+    "enabled": true,
+    "color": "#d4c890",
+    "alpha": 0.22
+  },
+  "groundPalette": {
+    "primary": 3,
+    "variants": [2],
+    "sand": 3,
+    "dirt": 2,
+    "waterShallow": 4,
+    "waterMacroThreshold": 0.025,
+    "dirtMacroThreshold": 0.85
+  }
+}

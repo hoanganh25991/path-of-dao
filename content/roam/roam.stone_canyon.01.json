@@ -1,0 +1,113 @@
+{
+  "id": "roam.stone_canyon.01",
+  "spawns": [
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 5015,
+      "y": 4205,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 4982,
+      "y": 4217,
+      "patrolRadius": 59
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 4992,
+      "y": 4166,
+      "patrolRadius": 63
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 6414,
+      "y": 3804,
+      "patrolRadius": 52
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 6382,
+      "y": 3816,
+      "patrolRadius": 56
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 6393,
+      "y": 3768,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 4216,
+      "y": 5205,
+      "patrolRadius": 68
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 4180,
+      "y": 5219,
+      "patrolRadius": 72
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 4192,
+      "y": 5163,
+      "patrolRadius": 76
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 7615,
+      "y": 4805,
+      "patrolRadius": 65
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 7581,
+      "y": 4818,
+      "patrolRadius": 69
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 7592,
+      "y": 4765,
+      "patrolRadius": 73
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 3600,
+      "y": 4000,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 8800,
+      "y": 4000,
+      "patrolRadius": 64
+    },
+    {
+      "enemyId": "enemy.guard.patrol",
+      "x": 6000,
+      "y": 6000,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 4800,
+      "y": 3200,
+      "patrolRadius": 72
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 7200,
+      "y": 6200,
+      "patrolRadius": 78
+    },
+    {
+      "enemyId": "enemy.bandit.thug",
+      "x": 3200,
+      "y": 5600,
+      "patrolRadius": 84
+    }
+  ]
+}

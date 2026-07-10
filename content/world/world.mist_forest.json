@@ -1,0 +1,39 @@
+{
+  "id": "world.mist_forest",
+  "cellSize": 720,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.spirit.moth",
+    "enemy.spirit.wisp",
+    "enemy.spirit.fox"
+  ],
+  "strongPool": [
+    "enemy.spirit.fox",
+    "enemy.spirit.wisp",
+    "enemy.spirit.moth"
+  ],
+  "bossPool": [
+    "boss.mist_stalker",
+    "boss.jade_guardian",
+    "boss.seal_warden",
+    "boss.bandit_lord"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.065,
+  "fog": {
+    "enabled": true,
+    "color": "#7a8f9e",
+    "alpha": 0.38
+  },
+  "groundPalette": {
+    "primary": 0,
+    "variants": [
+      1
+    ],
+    "dirt": 2,
+    "waterShallow": 4,
+    "waterDeep": 5,
+    "waterMacroThreshold": 0.08,
+    "dirtMacroThreshold": 0.93
+  }
+}

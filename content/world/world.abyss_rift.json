@@ -1,0 +1,38 @@
+{
+  "id": "world.abyss_rift",
+  "cellSize": 1000,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.rift.spawn",
+    "enemy.corrupted.cultist"
+  ],
+  "strongPool": [
+    "enemy.elite.rift",
+    "enemy.corrupted.cultist",
+    "enemy.rift.spawn"
+  ],
+  "bossPool": [
+    "boss.rift_horror",
+    "boss.void_sovereign",
+    "boss.frost_queen"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.07,
+  "fog": {
+    "enabled": true,
+    "color": "#4a3560",
+    "alpha": 0.4
+  },
+  "groundPalette": {
+    "primary": 13,
+    "variants": [15, 2],
+    "rock": 13,
+    "gravel": 15,
+    "dirt": 2,
+    "waterShallow": 5,
+    "waterDeep": 5,
+    "waterMacroThreshold": 0.05,
+    "dirtMacroThreshold": 0.78,
+    "rockMacroThreshold": 0.92
+  }
+}

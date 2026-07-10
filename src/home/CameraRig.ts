@@ -7,6 +7,22 @@ const MIN_POLAR = Math.PI / 4;
 const MAX_POLAR = Math.PI / 2.1;
 const ROTATE_SPEED = 0.5;
 const TARGET_Y = 0.9;
+const HOME_CAMERA_FOV = 50;
+const HOME_CAMERA_POSITION = { x: 0, y: 1.8, z: 4.2 } as const;
+export const HOME_PLATFORM_TOP_Y = 0.74;
+
+/** Convert screen pixels to world Y at the hero stand point for the default home camera. */
+export function homeScreenPixelsToWorldY(
+  pixels: number,
+  viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800,
+): number {
+  const distance = Math.hypot(
+    HOME_CAMERA_POSITION.z,
+    HOME_CAMERA_POSITION.y - HOME_PLATFORM_TOP_Y,
+  );
+  const visibleHeight = 2 * distance * Math.tan((HOME_CAMERA_FOV * Math.PI) / 360);
+  return (pixels / Math.max(viewportHeight, 1)) * visibleHeight;
+}
 
 export class CameraRig {
   readonly controls: OrbitControls;

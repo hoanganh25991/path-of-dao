@@ -1,0 +1,138 @@
+{
+  "id": "roam.fallen_village.02",
+  "spawns": [
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 4616,
+      "y": 3005,
+      "patrolRadius": 38
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 4600,
+      "y": 3027,
+      "patrolRadius": 42
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 4564,
+      "y": 3012,
+      "patrolRadius": 46
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 4590,
+      "y": 2987,
+      "patrolRadius": 50
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 4616,
+      "y": 2978,
+      "patrolRadius": 38
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 5615,
+      "y": 2705,
+      "patrolRadius": 36
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 5592,
+      "y": 2725,
+      "patrolRadius": 40
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 5566,
+      "y": 2689,
+      "patrolRadius": 44
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 5605,
+      "y": 2685,
+      "patrolRadius": 48
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 3814,
+      "y": 3404,
+      "patrolRadius": 40
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 3782,
+      "y": 3416,
+      "patrolRadius": 44
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 3793,
+      "y": 3368,
+      "patrolRadius": 48
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 3220,
+      "y": 4206,
+      "patrolRadius": 75
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 3175,
+      "y": 4223,
+      "patrolRadius": 79
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 3189,
+      "y": 4154,
+      "patrolRadius": 83
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 2800,
+      "y": 3600,
+      "patrolRadius": 82
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 6200,
+      "y": 3800,
+      "patrolRadius": 88
+    },
+    {
+      "enemyId": "enemy.wolf",
+      "x": 5200,
+      "y": 4600,
+      "patrolRadius": 94
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 3400,
+      "y": 2600,
+      "patrolRadius": 78
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 6400,
+      "y": 3200,
+      "patrolRadius": 84
+    },
+    {
+      "enemyId": "enemy.heng_yue.disciple",
+      "x": 4800,
+      "y": 4200,
+      "patrolRadius": 90
+    },
+    {
+      "enemyId": "boss.jade_guardian",
+      "x": 6800,
+      "y": 3400,
+      "patrolRadius": 0,
+      "respawnMs": 999999
+    }
+  ]
+}

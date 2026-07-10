@@ -11,10 +11,12 @@ import {
   TorusGeometry,
 } from 'three';
 import { EquipmentAttachment } from '@/home/EquipmentAttachment';
+import { homeScreenPixelsToWorldY, HOME_PLATFORM_TOP_Y } from '@/home/CameraRig';
 import { EquipmentManager } from '@/progression/EquipmentManager';
 import type { EquipmentSlot, EquipmentSlots } from '@/progression/ItemDefinition';
 
-const HERO_STAND_Y = 0.74;
+/** Extra lift so boots clear the visible ground. */
+const HERO_GROUND_CLEARANCE_PX = 20;
 
 /**
  * Hero model for the 3D Home viewer.
@@ -37,6 +39,7 @@ export class HeroViewer {
   private cape: Mesh | null = null;
   private core: Mesh | null = null;
   private headGroup: Group | null = null;
+  private standY = HOME_PLATFORM_TOP_Y;
 
   constructor(scene: Scene) {
     scene.add(this.root);
@@ -46,7 +49,11 @@ export class HeroViewer {
   async load(heroId: string): Promise<void> {
     void heroId;
     this.buildProceduralHero();
-    this.root.position.y = HERO_STAND_Y;
+    const canvas = document.querySelector<HTMLCanvasElement>('#canvas-3d');
+    const viewportHeight = canvas?.clientHeight ?? window.innerHeight;
+    const liftY = homeScreenPixelsToWorldY(HERO_GROUND_CLEARANCE_PX, viewportHeight);
+    this.standY = HOME_PLATFORM_TOP_Y + liftY;
+    this.root.position.y = this.standY;
   }
 
   setRealm(_realmId: string, _tier: string): void {
@@ -100,7 +107,7 @@ export class HeroViewer {
     this.petPhase += delta;
     const p = this.idlePhase;
     const bob = Math.sin(p * 1.8) * 0.022;
-    this.root.position.y = HERO_STAND_Y + bob;
+    this.root.position.y = this.standY + bob;
     this.root.rotation.y = Math.sin(p * 0.5) * 0.06; // slow contemplative turn
 
     // Secondary motion — breathing, sash sway, arm sway, glowing core pulse.
@@ -140,10 +147,65 @@ export class HeroViewer {
     this.root.clear();
   }
 
+  /** Low-poly open palm + spread fingers; origin sits at the wrist joint. */
+  private buildHand(side: -1 | 1, skinMat: MeshStandardMaterial): Group {
+    const hand = new Group();
+    const knuckle = new Mesh(new SphereGeometry(0.024, 6, 6), skinMat);
+    knuckle.scale.set(1.1, 0.75, 0.9);
+    hand.add(knuckle);
+
+    const palm = new Mesh(new BoxGeometry(0.06, 0.065, 0.022), skinMat);
+    palm.position.set(0, -0.034, 0.012);
+    palm.rotation.x = 0.18;
+    hand.add(palm);
+
+    for (let i = 0; i < 4; i++) {
+      const finger = new Mesh(new BoxGeometry(0.011, 0.04, 0.016), skinMat);
+      const spread = (i - 1.5) * 0.013;
+      finger.position.set(spread * side, -0.074, 0.014 + Math.abs(spread) * 0.2);
+      finger.rotation.x = 0.12;
+      finger.rotation.z = spread * 0.55 * side;
+      hand.add(finger);
+    }
+
+    const thumb = new Mesh(new BoxGeometry(0.013, 0.032, 0.016), skinMat);
+    thumb.position.set(0.038 * side, -0.048, 0.022);
+    thumb.rotation.z = -0.65 * side;
+    thumb.rotation.x = 0.2;
+    hand.add(thumb);
+
+    return hand;
+  }
+
+  /** Tapered limb from the group origin — down for arms, up for legs. */
+  private buildLimbSegment(
+    topRadius: number,
+    bottomRadius: number,
+    height: number,
+    material: MeshStandardMaterial,
+    muscleRadius = 0,
+    direction: 'down' | 'up' = 'down',
+  ): Group {
+    const segment = new Group();
+    const shaft = new Mesh(new CylinderGeometry(topRadius, bottomRadius, height, 8), material);
+    const muscleY = direction === 'down' ? -height * 0.42 : height * 0.42;
+    shaft.position.y = direction === 'down' ? -height / 2 : height / 2;
+    segment.add(shaft);
+
+    if (muscleRadius > 0) {
+      const muscle = new Mesh(new SphereGeometry(muscleRadius, 8, 6), material);
+      muscle.position.y = muscleY;
+      muscle.scale.set(1.08, 0.72, 1.02);
+      segment.add(muscle);
+    }
+
+    return segment;
+  }
+
   /**
-   * Stylised cultivator built from layered primitives: flared robe skirt,
-   * tapered torso, back cape, gold trims, glowing dantian core. Colors match
-   * PALETTE_HERO in src/combat/art/stickyManPalette.ts.
+   * Stylised cultivator built from layered primitives: muscular limbs,
+   * split robe panels, tapered torso, back cape, gold trims, glowing dantian
+   * core. Colors match PALETTE_HERO in src/combat/art/stickyManPalette.ts.
    */
   private buildProceduralHero(): void {
     const robeMat = new MeshStandardMaterial({
@@ -177,19 +239,50 @@ export class HeroViewer {
       roughness: 0.2,
     });
 
-    // Legs (mostly hidden by the robe, read as motion under the hem).
-    for (const sx of [-0.12, 0.12]) {
-      const leg = new Mesh(new CylinderGeometry(0.06, 0.05, 0.36, 8), robeDarkMat);
-      leg.position.set(sx, 0.14, 0);
+    const trouserMat = new MeshStandardMaterial({
+      color: 0x586878,
+      roughness: 0.62,
+      metalness: 0.04,
+    });
+    const bootMat = new MeshStandardMaterial({ color: 0x3a3848, roughness: 0.7 });
+
+    const shinLen = 0.24;
+    const thighLen = 0.26;
+
+    // Legs grow upward from the sole so nothing sits below y = 0.
+    for (const side of [-1, 1] as const) {
+      const leg = new Group();
+      leg.position.set(0.11 * side, 0, 0);
+
+      const foot = new Mesh(new BoxGeometry(0.09, 0.05, 0.16), bootMat);
+      foot.position.set(0, 0.025, 0.02);
+      leg.add(foot);
+
+      const shin = this.buildLimbSegment(0.066, 0.054, shinLen, trouserMat, 0.06, 'up');
+      shin.position.y = 0.05;
+      leg.add(shin);
+
+      const thigh = this.buildLimbSegment(0.096, 0.072, thighLen, trouserMat, 0.082, 'up');
+      thigh.position.y = 0.05 + shinLen;
+      leg.add(thigh);
+
       this.root.add(leg);
     }
 
-    // Flared robe skirt — the signature flowing silhouette.
-    const skirt = new Mesh(new CylinderGeometry(0.2, 0.44, 0.5, 14, 1, true), robeMat);
-    skirt.position.y = 0.28;
-    this.root.add(skirt);
-    const hem = new Mesh(new TorusGeometry(0.42, 0.03, 8, 20), goldMat);
-    hem.position.y = 0.05;
+    // Split robe panels — hem sits above the boot line.
+    for (const [sx, sz, ry] of [
+      [-0.16, 0.04, 0.22],
+      [0.16, 0.04, -0.22],
+      [0, -0.08, 0],
+    ] as const) {
+      const panel = new Mesh(new BoxGeometry(0.14, 0.36, 0.03), robeMat);
+      panel.position.set(sx, 0.24, sz);
+      panel.rotation.y = ry;
+      this.root.add(panel);
+    }
+
+    const hem = new Mesh(new TorusGeometry(0.24, 0.022, 8, 18), goldMat);
+    hem.position.set(0, 0.1, 0.02);
     hem.rotation.x = Math.PI / 2;
     this.root.add(hem);
 
@@ -209,14 +302,14 @@ export class HeroViewer {
     this.core = core;
     this.root.add(core);
 
-    // Hanging front stole (two robe panels with a gold seam) for depth.
+    // Hanging front stole (short panels above the sash so legs stay visible).
     for (const sx of [-0.07, 0.07]) {
-      const panel = new Mesh(new BoxGeometry(0.06, 0.62, 0.02), robeDarkMat);
-      panel.position.set(sx, 0.6, 0.17);
+      const panel = new Mesh(new BoxGeometry(0.06, 0.34, 0.02), robeDarkMat);
+      panel.position.set(sx, 0.66, 0.17);
       this.root.add(panel);
     }
-    const seam = new Mesh(new BoxGeometry(0.015, 0.6, 0.025), goldMat);
-    seam.position.set(0, 0.6, 0.18);
+    const seam = new Mesh(new BoxGeometry(0.015, 0.32, 0.025), goldMat);
+    seam.position.set(0, 0.66, 0.18);
     this.root.add(seam);
 
     // Waist sash (gold) — animated sway.
@@ -234,22 +327,40 @@ export class HeroViewer {
     this.cape = cape;
     this.root.add(cape);
 
-    // Shoulders + arms (grouped so they sway from the shoulder).
+    // Shoulders + arms — open outward from the body with palms presented forward.
+    const upperArmLen = 0.2;
+    const forearmLen = 0.18;
+    const armOpenAngle = 0.32;
+
     for (const side of [-1, 1] as const) {
       const arm = new Group();
-      arm.position.set(0.22 * side, 0.9, 0);
+      arm.position.set(0.19 * side, 0.9, 0.02);
 
       const pad = new Mesh(new SphereGeometry(0.1, 10, 10), goldMat);
       arm.add(pad);
 
-      const sleeve = new Mesh(new CylinderGeometry(0.07, 0.05, 0.4, 8), robeMat);
-      sleeve.position.set(0.03 * side, -0.22, 0);
-      sleeve.rotation.z = -0.18 * side;
-      arm.add(sleeve);
+      const upperArm = new Group();
+      upperArm.position.set(0, -0.1, 0);
+      upperArm.rotation.z = armOpenAngle * side;
 
-      const hand = new Mesh(new SphereGeometry(0.05, 8, 8), skinMat);
-      hand.position.set(0.07 * side, -0.42, 0);
-      arm.add(hand);
+      const upperArmSeg = this.buildLimbSegment(0.075, 0.062, upperArmLen, skinMat, 0.068);
+      upperArm.add(upperArmSeg);
+
+      const forearm = new Group();
+      forearm.position.set(0, -upperArmLen, 0);
+      forearm.rotation.z = armOpenAngle * 0.45 * side;
+
+      const forearmSeg = this.buildLimbSegment(0.058, 0.048, forearmLen, skinMat, 0.052);
+      forearm.add(forearmSeg);
+
+      const hand = this.buildHand(side, skinMat);
+      hand.position.set(0, -forearmLen, 0);
+      hand.rotation.x = 0.22;
+      hand.rotation.z = armOpenAngle * 0.25 * side;
+      forearm.add(hand);
+
+      upperArm.add(forearm);
+      arm.add(upperArm);
 
       this.root.add(arm);
       if (side === -1) this.armL = arm;

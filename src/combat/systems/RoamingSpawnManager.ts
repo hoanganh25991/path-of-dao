@@ -186,6 +186,12 @@ export class RoamingSpawnManager {
   private onDefeatHoldComplete(cultivator: Cultivator): void {
     const slot = this.slots.find((s) => s.cultivator === cultivator);
     if (!slot || this.destroyed) return;
+    // Boss slots stay down for the session — no in-place recovery.
+    if (cultivator.config.bossClearId) {
+      this.pool.release(cultivator);
+      slot.cultivator = null;
+      return;
+    }
     cultivator.beginRecovery();
   }
 

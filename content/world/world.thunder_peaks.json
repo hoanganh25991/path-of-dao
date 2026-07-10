@@ -1,0 +1,37 @@
+{
+  "id": "world.thunder_peaks",
+  "cellSize": 920,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.storm.hawk",
+    "enemy.lightning.sprite"
+  ],
+  "strongPool": [
+    "enemy.elite.storm",
+    "enemy.lightning.sprite",
+    "enemy.storm.hawk"
+  ],
+  "bossPool": [
+    "boss.thunder_avatar",
+    "boss.desert_sovereign",
+    "boss.mist_stalker"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.065,
+  "fog": {
+    "enabled": true,
+    "color": "#6b7a9e",
+    "alpha": 0.28
+  },
+  "groundPalette": {
+    "primary": 15,
+    "variants": [13],
+    "rock": 13,
+    "gravel": 15,
+    "dirt": 2,
+    "waterShallow": 4,
+    "waterMacroThreshold": 0.03,
+    "dirtMacroThreshold": 0.76,
+    "rockMacroThreshold": 0.90
+  }
+}

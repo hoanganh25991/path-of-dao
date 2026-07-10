@@ -30,6 +30,8 @@ Implement versioned save/load with IndexedDB, autosave hooks, checksum integrity
 ## 3. Save Schema v1
 
 ```typescript
+type DivineArtSlot = 'primary' | 'secondary' | 'ultimate' | 'skill3' | 'skill4' | 'skill5';
+
 interface PlayerSaveV1 {
   version: 1;
   checksum: string;
@@ -42,12 +44,18 @@ interface PlayerSaveV1 {
     tier: 'early' | 'mid' | 'late' | 'peak';
     breakthroughReady: boolean;
   };
+  // Master Intent (Ý Cảnh) state, keyed by intent id (sword/void/flame/lightning/time/life).
+  // Field name `insights` kept as the internal key per plans/index.md §1.2 canon.
   insights: Record<string, { xp: number; awakened: boolean }>;
+  // Dharma Treasures (Pháp Bảo). Field names `inventory`/`items` kept internal; content IDs
+  // stay `item.*`. Player-facing UI always says "Dharma Treasures".
   inventory: {
     items: Array<{ id: string; qty: number }>;
     gold: number;
   };
   equipped: Record<'weapon' | 'armor' | 'accessory' | 'spirit', string | null>;
+  // Divine Arts (Thần Thông) 6-slot combat wheel — plans/index.md §1.2/§2.1. No duplicates.
+  divineArts: Record<DivineArtSlot, string | null>;
   progress: {
     clearedMaps: string[];
     clearedBosses: string[];
@@ -55,6 +63,10 @@ interface PlayerSaveV1 {
     storySeen: string[];
     encountersFound: string[];
     currentMapId: string | null;
+    // Renegade Immortal weapon arc (§7.7, track T1/T4): drives unarmed vs. sword combo + Sword Intent gate.
+    weaponMilestone: 'none' | 'ancient_sword';
+    // My Path (sub-plan 28, §7.9) — snapshot-once entries, never recomputed.
+    journey: JourneyEntry[];
   };
   settings: {
     locale: 'en' | 'vi';
@@ -67,6 +79,16 @@ interface PlayerSaveV1 {
     updatedAt: string;
   };
 }
+
+interface JourneyEntry {
+  kind: 'map_clear' | 'boss' | 'breakthrough' | 'encounter' | 'story';
+  refId: string;
+  mapId: string | null;
+  realmId: string;
+  level: number;
+  cp: number;
+  at: string;
+}
 ```
 
 Default new game via `SaveManager.createNew()`:
@@ -75,6 +97,14 @@ Default new game via `SaveManager.createNew()`:
 - realm `mortal_body.early`
 - `unlockedChapters: ['chapter.01.fallen_village']`
 - locale from browser or `'en'`
+- **Renegade Immortal humble start (T1, §7.7 rule 1) — non-negotiable:** `equipped.weapon = null` and
+  `progress.weaponMilestone = 'none'`. Do **not** seed `item.sword.wood` or any weapon into the
+  weapon slot; the hero fights unarmed until the Ancient Spirit Sword POI (`encounter.ancient_sword`,
+  sub-plan 15) grants `item.sword.ancient` and flips the milestone.
+- `divineArts` starts with only the `starter` unlocks from `content/progression/skill-unlocks.json`
+  filled in; remaining slots `null`.
+- `progress.journey = []` — first entry is recorded by the map/chapter/breakthrough systems
+  (sub-plan 28), not by `createNew()`.
 
 ---
 
@@ -188,13 +218,13 @@ Use `fake-indexeddb` pnpm dev dependency for Vitest.
 
 ## 10. Acceptance Criteria
 
-- [ ] Fresh boot with no save → createNew available
-- [ ] Save survives page reload
-- [ ] Checksum detects manual DB tampering
-- [ ] Autosave fires on scene change (verify with mock timer)
-- [ ] Export/import works
-- [ ] gameStore.patch + persist updates IndexedDB
-- [ ] All unit tests pass
+- [x] Fresh boot with no save → createNew available
+- [x] Save survives page reload
+- [x] Checksum detects manual DB tampering
+- [x] Autosave fires on scene change (verify with mock timer)
+- [x] Export/import works
+- [x] gameStore.patch + persist updates IndexedDB
+- [x] All unit tests pass
 
 ---
 

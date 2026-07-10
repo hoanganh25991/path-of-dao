@@ -13,9 +13,13 @@
     "height": 7296
   },
   "connections": [],
-  "encounterTable": "encounter.mist_forest.01",
+  "encounterTable": null,
   "bgm": null,
   "pois": [],
   "recommendedCp": 2500,
-  "recommendedRealmOrder": 1
+  "recommendedRealmOrder": 1,
+  "roamTable": null,
+  "spawnMode": "procedural",
+  "worldProfile": "world.mist_forest",
+  "requiredBossId": null
 }

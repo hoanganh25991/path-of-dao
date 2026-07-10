@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { StatSheet } from '@/progression/StatSheet';
-import { moveSpeedPxPerSec } from '@/progression/DamageCalculator';
+import { cultivatorSpeedStat, moveSpeedPxPerSec } from '@/progression/DamageCalculator';
 import type { BaseStats } from '@/progression/types';
 import type { DamageResult } from '@/progression/types';
 import { EntityBase } from '@/combat/entities/EntityBase';
@@ -197,7 +197,6 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
         { id: 'roaming_rank_hp', stat: 'hpMax', kind: 'percent', value: rankResult.statMultiplier - 1 },
         { id: 'roaming_rank_atk', stat: 'atk', kind: 'percent', value: rankResult.statMultiplier - 1 },
         { id: 'roaming_rank_def', stat: 'def', kind: 'percent', value: rankResult.statMultiplier - 1 },
-        { id: 'roaming_rank_spd', stat: 'speed', kind: 'percent', value: rankResult.statMultiplier - 1 },
       ]);
       this.stats.refill();
       this.updateHpBar();
@@ -328,7 +327,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
         y: this.y,
         spawnX: this.spawnX,
         spawnY: this.spawnY,
-        speedPxPerSec: moveSpeedPxPerSec(this.stats.resolved.speed),
+        speedPxPerSec: moveSpeedPxPerSec(cultivatorSpeedStat(this.stats.resolved.speed)),
         aggroRange: this.config.aggroRange,
         attackRange: this.config.attackRange,
         cooldownReady: this.cooldownMs <= 0,

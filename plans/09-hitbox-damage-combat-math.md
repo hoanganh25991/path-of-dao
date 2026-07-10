@@ -9,7 +9,7 @@
 
 ## 1. Objective
 
-Unified hitbox system for melee arcs, circles, and projectiles. Apply DamageCalculator, crit feedback, knockback, i-frame respect, and damage numbers VFX.
+Unified hitbox system for melee arcs, circles, and projectiles. Apply DamageCalculator, crit feedback, knockback, i-frame respect, and damage numbers VFX. Floating numbers and hit flash pixel spec: [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §3.1.
 
 ---
 
@@ -153,13 +153,13 @@ Off — team check in resolver.
 
 ## 12. Acceptance Criteria
 
-- [ ] Player combo hits kill slime in expected hits (document in test comment)
-- [ ] Enemy attack respects player dodge i-frames
-- [ ] Crit shows distinct VFX
-- [ ] Knockback visible on combo finisher
-- [ ] No double-hit same target in single swing
-- [ ] Damage numbers pool doesn't leak after 100 hits
-- [ ] All unit tests pass
+- [x] Player combo **defeats** slime in expected hits (beast despawn — document in test comment)
+- [x] Enemy attack respects player dodge i-frames
+- [x] Crit shows distinct VFX
+- [x] Knockback visible on combo finisher
+- [x] No double-hit same target in single swing
+- [x] Damage numbers pool doesn't leak after 100 hits
+- [x] All unit tests pass
 
 ---
 

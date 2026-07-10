@@ -18,7 +18,7 @@ const CHAPTER_BIOME: Record<string, keyof typeof BIOME_PALETTES> = {
   'chapter.06.thunder_peaks': 'storm',
   'chapter.07.frozen_palace': 'ice',
   'chapter.08.abyss_rift': 'void',
-  'chapter.09.heavenly_gate': 'village',
+  'chapter.09.heavenly_gate': 'desert',
   'chapter.10.void_throne': 'void',
 };
 
@@ -31,7 +31,7 @@ const CHAPTER_BIOME_NAME: Record<string, string> = {
   'chapter.06.thunder_peaks': 'Thunder Peaks',
   'chapter.07.frozen_palace': 'Frozen Palace',
   'chapter.08.abyss_rift': 'Void Throne',
-  'chapter.09.heavenly_gate': 'Fallen Village',
+  'chapter.09.heavenly_gate': 'Heavenly Gate',
   'chapter.10.void_throne': 'Void Throne',
 };
 

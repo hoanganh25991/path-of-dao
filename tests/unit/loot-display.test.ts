@@ -3,18 +3,9 @@ import { getEnemyConfig } from '@/combat/cultivators/CultivatorLoader';
 import {
   describeCultivatorLootHint,
   getCultivatorLootItemIds,
-  getMapLootHudHint,
 } from '@/progression/LootDisplay';
 
 describe('LootDisplay', () => {
-  it('summarizes map HUD drop rates from config', () => {
-    expect(getMapLootHudHint()).toEqual({
-      gruntPercent: 12,
-      elitePercent: 28,
-      bossRematchPercent: 35,
-    });
-  });
-
   it('describes grunt loot chance and table items', () => {
     const slime = getEnemyConfig('enemy.slime');
     const hint = describeCultivatorLootHint(slime);

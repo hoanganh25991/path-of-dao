@@ -1,0 +1,28 @@
+{
+  "id": "world.test",
+  "cellSize": 480,
+  "safeRadiusCells": 1,
+  "mobPool": [
+    "enemy.slime",
+    "enemy.wolf"
+  ],
+  "strongPool": [
+    "enemy.slime",
+    "enemy.wolf"
+  ],
+  "bossPool": [
+    "boss.jade_guardian"
+  ],
+  "bossMinDistCells": 2,
+  "bossCellChance": 0.05,
+  "fog": null,
+  "groundPalette": {
+    "primary": 0,
+    "variants": [
+      1
+    ],
+    "dirt": 2,
+    "waterMacroThreshold": 0,
+    "dirtMacroThreshold": 0.95
+  }
+}

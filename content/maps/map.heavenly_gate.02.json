@@ -13,9 +13,13 @@
     "height": 15808
   },
   "connections": [],
-  "encounterTable": "encounter.heavenly_gate.02",
+  "encounterTable": null,
   "bgm": null,
   "pois": [],
   "recommendedCp": 400000,
-  "recommendedRealmOrder": 6
+  "recommendedRealmOrder": 6,
+  "spawnMode": "procedural",
+  "worldProfile": "world.heavenly_gate",
+  "roamTable": null,
+  "requiredBossId": null
 }

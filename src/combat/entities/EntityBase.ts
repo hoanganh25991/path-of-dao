@@ -1,6 +1,6 @@
 import type Phaser from 'phaser';
 import type { StatSheet } from '@/progression/StatSheet';
-import { hurtRadiusFromBody } from '@/combat/combat/Hurtbox';
+import { hurtCenterYFromSprite, hurtRadiusFromBody } from '@/combat/combat/Hurtbox';
 
 export type Facing = 1 | -1;
 
@@ -28,6 +28,10 @@ export abstract class EntityBase {
   get hurtRadius(): number {
     const body = this.body;
     return hurtRadiusFromBody(body.width, body.height);
+  }
+
+  get hurtCenterY(): number {
+    return hurtCenterYFromSprite(this.sprite);
   }
 
   get scene(): Phaser.Scene {

@@ -20,6 +20,14 @@ describe('RoamLoader', () => {
     expect(roam.spawns[0]?.enemyId || roam.spawns[0]?.enemyPool).toBeTruthy();
   });
 
+  it('loads Heng Yu Gate roam with disciple clusters', () => {
+    expect(listRoamIds()).toContain('roam.fallen_village.02');
+    const roam = getRoamConfig('roam.fallen_village.02');
+    const disciples = roam.spawns.filter((s) => s.enemyId === 'enemy.heng_yue.disciple');
+    expect(disciples.length).toBeGreaterThanOrEqual(10);
+    expect(roam.spawns.some((s) => s.enemyId === 'boss.jade_guardian')).toBe(true);
+  });
+
   it('loads east sub-zone roam spawns', () => {
     const roam = getRoamConfig('roam.fallen_village.01.east');
     expect(roam.spawns.some((s) => (s.enemyId ? s.enemyId === 'enemy.bandit.thug' : s.enemyPool?.includes('enemy.bandit.thug')))).toBe(true);

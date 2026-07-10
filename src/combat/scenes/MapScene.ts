@@ -20,9 +20,15 @@ import { CollisionLayer } from '@/combat/map/CollisionLayer';
 import { Player } from '@/combat/entities/Player';
 import { SpawnManager } from '@/combat/systems/SpawnManager';
 import { RoamingSpawnManager } from '@/combat/systems/RoamingSpawnManager';
+import { ProceduralRoamingSpawnManager } from '@/combat/systems/ProceduralRoamingSpawnManager';
 import { ZonePortalManager } from '@/combat/systems/ZonePortalManager';
 import { resolvePortalSpawn } from '@/combat/map/portalSpawn';
 import { getRoamConfig } from '@/combat/map/RoamLoader';
+import { getWorldProfile, worldSeedForMap } from '@/combat/world/ProceduralWorldLoader';
+import { DEFAULT_GROUND_PALETTE, resolveGroundPalette } from '@/combat/world/GroundPalette';
+import { EndlessGroundManager } from '@/combat/map/EndlessGround';
+import { WorldFogOverlay } from '@/combat/map/WorldFog';
+import { biomeGroundColor } from '@/combat/map/biomeGroundColor';
 import { AudioManager } from '@/core/audio/AudioManager';
 import { EncounterTrigger } from '@/combat/systems/EncounterTrigger';
 import { HitboxManager } from '@/combat/combat/HitboxManager';
@@ -38,6 +44,8 @@ const CAMERA_LERP = 0.08;
 const CAMERA_DEADZONE = 100;
 const COMBAT_ZOOM = 0.88;
 const ANCIENT_COMBAT_ZOOM = 0.72;
+/** Open-world extent — player can roam freely within ± this range from origin. */
+const WORLD_EXTENT = 480_000;
 
 const DEPTH = {
   ground: 0,
@@ -54,7 +62,9 @@ export class MapScene extends Phaser.Scene {
   private spawnFromPortal?: string;
   private player!: Player;
   private hitboxManager!: HitboxManager;
-  private spawnManager: SpawnManager | RoamingSpawnManager | null = null;
+  private spawnManager: SpawnManager | RoamingSpawnManager | ProceduralRoamingSpawnManager | null = null;
+  private endlessGround: EndlessGroundManager | null = null;
+  private worldFog: WorldFogOverlay | null = null;
   private zonePortalManager: ZonePortalManager | null = null;
   private encounterTrigger: EncounterTrigger | null = null;
   private exiting = false;
@@ -65,6 +75,8 @@ export class MapScene extends Phaser.Scene {
   private exitPortalRevealed = false;
   private exitZone: Phaser.GameObjects.Zone | null = null;
   private exitVisuals: (Phaser.GameObjects.Rectangle | Phaser.GameObjects.Text)[] = [];
+  /** Session flag — boss ordeal roam maps gate the depart portal until set. */
+  private bossOrdealCleared = false;
 
   constructor() {
     super(MapScene.KEY);
@@ -110,7 +122,17 @@ export class MapScene extends Phaser.Scene {
     foreground.setDepth(DEPTH.foreground);
     CollisionLayer.apply(collision);
 
-    this.physics.world.setBounds(0, 0, config.bounds.width, config.bounds.height);
+    const isProcedural = config.spawnMode === 'procedural';
+
+    if (isProcedural) {
+      ground.setVisible(false);
+      decoration.setVisible(false);
+      foreground.setVisible(false);
+      collision.setVisible(false);
+      this.physics.world.setBounds(-WORLD_EXTENT, -WORLD_EXTENT, WORLD_EXTENT * 2, WORLD_EXTENT * 2);
+    } else {
+      this.physics.world.setBounds(0, 0, config.bounds.width, config.bounds.height);
+    }
 
     const spawn = this.resolveSpawn(map, config);
     this.hitboxManager = new HitboxManager(this);
@@ -124,9 +146,27 @@ export class MapScene extends Phaser.Scene {
     if (save) {
       this.player.attackStyle = attackStyle;
     }
-    this.physics.add.collider(this.player.sprite, collision);
+    if (!isProcedural) {
+      this.physics.add.collider(this.player.sprite, collision);
+    }
 
-    this.spawnEnvironmentDecorations(config);
+    if (isProcedural && config.worldProfile) {
+      const worldProfile = getWorldProfile(config.worldProfile);
+      const groundPalette = resolveGroundPalette(worldProfile);
+      const seed = worldSeedForMap(this.mapId);
+      const groundColor = biomeGroundColor(config.chapterId, groundPalette);
+      this.endlessGround = new EndlessGroundManager(
+        this,
+        seed,
+        groundPalette,
+        config.tilesetName,
+        groundColor,
+        DEPTH.ground,
+      );
+      this.endlessGround.warmStart(spawn.x, spawn.y);
+    } else {
+      this.spawnEnvironmentDecorations(config);
+    }
 
     if (isAncientCombatActive()) {
       const ancientId = getActiveAncientId();
@@ -142,12 +182,28 @@ export class MapScene extends Phaser.Scene {
 
     const camera = this.cameras.main;
     camera.roundPixels = true;
-    camera.setBounds(0, 0, config.bounds.width, config.bounds.height);
+    if (isProcedural) {
+      const groundPalette =
+        config.worldProfile != null
+          ? resolveGroundPalette(getWorldProfile(config.worldProfile))
+          : undefined;
+      camera.setBackgroundColor(biomeGroundColor(config.chapterId, groundPalette));
+      camera.setBounds(-WORLD_EXTENT, -WORLD_EXTENT, WORLD_EXTENT * 2, WORLD_EXTENT * 2);
+    } else {
+      camera.setBounds(0, 0, config.bounds.width, config.bounds.height);
+    }
     const baseZoom = isAncientCombatActive() ? ANCIENT_COMBAT_ZOOM : COMBAT_ZOOM;
     camera.setZoom(baseZoom);
     camera.startFollow(this.player.sprite, true, CAMERA_LERP, CAMERA_LERP);
     camera.setDeadzone(CAMERA_DEADZONE, CAMERA_DEADZONE);
     this.cameraDirector = new CombatCameraDirector(camera, baseZoom);
+
+    if (isProcedural && config.worldProfile) {
+      const worldProfile = getWorldProfile(config.worldProfile);
+      if (worldProfile.fog?.enabled) {
+        this.worldFog = new WorldFogOverlay(this, camera, worldProfile.fog);
+      }
+    }
 
     this.createExitZone(map);
     this.subscribeCombatEvents();
@@ -158,7 +214,25 @@ export class MapScene extends Phaser.Scene {
       });
     }
 
-    if (config.spawnMode === 'roam' && config.roamTable) {
+    if (config.spawnMode === 'procedural' && config.worldProfile) {
+      try {
+        const worldProfile = getWorldProfile(config.worldProfile);
+        this.spawnManager = new ProceduralRoamingSpawnManager(
+          this,
+          this.player,
+          worldProfile,
+          worldSeedForMap(this.mapId),
+          config.spawn.x,
+          config.spawn.y,
+          null,
+          this.hitboxManager,
+          config.recommendedRealmOrder,
+          config.recommendedCp,
+        );
+      } catch (err) {
+        console.error(`MapScene: failed to init ProceduralRoamingSpawnManager for "${this.mapId}":`, err);
+      }
+    } else if (config.spawnMode === 'roam' && config.roamTable) {
       try {
         const roam = getRoamConfig(config.roamTable);
         this.spawnManager = new RoamingSpawnManager(
@@ -205,6 +279,10 @@ export class MapScene extends Phaser.Scene {
     this.juiceBridge = new CombatJuiceBridge(this, juice);
     this.juiceBridge.mount();
 
+    EventBus.emit('combat:map-loaded', {
+      displayNameKey: config.displayNameKey,
+    });
+
     // Persist on either event: SHUTDOWN fires on scene.stop, but destroying
     // the whole Phaser game (SceneRouter unmount) only fires DESTROY.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.teardown());
@@ -216,6 +294,12 @@ export class MapScene extends Phaser.Scene {
     this.hitboxManager.setTargets(targets);
     this.player.update(delta);
     this.spawnManager?.update(delta);
+    this.endlessGround?.update(
+      this.player.x,
+      this.player.y,
+      this.player.sprite.body?.velocity.x ?? 0,
+      this.player.sprite.body?.velocity.y ?? 0,
+    );
     this.hitboxManager.update(delta);
     this.cameraDirector?.update(this.spawnManager?.combatReadyCount ?? 0, delta);
     this.syncExitPortal();
@@ -229,12 +313,14 @@ export class MapScene extends Phaser.Scene {
     }
   }
 
-  /** Show the depart portal once waves are cleared (retreat anytime via pause / roam maps). */
+  /** Show the depart portal once waves are cleared (retreat anytime via pause / roam explore). */
   private syncExitPortal(): void {
     if (this.exitPortalRevealed || !this.exitZone) return;
     const config = getMapConfig(this.mapId);
-    const roamExplore = config.spawnMode === 'roam';
-    const ready = roamExplore || !this.spawnManager || this.spawnManager.isEncounterComplete();
+    const exploreFree = config.spawnMode === 'roam' || config.spawnMode === 'procedural';
+    const ready =
+      (exploreFree && this.isRoamOrdealCleared(config)) ||
+      (!exploreFree && (!this.spawnManager || this.spawnManager.isEncounterComplete()));
     if (!ready) return;
     this.exitPortalRevealed = true;
     this.exitZone.setActive(true);
@@ -259,6 +345,10 @@ export class MapScene extends Phaser.Scene {
     this.zonePortalManager = null;
     this.spawnManager?.destroy();
     this.spawnManager = null;
+    this.endlessGround?.destroy();
+    this.endlessGround = null;
+    this.worldFog?.destroy();
+    this.worldFog = null;
     this.hitboxManager?.destroy();
   }
 
@@ -440,11 +530,11 @@ export class MapScene extends Phaser.Scene {
     this.physics.add.overlap(this.player.sprite, zone, () => {
       if (!zone.active) return;
       const config = getMapConfig(this.mapId);
-      const roamExplore = config.spawnMode === 'roam';
+      const exploreFree = config.spawnMode === 'roam' || config.spawnMode === 'procedural';
       const wavesCleared =
-        roamExplore ||
-        !this.spawnManager ||
-        this.spawnManager.isEncounterComplete();
+        (exploreFree && this.isRoamOrdealCleared(config)) ||
+        (!exploreFree &&
+          (!this.spawnManager || this.spawnManager.isEncounterComplete()));
       void this.finishMapExit(wavesCleared);
     });
   }
@@ -478,6 +568,13 @@ export class MapScene extends Phaser.Scene {
       if (isBoss) return;
       this.showCombatToast(I18nManager.t('combat.cultivator.defeated'));
     });
+    const offBoss = EventBus.on('boss:defeated', ({ bossId }) => {
+      const config = getMapConfig(this.mapId);
+      if (config.requiredBossId === bossId) {
+        this.bossOrdealCleared = true;
+        this.syncExitPortal();
+      }
+    });
     this.unsubscribeCombatEvents = () => {
       offExit();
       offSave();
@@ -486,6 +583,7 @@ export class MapScene extends Phaser.Scene {
       offAttack();
       offSkill();
       offDefeat();
+      offBoss();
     };
   }
 
@@ -495,6 +593,14 @@ export class MapScene extends Phaser.Scene {
     toast.textContent = message;
     document.body.appendChild(toast);
     toast.addEventListener('animationend', () => toast.remove());
+  }
+
+  /** Roam explore maps retreat anytime; boss ordeal maps need the gate boss down. */
+  private isRoamOrdealCleared(config: MapConfig): boolean {
+    if (!config.requiredBossId) return true;
+    if (this.bossOrdealCleared) return true;
+    const save = gameStore.getState().save;
+    return Boolean(save?.progress.clearedBosses.includes(config.requiredBossId));
   }
 
   private async finishMapExit(wavesCleared: boolean): Promise<void> {

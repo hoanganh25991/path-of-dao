@@ -1,44 +1,50 @@
 # 18 — Chapter flow & story scenes
 
-**Status:** `[~]` In progress  
+**Status:** `[~]` Runtime done · content expanded · art + Dao Scroll hook pending  
 **Plan:** [plans/18-chapter-story-system.md](../plans/18-chapter-story-system.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-10
 
 ## Summary
 
-Clearing a chapter finale triggers a full-screen story scene; archive replays unlocked chapters.
+End-of-chapter narrated scenes (10 finales) + Path tab replay. **Wang Lin alignment:** all chapters now **6 slides** each — cultivation diary matching [renegade-immortal-reference.md](../handbook/renegade-immortal-reference.md) §Story phases (not novel paste).
+
+---
 
 ## Done
 
-- Ten chapter stubs with story scene data
-- Map clear on exit (all waves done) advances chapter progress
-- **Depart portal** appears only after waves cleared; pause menu for early retreat
-- Chapter finale routes to dedicated story scene host
-- Story reader: typewriter text, tap to advance, skip with confirm
-- Rewards applied once per chapter; next chapter unlocks
-- **Chapter unlock toast** on story finish → Journey tab (`chapter:unlocked` → Home nudge)
-- Story finish advances `currentMapId` to next journey map; Home backdrop skips cleared stops
-- **Chapter 1 loop integration test** — explore clear → boss → story → ch2 skill unlock
-- Story archive in Home replays without duplicate rewards
-- Chapter 1 full English and Vietnamese copy
-- Chapters 2–10 use stub slide keys pending literary pass
+- [x] Ten chapter story scenes + `StoryReader` (typewriter, skip, tap advance)
+- [x] `ChapterManager` — clear on `.02` exit, rewards once, next chapter unlock
+- [x] Path tab replay without duplicate rewards
+- [x] **Chapters 1–10 × 6 slides** — en+vi `content/locales/{en,vi}/story.json`
+- [x] `content/story/story.ch*.json` — 6 slides wired per scene
+- [x] Named ordeal cultivators in prose (Tu Sen, Liu Mei, Hong Die, Vermillion Bird Heir, …)
+- [x] E2E: full road ch1–10 story finales + replay
 
-## Remaining
+---
 
-- **Tiên Nghịch gap:** story tone pass for perseverance / diary style across all chapters (T6)
-- Sword destiny beat in chapters 1–2 slides
-- Expand chapter 1 rewards narrative to tease the ancient blade
+## What needs to do
+
+| # | Task | Owner | Blocks |
+|---|------|-------|--------|
+| 1 | **Chapter illustrations** — `assets/story/ch01-*.webp` … ch10 (painterly; null OK for MVP) | 32 / encounter-art | Polish only |
+| 2 | **Dao Scroll integration** — on `.01`/`.02` map clear, offer shard read before/after combat exit | **31** | In-game novel tracker |
+| 3 | Optional: expand ch1–2 to 8–10 slides if playtest wants more Heng Yue / sword-cave beats | content | — |
+| 4 | Validator: assert every `story.chNN.slideMM` key exists for wired slides | **20** | CI |
+
+**Do not:** duplicate chapter rewards on timeline shard read (shards are read-only per plan 31).
+
+---
+
+## Remaining (short)
+
+- Illustrations null
+- Plan 31 map-clear modal + Dao Scroll (see [31](./31-wang-lin-story-timeline.md))
+
+---
 
 ## Verification
 
-- Clear test map → story scene on chapter finale
-- Archive replay does not double-grant rewards
-- Unit: ch1 `.01` → `.02` → story → `map.mist_forest.01` next stop + `skill.life.pulse.v2`
-- E2E: ch1 story finish → Continue Journey targets Foggy Trail
-- E2E: ch2 boss → story → Continue Journey targets Canyon Mouth
-- E2E: ch5–ch9 explore clears unlock Time Slow through Void Tear (save `unlockedSkills`)
-- E2E: ch2–ch9 boss → story → Continue Journey targets next explore map
-- E2E: ch10 boss → story → journey complete (no Continue CTA)
-- E2E: **fresh save** ch1 loop — Begin Journey → Void Slash → boss story → Life Pulse v2 → Foggy Trail + My Path rows
-- E2E: **fresh save** full road ch1–10 — all explore + chapter skills, epilogue story, journey complete (no dev seeds)
-- E2E: Path tab story replay without duplicate spirit rewards
+- `pnpm i18n:lint` — story keys en/vi parity
+- Clear `.02` → story scene → 6 slides advance
+- Path → Replay → no extra spirit/gold
+- E2E: `journey-flow.spec.ts` full road ch1–10

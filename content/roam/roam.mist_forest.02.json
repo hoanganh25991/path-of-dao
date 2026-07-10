@@ -1,0 +1,96 @@
+{
+  "id": "roam.mist_forest.02",
+  "spawns": [
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 5016,
+      "y": 4005,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 4992,
+      "y": 4026,
+      "patrolRadius": 66
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 4964,
+      "y": 3989,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 5005,
+      "y": 3984,
+      "patrolRadius": 74
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 6217,
+      "y": 3605,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 6192,
+      "y": 3627,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 6162,
+      "y": 3588,
+      "patrolRadius": 66
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 6205,
+      "y": 3583,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 4415,
+      "y": 5005,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 4381,
+      "y": 5018,
+      "patrolRadius": 59
+    },
+    {
+      "enemyId": "enemy.spirit.moth",
+      "x": 4392,
+      "y": 4965,
+      "patrolRadius": 63
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 3400,
+      "y": 3800,
+      "patrolRadius": 65
+    },
+    {
+      "enemyId": "enemy.spirit.wisp",
+      "x": 7400,
+      "y": 5200,
+      "patrolRadius": 71
+    },
+    {
+      "enemyId": "enemy.spirit.fox",
+      "x": 5600,
+      "y": 5400,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "boss.mist_stalker",
+      "x": 8200,
+      "y": 4200,
+      "patrolRadius": 0,
+      "respawnMs": 999999
+    }
+  ]
+}

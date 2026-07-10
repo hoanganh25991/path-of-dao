@@ -3,6 +3,10 @@ import type { SceneHost } from '@/app/SceneHost';
 import { OrientationManager } from '@/app/OrientationManager';
 import { syncGameCanvasDisplay } from '@/app/orientation/syncGameCanvasDisplay';
 import { EventBus } from '@/core/EventBus';
+import { getMapConfig } from '@/combat/map/MapLoader';
+import { biomeGroundColor } from '@/combat/map/biomeGroundColor';
+import { resolveGroundPalette } from '@/combat/world/GroundPalette';
+import { getWorldProfile } from '@/combat/world/ProceduralWorldLoader';
 import { BootScene } from '@/combat/scenes/BootScene';
 import { MapScene } from '@/combat/scenes/MapScene';
 import { PoolManager } from '@/combat/PoolManager';
@@ -31,7 +35,17 @@ export class CombatSceneHost implements SceneHost {
     syncGameCanvasDisplay(canvas);
 
     const mapId = this.mapId;
+    const mapConfig = getMapConfig(mapId);
     const { width, height } = OrientationManager.getLayoutSize();
+    const canvasBg =
+      mapConfig.spawnMode === 'procedural'
+        ? biomeGroundColor(
+            mapConfig.chapterId,
+            mapConfig.worldProfile
+              ? resolveGroundPalette(getWorldProfile(mapConfig.worldProfile))
+              : undefined,
+          )
+        : 0x0d1117;
 
     // Phaser.AUTO is not allowed with a custom canvas — renderType must be explicit.
     const renderType = window.WebGLRenderingContext ? Phaser.WEBGL : Phaser.CANVAS;
@@ -47,7 +61,7 @@ export class CombatSceneHost implements SceneHost {
           limit: 0,
           smoothStep: true,
         },
-        backgroundColor: '#0d1117',
+        backgroundColor: canvasBg,
         scale: {
           // NONE — RESIZE reads getBoundingClientRect which is viewport-aligned
           // (390×844) when #app is CSS-rotated, squashing square tiles.

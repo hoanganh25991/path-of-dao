@@ -13,9 +13,13 @@
     "height": 13376
   },
   "connections": [],
-  "encounterTable": "encounter.frozen_palace.02",
+  "encounterTable": null,
   "bgm": null,
   "pois": [],
   "recommendedCp": 120000,
-  "recommendedRealmOrder": 5
+  "recommendedRealmOrder": 5,
+  "spawnMode": "procedural",
+  "worldProfile": "world.frozen_palace",
+  "roamTable": null,
+  "requiredBossId": null
 }

@@ -4,14 +4,36 @@
   "displayNameKey": "map.test.grove.name",
   "tiledPath": "assets/maps/test-grove.json",
   "tilesetName": "grove",
-  "spawn": { "x": 320, "y": 480 },
-  "bounds": { "width": 1600, "height": 1216 },
+  "spawn": {
+    "x": 320,
+    "y": 480
+  },
+  "bounds": {
+    "width": 1600,
+    "height": 1216
+  },
   "recommendedCp": 1000,
   "connections": [],
-  "encounterTable": "encounters.test",
+  "encounterTable": null,
   "bgm": null,
   "pois": [
-    { "type": "hidden_cave", "x": 720, "y": 560, "radius": 40, "id": "cave.grove" },
-    { "type": "ancient_sword", "x": 1120, "y": 720, "radius": 36, "id": "sword.grove" }
-  ]
+    {
+      "type": "hidden_cave",
+      "x": 720,
+      "y": 560,
+      "radius": 40,
+      "id": "cave.grove"
+    },
+    {
+      "type": "ancient_sword",
+      "x": 1120,
+      "y": 720,
+      "radius": 36,
+      "id": "sword.grove"
+    }
+  ],
+  "spawnMode": "procedural",
+  "worldProfile": "world.test",
+  "roamTable": null,
+  "requiredBossId": null
 }

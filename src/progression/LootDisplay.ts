@@ -1,5 +1,5 @@
 import type { CultivatorConfig } from '@/combat/cultivators/CultivatorConfig';
-import { getLootDropRates, getLootTable } from '@/progression/LootLoader';
+import { getLootTable } from '@/progression/LootLoader';
 import {
   getCultivatorDropChance,
   getCultivatorLootTier,
@@ -44,21 +44,5 @@ export function describeCultivatorLootHint(
     tier,
     chancePercent: formatLootChancePercent(chance),
     itemIds: getCultivatorLootItemIds(cultivator),
-  };
-}
-
-export interface MapLootHudHint {
-  gruntPercent: number;
-  elitePercent: number;
-  bossRematchPercent: number;
-}
-
-/** Rates for the compact combat HUD strip. */
-export function getMapLootHudHint(): MapLootHudHint {
-  const rates = getLootDropRates();
-  return {
-    gruntPercent: formatLootChancePercent(rates.gruntChance),
-    elitePercent: formatLootChancePercent(rates.eliteChance),
-    bossRematchPercent: formatLootChancePercent(rates.bossRematchChance),
   };
 }

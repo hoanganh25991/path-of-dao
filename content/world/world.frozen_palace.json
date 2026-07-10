@@ -1,0 +1,36 @@
+{
+  "id": "world.frozen_palace",
+  "cellSize": 960,
+  "safeRadiusCells": 2,
+  "mobPool": [
+    "enemy.ice.golem",
+    "enemy.frost.shade"
+  ],
+  "strongPool": [
+    "enemy.elite.frost",
+    "enemy.ice.golem",
+    "enemy.frost.shade"
+  ],
+  "bossPool": [
+    "boss.frost_queen",
+    "boss.seal_warden",
+    "boss.thunder_avatar"
+  ],
+  "bossMinDistCells": 3,
+  "bossCellChance": 0.06,
+  "fog": {
+    "enabled": true,
+    "color": "#b8d4e8",
+    "alpha": 0.32
+  },
+  "groundPalette": {
+    "primary": 0,
+    "variants": [
+      1
+    ],
+    "waterShallow": 4,
+    "waterDeep": 5,
+    "waterMacroThreshold": 0.06,
+    "dirtMacroThreshold": 0.94
+  }
+}

@@ -13,7 +13,7 @@
     "height": 9728
   },
   "connections": [],
-  "encounterTable": "encounter.moon_lake.01",
+  "encounterTable": null,
   "bgm": null,
   "pois": [
     {
@@ -25,5 +25,9 @@
     }
   ],
   "recommendedCp": 12000,
-  "recommendedRealmOrder": 3
+  "recommendedRealmOrder": 3,
+  "roamTable": null,
+  "spawnMode": "procedural",
+  "worldProfile": "world.moon_lake",
+  "requiredBossId": null
 }

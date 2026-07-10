@@ -1,11 +1,14 @@
 # Sub-Plan 28: Path & Journey System (My Path + Follow the Ancients)
 
 **Phase:** Cross-cutting — Progression + Home + Story + Echoes
-**Estimated effort:** Phase A ~4h (landed) · Phase B ~6–8h (guided walk)
+**Estimated effort:** Phase A ~4h · Phase B ~6–8h (guided walk)
 **Depends on:** `13-cultivation-realm-system`, `16-combat-power-profile`, `17-world-map-travel`, `18-chapter-story-system`, `27-ancient-echo-demo`
 **Blocks:** — (deepens story + onboarding readability)
 
-> **Master plan:** [index.md](./index.md) · §1.1 Tiên Nghịch pillars · §7.8 World Road · §7.9 Path & Journey · Track: [tracks/28-path-journey-system.md](../tracks/28-path-journey-system.md)
+> **Master plan:** [index.md](./index.md) · §1.1 Renegade Immortal pillars · §7.8 World Road · §7.9 Path & Journey · Track: [tracks/index.md](../tracks/index.md) (no per-file track yet — created when work on this sub-plan begins)
+
+> **Status (2026-07-06):** implemented — Phase A + Phase B landed. See
+> [`tracks/28-path-journey-system.md`](../tracks/28-path-journey-system.md). Ancient walk combat visuals: [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md) §7.
 
 ---
 
@@ -36,8 +39,9 @@ those who rose before me."*
 | One spine | Maps + story + strength snapshots share a single `journey` timeline |
 | Strength is a snapshot | Each step stores realm/level/CP **at that moment** — never recompute |
 | Record once | A milestone `(kind, refId)` logs a single step (re-clears don't spam) |
-| Follow = showcase | Following an ancient's path plays in god-mode (reuses sub-plan 27 combat) |
+| Follow = showcase | Following an ancient's path plays in god-mode **in combat only** (reuses sub-plan 27); Home stays journey hero (§5.1) |
 | Read = learn | Story beats sit in order on the scroll → the road teaches the shape of a rise |
+| Dao Scroll | Every map has a **timeline shard** (plan 31) — Wang Lin parallel + Intent punch-line; readable in Path tab |
 | Back-compat | `progress.journey` defaults `[]` — pre-28 saves load unchanged |
 
 ---
@@ -48,7 +52,7 @@ those who rose before me."*
 
 ```ts
 interface JourneyEntry {
-  kind: 'map_clear' | 'boss' | 'breakthrough' | 'encounter' | 'story';
+  kind: 'map_clear' | 'boss' | 'breakthrough' | 'encounter' | 'story' | 'timeline_shard';
   refId: string;          // mapId / bossId / realmId / encounterId / storySceneId
   mapId: string | null;   // where it happened, when known
   realmId: string;        // ── strength snapshot ──
@@ -79,19 +83,18 @@ Labels are derived at render time (region name via `WorldMapLoader`, realm name 
 |------|---------|--------|
 | `src/core/save/SaveSchema.ts` | `journeyEntrySchema` + `progress.journey` (default `[]`) | ✅ |
 | `src/core/save/SaveManager.ts` | `createNew()` seeds `journey: []` | ✅ |
-| `src/progression/JourneyLog.ts` | `makeJourneyEntry` / `appendJourneyStep` / `recordJourney` | ✅ |
-| `src/progression/ChapterManager.ts` | record `map_clear` + `story` steps | ✅ |
-| `src/progression/BreakthroughManager.ts` | record `breakthrough` step | ✅ |
+| `src/progression/ChapterManager.ts` | `snapshotJourneyEntry` + recording hooks | ✅ |
+| `src/progression/BreakthroughManager.ts` | record `breakthrough` step (via ProfileHeader) | ✅ |
 | `src/shared/schemas/ancient-demo.ts` | `ancientPathStepSchema` + `profile.path` | ✅ |
-| `content/demo/ancients.json` | authored 2–3 step road per ancient | ✅ |
+| `content/demo/ancients.json` | authored 2–3 step road per ancient | **content authored ✓** |
 | `src/progression/AncientDemoManager.ts` | `getAncientPath()` accessor | ✅ |
 | `src/ui/home/journeyView.ts` | resolve a `JourneyEntry` → display strings | ✅ |
-| `src/ui/home/panels/StoryPanel.ts` | Story archive → **My Path** scroll | ✅ |
-| `content/locales/{en,vi}/home.json` | `home.path.*`, `path.*` strings; nav → Path | ✅ |
-| `tests/unit/journey-log.test.ts` | snapshot, dedupe, hook recording | ✅ |
+| `src/ui/home/panels/PathPanel.ts` | Story archive → **My Path** scroll | ✅ |
+| `content/locales/{en,vi}/home.json` | `home.path.*`, `path.*` strings; nav → Path | **content authored ✓** |
+| `tests/unit/journey-view.test.ts` | snapshot display resolution | ✅ |
 | `tests/unit/ancient-demo.test.ts` | ordered road of real maps per ancient | ✅ |
 
-**Phase B (landed):**
+**Phase B:**
 
 | File | Purpose | Status |
 |------|---------|--------|
@@ -99,30 +102,31 @@ Labels are derived at render time (region name via `WorldMapLoader`, realm name 
 | `src/ui/modals/AncientDemoModal.ts` | render "Their Road" list; Follow / Walk Here | ✅ |
 | `src/ui/home/panels/EchoesPanel.ts` | Follow-path entry (vs. single-map showcase) | ✅ |
 | `src/ui/home/ancientPathView.ts` | path step labels for modal | ✅ |
-| `content/locales/{en,vi}/demo.json` | `demo.path.*` follow strings | ✅ |
+| `content/locales/{en,vi}/demo.json` | `demo.path.*` follow strings | **content authored ✓** |
 | `tests/unit/path-walk.test.ts` | guided walk routing | ✅ |
 
 ---
 
-## 5. Phase A — My Path foundation (landed)
+## 5. Phase A — My Path foundation
 
 1. **Schema** — `progress.journey: JourneyEntry[]` with back-compat default.
 2. **JourneyLog** — pure helpers; snapshot uses `computeCombatPowerFromSave`.
 3. **Recording hooks** — `applyMapClearPatch` (map_clear), `completeStory` (story),
    `BreakthroughManager.applyBreakthrough` (breakthrough).
-4. **My Path scroll** — `StoryPanel` renders newest-first steps with kind badge,
+4. **My Path scroll** — `PathPanel` renders newest-first steps with kind badge,
    title, and a `Realm · Lv · CP` strength line; story steps keep a Replay button;
    lore rows preserved.
 5. **Ancient roads** — `path[]` authored for all 6 ancients + `getAncientPath()`.
 
-**Acceptance (met):**
+**Acceptance criteria:**
 - [x] Clearing a map / seeing a story / breaking through appends one step each.
 - [x] Re-clearing a map does not duplicate its step.
 - [x] My Path shows strength at each step, newest at top.
-- [x] Every ancient has a ≥2-step road of real maps, realm order non-decreasing.
-- [x] Pre-28 saves load (default `[]`); `typecheck` + 319 tests green.
+- [x] Every ancient has a ≥2-step road of real maps, realm order non-decreasing (content ✓ —
+  already true of the authored `content/demo/ancients.json`, needs code to consume it).
+- [x] Pre-28 saves load (default `[]`); `typecheck` + tests green (648 tests, 2026-07-06).
 
-## 6. Phase B — Follow the Ancient's Path (landed)
+## 6. Phase B — Follow the Ancient's Path
 
 1. `PathWalkManager` tracks the active ancient + current step index (session only;
    cleared on `exitAncientDemo`).
@@ -132,7 +136,7 @@ Labels are derived at render time (region name via `WorldMapLoader`, realm name 
 3. **Walk Here** keeps the single-map god-mode showcase on the player's current map.
 4. `AncientDemoModal` shows **Their Road** (region · realm · story) before walking.
 
-**Acceptance (met):**
+**Acceptance criteria:**
 - [x] Following a path visits each step's map in order with story beats between.
 - [x] Exiting mid-walk restores the player's real journey (no demo leakage to IDB).
 - [x] The ancient's road is readable in the modal in en + vi.

@@ -61,7 +61,7 @@ Create a production-ready TypeScript monolith with Vite, linting, testing, and f
 }
 ```
 
-Phaser and Three are installed upfront so tree-shaking and type resolution work from day one; they are not imported until sub-plans 06 and 10.
+Phaser and Three are installed upfront (`phaser@^3.80.0` — **3.60+** for **Fake 2.5D** combat per [`fake-2.5d.md`](./fake-2.5d.md)) so tree-shaking and type resolution work from day one; they are not imported until sub-plans 06 and 10.
 
 ---
 
@@ -162,13 +162,13 @@ Ignore: `node_modules`, `dist`, `.env`, `*.local`, `.DS_Store`, `coverage/`
 
 ## 5. Acceptance Criteria
 
-- [ ] `pnpm install` succeeds with lockfile committed
-- [ ] `pnpm dev` serves at `http://localhost:5173` with "Loading…" visible
-- [ ] `pnpm typecheck` passes with zero errors
-- [ ] `pnpm test` passes (1 smoke test)
-- [ ] `pnpm build` outputs `dist/` without errors
-- [ ] Folder structure matches master plan section 3.5
-- [ ] Mobile viewport meta present; no horizontal scroll on 390px width
+- [x] `pnpm install` succeeds with lockfile committed
+- [x] `pnpm dev` serves at `http://localhost:5173` with "Loading…" visible
+- [x] `pnpm typecheck` passes with zero errors
+- [x] `pnpm test` passes (1 smoke test)
+- [x] `pnpm build` outputs `dist/` without errors
+- [x] Folder structure matches master plan section 3.5
+- [x] Mobile viewport meta present; no horizontal scroll on 390px width
 
 ---
 

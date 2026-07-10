@@ -3,13 +3,14 @@
 **Phase:** 3 — 3D Home  
 **Estimated effort:** 10–14 hours  
 **Depends on:** `02-scene-router-app-shell`, `05-save-system-foundation`  
+**Parallel with:** `06` (combat scene), `20` (content validators) — Track B; see [`index.md`](./index.md) §5.1  
 **Blocks:** `11`, `12`, `25`
 
 ---
 
 ## 1. Objective
 
-Build the 3D Home shrine: floating mountain village backdrop, rotatable/zoomable hero viewer, realm-based aura VFX, and ambient presentation loop. Replaces HomeSceneHost stub.
+Build the 3D Home shrine: floating mountain village backdrop, rotatable/zoomable hero viewer, realm-based aura VFX, and ambient presentation loop. Replaces HomeSceneHost stub. Home aura tiers align with hero stage §4 in [`plans/29-pixel-art-combat-canon.md`](./29-pixel-art-combat-canon.md); Dharma Treasure 3D attach points: §10.
 
 ---
 
@@ -161,22 +162,26 @@ Quality profile hook (sub-plan 26): reduce particles on low tier.
 
 ## 11. Tests
 
-Limited for Three — manual QA checklist primary.
+Limited for Three — manual QA checklist primary for touch feel and 30 FPS.
 
-`tests/unit/aura-tier.test.ts`:
-
-- Map realm id → correct AuraTier enum
+| Test file | Assert |
+|-----------|--------|
+| `tests/unit/aura-tier.test.ts` | Map realm id → correct AuraTier enum |
+| `tests/unit/camera-rig.test.ts` | Orbit distance/polar limits, resize, reset |
+| `tests/unit/hero-viewer.test.ts` | Procedural hero, realm aura toggle, equip attach, dispose |
+| `tests/unit/home-scene-dispose.test.ts` | HomeScene build/dispose cycles |
+| `tests/integration/home-scene-disposal.test.ts` | HomeSceneHost 10× WebGL teardown |
 
 ---
 
 ## 12. Acceptance Criteria
 
-- [ ] Home loads hero model with idle animation
-- [ ] Touch rotate + pinch zoom work smoothly
-- [ ] Aura visible at Core Formation and above
-- [ ] Scene disposes without WebGL leak on 5 home↔combat switches
-- [ ] Island environment visible, hero centered
-- [ ] 30 FPS on Chrome mobile emulation throttled 4×
+- [x] Home loads hero model with idle animation
+- [x] Touch rotate + pinch zoom work smoothly
+- [x] Aura visible at Core Formation and above
+- [x] Scene disposes without WebGL leak on 5 home↔combat switches (`HomeSceneHost.unmount` + router disposal test)
+- [x] Island environment visible, hero centered
+- [ ] **Manual QA:** 30 FPS on Chrome mobile emulation throttled 4× (documented in track 10; not automatable in CI)
 
 ---
 

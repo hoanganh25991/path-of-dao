@@ -45,23 +45,33 @@ Full UI and content localization for `en` and `vi` per GDD. Vietnamese is not ma
 
 ## 4. Glossary (Canonical Terms)
 
+**⚠️ Corrected 2026-07** — this table (and `content/locales/glossary.md`) was stale against the
+cultivator-identity redesign (`plans/index.md` §1.2): "Skills"/"Insight" are the OLD nouns, and
+there was no "Dharma Treasures" row at all despite `content/locales/{en,vi}/home.json` already
+shipping the new vocabulary. Fixed below; **reconcile `glossary.md` to match this table.**
+
 | en | vi | Notes |
 |----|-----|-------|
 | Cultivate | Tu luyện | Home breakthrough button |
 | Realm Breakthrough | Đột phá cảnh giới | |
 | Home | Nhà | |
-| Inventory | Túi đồ | |
-| Skills | Kỹ năng | |
-| Story | Cốt truyện | |
+| **Dharma Treasures** | **Pháp Bảo** | was "Inventory/Túi đồ" — generic bag UI (if kept distinct from the equip panel) may still say "Túi đồ", but the pillar noun is Pháp Bảo |
+| **Divine Arts** | **Thần Thông** | was "Skills/Kỹ năng" |
+| **Master Intent** | **Ý Cảnh** | was "Insight/Ý cảnh" (vi side was already correct — only the en label was stale); Sword Intent → Kiếm Ý |
+| **Path** (My Path / nav) | **Con Đường Của Ta** | was "Story/Cốt truyện" for the nav tab; the story-reader/cutscene text itself can still say "Cốt truyện" where it means the narrative content, not the journey scroll |
+| **Dash** | **Khinh Công** *(or team's preferred term)* | new — dedicated dodge/i-frame button, not a wheel slot |
+| **Gather Qi** | **Vận Khí** | new — dedicated vulnerable sit-to-heal button, not a wheel slot |
+| **Defeat** / **Try Again** | **Bại trận** / **Thử lại** | player defeated modal — not "death/kill" for cultivators |
+| **Overcome** (cultivator beaten) | **Hạ gục** / **Đánh bại** | enemy cultivator defeated — avoid "giết" |
 | Map | Bản đồ | |
 | Boss | Boss | Keep loanword or "Yêu thú" per boss — document |
 | Play | Chơi | |
 | Continue | Tiếp tục | |
 | Combat Power | Uy lực tu l tiên | or "Lực chiến" — pick one in glossary |
-| Insight | Ý cảnh | Sword Intent → Kiếm ý |
 | Fortuitous Encounter | Cơ duyên | |
 
-All translators/agents must follow `glossary.md`.
+All translators/agents must follow `glossary.md` — **update that file to match this table in
+the same pass** (it currently only lists the old terms).
 
 ---
 
@@ -167,13 +177,13 @@ Each chapter review checklist in `content/locales/vi/REVIEW.md`.
 
 ## 13. Acceptance Criteria
 
-- [ ] All UI strings localized both languages
-- [ ] Story ch1–10 complete in vi
-- [ ] Glossary consistent across files
-- [ ] strict-i18n validator passes
+- [~] All UI strings localized both languages — combat HUD + home nav aria wired; map intro overlay and story reader prev/next aria still English-only
+- [x] Story ch1–10 complete in vi
+- [x] Glossary consistent across files
+- [x] strict-i18n validator passes
 - [ ] No layout overflow on vi iPhone 14 viewport
-- [ ] Locale persists in save
-- [ ] formatNumber respects locale
+- [x] Locale persists in save
+- [x] formatNumber respects locale
 
 ---
 

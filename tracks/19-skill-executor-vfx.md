@@ -27,10 +27,10 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 - Awakened void: pull field then projectile
 - Awakened flame: twin AoE damage ticks
 - Extended skill definition schema validated at load
+- **Sword Intent gating** in `CombatComponent` + `WeaponProgression` (T7) — `tests/unit/weapon-progression.test.ts`
 
 ## Remaining
 
-- Sword Intent gating in executor and skill picker (T7)
 - Audio sync on cast/impact frames from skill data
 - Higher-fidelity art pass (sprite sheets / short anim loops per tier) beyond pixel presets
 - BGM crossfade between scenes (owned partly by 25)

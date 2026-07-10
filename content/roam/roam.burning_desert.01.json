@@ -1,0 +1,119 @@
+{
+  "id": "roam.burning_desert.01",
+  "spawns": [
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 6015,
+      "y": 5205,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 5992,
+      "y": 5225,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 5965,
+      "y": 5189,
+      "patrolRadius": 66
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 6005,
+      "y": 5185,
+      "patrolRadius": 70
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 8215,
+      "y": 4805,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 8182,
+      "y": 4817,
+      "patrolRadius": 59
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 8192,
+      "y": 4766,
+      "patrolRadius": 63
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 5017,
+      "y": 6405,
+      "patrolRadius": 52
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 4979,
+      "y": 6419,
+      "patrolRadius": 56
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 4991,
+      "y": 6361,
+      "patrolRadius": 60
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 10016,
+      "y": 5605,
+      "patrolRadius": 50
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 9980,
+      "y": 5619,
+      "patrolRadius": 54
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 9992,
+      "y": 5563,
+      "patrolRadius": 58
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 4000,
+      "y": 4800,
+      "patrolRadius": 62
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 7200,
+      "y": 6800,
+      "patrolRadius": 68
+    },
+    {
+      "enemyId": "enemy.scorpion",
+      "x": 11200,
+      "y": 5200,
+      "patrolRadius": 74
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 5600,
+      "y": 4000,
+      "patrolRadius": 55
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 9200,
+      "y": 6800,
+      "patrolRadius": 61
+    },
+    {
+      "enemyId": "enemy.sand.wisp",
+      "x": 12000,
+      "y": 4800,
+      "patrolRadius": 67
+    }
+  ]
+}

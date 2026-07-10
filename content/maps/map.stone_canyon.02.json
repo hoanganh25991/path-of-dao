@@ -13,9 +13,13 @@
     "height": 8512
   },
   "connections": [],
-  "encounterTable": "encounter.stone_canyon.02",
+  "encounterTable": null,
   "bgm": null,
   "pois": [],
   "recommendedCp": 9000,
-  "recommendedRealmOrder": 2
+  "recommendedRealmOrder": 2,
+  "roamTable": null,
+  "spawnMode": "procedural",
+  "requiredBossId": null,
+  "worldProfile": "world.stone_canyon"
 }

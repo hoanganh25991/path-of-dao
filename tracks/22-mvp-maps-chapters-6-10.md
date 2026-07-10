@@ -2,7 +2,7 @@
 
 **Status:** `[~]` In progress  
 **Plan:** [plans/22-mvp-maps-chapters-6-10.md](../plans/22-mvp-maps-chapters-6-10.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -17,11 +17,12 @@ Endgame half of the road: tribulation peaks through void throne finale.
 - Nineteen new enemies: ten grunts, four elites, five bosses including void sovereign
 - Hidden cave POIs on chapters 6, 8, and 10 explore maps
 - Generation CLI for rebuilding chapter 6–10 content
-- **Scaled playable bounds 10×** for ch6–10 configs: `1600×1216`/`1792×1344` → `16000×12160`/`17920×13440` (spawn/POIs rescaled)
+- **Endless procedural** — `world.thunder_peaks` … `world.void_throne`; seeded cells + wild bosses + region fog
 
 ## Remaining
 
-- **Tiên Nghịch align:** arc copy and tone for tribulation → void confrontation (T5)
+- **Map canon:** 16k bounds + settlements + signature trees (see C1 in master track)
+- **Dao Scroll** (plan 31): locale prose for ch6–10 maps **done** — `timelineShardId` + shard JSON pending
 - Boss pattern and phase tuning per map
 - Playthrough balance on recommended CP bands
 
