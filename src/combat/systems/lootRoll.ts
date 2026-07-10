@@ -45,6 +45,31 @@ function dropChance(cultivator: CultivatorConfig, ctx: LootRollContext): number 
   return rates.gruntChance;
 }
 
+export function isBossCultivator(cultivator: CultivatorConfig): boolean {
+  return Boolean(cultivator.bossClearId) || cultivator.category === 'boss';
+}
+
+export function getCultivatorDropChance(
+  cultivator: CultivatorConfig,
+  ctx: Pick<LootRollContext, 'isBoss' | 'wasRematch'>,
+): number {
+  return dropChance(cultivator, ctx);
+}
+
+export type CultivatorLootTier = 'none' | 'grunt' | 'elite' | 'boss_first' | 'boss_rematch';
+
+export function getCultivatorLootTier(
+  cultivator: CultivatorConfig,
+  wasRematch = false,
+): CultivatorLootTier {
+  if (!cultivator.lootTable) return 'none';
+  if (isBossCultivator(cultivator)) {
+    return wasRematch ? 'boss_rematch' : 'boss_first';
+  }
+  if (cultivator.category === 'elite') return 'elite';
+  return 'grunt';
+}
+
 /**
  * Resolve item drops for a defeated cultivator.
  *

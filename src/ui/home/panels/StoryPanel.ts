@@ -3,6 +3,7 @@ import { I18nManager } from '@/core/i18n/I18nManager';
 import { gameStore } from '@/core/store/gameStore';
 import { describeJourneyEntry } from '@/ui/home/journeyView';
 import { describeLoreEntry, loreBodyForEncounter } from '@/progression/LoreDisplay';
+import { renderBestiaryRow } from '@/ui/home/bestiaryView';
 
 export interface StoryPanelHandles {
   root: HTMLElement;
@@ -24,7 +25,15 @@ export function createStoryPanel(): StoryPanelHandles {
   const list = document.createElement('div');
   list.className = 'home-story__list home-path__list';
 
-  root.append(title, list);
+  const bestiaryTitle = document.createElement('h3');
+  bestiaryTitle.className = 'home-panel__subtitle home-bestiary__title';
+  bestiaryTitle.textContent = I18nManager.t('home.bestiary.title');
+
+  const bestiaryList = document.createElement('div');
+  bestiaryList.className = 'home-story__list home-bestiary__list';
+  bestiaryList.dataset.testid = 'home-bestiary-list';
+
+  root.append(title, list, bestiaryTitle, bestiaryList);
 
   const renderLore = (loreId: string): HTMLElement => {
     const view = describeLoreEntry(loreId);
@@ -56,22 +65,35 @@ export function createStoryPanel(): StoryPanelHandles {
     return row;
   };
 
+  const refreshBestiary = (bestiary: string[]): void => {
+    bestiaryList.replaceChildren();
+    if (bestiary.length === 0) {
+      const emptyBestiary = document.createElement('p');
+      emptyBestiary.className = 'home-panel__empty home-bestiary__empty';
+      emptyBestiary.textContent = I18nManager.t('home.bestiary.empty');
+      bestiaryList.appendChild(emptyBestiary);
+      return;
+    }
+
+    for (const cultivatorId of [...bestiary].reverse()) {
+      bestiaryList.appendChild(renderBestiaryRow(cultivatorId));
+    }
+  };
+
   const refresh = (): void => {
     const save = gameStore.getState().save;
-    list.replaceChildren();
-
     const lore = save?.progress.loreUnlocked ?? [];
     const journey = save?.progress.journey ?? [];
+    const bestiary = save?.progress.bestiary ?? [];
+
+    list.replaceChildren();
 
     if (lore.length === 0 && journey.length === 0) {
       const empty = document.createElement('p');
       empty.className = 'home-panel__empty';
       empty.textContent = I18nManager.t('home.path.empty');
       list.appendChild(empty);
-      return;
-    }
-
-    // Newest milestone first — the top of the scroll shows how strong you are now.
+    } else {
     for (let i = journey.length - 1; i >= 0; i -= 1) {
       const entry = journey[i]!;
       const view = describeJourneyEntry(entry);
@@ -134,6 +156,9 @@ export function createStoryPanel(): StoryPanelHandles {
     for (const loreId of lore) {
       list.appendChild(renderLore(loreId));
     }
+    }
+
+    refreshBestiary(bestiary);
   };
 
   refresh();

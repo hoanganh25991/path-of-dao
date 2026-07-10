@@ -9,6 +9,7 @@ import { CombatPauseMenu } from '@/ui/hud/CombatPauseMenu';
 import { CombatDeathOverlay } from '@/ui/hud/CombatDeathOverlay';
 import '@/ui/hud/combat-hud.css';
 import { CultivationToast } from '@/ui/hud/CultivationToast';
+import { CombatLootHint } from '@/ui/hud/CombatLootHint';
 
 /** Mounts combat input widgets when the active scene is combat. */
 export class CombatHUD {
@@ -27,6 +28,7 @@ export class CombatHUD {
 
     InputManager.mount(CombatHUD.root);
     PlayerStatusBar.init(CombatHUD.root);
+    CombatLootHint.init(CombatHUD.root);
     AncientEchoBanner.init(CombatHUD.root);
     CombatSkillPicker.init(CombatHUD.root);
     CombatPauseMenu.init(CombatHUD.root);
@@ -58,6 +60,7 @@ export class CombatHUD {
     for (const unsub of CombatHUD.unsubscribeDemo) unsub();
     CombatHUD.unsubscribeDemo = [];
     PlayerStatusBar.destroy();
+    CombatLootHint.destroy();
     AncientEchoBanner.destroy();
     CombatSkillPicker.destroy();
     CombatPauseMenu.destroy();
