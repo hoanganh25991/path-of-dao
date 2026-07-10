@@ -81,16 +81,16 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"
   }, {
     "url": "index.html",
-    "revision": "2fb9a5a654fa05b4ad5ab4f506cad98c"
+    "revision": "c1d75200fa5f78a59318a45cedf96b81"
   }, {
     "url": "favicon.ico",
-    "revision": "e1625ff44026e81605560873d7fcf309"
+    "revision": "02ea09520aacdd604a1b58d96bc80494"
   }, {
     "url": "icons/icon-512.png",
-    "revision": "34e303b08c3898cf4d0296c88a7d32bd"
+    "revision": "0d248c28934264d7a1b891da30d84058"
   }, {
     "url": "icons/icon-192.png",
-    "revision": "16d8cd7e83a3b7e2f9f8a050e9a42ab1"
+    "revision": "757f35232f6f819d66ba622e9d00a570"
   }, {
     "url": "assets/void_throne-02-Bu_KYudS.json",
     "revision": null
@@ -98,7 +98,7 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/void_throne-01-DPHVQUxq.json",
     "revision": null
   }, {
-    "url": "assets/virtual_pwa-register-CC8oNbmt.js",
+    "url": "assets/virtual_pwa-register-CCPdRerW.js",
     "revision": null
   }, {
     "url": "assets/vendor-C8bt_7hy.js",
@@ -143,10 +143,10 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "url": "assets/mist_forest-01-BLrs4O0E.json",
     "revision": null
   }, {
-    "url": "assets/index-DAcPh544.js",
+    "url": "assets/index-F9CvbVOT.js",
     "revision": null
   }, {
-    "url": "assets/index-CkgDAENq.css",
+    "url": "assets/index-BJcE-huk.css",
     "revision": null
   }, {
     "url": "assets/hidden_cave-B3gJzmH4.png",
@@ -204,13 +204,13 @@ define(['./workbox-7e5eb42b'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "favicon.ico",
-    "revision": "e1625ff44026e81605560873d7fcf309"
+    "revision": "02ea09520aacdd604a1b58d96bc80494"
   }, {
     "url": "icons/icon-192.png",
-    "revision": "16d8cd7e83a3b7e2f9f8a050e9a42ab1"
+    "revision": "757f35232f6f819d66ba622e9d00a570"
   }, {
     "url": "icons/icon-512.png",
-    "revision": "34e303b08c3898cf4d0296c88a7d32bd"
+    "revision": "0d248c28934264d7a1b891da30d84058"
   }, {
     "url": "manifest.json",
     "revision": "dccdc21c84f6d5d52f3837ca4c0a61e4"

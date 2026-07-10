@@ -25,7 +25,7 @@ import { ZonePortalManager } from '@/combat/systems/ZonePortalManager';
 import { resolvePortalSpawn } from '@/combat/map/portalSpawn';
 import { getRoamConfig } from '@/combat/map/RoamLoader';
 import { getWorldProfile, worldSeedForMap } from '@/combat/world/ProceduralWorldLoader';
-import { DEFAULT_GROUND_PALETTE, resolveGroundPalette } from '@/combat/world/GroundPalette';
+import { resolveGroundPalette } from '@/combat/world/GroundPalette';
 import { EndlessGroundManager } from '@/combat/map/EndlessGround';
 import { WorldFogOverlay } from '@/combat/map/WorldFog';
 import { biomeGroundColor } from '@/combat/map/biomeGroundColor';

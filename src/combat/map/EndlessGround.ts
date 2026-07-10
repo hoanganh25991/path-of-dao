@@ -121,7 +121,10 @@ export class EndlessGroundManager {
 
   private unloadDistant(cx: number, cy: number): void {
     for (const [key, record] of [...this.chunks.entries()]) {
-      const [sx, sy] = key.split(',').map(Number);
+      const parts = key.split(',');
+      if (parts.length !== 2) continue;
+      const sx = Number(parts[0]);
+      const sy = Number(parts[1]);
       if (Math.abs(sx - cx) > UNLOAD_RADIUS || Math.abs(sy - cy) > UNLOAD_RADIUS) {
         record.layer.destroy();
         record.map.destroy();
