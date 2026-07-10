@@ -23,5 +23,11 @@
   "bestiary.enemy_spirit_fox.desc": "Tiểu Bạch — hồ ly tinh U Linh Sơn chọn đi bên cạnh Vương Lâm.",
   "bestiary.enemy_storm_hawk.desc": "Ưng kiếp vân quanh mây thiên kiếp trên ải lôi.",
   "bestiary.enemy_gate_sentinel.desc": "Lính canh Cổng Thăng Tiên trên Ngoại Giới.",
-  "bestiary.enemy_void_shade.desc": "Bóng hư không ở rìa Lôi Tiên Giới — tàn dư kẻ thăng tiên thất bại."
+  "bestiary.enemy_void_shade.desc": "Bóng hư không ở rìa Lôi Tiên Giới — tàn dư kẻ thăng tiên thất bại.",
+  "bestiary.loot.grunt": "Rơi trang bị ~{chance}%",
+  "bestiary.loot.elite": "Rơi trang bị ~{chance}%",
+  "bestiary.loot.boss_first": "Lần đầu: bảo vật chắc chắn",
+  "bestiary.loot.boss_rematch": "Đánh lại ~{chance}%",
+  "bestiary.loot.none": "Không rơi trang bị",
+  "bestiary.loot.items": "Có thể rơi: {items}"
 }

@@ -1479,3 +1479,45 @@ header.home-profile {
     opacity: 0;
   }
 }
+
+.home-panel__subtitle {
+  margin: 1rem 0 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(232, 228, 220, 0.9);
+}
+
+.home-bestiary__title {
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--dao-border);
+}
+
+.home-bestiary__lore {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--dao-text-muted, rgba(255, 255, 255, 0.72));
+}
+
+.home-bestiary__drop {
+  margin: 0.25rem 0 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #c9a227;
+}
+
+.home-bestiary__drop--muted {
+  font-weight: 500;
+  color: rgba(201, 162, 39, 0.75);
+}
+
+.home-bestiary__items {
+  margin: 0.15rem 0 0;
+  font-size: 0.68rem;
+  color: var(--dao-text-muted, rgba(255, 255, 255, 0.65));
+  font-style: italic;
+}
+
+.home-bestiary__empty {
+  margin-top: 0;
+}

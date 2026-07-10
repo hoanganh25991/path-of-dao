@@ -15,6 +15,7 @@ Full MVP roster: 40 skills, 41 enemies, loot tables, boss phases, and skill unlo
 - Forty-one enemy files including training dummy, elite shadow, spirit fox
 - Loot tables for five rarity tiers
 - **Combat item drops** — `rollCultivatorLoot()` + magnet pickups; rates in `content/loot/_drop_rates.json`
+- **Loot hints** — combat HUD strip + Bestiary section on Path tab (per-cultivator drop % and item preview)
 - Boss phase tracking wired into wave spawner
 - Skill unlock hooks: level up, boss clear, chapter story completion
 - **Road techniques** — `byMapClear` on all ten explore maps (`.01`); `byChapter` rewards for all ten finales

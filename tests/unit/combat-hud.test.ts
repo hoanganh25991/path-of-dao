@@ -3,12 +3,14 @@
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { EventBus } from '@/core/EventBus';
+import { I18nManager } from '@/core/i18n/I18nManager';
 import { CombatHUD } from '@/ui/hud/CombatHUD';
 import { TopRightHud } from '@/ui/hud/TopRightHud';
 
 describe('CombatHUD', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     document.body.innerHTML = '<div id="ui-root"></div>';
+    await I18nManager.load('en');
   });
 
   afterEach(() => {
@@ -55,5 +57,16 @@ describe('CombatHUD', () => {
     expect(uiRoot.querySelector('.action-btn--swap-skills')?.classList.contains('action-btn--arc')).toBe(
       true,
     );
+  });
+
+  it('shows loot drop rate hint in combat', () => {
+    const uiRoot = document.getElementById('ui-root')!;
+    TopRightHud.init(uiRoot);
+    CombatHUD.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'combat', payload: { mapId: 'test' } });
+
+    const hint = uiRoot.querySelector('[data-testid="combat-loot-hint"]');
+    expect(hint?.textContent).toContain('12%');
+    expect(hint?.textContent).toContain('28%');
   });
 });

@@ -23,5 +23,11 @@
   "bestiary.enemy_spirit_fox.desc": "Little White — fox spirit on Ghost Spirit Mountain who chose to walk beside Wang Lin.",
   "bestiary.enemy_storm_hawk.desc": "Tribulation hawks circling thunder clouds on the heavenly tribulation pass.",
   "bestiary.enemy_gate_sentinel.desc": "Sentinels of the Ascension Gate in the Outer Realm.",
-  "bestiary.enemy_void_shade.desc": "Void shades at the edge of Lôi Tiên Realm — remnants of failed ascenders."
+  "bestiary.enemy_void_shade.desc": "Void shades at the edge of Lôi Tiên Realm — remnants of failed ascenders.",
+  "bestiary.loot.grunt": "Gear drop ~{chance}%",
+  "bestiary.loot.elite": "Gear drop ~{chance}%",
+  "bestiary.loot.boss_first": "First clear: guaranteed treasures",
+  "bestiary.loot.boss_rematch": "Rematch bonus ~{chance}%",
+  "bestiary.loot.none": "No gear drops",
+  "bestiary.loot.items": "May drop: {items}"
 }

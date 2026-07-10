@@ -22,6 +22,7 @@
   "combat.cultivator.defeated": "Cultivator lost the exchange — sits to recover",
   "combat.loot.item": "+{name} ×{qty}",
   "combat.loot.item_unknown": "Treasure ×{qty}",
+  "combat.loot.hint.hud": "Gold each defeat · Gear ~{gruntPercent}% (elites ~{elitePercent}%)",
   "combat.encounter.tier.solo": "On this star, rivals meet you one at a time until your cultivation deepens.",
   "combat.encounter.tier.squad": "Your qi draws a squad — expect ten cultivators at once.",
   "combat.encounter.tier.horde": "You overmatch this star — a hundred Tu Sĩ may answer your strike.",

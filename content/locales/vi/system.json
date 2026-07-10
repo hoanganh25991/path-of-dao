@@ -22,6 +22,7 @@
   "combat.cultivator.defeated": "Tu Sĩ thua trận — ngồi tu luyện hồi phục",
   "combat.loot.item": "+{name} ×{qty}",
   "combat.loot.item_unknown": "Bảo vật ×{qty}",
+  "combat.loot.hint.hud": "Vàng mỗi trận · Trang bị ~{gruntPercent}% (tinh anh ~{elitePercent}%)",
   "combat.encounter.tier.solo": "Trên chân tinh này, đối thủ gặp ngươi từng người một cho đến khi tu vi sâu hơn.",
   "combat.encounter.tier.squad": "Khí của ngươi kéo theo một đội — chuẩn bị đối mặt mười Tu Sĩ.",
   "combat.encounter.tier.horde": "Ngươi vượt trội chân tinh này — trăm Tu Sĩ có thể đáp lại một chiêu.",

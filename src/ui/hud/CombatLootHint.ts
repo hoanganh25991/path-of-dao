@@ -28,6 +28,9 @@ export class CombatLootHint {
   static refresh(): void {
     if (!CombatLootHint.root) return;
     const hint = getMapLootHudHint();
-    CombatLootHint.root.textContent = I18nManager.t('combat.loot.hint.hud', hint);
+    CombatLootHint.root.textContent = I18nManager.t('combat.loot.hint.hud', {
+      gruntPercent: hint.gruntPercent,
+      elitePercent: hint.elitePercent,
+    });
   }
 }

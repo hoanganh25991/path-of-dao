@@ -100,6 +100,26 @@ describe('HomeUI', () => {
     expect(encounterRow?.textContent).toContain('Kept on your path');
   });
 
+  it('Path tab shows bestiary entry with loot hint after first defeat', () => {
+    const save = gameStore.getState().save!;
+    gameStore.getState().patch({
+      progress: {
+        ...save.progress,
+        bestiary: ['enemy.slime'],
+      },
+    });
+
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+    HomeUI.openTab('story');
+
+    const row = uiRoot.querySelector('[data-testid="home-bestiary-row-enemy.slime"]');
+    expect(row).toBeTruthy();
+    expect(row?.textContent).toContain('12%');
+    expect(row?.textContent).toContain('May drop');
+  });
+
   it('profile Dharma unequip from slot then inventory card opens detail', () => {
     gameStore.getState().patch({
       inventory: {
