@@ -11,7 +11,7 @@ export function createBottomNav(onSelect: (tab: HomeTab) => void): BottomNavHand
   const root = document.createElement('nav');
   root.className = 'home-bottom-nav home-ui__interactive';
   root.setAttribute('role', 'tablist');
-  root.setAttribute('aria-label', 'Home navigation');
+  root.setAttribute('aria-label', I18nManager.t('home.nav.aria'));
 
   const tabs: { id: HomeTab; labelKey: string }[] = [
     { id: 'play', labelKey: 'home.nav.play' },

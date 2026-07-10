@@ -26,5 +26,6 @@
   "combat.encounter.tier.solo": "On this star, rivals meet you one at a time until your cultivation deepens.",
   "combat.encounter.tier.squad": "Your qi draws a squad — expect ten cultivators at once.",
   "combat.encounter.tier.horde": "You overmatch this star — a hundred Tu Sĩ may answer your strike.",
-  "combat.encounter.tier.mass": "Return visit power — five hundred weak cultivators; one technique clears the field."
+  "combat.encounter.tier.mass": "Return visit power — five hundred weak cultivators; one technique clears the field.",
+  "combat.skill.no_mana": "Not enough spirit qi"
 }

@@ -22,6 +22,7 @@ Playable hero with 3-hit combo, dodge with invulnerability, skill bolt, meditati
 - **Meditate skill** (`skill.basic.meditate`, **Gather Qi** / **Hấp Khí**) — dedicated health button (like dodge); toggle sit pose + spirit wisps; fastest HP and mana regen; cancels on move/attack/dodge/hit
 - **Passive HP/mana regen** by state — meditate 6×, walk 0.5×, combat 0.3×; scales with level + realm; mana rate = HP rate × `manaMax/hpMax` (`HealthRegen.ts`)
 - Skill button spends mana and fires a spirit bolt
+- **Out-of-mana cast feedback** — `skill:cast-blocked` toast (`combat.skill.no_mana` / Không đủ linh lực), debounced while holding the skill button
 - HP and mana bars in combat HUD
 - Combat runtime (HP, mana, position) saved when leaving a map
 - Death pauses combat; **Try Again** respawns at spawn with full HP; **Return Home** retreats via shared map exit

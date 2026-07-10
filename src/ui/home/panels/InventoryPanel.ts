@@ -156,7 +156,7 @@ export function createInventoryPanel(): InventoryPanelHandles {
     secondary.type = 'button';
     secondary.className = 'home-item-detail__btn home-item-detail__btn--secondary';
     secondary.textContent = '✕';
-    secondary.setAttribute('aria-label', 'Close');
+    secondary.setAttribute('aria-label', I18nManager.t('home.dharma.close'));
     secondary.addEventListener('click', closeDetail);
 
     actions.append(primary, secondary);

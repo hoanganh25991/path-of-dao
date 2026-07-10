@@ -21,7 +21,7 @@ export class CombatSkillPicker {
     const backdrop = document.createElement('button');
     backdrop.type = 'button';
     backdrop.className = 'combat-skill-picker__backdrop';
-    backdrop.setAttribute('aria-label', 'Close skill picker');
+    backdrop.setAttribute('aria-label', I18nManager.t('combat.skills.picker_close'));
 
     const panel = document.createElement('div');
     panel.className = 'combat-skill-picker__panel';

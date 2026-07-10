@@ -40,6 +40,8 @@ export type GameEvents = {
   'player:meditate-started': undefined;
   'player:meditate-ended': undefined;
   'skill:cast': { intent: string };
+  /** Player tried to cast but was blocked (e.g. out of mana). */
+  'skill:cast-blocked': { reason: 'action' | 'cooldown' | 'mana' };
   'progression:xp-gained': { xpTotal: number; xpGained: number; level: number };
   'progression:level-up': { level: number; realmId: string; tier: PlayerSaveV1['realm']['tier'] };
   'demo:entered': { ancientId: string };

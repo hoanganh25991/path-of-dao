@@ -26,5 +26,6 @@
   "combat.encounter.tier.solo": "Trên chân tinh này, đối thủ gặp ngươi từng người một cho đến khi tu vi sâu hơn.",
   "combat.encounter.tier.squad": "Khí của ngươi kéo theo một đội — chuẩn bị đối mặt mười Tu Sĩ.",
   "combat.encounter.tier.horde": "Ngươi vượt trội chân tinh này — trăm Tu Sĩ có thể đáp lại một chiêu.",
-  "combat.encounter.tier.mass": "Quay lại khi đã mạnh — năm trăm Tu Sĩ yếu; một chiêu có thể quét sạch."
+  "combat.encounter.tier.mass": "Quay lại khi đã mạnh — năm trăm Tu Sĩ yếu; một chiêu có thể quét sạch.",
+  "combat.skill.no_mana": "Không đủ linh lực"
 }

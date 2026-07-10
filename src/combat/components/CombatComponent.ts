@@ -87,8 +87,18 @@ export class CombatComponent {
 
     if (!isIntentUnlocked(skill.intent, save)) return false;
 
-    if (!this.skills.canCast(skill, this.cooldowns.remainingMs(slot))) return false;
-    if (!this.player.stats.spendMana(skill.manaCost)) return false;
+    const cooldownRemainingMs = this.cooldowns.remainingMs(slot);
+    const blockReason = this.skills.getCastBlockReason(skill, cooldownRemainingMs);
+    if (blockReason) {
+      if (blockReason === 'mana') {
+        EventBus.emit('skill:cast-blocked', { reason: 'mana' });
+      }
+      return false;
+    }
+    if (!this.player.stats.spendMana(skill.manaCost)) {
+      EventBus.emit('skill:cast-blocked', { reason: 'mana' });
+      return false;
+    }
 
     this.cooldowns.start(slot, skill, this.player.stats.isGodMode);
     this.player.emitStatsChanged();

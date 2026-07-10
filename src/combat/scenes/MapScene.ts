@@ -582,6 +582,14 @@ export class MapScene extends Phaser.Scene {
     });
     const offAttack = EventBus.on('player:attack-started', () => pulseCamera('attack'));
     const offSkill = EventBus.on('skill:cast', () => pulseCamera('skill'));
+    let lastManaToastAt = 0;
+    const offCastBlocked = EventBus.on('skill:cast-blocked', ({ reason }) => {
+      if (reason !== 'mana') return;
+      const now = performance.now();
+      if (now - lastManaToastAt < 900) return;
+      lastManaToastAt = now;
+      this.showCombatToast(I18nManager.t('combat.skill.no_mana'));
+    });
     const offMeditateStart = EventBus.on('player:meditate-started', () => {
       this.cameraDirector?.setMeditating(true);
     });
@@ -606,6 +614,7 @@ export class MapScene extends Phaser.Scene {
       offPause();
       offAttack();
       offSkill();
+      offCastBlocked();
       offMeditateStart();
       offMeditateEnd();
       offDefeat();

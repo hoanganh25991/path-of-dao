@@ -11,6 +11,7 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 ## Done
 
 - Skill cast pipeline wired through combat (mana, cooldown, effects)
+- **Cast blocked UI** — out-of-mana emits `skill:cast-blocked` → combat toast (EN/VI)
 - Composable effect types: projectile, melee arc, heal, pull field, AoE circle
 - VFX presets: cast ring, slash arc, spirit bolt, heal bloom, flame petal, void crack
 - **Elemental projectiles** — flame orb, void shard, lightning bolt, time orb (not one generic bolt)
