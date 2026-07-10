@@ -6,6 +6,6 @@
   "manaCost": 20,
   "skillMultiplier": 1.6,
   "vfx": {
-    "cast": "vfx_ice_cast"
+    "cast": "vfx_sword_cast"
   }
 }

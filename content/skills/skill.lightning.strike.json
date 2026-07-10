@@ -5,6 +5,18 @@
   "kind": "bolt",
   "manaCost": 20,
   "skillMultiplier": 1.7,
+  "effects": [
+    {
+      "type": "projectile",
+      "speed": 520,
+      "rangePx": 420,
+      "hitRadius": 11,
+      "damage": {
+        "skillMultiplier": 1.7,
+        "damageType": "spirit"
+      }
+    }
+  ],
   "vfx": {
     "cast": "vfx_lightning_cast"
   }

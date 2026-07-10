@@ -1,6 +1,7 @@
 import type Phaser from 'phaser';
 import type { InsightIntentId, SkillDefinition } from '@/progression/SkillDefinition';
 import { VFX_TEXTURE_KEYS, snapVfxPosition } from '@/combat/art/pixelVfxDraw';
+import { skillVfxPower } from '@/combat/skills/skillVfxPower';
 import { getIntentVisual } from '@/ui/skills/SkillIcon';
 
 const SLASH_OFFSET_PX = 26;
@@ -13,6 +14,96 @@ const LIGHTNING_BOLT_TEX = 32;
 const TIME_RIPPLE_TEX = 40;
 const LIFE_BLOOM_TEX = 40;
 const ICE_SPIKE_TEX = 36;
+
+function projectileTexture(intent: InsightIntentId): string {
+  switch (intent) {
+    case 'flame':
+      return VFX_TEXTURE_KEYS.flameOrb;
+    case 'lightning':
+      return VFX_TEXTURE_KEYS.lightningBolt;
+    case 'void':
+      return VFX_TEXTURE_KEYS.voidShard;
+    case 'time':
+      return VFX_TEXTURE_KEYS.timeOrb;
+    case 'sword':
+      return VFX_TEXTURE_KEYS.arrow;
+    default:
+      return VFX_TEXTURE_KEYS.bolt;
+  }
+}
+
+function projectileScale(intent: InsightIntentId, power: number): number {
+  const base = intent === 'lightning' ? 1.25 : intent === 'flame' ? 1.15 : intent === 'void' ? 1.2 : 1.05;
+  return base * (0.9 + power * 0.12);
+}
+
+/** Brief impact burst when a skill projectile connects. */
+export function playSkillImpactVfx(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  intent: InsightIntentId,
+  power: number,
+): void {
+  const { glow, color } = getIntentVisual(intent);
+  const tint = parseColor(glow);
+  const core = parseColor(color);
+  const radius = 28 + power * 10;
+
+  switch (intent) {
+    case 'void':
+      VFXLibrary.voidCrack(scene, x, y, radius);
+      break;
+    case 'flame':
+      VFXLibrary.flamePetal(scene, x, y, radius * 0.85);
+      break;
+    case 'lightning':
+      VFXLibrary.lightningBolt(scene, x, y, radius);
+      scene.cameras.main.shake(60, 0.004 + power * 0.001);
+      break;
+    case 'time':
+      VFXLibrary.timeRipple(scene, x, y, radius);
+      break;
+    case 'life':
+      VFXLibrary.lifeBloom(scene, x, y, radius * 0.9);
+      break;
+    default:
+      expandRing(scene, x, y, tint, 0.4, 2.2 + power * 0.35, 200, 22, 0.85);
+  }
+
+  spawnPixelSparks(scene, x, y, tint, Math.floor(3 + power * 1.5), 12 + power * 4, 24);
+  spawnPixelSparks(scene, x, y, core, Math.floor(2 + power), 8 + power * 3, 23);
+}
+
+/** Traveling trail behind elemental projectiles. */
+export function spawnProjectileTrail(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  intent: InsightIntentId,
+  power: number,
+): void {
+  const { glow } = getIntentVisual(intent);
+  const tint = parseColor(glow);
+
+  switch (intent) {
+    case 'flame':
+      spawnPixelSparks(scene, x, y, 0xff6020, 1 + Math.floor(power * 0.4), 6, 19);
+      spawnPixelSparks(scene, x, y - 2, tint, 1, 4, 18);
+      break;
+    case 'lightning':
+      spawnPixelSparks(scene, x, y, 0xffe040, 2, 10 + power * 2, 20);
+      break;
+    case 'void':
+      spawnPixelSparks(scene, x, y, tint, 1, 5, 18);
+      break;
+    case 'time':
+      expandRing(scene, x, y, tint, 0.15, 0.55 + power * 0.08, 120, 17, 0.35);
+      break;
+    default:
+      spawnPixelSparks(scene, x, y, tint, 1, 5, 18);
+  }
+}
 
 function parseColor(hex: string): number {
   return Number.parseInt(hex.replace('#', ''), 16);
@@ -138,29 +229,67 @@ export const VFXLibrary = {
     facing: number,
     reach: number,
     intent: InsightIntentId,
-    amp = 1,
+    power = 1,
   ): void {
     const { glow } = getIntentVisual(intent);
-    const scale = (reach / SLASH_TEX_SIZE) * 1.15 * amp;
+    const tint = parseColor(glow);
+    const scale = (reach / SLASH_TEX_SIZE) * 1.15 * (0.95 + power * 0.1);
+    const cx = x + facing * SLASH_OFFSET_PX;
+    const cy = y;
     const slash = scene.add
-      .image(Math.round(x + facing * SLASH_OFFSET_PX), Math.round(y), VFX_TEXTURE_KEYS.slash)
+      .image(Math.round(cx), Math.round(cy), VFX_TEXTURE_KEYS.slash)
       .setFlipX(facing < 0)
       .setOrigin(0.08, 0.5)
       .setScale(scale)
       .setDepth(21)
-      .setTint(parseColor(glow));
-    scene.time.delayedCall(SLASH_VISIBLE_MS * (amp > 1 ? 1.4 : 1), () => slash.destroy());
-    spawnPixelSparks(
-      scene,
-      x + facing * (reach * 0.55),
-      y,
-      parseColor(glow),
-      amp > 1 ? 5 : 3,
-      14,
-      22,
-    );
+      .setTint(tint);
+    scene.time.delayedCall(SLASH_VISIBLE_MS * (power > 1.5 ? 1.4 : 1), () => slash.destroy());
+
+    const hitX = x + facing * (reach * 0.55);
+    spawnPixelSparks(scene, hitX, cy, tint, Math.floor(2 + power * 1.2), 12 + power * 3, 22);
+
+    switch (intent) {
+      case 'void':
+        VFXLibrary.voidCrack(scene, hitX, cy, 36 + power * 14);
+        break;
+      case 'sword':
+        expandRing(scene, hitX, cy, tint, 0.35, 1.8 + power * 0.4, 160, 20, 0.75);
+        break;
+      case 'flame':
+        VFXLibrary.flamePetal(scene, hitX, cy, 28 + power * 10);
+        break;
+      default:
+        expandRing(scene, hitX, cy, tint, 0.3, 1.4 + power * 0.25, 140, 20, 0.6);
+    }
   },
 
+  intentProjectile(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    facing: number,
+    intent: InsightIntentId,
+    power = 1,
+  ): Phaser.Physics.Arcade.Image {
+    const { glow } = getIntentVisual(intent);
+    const texture = projectileTexture(intent);
+    const scale = projectileScale(intent, power);
+    const originY = intent === 'lightning' ? 0.85 : 0.5;
+    const bolt = scene.physics.add
+      .image(Math.round(x + facing * 20), Math.round(y), texture)
+      .setFlipX(facing < 0)
+      .setOrigin(0.5, originY)
+      .setScale(scale)
+      .setTint(parseColor(glow))
+      .setDepth(21);
+    if (intent === 'lightning') {
+      bolt.setRotation(facing < 0 ? 0.15 : -0.15);
+    }
+    snapVfxPosition(bolt);
+    return bolt;
+  },
+
+  /** @deprecated Use intentProjectile — kept for tests. */
   spiritBolt(
     scene: Phaser.Scene,
     x: number,
@@ -169,23 +298,16 @@ export const VFXLibrary = {
     intent: InsightIntentId,
     amp = 1,
   ): Phaser.Physics.Arcade.Image {
-    const { glow } = getIntentVisual(intent);
-    const bolt = scene.physics.add
-      .image(Math.round(x + facing * 20), Math.round(y), VFX_TEXTURE_KEYS.bolt)
-      .setFlipX(facing < 0)
-      .setOrigin(0.5)
-      .setScale(amp > 1 ? 1.35 * amp : 1.1)
-      .setTint(parseColor(glow))
-      .setDepth(21);
-    snapVfxPosition(bolt);
-    return bolt;
+    return VFXLibrary.intentProjectile(scene, x, y, facing, intent, amp);
   },
 
-  healBloom(scene: Phaser.Scene, x: number, y: number, intent: InsightIntentId): void {
+  healBloom(scene: Phaser.Scene, x: number, y: number, intent: InsightIntentId, power = 1): void {
     const { glow } = getIntentVisual(intent);
     const tint = parseColor(glow);
-    expandRing(scene, x, y - 20, tint, 0.6, 3.8, 400, 22, 0.9);
-    spawnPixelSparks(scene, x, y - 28, tint, 6, 22, 23);
+    const radius = 38 + power * 12;
+    VFXLibrary.lifeBloom(scene, x, y - 8, radius);
+    expandRing(scene, x, y - 20, tint, 0.5 + power * 0.05, 2.8 + power * 0.5, 360 + power * 40, 22, 0.9);
+    spawnPixelSparks(scene, x, y - 28, tint, Math.floor(4 + power * 2), 16 + power * 5, 23);
   },
 
   flamePetal(scene: Phaser.Scene, x: number, y: number, radius: number): void {
@@ -262,28 +384,37 @@ export function playSkillCastVfx(
   skill: SkillDefinition,
   x: number,
   y: number,
-  amp = 1,
+  godAmp = 1,
 ): void {
-  VFXLibrary.playCast(scene, x, y, skill.intent, amp);
+  const power = skillVfxPower(skill.id, godAmp);
+  VFXLibrary.playCast(scene, x, y, skill.intent, power);
 
+  const castRadius = 40 + power * 12;
   switch (skill.vfx?.cast) {
     case 'vfx_void_cast':
-      VFXLibrary.voidCrack(scene, x, y - 16, 48 * amp);
+      VFXLibrary.voidCrack(scene, x, y - 16, castRadius);
       break;
     case 'vfx_lightning_cast':
-      VFXLibrary.lightningBolt(scene, x, y - 12, 40 * amp);
+      VFXLibrary.lightningBolt(scene, x, y - 12, castRadius);
       break;
     case 'vfx_time_cast':
-      VFXLibrary.timeRipple(scene, x, y - 12, 44 * amp);
+      VFXLibrary.timeRipple(scene, x, y - 12, castRadius + 4);
       break;
     case 'vfx_life_cast':
-      VFXLibrary.lifeBloom(scene, x, y - 14, 42 * amp);
+      VFXLibrary.lifeBloom(scene, x, y - 14, castRadius + 2);
+      break;
+    case 'vfx_sword_cast':
+      expandRing(scene, x, y - 14, parseColor(getIntentVisual('sword').glow), 0.4, 2 + power * 0.35, 200, 20, 0.8);
       break;
     case 'vfx_ice_cast':
-      VFXLibrary.iceSpike(scene, x, y - 12, 38 * amp);
+      VFXLibrary.iceSpike(scene, x, y - 12, castRadius - 2);
       break;
     case 'vfx_flame_cast':
-      VFXLibrary.flamePetal(scene, x, y - 14, 46 * amp);
+      VFXLibrary.flamePetal(scene, x, y - 14, castRadius + 6);
       break;
+  }
+
+  if (power >= 2) {
+    scene.cameras.main.shake(90, 0.003 + power * 0.0015);
   }
 }

@@ -17,6 +17,9 @@ export const VFX_TEXTURE_KEYS = {
   timeRipple: 'vfx-time-ripple',
   lifeBloom: 'vfx-life-bloom',
   iceSpike: 'vfx-ice-spike',
+  flameOrb: 'vfx-flame-orb',
+  voidShard: 'vfx-void-shard',
+  timeOrb: 'vfx-time-orb',
 } as const;
 
 function px(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, size = 1): void {
@@ -146,6 +149,52 @@ export function drawBoltCanvas(): HTMLCanvasElement {
     px(ctx, 19, cy - 1, '#ffffff', 3);
     px(ctx, 21, cy, '#ffffff', 2);
     px(ctx, 19, cy + 2, '#d0f8ff', 2);
+  });
+}
+
+/** Searing flame orb — round core with flickering mantle. */
+export function drawFlameOrbCanvas(): HTMLCanvasElement {
+  const size = 18;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    pixelArc(ctx, c, c, 7, 0, Math.PI * 2, '#ff5020', 2);
+    pixelArc(ctx, c, c, 5, 0, Math.PI * 2, '#ff9040', 2);
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+    px(ctx, c + 4, c - 3, '#ffb060');
+    px(ctx, c - 4, c + 2, '#ff7040');
+    px(ctx, c + 2, c + 4, '#ffd080');
+  });
+}
+
+/** Angular void shard — tears through space. */
+export function drawVoidShardCanvas(): HTMLCanvasElement {
+  return withCtx(22, 12, (ctx) => {
+    const pts: [number, number][] = [
+      [2, 6], [8, 2], [14, 4], [20, 6], [16, 10], [10, 10], [4, 8],
+    ];
+    for (let i = 0; i < pts.length; i++) {
+      const [x1, y1] = pts[i]!;
+      const [x2, y2] = pts[(i + 1) % pts.length]!;
+      pixelLine(ctx, x1, y1, x2, y2, '#6040a0', 2);
+    }
+    pixelLine(ctx, 6, 5, 14, 7, '#c0a0ff', 1);
+    px(ctx, 12, 5, '#ffffff', 2);
+    px(ctx, 18, 6, '#e0c0ff', 2);
+  });
+}
+
+/** Time orb — nested ripples, pale cyan. */
+export function drawTimeOrbCanvas(): HTMLCanvasElement {
+  const size = 16;
+  return withCtx(size, size, (ctx) => {
+    const c = size / 2;
+    pixelRing(ctx, c, c, 6, '#5090b0', 1);
+    pixelRing(ctx, c, c, 4, '#90d0f0', 1);
+    px(ctx, c - 1, c - 1, '#ffffff', 2);
+    px(ctx, c, 2, '#a0e0ff');
+    px(ctx, c, size - 3, '#a0e0ff');
+    px(ctx, 2, c, '#a0e0ff');
+    px(ctx, size - 3, c, '#a0e0ff');
   });
 }
 
@@ -384,6 +433,9 @@ export function registerPixelVfxAssets(scene: Phaser.Scene): void {
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.timeRipple, drawTimeRippleCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.lifeBloom, drawLifeBloomCanvas());
   addCanvasTexture(scene, VFX_TEXTURE_KEYS.iceSpike, drawIceSpikeCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.flameOrb, drawFlameOrbCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.voidShard, drawVoidShardCanvas());
+  addCanvasTexture(scene, VFX_TEXTURE_KEYS.timeOrb, drawTimeOrbCanvas());
 }
 
 /** Round world position so scaled sprites land on pixel grid. */

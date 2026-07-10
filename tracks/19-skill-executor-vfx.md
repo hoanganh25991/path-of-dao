@@ -2,7 +2,7 @@
 
 **Status:** `[~]` In progress  
 **Plan:** [plans/19-skill-executor-vfx.md](../plans/19-skill-executor-vfx.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -13,6 +13,9 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 - Skill cast pipeline wired through combat (mana, cooldown, effects)
 - Composable effect types: projectile, melee arc, heal, pull field, AoE circle
 - VFX presets: cast ring, slash arc, spirit bolt, heal bloom, flame petal, void crack
+- **Elemental projectiles** — flame orb, void shard, lightning bolt, time orb (not one generic bolt)
+- **Tier scaling** — `skillVfxPower()` maps base → v2–v4 → v5/awakened → god mode juice
+- **First hero arts** — void slash = melee rift; flame/lightning/time tuned projectiles + trails + impact bursts
 - Cooldown manager per skill slot
 - Awakened void: pull field then projectile
 - Awakened flame: twin AoE damage ticks
@@ -22,7 +25,7 @@ Data-driven skill casting with composable effects and cultivation-themed VFX pre
 
 - Sword Intent gating in executor and skill picker (T7)
 - Audio sync on cast/impact frames from skill data
-- More skills need unique VFX beyond presets
+- Higher-fidelity art pass (sprite sheets / short anim loops per tier) beyond pixel presets
 - BGM crossfade between scenes (owned partly by 25)
 
 ## Verification
