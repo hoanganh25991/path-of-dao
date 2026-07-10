@@ -11,7 +11,7 @@
     "critDmg": 2
   },
   "aggroRange": 340,
-  "attackRange": 56,
+  "attackRange": 90,
   "attackCooldownMs": 1300,
   "xpReward": 420,
   "goldReward": [
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_desert_sovereign.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "aoe_ring",
+  "telegraphMs": 320,
+  "telegraphColor": 16738847,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,12 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [
+        {
+          "id": "enemy.sand.wisp",
+          "count": 2
+        }
+      ]
     }
   ]
 }

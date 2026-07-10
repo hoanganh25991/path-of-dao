@@ -59,6 +59,11 @@ export class AudioDirector {
           AudioManager.duckMusic(0.55, 500);
         }
       }),
+      EventBus.on('combat:boss-phase-changed', () => {
+        AudioManager.playSfx('boss.telegraph');
+        AudioManager.playSfx('boss.phase_change');
+        AudioManager.duckMusic(0.6, 350);
+      }),
       EventBus.on('player:died', () => {
         AudioManager.playSfx('player.hit');
         AudioManager.duckMusic(0.35, 400);

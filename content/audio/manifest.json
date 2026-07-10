@@ -2,46 +2,58 @@
   "version": 1,
   "bgm": {
     "bgm.home": {
-      "type": "procedural",
+      "type": "file",
       "loop": true,
-      "mood": "home",
-      "frequencies": [110, 165, 220],
-      "gain": 0.055
+      "paths": {
+        "mp3": "audio/bgm/home.mp3",
+        "ogg": "audio/bgm/home.ogg"
+      },
+      "gain": 0.42
     },
     "bgm.combat.generic": {
-      "type": "procedural",
+      "type": "file",
       "loop": true,
-      "mood": "combat",
-      "frequencies": [82.41, 110, 123.47],
-      "gain": 0.07
+      "paths": {
+        "mp3": "audio/bgm/combat.mp3",
+        "ogg": "audio/bgm/combat.ogg"
+      },
+      "gain": 0.4
     },
     "bgm.combat.boss": {
-      "type": "procedural",
+      "type": "file",
       "loop": true,
-      "mood": "boss",
-      "frequencies": [65.41, 87.31, 98],
-      "gain": 0.075
+      "paths": {
+        "mp3": "audio/bgm/boss.mp3",
+        "ogg": "audio/bgm/boss.ogg"
+      },
+      "gain": 0.44
     },
     "bgm.story": {
-      "type": "procedural",
+      "type": "file",
       "loop": true,
-      "mood": "story",
-      "frequencies": [98, 147, 196],
-      "gain": 0.05
+      "paths": {
+        "mp3": "audio/bgm/story.mp3",
+        "ogg": "audio/bgm/story.ogg"
+      },
+      "gain": 0.4
     },
     "bgm.victory": {
-      "type": "procedural",
+      "type": "file",
       "loop": false,
-      "frequencies": [262, 330, 392, 523, 659],
-      "gain": 0.12,
-      "durationMs": 3200
+      "paths": {
+        "mp3": "audio/bgm/victory.mp3",
+        "ogg": "audio/bgm/victory.ogg"
+      },
+      "gain": 0.5
     },
     "bgm.combat.fallen_village": {
-      "type": "procedural",
+      "type": "file",
       "loop": true,
-      "mood": "melancholy",
-      "frequencies": [87, 131, 175, 220],
-      "gain": 0.055
+      "paths": {
+        "mp3": "audio/bgm/fallen_village.mp3",
+        "ogg": "audio/bgm/fallen_village.ogg"
+      },
+      "gain": 0.4
     }
   },
   "sfx": {

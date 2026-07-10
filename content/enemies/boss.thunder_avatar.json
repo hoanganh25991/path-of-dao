@@ -11,8 +11,8 @@
     "critDmg": 2.1
   },
   "aggroRange": 360,
-  "attackRange": 56,
-  "attackCooldownMs": 1200,
+  "attackRange": 140,
+  "attackCooldownMs": 1100,
   "xpReward": 800,
   "goldReward": [
     80,
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_thunder_avatar.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "projectile",
+  "telegraphMs": 180,
+  "telegraphColor": 16774474,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,13 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [
+        {
+          "id": "enemy.lightning.sprite",
+          "count": 2
+        }
+      ],
+      "telegraphMs": 140
     }
   ]
 }

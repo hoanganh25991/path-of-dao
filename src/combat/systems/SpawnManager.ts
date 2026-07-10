@@ -2,11 +2,12 @@ import Phaser from 'phaser';
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import type { Player } from '@/combat/entities/Player';
-import { Cultivator, STRIKE_MS } from '@/combat/entities/Cultivator';
+import { Cultivator } from '@/combat/entities/Cultivator';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { getEncounterConfig, getCultivatorConfig } from '@/combat/cultivators/CultivatorLoader';
 import type { EncounterConfig } from '@/combat/cultivators/CultivatorConfig';
+import { dispatchAttackShape } from '@/combat/cultivators/attackTiming';
 import { CultivatorPool } from '@/combat/systems/CultivatorPool';
 import { computeKillRewards } from '@/combat/systems/rewards';
 import { rollCultivatorLoot } from '@/combat/systems/lootRoll';
@@ -261,12 +262,14 @@ export class SpawnManager {
   // --- combat resolution ---
 
   private resolveStrike(cultivator: Cultivator): void {
-    if (cultivator.config.archetype === 'ranged_kiter') {
+    const shape = dispatchAttackShape(cultivator.config.archetype, cultivator.effectiveAttackShape);
+
+    if (shape === 'projectile') {
       this.spawnArrow(cultivator);
       return;
     }
 
-    if (cultivator.config.archetype === 'stationary') {
+    if (shape === 'aoe_ring') {
       this.flashAoeRing(cultivator);
     }
 
@@ -284,7 +287,7 @@ export class SpawnManager {
         skillMultiplier: 1,
         damageType: 'physical',
       },
-      lifetimeMs: STRIKE_MS,
+      lifetimeMs: cultivator.effectiveStrikeMs,
       pierce: 1,
     });
   }

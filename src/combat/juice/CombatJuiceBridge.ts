@@ -32,6 +32,10 @@ export class CombatJuiceBridge {
         if (!this.active || !isBoss) return;
         this.juice.applyBossPhaseJuice();
       }),
+      EventBus.on('combat:boss-phase-changed', () => {
+        if (!this.active) return;
+        this.juice.applyBossPhaseJuice();
+      }),
     );
   }
 

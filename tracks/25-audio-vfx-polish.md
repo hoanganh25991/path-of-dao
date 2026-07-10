@@ -2,24 +2,24 @@
 
 **Status:** `[~]` In progress  
 **Plan:** [plans/25-audio-vfx-polish.md](../plans/25-audio-vfx-polish.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
 ## Summary
 
 Game feel through audio, combat juice, and enhanced Home aura — player should *feel* power growth.
 
-## Audio design palette (2026-07-04 pass)
+## Audio design palette (2026-07-10 BGM files)
 
-Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. Procedural placeholders until OGG ships.
+Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. **BGM is real file loops** (koto/shakuhachi/qin/erhu); SFX still procedural.
 
-| Layer | Mood | Keys / behavior |
-|-------|------|-----------------|
-| **Home BGM** | Warm sine pad drone (no arp/air) | `bgm.home` · mood `home` · calm pad path |
-| **Explore BGM** | Melancholic wind, sparse notes | `bgm.combat.fallen_village` · mood `melancholy` |
-| **Combat BGM** | Low tense drone, faster arp | `bgm.combat.generic` · mood `combat` |
-| **Boss BGM** | Dark pulse, saw pad | `bgm.combat.boss` · mood `boss` |
-| **Story BGM** | Contemplative sine pad | `bgm.story` · mood `story` · calm pad path |
-| **Victory sting** | 5-note ascending chord | `bgm.victory` + `map.clear` · ducks music |
+| Layer | Mood | Keys / assets |
+|-------|------|----------------|
+| **Home BGM** | Peaceful koto + shakuhachi | `bgm.home` → `public/audio/bgm/home.*` (Tozan CC0) |
+| **Explore BGM** | Somber oriental | `bgm.combat.fallen_village` → `fallen_village.*` (Tozan CC0) |
+| **Combat BGM** | Erhu/qin tension | `bgm.combat.generic` → `combat.*` (Majadroid OGA-BY) |
+| **Boss BGM** | Dense qin + erhu + beat | `bgm.combat.boss` → `boss.*` (Majadroid OGA-BY) |
+| **Story BGM** | Garden koto calm | `bgm.story` → `story.*` (Tozan CC0) |
+| **Victory sting** | Short koto (~8s) | `bgm.victory` → `victory.*` non-loop + `map.clear` |
 
 **SFX presets** (`proceduralSfx.ts`): `impact-light` · `impact-heavy` · `impact-crit` · `skill-cast` · `death-dissolve` · `ui-blip` · `ui-panel` · `ui-sting` · `loot-spark`
 
@@ -59,6 +59,9 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 - **Mix polish:** UI bus 82% of SFX slider; BGM ducks on crit, heavy hits, stings, boss phase, death
 - **`ui.panel_open` wired:** world map, settings, encounter, awakening, ancient demo modals
 - **`loot.pickup` wired:** gold magnet collect in SpawnManager + RoamingSpawnManager
+- **Real BGM files shipped** under `public/audio/bgm/` (MP3 + OGG) — oriental/cultivation loops replace procedural “è è è” drones
+- **File-based BGM playback** in `AudioManager` (fetch → decode → loop/crossfade; MP3 preferred for Safari; buffer cache)
+- Licenses documented in `assets/audio/README.md`
 
 ### Combat juice
 - Hit-stop on heavy hits
@@ -74,8 +77,7 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 
 ## Remaining
 
-- Replace procedural placeholders with real OGG assets (`assets/audio/{bgm,sfx}/`)
-- File-based playback branch in `AudioManager` (stub exists)
+- Replace procedural **SFX** placeholders with real OGG one-shots (`public/audio/sfx/`)
 - Boss phase sting + screen darken (visual)
 - Map ambience loops per region (optional) — Fallen Village star shipped; ch2–10 deferred
 - Performance profile to disable juice on low-end devices (ties to 26)
@@ -90,9 +92,9 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. P
 | 1 | Emit `boss.telegraph` from boss AI telegraph phase → play manifest SFX | `Cultivator.ts` / boss configs · `AudioDirector.ts` |
 | 2 | Boss phase screen darken (visual juice) on phase transition | `CombatJuiceBridge` or MapScene overlay |
 | 3 | Skill `impactFrameMs` sync (pairs with track 19) | skill JSON + `AudioDirector` |
-| 4 | `AudioManager.playFile()` branch when OGG exists under `assets/audio/` | `AudioManager.ts` |
-| 5 | Optional: dedicated **UI volume** slider in settings modal | `SettingsModal.ts` |
-| 6 | Confirm low-tier `QualityProfile` disables hit-stop/shake (26) | already partial — verify on device |
+| 4 | Optional: dedicated **UI volume** slider in settings modal | `SettingsModal.ts` |
+| 5 | Confirm low-tier `QualityProfile` disables hit-stop/shake (26) | already partial — verify on device |
+| 6 | Ship real SFX OGG one-shots (combat/UI) when ready | `public/audio/sfx/` · manifest · `AudioManager` |
 
 ## Verification
 

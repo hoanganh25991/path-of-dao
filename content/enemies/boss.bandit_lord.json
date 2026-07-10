@@ -12,7 +12,7 @@
   },
   "aggroRange": 300,
   "attackRange": 52,
-  "attackCooldownMs": 1100,
+  "attackCooldownMs": 900,
   "xpReward": 260,
   "goldReward": [
     30,
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_bandit_lord.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "circle",
+  "telegraphMs": 220,
+  "telegraphColor": 16756768,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,13 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [
+        {
+          "id": "enemy.bandit.thug",
+          "count": 2
+        }
+      ],
+      "telegraphMs": 180
     }
   ]
 }

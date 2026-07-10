@@ -12,7 +12,7 @@
   },
   "aggroRange": 320,
   "attackRange": 180,
-  "attackCooldownMs": 1500,
+  "attackCooldownMs": 1700,
   "xpReward": 340,
   "goldReward": [
     40,
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_seal_warden.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "aoe_ring",
+  "telegraphMs": 450,
+  "telegraphColor": 9133302,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,8 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [],
+      "telegraphMs": 400
     }
   ]
 }

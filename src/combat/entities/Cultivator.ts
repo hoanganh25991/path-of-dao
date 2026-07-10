@@ -471,7 +471,7 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
     this.attackPhaseMs = 0;
     this.cooldownMs = this.config.attackCooldownMs;
     this.body.setVelocity(0, 0);
-    this.sprite.setTint(0xff5a4a);
+    this.sprite.setTint(this.effectiveTelegraphColor);
     if (this.animKeys.attack) {
       this.sprite.play(this.animKeys.attack);
     }
@@ -480,12 +480,12 @@ export class Cultivator extends EntityBase implements HurtboxEntity {
   private updateAttackPhase(dtMs: number): void {
     this.attackPhaseMs += dtMs;
 
-    if (this.attackPhase === 'telegraph' && this.attackPhaseMs >= TELEGRAPH_MS) {
+    if (this.attackPhase === 'telegraph' && this.attackPhaseMs >= this.effectiveTelegraphMs) {
       this.attackPhase = 'strike';
       this.attackPhaseMs = 0;
       this.sprite.clearTint();
       this.callbacks.onStrike(this);
-    } else if (this.attackPhase === 'strike' && this.attackPhaseMs >= STRIKE_MS) {
+    } else if (this.attackPhase === 'strike' && this.attackPhaseMs >= this.effectiveStrikeMs) {
       this.attackPhase = 'none';
       this.attackPhaseMs = 0;
     }

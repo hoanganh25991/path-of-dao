@@ -110,12 +110,14 @@ function createMockAudioContext(): typeof AudioContext {
       return {
         buffer: null,
         loop: false,
+        onended: null as (() => void) | null,
         connect: vi.fn(),
         start: vi.fn(),
         stop: vi.fn(),
         disconnect: vi.fn(),
       };
     }
+    decodeAudioData = vi.fn().mockResolvedValue({ length: 1, duration: 1, numberOfChannels: 1, sampleRate: 44100 });
     resume = vi.fn().mockResolvedValue(undefined);
     close = vi.fn().mockResolvedValue(undefined);
   } as unknown as typeof AudioContext;

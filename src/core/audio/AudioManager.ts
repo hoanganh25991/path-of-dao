@@ -1,7 +1,7 @@
 import manifestJson from '../../../content/audio/manifest.json';
 import { AudioBus } from '@/core/audio/AudioBus';
 import { playProceduralTone, startProceduralBgm } from '@/core/audio/proceduralSfx';
-import type { AudioBusId, AudioManifest, BgmEntry, ProceduralBgm, ProceduralTone, SfxEntry } from '@/core/audio/types';
+import type { AudioBusId, AudioManifest, BgmEntry, FileAudio, ProceduralBgm, ProceduralTone, SfxEntry } from '@/core/audio/types';
 import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 
 const MAX_SIMULTANEOUS_SFX = 8;
@@ -12,7 +12,7 @@ const manifest = manifestJson as AudioManifest;
 
 type ActiveVoice = { stop: () => void; fadeOut?: (sec: number) => void };
 
-/** Web Audio facade — procedural placeholders until OGG assets land (sub-plan 25). */
+/** Web Audio facade — file BGM + procedural SFX placeholders (sub-plan 25). */
 export class AudioManager {
   private static ctx: AudioContext | null = null;
   private static master: GainNode | null = null;
@@ -21,6 +21,8 @@ export class AudioManager {
   private static activeSfx: ActiveVoice[] = [];
   private static currentBgm: ActiveVoice | null = null;
   private static currentBgmKey: string | null = null;
+  private static bgmGeneration = 0;
+  private static bufferCache = new Map<string, AudioBuffer>();
   private static saveVolumes = { music: 1, sfx: 1 };
 
   static get manifest(): AudioManifest {
@@ -79,6 +81,7 @@ export class AudioManager {
     const outgoing = this.currentBgm;
     this.currentBgm = null;
     this.currentBgmKey = key;
+    const generation = ++this.bgmGeneration;
 
     if (outgoing) {
       if (outgoing.fadeOut) outgoing.fadeOut(fadeSec);
@@ -93,7 +96,7 @@ export class AudioManager {
       return;
     }
 
-    // File-based BGM — deferred until assets/audio ships.
+    void this.startFileBgm(key, entry as FileAudio, fadeSec, generation);
   }
 
   static playSfx(key: string, bus: AudioBusId = 'sfx'): void {
@@ -112,7 +115,7 @@ export class AudioManager {
       return;
     }
 
-    // File-based SFX — deferred until assets/audio ships.
+    void this.playFileSfx(entry as FileAudio, destination);
   }
 
   static duckMusic(factor: number, ms: number): void {
@@ -137,6 +140,8 @@ export class AudioManager {
     for (const voice of this.activeSfx) voice.stop();
     this.activeSfx = [];
     this.buses = null;
+    this.bufferCache.clear();
+    this.bgmGeneration = 0;
     if (this.ctx) {
       void this.ctx.close();
     }
@@ -196,6 +201,130 @@ export class AudioManager {
       const oldest = this.activeSfx.shift();
       oldest?.stop();
     }
+  }
+
+  /** Prefer MP3 for Safari Web Audio decode; OGG/Opus for Chromium size. */
+  private static resolveFileUrl(entry: FileAudio): string | null {
+    const paths = entry.paths;
+    const relative = paths.mp3 ?? paths.ogg;
+    if (!relative) return null;
+    const base = import.meta.env.BASE_URL ?? '/';
+    const clean = relative.replace(/^\//, '');
+    return `${base}${clean}`;
+  }
+
+  private static async loadBuffer(entry: FileAudio): Promise<AudioBuffer | null> {
+    const url = this.resolveFileUrl(entry);
+    if (!url) return null;
+
+    const cached = this.bufferCache.get(url);
+    if (cached) return cached;
+
+    const ctx = this.ensureContext();
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const raw = await res.arrayBuffer();
+      const buffer = await ctx.decodeAudioData(raw.slice(0));
+      this.bufferCache.set(url, buffer);
+      return buffer;
+    } catch {
+      return null;
+    }
+  }
+
+  private static async startFileBgm(
+    key: string,
+    entry: FileAudio,
+    fadeSec: number,
+    generation: number,
+  ): Promise<void> {
+    const buffer = await this.loadBuffer(entry);
+    if (!buffer) return;
+    if (this.bgmGeneration !== generation || this.currentBgmKey !== key) return;
+
+    const ctx = this.ensureContext();
+    const bus = this.ensureBuses().music;
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    const peak = entry.gain ?? 0.45;
+    const loop = entry.loop ?? true;
+
+    source.buffer = buffer;
+    source.loop = loop;
+    const t0 = ctx.currentTime;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(peak, t0 + Math.max(0.05, fadeSec));
+    source.connect(gain);
+    gain.connect(bus.input);
+    source.start();
+
+    let stopped = false;
+    const stopAll = (): void => {
+      if (stopped) return;
+      stopped = true;
+      try {
+        source.stop();
+      } catch {
+        /* already stopped */
+      }
+      source.disconnect();
+      gain.disconnect();
+      if (this.currentBgmKey === key) {
+        this.currentBgm = null;
+        this.currentBgmKey = null;
+      }
+    };
+
+    if (!loop) {
+      source.onended = () => {
+        if (!stopped && this.currentBgmKey === key) stopAll();
+      };
+    }
+
+    this.currentBgm = {
+      stop: stopAll,
+      fadeOut: (sec: number) => {
+        const fadeT = ctx.currentTime;
+        gain.gain.cancelScheduledValues(fadeT);
+        gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), fadeT);
+        gain.gain.linearRampToValueAtTime(0.0001, fadeT + sec);
+        setTimeout(stopAll, sec * 1000 + 60);
+      },
+    };
+  }
+
+  private static async playFileSfx(entry: FileAudio, destination: AudioNode): Promise<void> {
+    const buffer = await this.loadBuffer(entry);
+    if (!buffer) return;
+
+    const ctx = this.ensureContext();
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    source.buffer = buffer;
+    gain.gain.value = entry.gain ?? 0.5;
+    source.connect(gain);
+    gain.connect(destination);
+    source.start();
+
+    const voice: ActiveVoice = {
+      stop: () => {
+        try {
+          source.stop();
+        } catch {
+          /* noop */
+        }
+        source.disconnect();
+        gain.disconnect();
+      },
+    };
+    this.activeSfx.push(voice);
+    source.onended = () => {
+      const idx = this.activeSfx.indexOf(voice);
+      if (idx >= 0) this.activeSfx.splice(idx, 1);
+      source.disconnect();
+      gain.disconnect();
+    };
   }
 
   /** Test hook — resolve manifest entry without playing. */

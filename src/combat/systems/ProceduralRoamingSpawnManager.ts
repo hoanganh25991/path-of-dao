@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import { EventBus } from '@/core/EventBus';
 import { gameStore } from '@/core/store/gameStore';
 import type { Player } from '@/combat/entities/Player';
-import { Cultivator, STRIKE_MS } from '@/combat/entities/Cultivator';
+import { Cultivator } from '@/combat/entities/Cultivator';
+import { dispatchAttackShape } from '@/combat/cultivators/attackTiming';
 import type { HurtboxEntity } from '@/combat/combat/Hurtbox';
 import type { HitboxManager } from '@/combat/combat/HitboxManager';
 import { getCultivatorConfig } from '@/combat/cultivators/CultivatorLoader';
@@ -278,9 +279,15 @@ export class ProceduralRoamingSpawnManager {
   }
 
   private resolveStrike(cultivator: Cultivator): void {
-    if (cultivator.config.archetype === 'ranged_kiter') {
+    const shape = dispatchAttackShape(cultivator.config.archetype, cultivator.effectiveAttackShape);
+
+    if (shape === 'projectile') {
       this.spawnArrow(cultivator);
       return;
+    }
+
+    if (shape === 'aoe_ring') {
+      this.flashAoeRing(cultivator);
     }
 
     this.hitboxes.spawn({
@@ -297,7 +304,7 @@ export class ProceduralRoamingSpawnManager {
         skillMultiplier: 1,
         damageType: 'physical',
       },
-      lifetimeMs: STRIKE_MS,
+      lifetimeMs: cultivator.effectiveStrikeMs,
       pierce: 1,
     });
   }
@@ -325,6 +332,20 @@ export class ProceduralRoamingSpawnManager {
     });
 
     this.arrows.push({ img, hitboxId: hitbox.id, ttlMs: ARROW_TTL_MS });
+  }
+
+  private flashAoeRing(cultivator: Cultivator): void {
+    const ring = this.scene.add
+      .circle(cultivator.x, cultivator.y, cultivator.config.attackRange)
+      .setStrokeStyle(3, 0xd94a3a, 0.8)
+      .setDepth(8);
+    this.scene.tweens.add({
+      targets: ring,
+      alpha: 0,
+      scale: 1.08,
+      duration: 250,
+      onComplete: () => ring.destroy(),
+    });
   }
 
   private updateArrows(dtMs: number): void {

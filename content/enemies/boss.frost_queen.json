@@ -11,8 +11,8 @@
     "critDmg": 2.1
   },
   "aggroRange": 360,
-  "attackRange": 56,
-  "attackCooldownMs": 1200,
+  "attackRange": 100,
+  "attackCooldownMs": 1450,
   "xpReward": 1100,
   "goldReward": [
     100,
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_frost_queen.desc",
   "weakness": "spirit",
   "resistance": "physical",
+  "attackShape": "aoe_ring",
+  "telegraphMs": 400,
+  "telegraphColor": 9427455,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,12 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [
+        {
+          "id": "enemy.frost.shade",
+          "count": 2
+        }
+      ]
     }
   ]
 }

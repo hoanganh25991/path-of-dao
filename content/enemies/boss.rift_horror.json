@@ -12,7 +12,7 @@
   },
   "aggroRange": 360,
   "attackRange": 56,
-  "attackCooldownMs": 1200,
+  "attackCooldownMs": 1000,
   "xpReward": 1400,
   "goldReward": [
     120,
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_rift_horror.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "circle",
+  "telegraphMs": 260,
+  "telegraphColor": 8141549,
   "phases": [
     {
       "hpThreshold": 1,

@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_jade_guardian.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "circle",
+  "telegraphMs": 360,
+  "telegraphColor": 4906624,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,14 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [
+        {
+          "id": "enemy.heng_yue.disciple",
+          "count": 2
+        }
+      ],
+      "attackShape": "aoe_ring",
+      "telegraphMs": 340
     }
   ]
 }

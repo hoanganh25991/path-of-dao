@@ -11,8 +11,8 @@
     "critDmg": 1.8
   },
   "aggroRange": 300,
-  "attackRange": 44,
-  "attackCooldownMs": 1200,
+  "attackRange": 130,
+  "attackCooldownMs": 1500,
   "xpReward": 180,
   "goldReward": [
     20,
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_mist_stalker.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "projectile",
+  "telegraphMs": 300,
+  "telegraphColor": 9741240,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,12 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [
+        {
+          "id": "enemy.spirit.wisp",
+          "count": 2
+        }
+      ]
     }
   ]
 }

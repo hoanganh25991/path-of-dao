@@ -12,7 +12,7 @@
   },
   "aggroRange": 360,
   "attackRange": 200,
-  "attackCooldownMs": 1200,
+  "attackCooldownMs": 1400,
   "xpReward": 1800,
   "goldReward": [
     150,
@@ -26,6 +26,9 @@
   "bestiaryKey": "bestiary.boss_celestial_guardian.desc",
   "weakness": "spirit",
   "resistance": "none",
+  "attackShape": "projectile",
+  "telegraphMs": 320,
+  "telegraphColor": 16773296,
   "phases": [
     {
       "hpThreshold": 1,
@@ -35,7 +38,8 @@
     {
       "hpThreshold": 0.5,
       "skills": [],
-      "spawnAdds": []
+      "spawnAdds": [],
+      "telegraphMs": 260
     }
   ]
 }

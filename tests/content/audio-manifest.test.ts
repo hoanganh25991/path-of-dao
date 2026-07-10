@@ -20,5 +20,9 @@ describe('audio manifest', () => {
     expect(manifest.sfx['combat.hit.crit']).toBeDefined();
     expect(manifest.sfx['loot.pickup']).toBeDefined();
     expect(manifest.bgm['bgm.combat.fallen_village']).toBeDefined();
+
+    const home = manifest.bgm['bgm.home'] as { type: string; paths?: { mp3?: string } };
+    expect(home.type).toBe('file');
+    expect(home.paths?.mp3).toMatch(/audio\/bgm\/home\.mp3$/);
   });
 });
