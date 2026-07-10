@@ -26,11 +26,11 @@
 - **Per-map terrain themes** — `groundPalette` primary tile per region (grass / dirt / sand / gravel / rock); biome tints sand·rock·gravel; camera fill follows dominant tile; **Heng Yue Gate** (`world.fallen_village.gate`) uses dirt/gravel mountain trail vs village grass
 - **Combat camera director** — engage zoom (`CombatCameraDirector`)
 - Cultivator **defeat** flow (in-place sit + recovery) — partial vs [combat-defeat-canon.md](../plans/combat-defeat-canon.md)
+- **`opponentKind: beast|cultivator`** — `cultivatorConfigSchema` field (`.default('cultivator')`); all 44 `content/enemies/*.json` set explicitly (19 beasts: wolf/fox/moth/slime/scorpion/hawk/sprites/wisps/shades/golem/weaver/totem/dummy/rift-spawn; 25 cultivators: bandits/disciples/cultists/guards/sentinels/elites/all 10 bosses). `Cultivator.isBeast` getter + shared `shouldDespawnOnDefeat()` helper (`defeatRouting.ts`) route defeat in `SpawnManager`, `RoamingSpawnManager`, `ProceduralRoamingSpawnManager`: beasts despawn/release to pool immediately (no sit-recover), cultivators keep `beginRecovery()` gather-qi flow, bosses stay down for the session
 
 ## Remaining
 
 - Cultivator defeat: optional `returnToOrigin` + `defeatRecoverMs` bands — simplified in-place OK for MVP
-- `opponentKind: beast|cultivator` in enemy JSON — beasts despawn, cultivators recover
 
 ## What needs to do
 
@@ -38,8 +38,8 @@
 |---|------|-------|
 | 1 | ~~Spawn settlement cluster props from `worldProfile.settlements[]` (ruin_village, hamlet, …)~~ | `[x]` `ProceduralSettlementGenerator`, `SettlementDecorator`, `MapScene` |
 | 2 | ~~One **signature tree** sprite per map at seeded anchor~~ | `[x]` `ProceduralSettlementGenerator.generateSignatureTreePlacement`, `SettlementDecorator.renderSignatureTree` (scaled `STRUCTURE_TEXTURES.tree`) |
-| 3 | Add `opponentKind` to enemy schema + content JSON | `content/enemies/*.json`, validator |
-| 4 | Beasts: defeat → despawn/pool; cultivators: sit-recover (current partial flow) | `Cultivator.ts`, spawn managers |
+| 3 | ~~Add `opponentKind` to enemy schema + content JSON~~ | `[x]` `CultivatorConfig.ts` (`OPPONENT_KINDS`), all `content/enemies/*.json` |
+| 4 | ~~Beasts: defeat → despawn/pool; cultivators: sit-recover (current partial flow)~~ | `[x]` `Cultivator.isBeast`, `defeatRouting.ts`, `SpawnManager`/`RoamingSpawnManager`/`ProceduralRoamingSpawnManager` |
 | 5 | Optional: `defeatRecoverMs` per enemy tier | `combat-defeat-canon.md` — defer if MVP tight |
 | 6 | Art polish: dedicated per-species tree sprites (roster in `map-design-canon.md` §4.3) instead of shared scaled-up biome tree; richer structure art beyond colored rects | `design-arts`, `StructureRegistry` |
 
@@ -53,3 +53,4 @@
 - Runtime stats persist across combat ↔ Home round trip
 - Star zone unit tests: `star-zone-map`, `roam-loader`, `star-constants`
 - Procedural settlements: `settlement-generator.test.ts` — deterministic placements (same seed → identical layout), ≥1 settlement + 1 signature tree for profiles with and without authored `settlements`/`signatureTree`, distinct anchors across seeds
+- `opponentKind`: `cultivator-config.test.ts` (schema default/enum, content population), `defeat-routing.test.ts` (beast/boss despawn vs cultivator sit-recover)

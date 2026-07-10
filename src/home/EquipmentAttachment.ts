@@ -13,9 +13,9 @@ const SLOT_TRANSFORMS: Record<
   { position: [number, number, number]; rotation?: [number, number, number]; scale?: number }
 > = {
   weapon: { position: [0.42, 0.55, 0.05], rotation: [0, 0, -0.35] },
-  armor: { position: [0, 0.55, 0], scale: 1.05 },
-  accessory: { position: [0, 0.95, 0.12], scale: 0.6 },
-  spirit: { position: [0, 0.75, -0.45], scale: 0.85 },
+  armor: { position: [0, 0.82, 0.06], scale: 0.95 },
+  accessory: { position: [0, 1.05, 0.1], scale: 0.55 },
+  spirit: { position: [0, 0.9, -0.5], scale: 0.85 },
 };
 
 /**
@@ -121,8 +121,16 @@ export class EquipmentAttachment {
         break;
       }
       case 'armor': {
-        const chest = new Mesh(new BoxGeometry(0.38, 0.48, 0.2), mat);
-        group.add(chest);
+        // Fitted robe overlay — not a fat chest box (would hide the cultivator silhouette).
+        const vest = new Mesh(new BoxGeometry(0.22, 0.28, 0.08), mat);
+        vest.position.y = 0.06;
+        group.add(vest);
+        const trim = new Mesh(
+          new BoxGeometry(0.04, 0.26, 0.09),
+          new MeshStandardMaterial({ color: 0xd4a840, metalness: 0.7, roughness: 0.3 }),
+        );
+        trim.position.set(0, 0.06, 0.02);
+        group.add(trim);
         break;
       }
       case 'accessory': {

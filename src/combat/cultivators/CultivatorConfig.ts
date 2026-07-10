@@ -15,12 +15,22 @@ export const ENEMY_ARCHETYPES = CULTIVATOR_ARCHETYPES;
 /** @deprecated Use CultivatorArchetype */
 export type EnemyArchetype = CultivatorArchetype;
 
+/** Content-driven melee/aoe/projectile branch for `SpawnManager.resolveStrike` (sub-plan 23 boss patterns). */
+export const ATTACK_SHAPES = ['circle', 'aoe_ring', 'projectile'] as const;
+export type AttackShape = (typeof ATTACK_SHAPES)[number];
+const attackShapeSchema = z.enum(ATTACK_SHAPES);
+
 const bossPhaseSchema = z.object({
   hpThreshold: z.number().min(0).max(1),
   skills: z.array(z.string()).optional(),
   spawnAdds: z
     .array(z.object({ id: z.string().min(1), count: z.number().int().positive() }))
     .optional(),
+  /** Per-phase telegraph overrides — falls back to cultivator-level, then engine defaults. */
+  telegraphMs: z.number().positive().optional(),
+  strikeMs: z.number().positive().optional(),
+  telegraphColor: z.number().int().min(0).optional(),
+  attackShape: attackShapeSchema.optional(),
 });
 
 export type BossPhaseConfig = z.infer<typeof bossPhaseSchema>;

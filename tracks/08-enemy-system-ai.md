@@ -27,7 +27,8 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 - i18n: EN Cultivator / VI Tu Sĩ; defeat copy uses "lose exchange" not kill/die
 - **Roaming rank scaling (distance + time):** `RoamingRankScaler` computes 0–3 rank per slot from player spawn distance + map elapsed time; capped by `recommendedRealmOrder` (map design ceiling). Ranked cultivators get +25%/rank stat multiplier via `StatModifier`, colored aura ring + orbit sparkles, and rank-colored HP bar.
 - **Enemy pool variety:** `RoamConfig` schema extended with optional `enemyPool` array; slot picks higher-index enemy at higher rank for natural difficulty progression. Backward compatible with single `enemyId`.
-- Tests: `cultivator-pool`, `cultivator-config`, `encounter-scaling`, `aoe-scaling`
+- **`opponentKind: 'beast' | 'cultivator'`** — `cultivatorConfigSchema` field, `.default('cultivator')`; all 44 `content/enemies/*.json` set explicitly (19 beasts, 25 cultivators incl. all 10 bosses). `Cultivator.isBeast` getter; shared `shouldDespawnOnDefeat()` (`src/combat/systems/defeatRouting.ts`) routes `onDefeatHoldComplete` in all three spawn managers — beasts despawn/release to pool immediately (no sit pose), cultivators keep the gather-qi `beginRecovery()` flow, bosses stay down for the session
+- Tests: `cultivator-pool`, `cultivator-config`, `encounter-scaling`, `aoe-scaling`, `defeat-routing`
 
 ## Remaining
 
@@ -36,15 +37,15 @@ Tu Sĩ (cultivators) spawn in scaled waves, behave by archetype, drop rewards on
 
 ## What needs to do (follow-up — ties to track 06)
 
-| # | Task |
-|---|------|
-| 1 | Add `opponentKind: 'beast' \| 'cultivator'` to enemy JSON schema + all 41 files |
-| 2 | Beasts: defeat → despawn to pool (no sit-recover); cultivators: keep current flow |
-| 3 | Boss flag + `defeatRecoverMs` optional override per `combat-defeat-canon.md` |
+| # | Task | Notes |
+|---|------|-------|
+| 1 | ~~Add `opponentKind: 'beast' \| 'cultivator'` to enemy JSON schema + all 41 files~~ | `[x]` Done 2026-07-10 — 44 files (roster grew since this note was written) |
+| 2 | ~~Beasts: defeat → despawn to pool (no sit-recover); cultivators: keep current flow~~ | `[x]` Done 2026-07-10 |
+| 3 | Boss flag + `defeatRecoverMs` optional override per `combat-defeat-canon.md` | Deferred — boss stay-down already works via `isBoss`; per-tier recovery duration override still MVP-simplified |
 
 ## Verification
 
-- `pnpm test` — cultivator-pool, cultivator-config, encounter-scaling, aoe-scaling, rewards, combat-resolver
+- `pnpm test` — cultivator-pool, cultivator-config, encounter-scaling, aoe-scaling, rewards, combat-resolver, defeat-routing
 - Roaming: defeated cultivator returns to spawn sit pose and recovers without despawn; **boss roam slots stay down** (no recovery) for the session
 - Boss ordeal maps: `requiredBossId` on map config gates depart portal until the gate boss is defeated
 - Over-leveled return visit: first wave scales toward 100–500 cultivators per tier

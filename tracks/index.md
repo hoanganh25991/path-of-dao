@@ -261,7 +261,7 @@ flowchart LR
 | Done | Remaining |
 |------|-----------|
 | Tiled/roam + procedural endless + camera + pause exit | Settlement clusters + signature tree props |
-| `CombatCameraDirector`, per-map ground palettes | `opponentKind` beast vs cultivator |
+| `CombatCameraDirector`, per-map ground palettes, `opponentKind` beast vs cultivator | — |
 
 → [full track](./06-phaser-map-scene-base.md) — **What needs to do** table
 
