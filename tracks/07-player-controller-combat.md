@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/07-player-controller-combat.md](../plans/07-player-controller-combat.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -19,8 +19,8 @@ Playable hero with 3-hit combo, dodge with invulnerability, skill bolt, meditati
 - **Weapon-specific animation branching** — sword/lance/stick use weapon strike anims; unarmed uses separate strike kinds when no weapon; ancient echoes remap weapon strikes to generic attack steps
 - Hero spritesheet rebuilt per map via `registerHeroCombatAssets()` from `resolveAttackStyle(save)` (T1, T3)
 - Dodge travels a fixed distance with i-frames and afterimage VFX
-- **Meditate skill** (`skill.basic.meditate`, **Gather Qi** / **Hấp Khí**) — dedicated health button (like dodge); toggle sit pose + spirit wisps; fastest HP regen; cancels on move/attack/dodge/hit
-- **Passive HP regen** by state — meditate 6×, walk 0.5×, combat 0.3×; scales with level + realm (`HealthRegen.ts`)
+- **Meditate skill** (`skill.basic.meditate`, **Gather Qi** / **Hấp Khí**) — dedicated health button (like dodge); toggle sit pose + spirit wisps; fastest HP and mana regen; cancels on move/attack/dodge/hit
+- **Passive HP/mana regen** by state — meditate 6×, walk 0.5×, combat 0.3×; scales with level + realm; mana rate = HP rate × `manaMax/hpMax` (`HealthRegen.ts`)
 - Skill button spends mana and fires a spirit bolt
 - HP and mana bars in combat HUD
 - Combat runtime (HP, mana, position) saved when leaving a map

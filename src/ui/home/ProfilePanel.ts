@@ -41,6 +41,7 @@ const ALL_INTENT_IDS = ['sword', 'void', 'flame', 'lightning', 'time', 'life'];
 export interface ProfilePanelHandles {
   root: HTMLElement;
   refresh(): void;
+  hide(): void;
   destroy(): void;
 }
 
@@ -200,6 +201,7 @@ export function createProfilePanel(): ProfilePanelHandles {
   let dharmaSlotFilter: EquipmentSlot | null = null;
 
   function switchSubTab(id: ProfileSubTab): void {
+    if (id !== 'dharma') closeDetail();
     activeSubTab = id;
     for (const btn of subTabButtons) {
       btn.classList.toggle('home-profile__sub-tab--active', btn.dataset.subTab === id);
@@ -260,6 +262,10 @@ export function createProfilePanel(): ProfilePanelHandles {
       divine: String(dp.divine),
       intent: String(dp.intent),
     }));
+  }
+
+  function detailHost(): HTMLElement {
+    return document.getElementById('ui-root') ?? document.body;
   }
 
   function closeDetail(): void {
@@ -404,7 +410,7 @@ export function createProfilePanel(): ProfilePanelHandles {
     actions.append(primary, secondary);
     card.append(header, slotRow, desc, mods, actions);
     detailOverlay.appendChild(card);
-    document.body.appendChild(detailOverlay);
+    detailHost().appendChild(detailOverlay);
   }
 
   function renderDharma(): void {
@@ -445,6 +451,7 @@ export function createProfilePanel(): ProfilePanelHandles {
       slotEl.addEventListener('click', () => {
         if (itemId) {
           EquipmentManager.unequip(slot);
+          closeDetail();
           if (dharmaSlotFilter === slot) dharmaSlotFilter = null;
           renderDharma();
         } else {
@@ -767,6 +774,7 @@ export function createProfilePanel(): ProfilePanelHandles {
   return {
     root,
     refresh: render,
+    hide: closeDetail,
     destroy() {
       closeDetail();
       unsubscribeEquipment();

@@ -12,6 +12,7 @@ import { MeditationComponent } from '@/combat/components/MeditationComponent';
 import { PlayerAnimController } from '@/combat/animations/PlayerAnimController';
 import {
   computeHealthRegenPerSec,
+  computeManaRegenPerSec,
   regenStateFromPlayerState,
 } from '@/combat/combat/HealthRegen';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
@@ -172,6 +173,11 @@ export class Player extends EntityBase implements HurtboxEntity {
     this.emitStatsChanged();
   }
 
+  restoreMana(amount: number): void {
+    this.stats.restoreMana(amount);
+    this.emitStatsChanged();
+  }
+
   emitStatsChanged(): void {
     const runtime = this.stats.runtime;
     EventBus.emit('player:stats-changed', {
@@ -236,17 +242,26 @@ export class Player extends EntityBase implements HurtboxEntity {
     const regenState = regenStateFromPlayerState(this.sm.state);
     if (!regenState) return;
 
-    const { hp, hpMax } = this.stats.runtime;
-    if (hp >= hpMax) return;
+    const { hp, hpMax, mana, manaMax } = this.stats.runtime;
+    const needsHp = hp < hpMax;
+    const needsMana = mana < manaMax;
+    if (!needsHp && !needsMana) return;
 
-    const rate = computeHealthRegenPerSec({
+    const dtSec = dtMs / 1000;
+    const regenOpts = {
       realmOrder: this.attackerRealmOrder,
       level: this.stats.resolved.level,
       state: regenState,
-    });
-    const amount = rate * (dtMs / 1000);
-    if (amount <= 0) return;
+    };
 
-    this.heal(amount);
+    if (needsHp) {
+      const hpAmount = computeHealthRegenPerSec(regenOpts) * dtSec;
+      if (hpAmount > 0) this.heal(hpAmount);
+    }
+
+    if (needsMana) {
+      const manaAmount = computeManaRegenPerSec({ ...regenOpts, hpMax, manaMax }) * dtSec;
+      if (manaAmount > 0) this.restoreMana(manaAmount);
+    }
   }
 }

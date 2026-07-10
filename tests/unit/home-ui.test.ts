@@ -74,6 +74,45 @@ describe('HomeUI', () => {
     expect(uiRoot.querySelector('[data-panel="story"]')).toBeTruthy();
   });
 
+  it('profile Dharma unequip from slot then inventory card opens detail', () => {
+    gameStore.getState().patch({
+      inventory: {
+        items: [
+          { id: 'item.bracelet.copper', qty: 1 },
+          { id: 'item.ring.speed', qty: 1 },
+        ],
+        gold: 0,
+      },
+      equipped: {
+        weapon: null,
+        armor: 'item.robe.novice',
+        accessory: null,
+        spirit: null,
+      },
+    });
+
+    const uiRoot = document.getElementById('ui-root')!;
+    HomeUI.init(uiRoot);
+    EventBus.emit('scene:changed', { id: 'home', payload: undefined });
+    HomeUI.openTab('profile');
+
+    const dharmaTab = uiRoot.querySelector<HTMLButtonElement>('.home-profile__sub-tab[data-sub-tab="dharma"]');
+    dharmaTab!.click();
+
+    const armorSlot = uiRoot.querySelector<HTMLButtonElement>('.home-dharma__slot--filled');
+    expect(armorSlot).toBeTruthy();
+    armorSlot!.click();
+
+    const copperCard = uiRoot.querySelector<HTMLButtonElement>('.home-dharma__card[data-item-id="item.bracelet.copper"]');
+    expect(copperCard).toBeTruthy();
+    copperCard!.click();
+
+    const detail = uiRoot.querySelector('.home-item-detail');
+    expect(detail).toBeTruthy();
+    expect(detail?.querySelector('.home-item-detail__name')?.textContent).toBeTruthy();
+    expect(uiRoot.contains(detail)).toBe(true);
+  });
+
   it('profile Dharma Treasures equip button calls EquipmentManager', () => {
     gameStore.getState().patch({
       inventory: {

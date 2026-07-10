@@ -1106,13 +1106,15 @@ header.home-profile {
 .home-item-detail {
   position: fixed;
   inset: 0;
-  z-index: 3;
+  z-index: 100;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   background: rgba(0, 0, 0, 0.45);
   padding: 1rem;
   padding-bottom: calc(5rem + var(--safe-bottom));
+  pointer-events: auto;
+  isolation: isolate;
   animation: detail-fade-in 180ms ease;
 }
 

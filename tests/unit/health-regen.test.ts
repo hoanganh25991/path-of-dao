@@ -3,6 +3,7 @@ import {
   REGEN_STATE_MULTIPLIER,
   computeBaseRegenPerSec,
   computeHealthRegenPerSec,
+  computeManaRegenPerSec,
   regenStateFromPlayerState,
 } from '@/combat/combat/HealthRegen';
 
@@ -25,6 +26,19 @@ describe('HealthRegen', () => {
     expect(combat).toBeCloseTo(base * REGEN_STATE_MULTIPLIER.combat, 5);
     expect(meditate).toBeGreaterThan(walk * 8);
     expect(walk).toBeGreaterThan(combat);
+  });
+
+  it('scales mana regen by pool ratio at same state multiplier', () => {
+    const hpRate = computeHealthRegenPerSec({ realmOrder: 2, level: 5, state: 'meditate' });
+    const manaRate = computeManaRegenPerSec({
+      realmOrder: 2,
+      level: 5,
+      state: 'meditate',
+      hpMax: 100,
+      manaMax: 50,
+    });
+
+    expect(manaRate).toBeCloseTo(hpRate * 0.5, 5);
   });
 
   it('maps player states to regen buckets', () => {

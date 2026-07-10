@@ -20,6 +20,7 @@ interface PanelHandles {
   root: HTMLElement;
   refresh(): void;
   destroy(): void;
+  hide?(): void;
 }
 
 /** HTML overlay for the 3D Home shrine — bottom nav, profile, slide-up panels. */
@@ -186,9 +187,14 @@ export class HomeUI {
   }
 
   private static setTab(tab: HomeTab | null): void {
+    const previousTab = HomeUI.activeTab;
     HomeUI.activeTab = tab;
 
     if (!HomeUI.panelSheet || !HomeUI.panelInner || !HomeUI.panels || !HomeUI.bottomNav) return;
+
+    if (previousTab === 'profile' && tab !== 'profile') {
+      HomeUI.panels.profile.hide?.();
+    }
 
     HomeUI.panelInner.replaceChildren();
 
@@ -200,6 +206,11 @@ export class HomeUI {
     } else {
       HomeUI.panelSheet.classList.remove('home-panel-sheet--open');
       HomeUI.bottomNav.setActive(null);
+    }
+
+    const canvas = document.getElementById('canvas-3d');
+    if (canvas) {
+      canvas.style.pointerEvents = tab ? 'none' : '';
     }
   }
 

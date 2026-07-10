@@ -21,6 +21,9 @@
  * | combat / attack    | 0.3×       | Qi diverted to techniques; minimal recovery  |
  *
  * `finalRegenPerSec = baseRegenPerSec × stateMultiplier`
+ *
+ * Mana uses the same state multipliers, scaled by `manaMax / hpMax` so both pools
+ * refill at a similar pace during Gather Qi.
  */
 
 export type HealthRegenState = 'meditate' | 'walk' | 'combat';
@@ -47,6 +50,19 @@ export function computeHealthRegenPerSec(opts: {
 }): number {
   const base = computeBaseRegenPerSec(opts.realmOrder, opts.level);
   return base * REGEN_STATE_MULTIPLIER[opts.state];
+}
+
+/** Mana regen mirrors HP regen, scaled to pool size. */
+export function computeManaRegenPerSec(opts: {
+  realmOrder: number;
+  level: number;
+  state: HealthRegenState;
+  hpMax: number;
+  manaMax: number;
+}): number {
+  if (opts.hpMax <= 0 || opts.manaMax <= 0) return 0;
+  const hpRate = computeHealthRegenPerSec(opts);
+  return hpRate * (opts.manaMax / opts.hpMax);
 }
 
 /** Map player state machine id to regen bucket. */

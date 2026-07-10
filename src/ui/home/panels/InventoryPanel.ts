@@ -55,6 +55,8 @@ export function createInventoryPanel(): InventoryPanelHandles {
 
   let detailOverlay: HTMLElement | null = null;
 
+  const detailHost = (): HTMLElement => document.getElementById('ui-root') ?? document.body;
+
   const closeDetail = (): void => {
     detailOverlay?.remove();
     detailOverlay = null;
@@ -160,7 +162,7 @@ export function createInventoryPanel(): InventoryPanelHandles {
     actions.append(primary, secondary);
     card.append(name, desc, mods, actions);
     detailOverlay.appendChild(card);
-    document.body.appendChild(detailOverlay);
+    detailHost().appendChild(detailOverlay);
   };
 
   const refresh = (): void => {

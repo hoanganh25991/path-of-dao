@@ -98,7 +98,7 @@ export function buildSkillDisplayStats(skillId: string): SkillDisplayStats {
     return {
       kind: skill.kind,
       tier: 'base',
-      damageText: 'HP/s',
+      damageText: 'HP & Mana/s',
       manaCost: skill.manaCost,
       cooldownMs,
       aoeText: 'Self',
