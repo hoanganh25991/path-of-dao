@@ -5,11 +5,23 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { EventBus } from '@/core/EventBus';
 import { OrientationManager } from '@/app/OrientationManager';
 import {
+  JOYSTICK_BASE_RADIUS_PX,
   JOYSTICK_CLAMP_RADIUS_PX,
   JOYSTICK_DEADZONE,
+  getJoystickAnchor,
   normalizeJoystick,
   VirtualJoystick,
 } from '@/core/input/VirtualJoystick';
+
+describe('getJoystickAnchor', () => {
+  it('insets far enough that full clamp drag clears the screen edge', () => {
+    const height = 390;
+    const anchor = getJoystickAnchor(844, height);
+    expect(anchor.x).toBeGreaterThanOrEqual(JOYSTICK_CLAMP_RADIUS_PX + 20);
+    expect(anchor.y).toBeLessThanOrEqual(height - JOYSTICK_CLAMP_RADIUS_PX - 20);
+    expect(JOYSTICK_CLAMP_RADIUS_PX).toBe(JOYSTICK_BASE_RADIUS_PX);
+  });
+});
 
 describe('normalizeJoystick', () => {
   it('returns zero vector at center touch', () => {

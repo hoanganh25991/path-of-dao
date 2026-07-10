@@ -24,8 +24,8 @@
 
 .joystick {
   position: absolute;
-  width: calc(var(--joystick-base-radius, 48px) * 2);
-  height: calc(var(--joystick-base-radius, 48px) * 2);
+  width: calc(var(--joystick-base-radius, 58px) * 2);
+  height: calc(var(--joystick-base-radius, 58px) * 2);
   transform: translate(-50%, -50%);
   opacity: 0.78;
   z-index: 2;
@@ -58,8 +58,8 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 36px;
-  height: 36px;
+  width: calc(var(--joystick-base-radius, 58px) * 0.72);
+  height: calc(var(--joystick-base-radius, 58px) * 0.72);
   border-radius: 50%;
   background: rgba(143, 212, 196, 0.85);
   transform: translate(-50%, -50%);

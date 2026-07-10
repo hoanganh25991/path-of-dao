@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/03-input-touch-controls.md](../plans/03-input-touch-controls.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-10
 
 ## Summary
 
@@ -16,6 +16,7 @@ Mobile-first touch controls: virtual joystick plus attack, skill, and dodge butt
 - Combat HUD hosts joystick and buttons at mobile viewport
 - Keyboard fallback for desktop dev (WASD + action keys)
 - Android Chrome joystick fix: window-level pointer tracking + HUD-relative layout coords (2026-07-04)
+- **Joystick layout polish** — larger base (58px), clamp matches base so drag stays inside; anchor inset 28px past clamp so left/down strokes clear the screen edge (2026-07-10)
 - Fullscreen on play entry (Journey, ancient echo, world map) via `FullscreenManager` — see track 26 (2026-07-04)
 - Viewport sizing: combat canvas CSS fill sync on layout change; HUD coords unchanged (2026-07-04)
 - Skill picker: allow duplicate loadout assignments; pool icon highlights assigned skill only (2026-07-04)

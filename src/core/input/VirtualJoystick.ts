@@ -3,18 +3,22 @@ import { OrientationManager } from '@/app/OrientationManager';
 import { pointerEventToLayout } from '@/app/orientation/layoutCoords';
 import { EventBus } from '@/core/EventBus';
 
-export const JOYSTICK_BASE_RADIUS_PX = 48;
-export const JOYSTICK_CLAMP_RADIUS_PX = 80;
+/** Visual base radius — larger for easier thumb targeting. */
+export const JOYSTICK_BASE_RADIUS_PX = 58;
+/** Thumb travel stays inside the base so full drag fits on-screen. */
+export const JOYSTICK_CLAMP_RADIUS_PX = 58;
 /** Normalized deadzone — magnitudes below this become zero. */
 export const JOYSTICK_DEADZONE = 0.08;
 
-const ANCHOR_INSET_PX = 20;
+/** Extra padding beyond the drag circle so left/down strokes clear the screen edge. */
+const ANCHOR_EDGE_MARGIN_PX = 28;
 
-/** Bottom-left anchor in landscape layout space — matches combat-hud.css inset. */
+/** Bottom-left anchor — inset enough that the full clamp radius fits on-screen. */
 export function getJoystickAnchor(_layoutWidth: number, layoutHeight: number): Vec2 {
+  const fromEdge = ANCHOR_EDGE_MARGIN_PX + JOYSTICK_CLAMP_RADIUS_PX;
   return {
-    x: ANCHOR_INSET_PX + JOYSTICK_BASE_RADIUS_PX,
-    y: layoutHeight - ANCHOR_INSET_PX - JOYSTICK_BASE_RADIUS_PX,
+    x: fromEdge,
+    y: layoutHeight - fromEdge,
   };
 }
 
@@ -101,6 +105,7 @@ export class VirtualJoystick {
     this.element = document.createElement('div');
     this.element.id = 'joystick';
     this.element.className = 'joystick hidden';
+    this.element.style.setProperty('--joystick-base-radius', `${JOYSTICK_BASE_RADIUS_PX}px`);
 
     this.baseEl = document.createElement('div');
     this.baseEl.className = 'joystick-base';

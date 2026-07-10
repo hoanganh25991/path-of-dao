@@ -582,6 +582,12 @@ export class MapScene extends Phaser.Scene {
     });
     const offAttack = EventBus.on('player:attack-started', () => pulseCamera('attack'));
     const offSkill = EventBus.on('skill:cast', () => pulseCamera('skill'));
+    const offMeditateStart = EventBus.on('player:meditate-started', () => {
+      this.cameraDirector?.setMeditating(true);
+    });
+    const offMeditateEnd = EventBus.on('player:meditate-ended', () => {
+      this.cameraDirector?.setMeditating(false);
+    });
     const offDefeat = EventBus.on('map:cultivator-defeated', ({ isBoss }) => {
       if (isBoss) return;
       this.showCombatToast(I18nManager.t('combat.cultivator.defeated'));
@@ -600,6 +606,8 @@ export class MapScene extends Phaser.Scene {
       offPause();
       offAttack();
       offSkill();
+      offMeditateStart();
+      offMeditateEnd();
       offDefeat();
       offBoss();
     };

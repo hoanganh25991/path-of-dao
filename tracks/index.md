@@ -30,7 +30,7 @@ Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where
 | **3 — 3D Home** | 10–12 | `[x]` Complete |
 | **4 — Progression** | 13–16 | `[x]` 13–16 done — **14** Master Intent migration shipped 2026-07-10 |
 | **5 — World & Content** | 17–20 | `[~]` 17 done; 18–20 in progress |
-| **6 — MVP Content** | 21–23 | `[~]` Procedural maps playable with settlements/signature trees; timeline/boss polish remain |
+| **6 — MVP Content** | 21–23 | `[~]` Procedural maps playable with settlements/signature trees; **23** boss distinct patterns landed 2026-07-10, timeline polish remains |
 | **7 — Polish & Ship** | 24–26 | `[~]` 24–25 in progress; 26 foundation landed |
 | **Cross** | 27–28 | `[x]` Echoes + Path done |
 | **Cross** | 29–34 | `[~]` Integration + art/loot; **31** prose done, UI pending |
@@ -187,7 +187,7 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 | # | Task | Track | Notes |
 |---|------|-------|-------|
 | 5 | ~~Rename `equippedSkills` → `divineArts` (save + UI; keep `[0..5]`)~~ | 30 | `[x]` Done 2026-07-10 — schema, types, all consumers, `ancients.json`, tests; v1 load alias in `SaveMigration.ts` |
-| 6 | **8 boss distinct patterns** — telegraphs, phases, punish windows | 23 | Phase tracker exists; polish open |
+| 6 | ~~**10 boss distinct patterns** — telegraphs, phases, punish windows~~ | 23 | `[x]` Done 2026-07-10 — `combat:boss-phase-changed` event (juice shake + audio on real phase shifts, not just defeat); per-phase `telegraphMs`/`strikeMs`/`telegraphColor`; content `attackShape` (circle/aoe_ring/projectile) drives `SpawnManager.resolveStrike`; all 10 bosses tuned distinct (shape/range/cooldown/adds). Unique move scripts + enrage timer still open as polish |
 | 7 | ~~Procedural **settlement clusters + signature tree** per `worldProfile`~~ | 06, 21, 22 | `[x]` Done 2026-07-10 — `ProceduralSettlementGenerator` + `SettlementDecorator`; auto-defaults + authored fallen_village pair |
 | 8 | ~~Map-clear modal → offer timeline shard read~~ | 18, 31 | `[x]` Done 2026-07-10 — `TimelineOfferModal` in `MapScene.finishMapExit` |
 | 9 | ~~`opponentKind: beast\|cultivator` on enemies + recovery rules~~ | 06, 08 | `[x]` Done 2026-07-10 — schema `.default('cultivator')`, all 44 `content/enemies/*.json` explicit; beasts despawn to pool, cultivators/bosses keep sit-recover / stay-down |
@@ -261,7 +261,7 @@ flowchart LR
 | Done | Remaining |
 |------|-----------|
 | Tiled/roam + procedural endless + camera + pause exit | Settlement clusters + signature tree props |
-| `CombatCameraDirector`, per-map ground palettes, `opponentKind` beast vs cultivator | — |
+| `CombatCameraDirector` (attack punch + meditate close-up), per-map ground palettes, `opponentKind` beast vs cultivator | — |
 
 → [full track](./06-phaser-map-scene-base.md) — **What needs to do** table
 
