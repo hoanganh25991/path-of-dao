@@ -111,6 +111,9 @@ export const playerSaveV1Schema = z.object({
     quality: z.enum(['auto', 'low', 'mid', 'high']).default('auto'),
     sfxVolume: z.number().min(0).max(1),
     musicVolume: z.number().min(0).max(1),
+    // default(0.82) keeps pre-UI-slider v1 saves at the old implicit UI mix
+    // (UI bus previously scaled off sfxVolume at 82% — sub-plan 25 leftover).
+    uiVolume: z.number().min(0).max(1).default(0.82),
     fullscreen: z.boolean().default(true),
   }),
   meta: z.object({

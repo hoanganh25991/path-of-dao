@@ -531,6 +531,12 @@ header.home-profile {
   transition: background 150ms ease;
 }
 
+.home-dharma__slot-icon-img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
 .home-dharma__slot--filled .home-dharma__slot-icon {
   background: rgba(45, 212, 168, 0.15);
 }
@@ -578,10 +584,10 @@ header.home-profile {
   outline-offset: 1px;
 }
 
-.home-dharma__card-label {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+.home-dharma__card-icon-img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
   pointer-events: none;
 }
 
@@ -1069,6 +1075,12 @@ header.home-profile {
   color: var(--dao-jade);
 }
 
+.home-inventory__slot-icon-img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
 .home-inventory__slot-icon {
   width: 2rem;
   height: 2rem;
@@ -1110,6 +1122,13 @@ header.home-profile {
 
 .home-inventory__card--equipped {
   border-color: var(--dao-gold);
+}
+
+.home-inventory__card-icon-img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 
 .home-inventory__card-rarity {
@@ -1159,6 +1178,13 @@ header.home-profile {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.45rem;
+}
+
+.home-item-detail__icon-img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
 }
 
 .home-item-detail__rarity {

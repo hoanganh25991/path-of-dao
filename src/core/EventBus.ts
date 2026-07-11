@@ -62,6 +62,7 @@ export type GameEvents = {
   'settings:locale-changed': { preference: LocalePreference; locale: Locale };
   'settings:quality-changed': { preference: QualityPreference };
   'settings:fullscreen-changed': { enabled: boolean };
+  'settings:ui-volume-changed': { volume: number };
   'layout:changed': { width: number; height: number; portraitRotate: boolean };
   'cp:changed': { cp: number };
   'skill:learned': { skillIds: string[] };

@@ -9,6 +9,7 @@ import {
   type ItemDefinition,
 } from '@/progression/ItemDefinition';
 import { getItemDefinition } from '@/progression/ItemLoader';
+import { getItemIconSrc } from '@/combat/art/itemIconDraw';
 
 export interface InventoryPanelHandles {
   root: HTMLElement;
@@ -18,11 +19,6 @@ export interface InventoryPanelHandles {
 
 function slotLabelKey(slot: EquipmentSlot): string {
   return `home.slot.${slot}`;
-}
-
-function itemInitial(def: ItemDefinition): string {
-  const name = I18nManager.t(def.displayNameKey);
-  return name.charAt(0).toUpperCase();
 }
 
 function isEquipped(save: PlayerSaveV1, itemId: string): boolean {
@@ -85,6 +81,13 @@ export function createInventoryPanel(): InventoryPanelHandles {
 
     const card = document.createElement('div');
     card.className = 'home-item-detail__card';
+
+    const headerIcon = document.createElement('img');
+    headerIcon.className = 'home-item-detail__icon-img';
+    headerIcon.src = getItemIconSrc(itemId);
+    headerIcon.width = 24;
+    headerIcon.height = 24;
+    headerIcon.alt = '';
 
     const name = document.createElement('h3');
     name.className = 'home-item-detail__name';
@@ -160,7 +163,7 @@ export function createInventoryPanel(): InventoryPanelHandles {
     secondary.addEventListener('click', closeDetail);
 
     actions.append(primary, secondary);
-    card.append(name, desc, mods, actions);
+    card.append(headerIcon, name, desc, mods, actions);
     detailOverlay.appendChild(card);
     detailHost().appendChild(detailOverlay);
   };
@@ -180,7 +183,13 @@ export function createInventoryPanel(): InventoryPanelHandles {
 
       if (itemId) {
         slotEl.classList.add('home-inventory__slot--filled');
-        icon.textContent = itemInitial(getItemDefinition(itemId));
+        const iconImg = document.createElement('img');
+        iconImg.className = 'home-inventory__slot-icon-img';
+        iconImg.src = getItemIconSrc(itemId);
+        iconImg.width = 24;
+        iconImg.height = 24;
+        iconImg.alt = '';
+        icon.appendChild(iconImg);
         slotEl.title = I18nManager.t(getItemDefinition(itemId).displayNameKey);
       } else {
         icon.textContent = '·';
@@ -226,14 +235,18 @@ export function createInventoryPanel(): InventoryPanelHandles {
         card.classList.add('home-inventory__card--equipped');
       }
 
-      const initial = document.createElement('span');
-      initial.textContent = itemInitial(def);
+      const iconImg = document.createElement('img');
+      iconImg.className = 'home-inventory__card-icon-img';
+      iconImg.src = getItemIconSrc(itemId);
+      iconImg.width = 24;
+      iconImg.height = 24;
+      iconImg.alt = '';
 
       const rarity = document.createElement('span');
       rarity.className = 'home-inventory__card-rarity';
       rarity.textContent = def.rarity;
 
-      card.append(initial, rarity);
+      card.append(iconImg, rarity);
       card.addEventListener('click', () => openDetail(itemId));
       grid.appendChild(card);
     }

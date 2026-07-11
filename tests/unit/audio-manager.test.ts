@@ -25,10 +25,34 @@ describe('AudioManager', () => {
     const save = SaveManager.createNew();
     AudioManager.init({
       ...save,
-      settings: { ...save.settings, musicVolume: 0.4, sfxVolume: 0.25 },
+      settings: { ...save.settings, musicVolume: 0.4, sfxVolume: 0.25, uiVolume: 0.6 },
     });
     expect(() => AudioManager.setVolume('music', 0.5)).not.toThrow();
     expect(() => AudioManager.setVolume('sfx', 0.3)).not.toThrow();
+    expect(() => AudioManager.setVolume('ui', 0.7)).not.toThrow();
+  });
+
+  it('ui bus volume is independent from the sfx bus (dedicated UI slider)', () => {
+    const save = SaveManager.createNew();
+    AudioManager.init({
+      ...save,
+      settings: { ...save.settings, sfxVolume: 1, uiVolume: 0.2 },
+    });
+
+    expect(AudioManager.getBusVolume('ui')).toBeCloseTo(0.2);
+    expect(AudioManager.getBusVolume('sfx')).toBeCloseTo(1);
+
+    AudioManager.setVolume('sfx', 0.1);
+    expect(AudioManager.getBusVolume('ui')).toBeCloseTo(0.2);
+    expect(AudioManager.getBusVolume('sfx')).toBeCloseTo(0.1);
+
+    AudioManager.setVolume('ui', 0.9);
+    expect(AudioManager.getBusVolume('ui')).toBeCloseTo(0.9);
+    expect(AudioManager.getBusVolume('sfx')).toBeCloseTo(0.1);
+  });
+
+  it('defaults ui bus volume to 0.82 before init/on reset (matches save schema default)', () => {
+    expect(AudioManager.getBusVolume('ui')).toBeCloseTo(0.82);
   });
 
   it('does not play before unlock', () => {

@@ -25,6 +25,7 @@ import {
 import { listDiscoveredIntentIds } from '@/progression/SkillLoadout';
 import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
 import { getSkillIconSrc } from '@/combat/art/skillIconDraw';
+import { getItemIconSrc, ITEM_RARITY_COLORS } from '@/combat/art/itemIconDraw';
 
 export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent' | 'destiny';
 
@@ -66,26 +67,6 @@ function formatMultiplier(value: number): string {
 
 function formatPool(current: number, max: number): string {
   return `${Math.round(current)} / ${Math.round(max)}`;
-}
-
-const RARITY_COLORS: Record<string, string> = {
-  common: '#9d9d9d',
-  uncommon: '#2dd4a8',
-  rare: '#4da6ff',
-  epic: '#c084fc',
-  legendary: '#fbbf24',
-};
-
-function itemAbbrev(def: ItemDefinition, maxLen = 2): string {
-  const name = I18nManager.t(def.displayNameKey);
-  const words = name.split(/\s+/);
-  if (words.length >= 2) {
-    return words
-      .slice(0, maxLen)
-      .map((w) => w.charAt(0).toUpperCase())
-      .join('');
-  }
-  return name.slice(0, maxLen).toUpperCase();
 }
 
 function equippedSlot(save: PlayerSaveV1, itemId: string): EquipmentSlot | null {
@@ -296,7 +277,7 @@ export function createProfilePanel(): ProfilePanelHandles {
 
     const slot = equippedSlot(save, itemId);
     const equipped = slot !== null;
-    const rarityColor = RARITY_COLORS[def.rarity] ?? 'var(--dao-gold)';
+    const rarityColor = ITEM_RARITY_COLORS[def.rarity] ?? 'var(--dao-gold)';
 
     detailOverlay = document.createElement('div');
     detailOverlay.className = 'home-item-detail home-ui__interactive';
@@ -307,9 +288,16 @@ export function createProfilePanel(): ProfilePanelHandles {
     const card = document.createElement('div');
     card.className = 'home-item-detail__card';
 
-    // Header: rarity badge + name
+    // Header: icon + rarity badge + name
     const header = document.createElement('div');
     header.className = 'home-item-detail__header';
+
+    const headerIcon = document.createElement('img');
+    headerIcon.className = 'home-item-detail__icon-img';
+    headerIcon.src = getItemIconSrc(itemId);
+    headerIcon.width = 24;
+    headerIcon.height = 24;
+    headerIcon.alt = '';
 
     const rarityBadge = document.createElement('span');
     rarityBadge.className = 'home-item-detail__rarity';
@@ -321,7 +309,7 @@ export function createProfilePanel(): ProfilePanelHandles {
     name.className = 'home-item-detail__name';
     name.textContent = I18nManager.t(def.displayNameKey);
 
-    header.append(rarityBadge, name);
+    header.append(headerIcon, rarityBadge, name);
 
     // Slot info
     const slotRow = document.createElement('div');
@@ -437,8 +425,13 @@ export function createProfilePanel(): ProfilePanelHandles {
         slotEl.classList.add('home-dharma__slot--filled');
         try {
           const def = getItemDefinition(itemId);
-          icon.textContent = itemAbbrev(def);
-          icon.style.color = RARITY_COLORS[def.rarity] ?? 'var(--dao-jade)';
+          const iconImg = document.createElement('img');
+          iconImg.className = 'home-dharma__slot-icon-img';
+          iconImg.src = getItemIconSrc(itemId);
+          iconImg.width = 24;
+          iconImg.height = 24;
+          iconImg.alt = '';
+          icon.appendChild(iconImg);
           slotEl.title = `${I18nManager.t(def.displayNameKey)} — ${I18nManager.t('home.dharma.unequip')}`;
         } catch {
           icon.textContent = '?';
@@ -504,19 +497,21 @@ export function createProfilePanel(): ProfilePanelHandles {
       card.dataset.itemId = itemId;
       card.dataset.testid = `dharma-card-${itemId}`;
 
-      const rarityColor = RARITY_COLORS[def.rarity] ?? 'var(--dao-text)';
+      const rarityColor = ITEM_RARITY_COLORS[def.rarity] ?? 'var(--dao-text)';
       card.style.borderColor = rarityColor;
 
-      const initial = document.createElement('span');
-      initial.className = 'home-dharma__card-label';
-      initial.textContent = itemAbbrev(def);
-      initial.style.color = rarityColor;
+      const iconImg = document.createElement('img');
+      iconImg.className = 'home-dharma__card-icon-img';
+      iconImg.src = getItemIconSrc(itemId);
+      iconImg.width = 24;
+      iconImg.height = 24;
+      iconImg.alt = '';
 
       const slotBadge = document.createElement('span');
       slotBadge.className = 'home-dharma__card-slot';
       slotBadge.textContent = I18nManager.t(slotLabelKey(def.slot as EquipmentSlot));
 
-      card.append(initial, slotBadge);
+      card.append(iconImg, slotBadge);
       card.addEventListener('click', () => openDharmaDetail(itemId));
       dharmaGrid.appendChild(card);
     }

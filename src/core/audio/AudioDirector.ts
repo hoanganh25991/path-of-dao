@@ -122,6 +122,7 @@ export class AudioDirector {
     if (save) {
       AudioManager.setVolume('music', save.settings.musicVolume);
       AudioManager.setVolume('sfx', save.settings.sfxVolume);
+      AudioManager.setVolume('ui', save.settings.uiVolume);
     }
   }
 

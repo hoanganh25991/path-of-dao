@@ -4,6 +4,7 @@
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AudioManager } from '@/core/audio/AudioManager';
 import { EventBus } from '@/core/EventBus';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { SaveManager } from '@/core/save/SaveManager';
@@ -30,11 +31,13 @@ beforeEach(async () => {
   await gameStore.getState().load();
   await I18nManager.load('en');
   switchToMock.mockClear();
+  AudioManager.resetForTests();
 });
 
 afterEach(() => {
   EventBus.clear();
   document.body.innerHTML = '';
+  AudioManager.resetForTests();
 });
 
 describe('SettingsModal', () => {
@@ -68,7 +71,7 @@ describe('SettingsModal', () => {
       xp: 900,
       realm: { id: 'qi_condensation', tier: 'late', breakthroughReady: false },
       meta: { ...gameStore.getState().save!.meta, totalPlaySeconds: 86_400 * 12 },
-      settings: { locale: 'vi', quality: 'low', sfxVolume: 0.25, musicVolume: 0.75, fullscreen: true },
+      settings: { locale: 'vi', quality: 'low', sfxVolume: 0.25, musicVolume: 0.75, uiVolume: 0.6, fullscreen: true },
     });
     await gameStore.getState().persist();
 
@@ -95,6 +98,7 @@ describe('SettingsModal', () => {
       quality: 'low',
       sfxVolume: 0.25,
       musicVolume: 0.75,
+      uiVolume: 0.6,
       fullscreen: true,
     });
     expect(save.meta.totalPlaySeconds).toBe(0);
@@ -113,5 +117,47 @@ describe('SettingsModal', () => {
     expect(loaded.xp).toBe(0);
     expect(loaded.meta.totalPlaySeconds).toBe(0);
     expect(loaded.settings.locale).toBe('vi');
+  });
+
+  it('shows a dedicated UI volume slider seeded from the save', () => {
+    gameStore.getState().patch((save) => ({
+      settings: { ...save.settings, uiVolume: 0.4 },
+    }));
+
+    const uiRoot = document.getElementById('ui-root')!;
+    void showSettingsModal(uiRoot);
+
+    const slider = document.querySelector<HTMLInputElement>('[data-testid="settings-ui-volume"]');
+    expect(slider).toBeTruthy();
+    expect(slider!.value).toBe('40');
+  });
+
+  it('live-previews UI volume on drag and persists on release, independent of SFX', async () => {
+    gameStore.getState().patch((save) => ({
+      settings: { ...save.settings, sfxVolume: 1, uiVolume: 0.5 },
+    }));
+    AudioManager.init(gameStore.getState().save!);
+
+    const uiRoot = document.getElementById('ui-root')!;
+    void showSettingsModal(uiRoot);
+
+    const slider = document.querySelector<HTMLInputElement>('[data-testid="settings-ui-volume"]')!;
+    slider.value = '20';
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+
+    expect(AudioManager.getBusVolume('ui')).toBeCloseTo(0.2);
+    expect(AudioManager.getBusVolume('sfx')).toBeCloseTo(1);
+    // Not persisted yet — only the live audio preview updates on drag.
+    expect(gameStore.getState().save?.settings.uiVolume).toBe(0.5);
+
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
+
+    await vi.waitFor(() => {
+      expect(gameStore.getState().save?.settings.uiVolume).toBeCloseTo(0.2);
+    });
+
+    const loaded = await SaveManager.load();
+    expect(loaded.settings.uiVolume).toBeCloseTo(0.2);
+    expect(loaded.settings.sfxVolume).toBe(1);
   });
 });

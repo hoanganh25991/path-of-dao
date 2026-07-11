@@ -6,8 +6,8 @@ import type { PlayerSaveV1 } from '@/core/save/SaveSchema';
 
 const MAX_SIMULTANEOUS_SFX = 8;
 const UNLOCK_STORAGE_KEY = 'pod.audio.unlocked';
-/** UI bus reads slightly quieter than combat SFX at equal save slider. */
-const UI_BUS_GAIN = 0.82;
+/** Fallback UI bus volume before a save is loaded (matches SaveSchema default). */
+const UI_VOLUME_DEFAULT = 0.82;
 const manifest = manifestJson as AudioManifest;
 
 type ActiveVoice = { stop: () => void; fadeOut?: (sec: number) => void };
@@ -23,7 +23,7 @@ export class AudioManager {
   private static currentBgmKey: string | null = null;
   private static bgmGeneration = 0;
   private static bufferCache = new Map<string, AudioBuffer>();
-  private static saveVolumes = { music: 1, sfx: 1 };
+  private static saveVolumes = { music: 1, sfx: 1, ui: UI_VOLUME_DEFAULT };
 
   static get manifest(): AudioManifest {
     return manifest;
@@ -46,6 +46,7 @@ export class AudioManager {
     this.saveVolumes = {
       music: save.settings.musicVolume,
       sfx: save.settings.sfxVolume,
+      ui: save.settings.uiVolume,
     };
     this.applyBusVolumes();
   }
@@ -66,6 +67,7 @@ export class AudioManager {
 
   static setVolume(bus: AudioBusId, v: number): void {
     if (bus === 'music') this.saveVolumes.music = v;
+    else if (bus === 'ui') this.saveVolumes.ui = v;
     else this.saveVolumes.sfx = v;
     this.applyBusVolumes();
   }
@@ -149,7 +151,7 @@ export class AudioManager {
     this.master = null;
     this.unlocked = false;
     this.currentBgmKey = null;
-    this.saveVolumes = { music: 1, sfx: 1 };
+    this.saveVolumes = { music: 1, sfx: 1, ui: UI_VOLUME_DEFAULT };
     try {
       localStorage.removeItem(UNLOCK_STORAGE_KEY);
     } catch {
@@ -169,7 +171,7 @@ export class AudioManager {
       this.buses = {
         music: new AudioBus(this.ctx, this.master, this.saveVolumes.music),
         sfx: new AudioBus(this.ctx, this.master, this.saveVolumes.sfx),
-        ui: new AudioBus(this.ctx, this.master, this.saveVolumes.sfx),
+        ui: new AudioBus(this.ctx, this.master, this.saveVolumes.ui),
       };
     }
     return this.ctx;
@@ -187,7 +189,7 @@ export class AudioManager {
     if (!this.buses) return;
     this.buses.music.setVolume(this.saveVolumes.music);
     this.buses.sfx.setVolume(this.saveVolumes.sfx);
-    this.buses.ui.setVolume(this.saveVolumes.sfx * UI_BUS_GAIN);
+    this.buses.ui.setVolume(this.saveVolumes.ui);
   }
 
   private static stopBgm(): void {
@@ -325,6 +327,13 @@ export class AudioManager {
       source.disconnect();
       gain.disconnect();
     };
+  }
+
+  /** Test hook — read a bus's current save-scaled volume without touching Web Audio. */
+  static getBusVolume(bus: AudioBusId): number {
+    if (bus === 'music') return this.saveVolumes.music;
+    if (bus === 'ui') return this.saveVolumes.ui;
+    return this.saveVolumes.sfx;
   }
 
   /** Test hook — resolve manifest entry without playing. */

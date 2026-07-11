@@ -263,6 +263,8 @@
   "home.settings.fullscreen": "Fullscreen",
   "home.settings.fullscreen.on": "On",
   "home.settings.fullscreen.off": "Off",
+  "home.settings.sound": "Sound",
+  "home.settings.volume.ui": "UI Volume",
   "home.settings.progress": "Progress",
   "home.settings.reset": "Replay from Beginning",
   "home.settings.reset_confirm": "This will erase all journey progress — maps, items, realm, and story. Your language, performance, and volume settings are kept. This cannot be undone.",

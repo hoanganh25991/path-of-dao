@@ -48,7 +48,7 @@ function makeSave(overrides: Partial<PlayerSaveV1['progress']> = {}): PlayerSave
       ...overrides,
     },
     cosmetics: { pet: null },
-    settings: { locale: 'en', quality: 'auto', sfxVolume: 1, musicVolume: 1, fullscreen: true },
+    settings: { locale: 'en', quality: 'auto', sfxVolume: 1, musicVolume: 1, uiVolume: 0.82, fullscreen: true },
     meta: { totalPlaySeconds: 0, createdAt: '', updatedAt: '' },
     destinyPoints: { dharma: 0, divine: 0, intent: 0, unspent: 0 },
   };

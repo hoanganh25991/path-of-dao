@@ -1,5 +1,6 @@
 import '@/ui/modals/settings.css';
 import { AudioDirector } from '@/core/audio/AudioDirector';
+import { AudioManager } from '@/core/audio/AudioManager';
 import { EventBus } from '@/core/EventBus';
 import { FullscreenManager } from '@/app/FullscreenManager';
 import { I18nManager, type LocalePreference } from '@/core/i18n/I18nManager';
@@ -31,6 +32,7 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     let selectedLocale = save.settings.locale;
     let selectedQuality = save.settings.quality;
     let selectedFullscreen = save.settings.fullscreen;
+    let selectedUiVolume = save.settings.uiVolume;
 
     const overlay = document.createElement('div');
     overlay.className = 'settings-modal';
@@ -83,6 +85,36 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     fullscreenOptions.className = 'settings-modal__options';
     fullscreenOptions.setAttribute('role', 'radiogroup');
     fullscreenOptions.setAttribute('aria-label', I18nManager.t('home.settings.fullscreen'));
+
+    const soundTitle = document.createElement('p');
+    soundTitle.className = 'settings-modal__section-title';
+    soundTitle.textContent = I18nManager.t('home.settings.sound');
+
+    const uiVolumeRow = document.createElement('div');
+    uiVolumeRow.className = 'settings-modal__slider-row';
+
+    const uiVolumeLabel = document.createElement('label');
+    uiVolumeLabel.className = 'settings-modal__slider-label';
+    uiVolumeLabel.htmlFor = 'settings-ui-volume';
+    uiVolumeLabel.textContent = I18nManager.t('home.settings.volume.ui');
+
+    const uiVolumeValue = document.createElement('span');
+    uiVolumeValue.className = 'settings-modal__slider-value';
+
+    const uiVolumeLabelRow = document.createElement('div');
+    uiVolumeLabelRow.className = 'settings-modal__slider-label-row';
+    uiVolumeLabelRow.append(uiVolumeLabel, uiVolumeValue);
+
+    const uiVolumeInput = document.createElement('input');
+    uiVolumeInput.type = 'range';
+    uiVolumeInput.id = 'settings-ui-volume';
+    uiVolumeInput.className = 'settings-modal__slider';
+    uiVolumeInput.dataset.testid = 'settings-ui-volume';
+    uiVolumeInput.min = '0';
+    uiVolumeInput.max = '100';
+    uiVolumeInput.step = '1';
+
+    uiVolumeRow.append(uiVolumeLabelRow, uiVolumeInput);
 
     const version = document.createElement('p');
     version.className = 'settings-modal__version';
@@ -149,6 +181,12 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       }
     };
 
+    const syncUiVolumeSelection = (): void => {
+      const percent = Math.round(selectedUiVolume * 100);
+      uiVolumeInput.value = String(percent);
+      uiVolumeValue.textContent = `${percent}%`;
+    };
+
     const syncFullscreenSelection = (): void => {
       for (const label of fullscreenButtons) {
         const value = label.dataset.value === 'true';
@@ -168,6 +206,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       qualityOptions.setAttribute('aria-label', I18nManager.t('home.settings.quality'));
       fullscreenTitle.textContent = I18nManager.t('home.settings.fullscreen');
       fullscreenOptions.setAttribute('aria-label', I18nManager.t('home.settings.fullscreen'));
+      soundTitle.textContent = I18nManager.t('home.settings.sound');
+      uiVolumeLabel.textContent = I18nManager.t('home.settings.volume.ui');
       version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
       progressTitle.textContent = I18nManager.t('home.settings.progress');
       resetBtn.textContent = I18nManager.t('home.settings.reset');
@@ -269,6 +309,16 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       fullscreenOptions.appendChild(label);
     }
 
+    uiVolumeInput.addEventListener('input', () => {
+      const next = Number(uiVolumeInput.value) / 100;
+      selectedUiVolume = next;
+      uiVolumeValue.textContent = `${Math.round(next * 100)}%`;
+      AudioManager.setVolume('ui', next);
+    });
+    uiVolumeInput.addEventListener('change', () => {
+      void applyUiVolumePreference(selectedUiVolume);
+    });
+
     card.append(
       header,
       localeTitle,
@@ -277,6 +327,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       qualityOptions,
       fullscreenTitle,
       fullscreenOptions,
+      soundTitle,
+      uiVolumeRow,
       progressTitle,
       resetBtn,
       confirmPanel,
@@ -307,6 +359,7 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     syncLocaleSelection();
     syncQualitySelection();
     syncFullscreenSelection();
+    syncUiVolumeSelection();
     requestAnimationFrame(() => overlay.classList.add('settings-modal--active'));
 
     const cleanup = (): void => {
@@ -373,4 +426,16 @@ async function applyFullscreenPreference(enabled: boolean): Promise<void> {
     FullscreenManager.clearOptOut();
     void FullscreenManager.requestOnPlay();
   }
+}
+
+async function applyUiVolumePreference(volume: number): Promise<void> {
+  const current = gameStore.getState().save;
+  if (!current || current.settings.uiVolume === volume) return;
+
+  gameStore.getState().patch((save) => ({
+    settings: { ...save.settings, uiVolume: volume },
+  }));
+  await gameStore.getState().persist();
+
+  EventBus.emit('settings:ui-volume-changed', { volume });
 }

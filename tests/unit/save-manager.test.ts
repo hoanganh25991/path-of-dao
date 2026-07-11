@@ -195,4 +195,22 @@ describe('migrate', () => {
     const save = SaveManager.createNew();
     expect(migrate(save).insights).toEqual(save.insights);
   });
+
+  it('defaults uiVolume to 0.82 for pre-slider saves missing the field (sub-plan 25 leftover)', () => {
+    const save = SaveManager.createNew();
+    const { uiVolume: _drop, ...legacySettings } = save.settings;
+    const legacyRaw = { ...save, settings: legacySettings };
+
+    const migrated = migrate(legacyRaw);
+
+    expect(migrated.settings.uiVolume).toBe(0.82);
+    expect(migrated.settings.sfxVolume).toBe(save.settings.sfxVolume);
+  });
+
+  it('preserves an explicit uiVolume already present on the save', () => {
+    const save = SaveManager.createNew();
+    const raw = { ...save, settings: { ...save.settings, uiVolume: 0.33 } };
+
+    expect(migrate(raw).settings.uiVolume).toBe(0.33);
+  });
 });

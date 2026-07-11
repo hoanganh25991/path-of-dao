@@ -205,6 +205,7 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 | 15 | Real **OGG** assets + file playback | 25 | Procedural OK for MVP if time short |
 | 16 | ~~Validator: `timelineShardId` on all maps; CI `content:validate`~~ | 20, 31 | `[x]` Done 2026-07-10 — `lintCrossrefs` + schema validate all 20 shards |
 | 17 | ~~Loot→item cross-ref lint + boss loot audit~~; full item roster + pity still open | 33, 20 | `[x]` lint+audit done 2026-07-10 — 10/10 bosses had valid loot tables, no broken refs found; pity (IS-04) skipped as underspecified (see track 33 note); full item roster pass remains |
+| 18 | ~~DA-05 treasure icons — procedural placeholder~~ | 32, 33 | `[x]` Done 2026-07-11 — `src/combat/art/itemIconDraw.ts` generates a readable 24×24 icon per `item.*` from rarity (rim/glow color, canon `ITEM_RARITY_COLORS`) + a category glyph (blade/shield/ring/orb/vial for weapon/armor/accessory/spirit/consumable), as an inline SVG data URL (mirrors DA-04's `skillIconDraw.ts`). `AssetArtRegistry.resolveIconAsset('items', itemId)` still preferred when a PNG lands (DA-08). Wired via `getItemIconSrc` into Home Dharma Treasures tab (`ProfilePanel`) slot icons + inventory grid + item detail header, and the legacy `InventoryPanel`. Authored 24×24 pixel PNGs (the actual DA-05 art pass) still open |
 
 ### Done — do not rework unless plan changes
 
@@ -396,7 +397,7 @@ flowchart LR
 | 30 | `[~]` | ~~Rename `equippedSkills` → `divineArts`~~ `[x]` done 2026-07-10; DA-04 wheel icons + optional pause editor remain | [track](./30-divine-arts-wheel-loadout.md) |
 | 31 | `[~]` | **Phase E1 only:** illustrations (tooltip + ancient auto-walk hook shipped 2026-07-10) | [track](./31-wang-lin-story-timeline.md) |
 | 32 | `[~]` | ~~DA-08 auto-wire pipeline~~ `[x]` done 2026-07-11; DA-01…07/09 authored PNGs remain | [track](./32-design-arts.md) |
-| 33 | `[~]` | ~~Loot→item lint + boss audit~~ `[x]` done 2026-07-10; item roster; DA-05 icons | [track](./33-item-loot-system.md) |
+| 33 | `[~]` | ~~Loot→item lint + boss audit~~ `[x]` done 2026-07-10; ~~DA-05 procedural icons~~ `[x]` done 2026-07-11; item roster; authored DA-05 PNGs remain | [track](./33-item-loot-system.md) |
 | 34 | `[~]` | Fix 22 unit failures `[x]`; `window.__podErrors` smoke assert `[x]` 2026-07-11; DevTools gate remains | [track](./34-quick-check-smoke-devtools.md) |
 
 ---
