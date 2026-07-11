@@ -2,7 +2,6 @@
  * @vitest-environment jsdom
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { EventBus } from '@/core/EventBus';
 import {
   JOYSTICK_BASE_RADIUS_PX,
   JOYSTICK_CLAMP_RADIUS_PX,

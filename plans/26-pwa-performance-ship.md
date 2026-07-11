@@ -39,15 +39,16 @@ Ship MVP as installable PWA, hit performance targets on mid-range mobile, CI gre
   "description": "Cultivation action RPG",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "any",
+  "orientation": "landscape",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
   "icons": [...]
 }
 ```
 
-`orientation: "any"` — players may rotate freely; **design and QA target landscape** (844×390)
-per [`plans/index.md`](./index.md) §2.1. Do not lock manifest to portrait.
+`orientation: "landscape"` in the Vite PWA manifest (ship builds prefer landscape). Browsers that
+ignore the lock still get a **rotate-device prompt** in portrait (`RotatePrompt`). Do not lock the
+manifest to portrait.
 
 vite-plugin-pwa:
 
