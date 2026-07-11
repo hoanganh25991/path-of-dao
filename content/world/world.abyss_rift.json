@@ -34,5 +34,22 @@
     "waterMacroThreshold": 0.05,
     "dirtMacroThreshold": 0.78,
     "rockMacroThreshold": 0.92
+  },
+  "settlements": [
+    {
+      "id": "settlement.abyss_rift.corrupted_hamlet",
+      "type": "ruin_village",
+      "structures": ["house_ruin", "house_ruin", "shrine", "well"],
+      "radius": 240,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.void_bristle",
+    "displayNameKey": "map.abyss_rift.01.signature_tree",
+    "scale": 2.4,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

@@ -35,5 +35,22 @@
     "waterMacroThreshold": 0.055,
     "dirtMacroThreshold": 0.80,
     "rockMacroThreshold": 0.93
+  },
+  "settlements": [
+    {
+      "id": "settlement.void_throne.throne_ruins",
+      "type": "palace_ruin",
+      "structures": ["house_ruin", "pavilion", "shrine", "well"],
+      "radius": 260,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.dao_world_tree",
+    "displayNameKey": "map.void_throne.02.signature_tree",
+    "scale": 3.0,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

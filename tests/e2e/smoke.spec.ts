@@ -25,6 +25,14 @@ async function waitForCombatCanvas(page: import('@playwright/test').Page): Promi
   );
 }
 
+/** `window.__podErrors` is a live ring buffer (see ErrorReporter.ts); undefined counts as clean. */
+async function expectNoPodErrors(page: import('@playwright/test').Page): Promise<void> {
+  const errors = await page.evaluate(
+    () => (window as unknown as { __podErrors?: readonly string[] }).__podErrors ?? [],
+  );
+  expect(errors).toHaveLength(0);
+}
+
 async function returnHomeViaPause(page: import('@playwright/test').Page): Promise<void> {
   await page.getByTestId('combat-pause-btn').click();
   await expect(page.getByTestId('combat-pause-menu')).toBeVisible();
@@ -47,12 +55,14 @@ test.describe('MVP smoke', () => {
     await page.getByTestId('continue-journey-btn').click();
     await waitForCombatCanvas(page);
     await dismissEncounterIfPresent(page);
+    await expectNoPodErrors(page);
     await returnHomeViaPause(page);
 
     await expect(page.getByTestId('continue-journey-btn')).toHaveText('Continue Journey');
     await page.getByTestId('continue-journey-btn').click();
     await waitForCombatCanvas(page);
     await dismissEncounterIfPresent(page);
+    await expectNoPodErrors(page);
     await returnHomeViaPause(page);
 
     await page.locator('.home-profile__settings').click();

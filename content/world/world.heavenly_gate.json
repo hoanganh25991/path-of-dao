@@ -31,5 +31,22 @@
     "waterShallow": 4,
     "waterMacroThreshold": 0.025,
     "dirtMacroThreshold": 0.85
+  },
+  "settlements": [
+    {
+      "id": "settlement.heavenly_gate.trial_court",
+      "type": "sect_courtyard",
+      "structures": ["sect_gate", "watchtower", "wall_segment", "pavilion"],
+      "radius": 260,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.trial_bodhi",
+    "displayNameKey": "map.heavenly_gate.02.signature_tree",
+    "scale": 2.8,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

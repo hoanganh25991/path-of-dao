@@ -3,7 +3,7 @@
 **Status:** `[~]` In progress  
 **Plan:** [plans/21-mvp-maps-chapters-1-5.md](../plans/21-mvp-maps-chapters-1-5.md)  
 **Related:** [map-design-canon.md](../plans/map-design-canon.md) · [31](./31-wang-lin-story-timeline.md) (timeline shards)  
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-11
 
 ## Summary
 
@@ -25,7 +25,7 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 - [x] POI: ancient sword on ch1 + ch2 ordeal maps
 - [x] Tiên Nghịch copy: region blurbs, map flavor text (EN + VI), enemy names, bestiary notes
 - [x] World map detail sheet shows map `.desc`
-- [x] **Map canon (procedural path):** settlement clusters + signature tree spawn per `worldProfile` (`ProceduralSettlementGenerator`); authored on `world.fallen_village` (ruin_village) + `world.fallen_village.gate` (sect_courtyard), auto-default hamlet/tree elsewhere in ch1–5
+- [x] **Map canon (procedural path):** settlement clusters + signature tree spawn per `worldProfile` (`ProceduralSettlementGenerator`); authored on `world.fallen_village` (ruin_village) + `world.fallen_village.gate` (sect_courtyard), and now **all ch2–5** `world.*.json` — `world.mist_forest` (hamlet/`prop.tree.mist_birch`), `world.stone_canyon` (outpost/`prop.tree.cliff_juniper`), `world.moon_lake` (shrine_cluster/`prop.tree.seal_oak`), `world.burning_desert` (nomad_camp/`prop.tree.desert_ghaf`) — matching `map-design-canon.md` §4.3 roster
 - [x] **Ch1 TTK balance** — procedural `mapBaseMultiplier` halved (`PROCEDURAL_BASE_POWER = 0.5`); scavenger near spawn ~55 HP / ~6 hits instead of ~109 / ~13 (L1 atk)
 
 ## Remaining
@@ -43,7 +43,7 @@ First half of the cultivation road: ten maps across five regions (explore + orde
 | 3 | Manual CP playtest doc — adjust `recommendedCp` if maps feel wrong | balance |
 | 4 | Ground seam pass on `EndlessGround` / palette transitions | 06, 29 |
 | 5 | Confirm ancient sword POI only on `.02` / ch2 per plan (not ch1 `.01` tutorial) | 15, 21 |
-| 6 | Author `settlements[]`/`signatureTree` per-map species (roster in `map-design-canon.md` §4.3) on remaining ch2–5 `world.*.json` — currently auto-default | 06, 21 |
+| 6 | ~~Author `settlements[]`/`signatureTree` per-map species (roster in `map-design-canon.md` §4.3) on remaining ch2–5 `world.*.json`~~ | `[x]` 06, 21 |
 
 ## Verification
 

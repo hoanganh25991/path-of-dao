@@ -3,7 +3,7 @@
 **Status:** `[~]` In progress  
 **Plan:** [plans/06-phaser-map-scene-base.md](../plans/06-phaser-map-scene-base.md)  
 **Related:** [fake-2.5d.md](../plans/fake-2.5d.md) · [map-design-canon.md](../plans/map-design-canon.md)  
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-11
 
 ## Summary
 
@@ -23,7 +23,7 @@
 - **Scene lifecycle guard:** `MapScene.teardown()` now safely checks `this.scene?.isPaused()` before resuming, fixing a null-scene crash during shutdown/destroy
 - **Procedural world** — `ProceduralWorldLoader`, `ProceduralCellGenerator`, `ProceduralRoamingSpawnManager`, `EndlessGround`, `WorldFog`, `world.*.json` profiles
 - **Procedural cultivator power** — `PROCEDURAL_BASE_POWER = 0.5` on `mapBaseMultiplier` (2026-07-10 playtest: ch1 near-spawn was ~3–5× authored JSON, L1 hits barely moved HP); distance/cell rank curve unchanged
-- **Procedural settlements + signature tree** — `ProceduralWorldConfig` gained optional `settlements[]` / `signatureTree`; `ProceduralSettlementGenerator` deterministically places ≥1 settlement cluster + exactly one landmark tree per map from `worldSeed` (seeded default hamlet + generic tree when a profile omits them); `SettlementDecorator` renders clusters as non-colliding sprites/rects (house/hut sprite reuse + colored-rect well/wall/watchtower/pavilion/shrine/sect_gate) in `MapScene`; authored on `world.fallen_village` (ruin_village) and `world.fallen_village.gate` (sect_courtyard) matching `map-design-canon.md` roster
+- **Procedural settlements + signature tree** — `ProceduralWorldConfig` gained optional `settlements[]` / `signatureTree`; `ProceduralSettlementGenerator` deterministically places ≥1 settlement cluster + exactly one landmark tree per map from `worldSeed` (seeded default hamlet + generic tree when a profile omits them); `SettlementDecorator` renders clusters as non-colliding sprites/rects (house/hut sprite reuse + colored-rect well/wall/watchtower/pavilion/shrine/sect_gate) in `MapScene`; **all 11 world profiles now authored** matching `map-design-canon.md` §4.3 roster — `world.fallen_village` (ruin_village/scorched_elm), `world.fallen_village.gate` (sect_courtyard/jade_pine), `world.mist_forest` (hamlet/mist_birch), `world.stone_canyon` (outpost/cliff_juniper), `world.moon_lake` (shrine_cluster/seal_oak), `world.burning_desert` (nomad_camp/desert_ghaf), `world.thunder_peaks` (sect_courtyard/altar_cedar), `world.frozen_palace` (palace_ruin/frost_paulownia), `world.abyss_rift` (ruin_village/void_bristle), `world.heavenly_gate` (sect_courtyard/trial_bodhi), `world.void_throne` (palace_ruin/dao_world_tree)
 - **Per-map terrain themes** — `groundPalette` primary tile per region (grass / dirt / sand / gravel / rock); biome tints sand·rock·gravel; camera fill follows dominant tile; **Heng Yue Gate** (`world.fallen_village.gate`) uses dirt/gravel mountain trail vs village grass
 - **Combat camera director** — engage zoom (`CombatCameraDirector`); attack/skill punch-in always noticeable; seated gather-qi holds close-up (`player:meditate-started` / `ended`)
 - Cultivator **defeat** flow — sit gather-qi **in place** (2026-07-10: removed instant teleport to spawn, which looked like a despawn when the fight drifted from the slot); beasts still pool-release; bosses sit stay-down
@@ -42,7 +42,7 @@
 | 3 | ~~Add `opponentKind` to enemy schema + content JSON~~ | `[x]` `CultivatorConfig.ts` (`OPPONENT_KINDS`), all `content/enemies/*.json` |
 | 4 | ~~Beasts: defeat → despawn/pool; cultivators: sit-recover (current partial flow)~~ | `[x]` `Cultivator.isBeast`, `defeatRouting.ts`, `SpawnManager`/`RoamingSpawnManager`/`ProceduralRoamingSpawnManager` |
 | 5 | Optional: `defeatRecoverMs` per enemy tier | `combat-defeat-canon.md` — defer if MVP tight |
-| 6 | Art polish: dedicated per-species tree sprites (roster in `map-design-canon.md` §4.3) instead of shared scaled-up biome tree; richer structure art beyond colored rects | `design-arts`, `StructureRegistry` |
+| 6 | Art polish: dedicated per-species tree sprites (roster in `map-design-canon.md` §4.3, now fully authored across all 11 world profiles) instead of shared scaled-up biome tree; richer structure art beyond colored rects | `design-arts`, `StructureRegistry` |
 
 ## Verification
 

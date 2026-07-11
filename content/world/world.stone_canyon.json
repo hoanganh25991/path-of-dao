@@ -28,5 +28,22 @@
     "waterMacroThreshold": 0,
     "dirtMacroThreshold": 0.68,
     "rockMacroThreshold": 0.88
+  },
+  "settlements": [
+    {
+      "id": "settlement.stone_canyon.patrol_post",
+      "type": "outpost",
+      "structures": ["watchtower", "wall_segment", "hut", "well"],
+      "radius": 240,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.cliff_juniper",
+    "displayNameKey": "map.stone_canyon.01.signature_tree",
+    "scale": 2.2,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

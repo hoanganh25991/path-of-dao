@@ -217,6 +217,7 @@
   "skill.detail.unlock_title": "How to Obtain",
   "skill.detail.difficulty_title": "Mastery Difficulty",
   "skill.detail.unlock_base": "Taught when you first channel {intent} intent — every cultivator learns this form.",
+  "skill.detail.unlock_starter": "Starter art — every cultivator begins the road with this form.",
   "skill.detail.unlock_awakened": "Awakening ceremony at {realm} — {uses} uses and {xp} insight to ignite the true art.",
   "skill.sword.slash.lore": "First sword form Wang Lin drills after claiming Heaven Reverse on Ghost Spirit Mountain. Simple, fast — seed of every combo.",
   "skill.sword.slash.difficulty": "★★☆☆☆ — Hours of practice",

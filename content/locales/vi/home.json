@@ -167,6 +167,7 @@
   "skill.detail.unlock_title": "Cách Đạt",
   "skill.detail.difficulty_title": "Độ Khó Tu Luyện",
   "skill.detail.unlock_base": "Học khi lần đầu vận {intent} ý — mọi tu sĩ đều qua dạng này.",
+  "skill.detail.unlock_starter": "Pháp khởi đầu — mọi tu sĩ đều bắt đầu con đường với dạng này.",
   "skill.detail.unlock_awakened": "Lễ giác ngộ tại {realm} — {uses} lần dùng và {xp} ngộ tính để thức tỉnh chân ý.",
   "dharma.name": "Pháp Bảo",
   "dharma.tier.basic": "Pháp Bảo Phàm Giới",

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { buildSkillDisplayStats } from '@/ui/skills/SkillCombatStats';
+import {
+  buildSkillDisplayStats,
+  skillUnlockParams,
+  skillUnlockText,
+} from '@/ui/skills/SkillCombatStats';
 
 describe('SkillCombatStats', () => {
   it('builds arc stats for base sword slash', () => {
@@ -32,5 +36,10 @@ describe('SkillCombatStats', () => {
     expect(stats.kind).toBe('bolt');
     expect(stats.rangeText).toBe('400px');
     expect(stats.aoeText).toContain('pull');
+  });
+
+  it('does not require insight config for basic meditate unlock copy', () => {
+    expect(skillUnlockText('skill.basic.meditate')).toBe('skill.detail.unlock_starter');
+    expect(skillUnlockParams('skill.basic.meditate')).toEqual({});
   });
 });

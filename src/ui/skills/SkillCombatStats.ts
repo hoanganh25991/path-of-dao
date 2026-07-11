@@ -136,11 +136,19 @@ export function skillUnlockText(skillId: string): string {
   if (skillId.endsWith('.awakened')) {
     return 'skill.detail.unlock_awakened';
   }
+  // `basic` is a starter skill tag, not a cultivable Master Intent in insights.json.
+  if (getSkillDefinition(skillId).intent === 'basic') {
+    return 'skill.detail.unlock_starter';
+  }
   return 'skill.detail.unlock_base';
 }
 
 export function skillUnlockParams(skillId: string): Record<string, string> {
   const skill = getSkillDefinition(skillId);
+  if (skill.intent === 'basic') {
+    return {};
+  }
+
   const config = getInsightIntentConfig(skill.intent);
   const req = config.awakenRequirement;
 

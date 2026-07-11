@@ -28,5 +28,22 @@
     "waterDeep": 5,
     "waterMacroThreshold": 0.07,
     "dirtMacroThreshold": 0.9
+  },
+  "settlements": [
+    {
+      "id": "settlement.moon_lake.seal_shrine",
+      "type": "shrine_cluster",
+      "structures": ["shrine", "well", "pavilion", "house_ruin"],
+      "radius": 260,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.seal_oak",
+    "displayNameKey": "map.moon_lake.02.signature_tree",
+    "scale": 2.5,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

@@ -33,5 +33,22 @@
     "waterMacroThreshold": 0.03,
     "dirtMacroThreshold": 0.76,
     "rockMacroThreshold": 0.90
+  },
+  "settlements": [
+    {
+      "id": "settlement.thunder_peaks.storm_altar",
+      "type": "sect_courtyard",
+      "structures": ["watchtower", "wall_segment", "pavilion"],
+      "radius": 240,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.altar_cedar",
+    "displayNameKey": "map.thunder_peaks.02.signature_tree",
+    "scale": 2.7,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

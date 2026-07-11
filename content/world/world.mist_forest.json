@@ -35,5 +35,22 @@
     "waterDeep": 5,
     "waterMacroThreshold": 0.08,
     "dirtMacroThreshold": 0.93
+  },
+  "settlements": [
+    {
+      "id": "settlement.mist_forest.refuge",
+      "type": "hamlet",
+      "structures": ["hut", "hut", "well", "shrine"],
+      "radius": 220,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.mist_birch",
+    "displayNameKey": "map.mist_forest.01.signature_tree",
+    "scale": 2.3,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

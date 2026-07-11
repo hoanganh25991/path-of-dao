@@ -32,5 +32,22 @@
     "waterDeep": 5,
     "waterMacroThreshold": 0.06,
     "dirtMacroThreshold": 0.94
+  },
+  "settlements": [
+    {
+      "id": "settlement.frozen_palace.hall_ruins",
+      "type": "palace_ruin",
+      "structures": ["house_ruin", "house_ruin", "pavilion", "well"],
+      "radius": 260,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.frost_paulownia",
+    "displayNameKey": "map.frozen_palace.01.signature_tree",
+    "scale": 2.6,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }

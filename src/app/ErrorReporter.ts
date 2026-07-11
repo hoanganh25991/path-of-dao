@@ -13,6 +13,9 @@ export function initErrorReporter(): void {
     const reason = event.reason instanceof Error ? event.reason.message : String(event.reason);
     pushError(`unhandledrejection: ${reason}`);
   });
+
+  // Live reference so QA / Playwright smoke can read `window.__podErrors.length` directly.
+  (window as unknown as Record<string, unknown>).__podErrors = ring;
 }
 
 function pushError(line: string): void {

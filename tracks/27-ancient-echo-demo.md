@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/27-ancient-echo-demo.md](../plans/27-ancient-echo-demo.md)  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-11
 
 ## Summary
 
@@ -32,3 +32,4 @@ None for this sub-plan.
 - Demo enter → combat → exit to Home with demo save loaded
 - God mode and encounter skip confirmed in playtest
 - Ancient hero name + epithet tags stack without overlap (`ancientHeroVisuals.ts` Y offsets)
+- **2026-07-11:** Opening first ancient (`breakthrough_sage`) no longer throws — skill detail unlock copy skips `getInsightIntentConfig` for `basic` meditate (`skill.detail.unlock_starter`; unit test in `skill-detail.test.ts`)

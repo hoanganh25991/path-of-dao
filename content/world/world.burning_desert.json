@@ -28,5 +28,22 @@
     "dirt": 2,
     "waterMacroThreshold": 0.025,
     "dirtMacroThreshold": 0.8
+  },
+  "settlements": [
+    {
+      "id": "settlement.burning_desert.camp",
+      "type": "nomad_camp",
+      "structures": ["hut", "hut", "well", "wall_segment"],
+      "radius": 220,
+      "minDistCells": 1,
+      "maxDistCells": 2
+    }
+  ],
+  "signatureTree": {
+    "propId": "prop.tree.desert_ghaf",
+    "displayNameKey": "map.burning_desert.01.signature_tree",
+    "scale": 2.3,
+    "minDistCells": 2,
+    "maxDistCells": 4
   }
 }
