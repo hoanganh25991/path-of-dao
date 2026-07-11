@@ -5,6 +5,7 @@ import { getSkillDefinition } from '@/progression/SkillLoader';
 import { unlockSkillsForChapter, unlockSkillsForMapClear, catchUpSkillUnlocks } from '@/progression/SkillUnlockManager';
 import { SaveManager } from '@/core/save/SaveManager';
 import skillUnlocks from '../../content/progression/skill-unlocks.json';
+import type { DivineArtsLoadout } from '@/progression/SkillSlots';
 
 type SkillUnlockConfig = {
   starter: string[];
@@ -68,7 +69,14 @@ describe('Master Intent early unlocks', () => {
       ...bare,
       stats: { ...bare.stats, level: 6 },
       unlockedSkills: ['skill.void.slash', 'skill.flame.bolt', 'skill.lightning.strike'],
-      divineArts: ['skill.void.slash', 'skill.flame.bolt', 'skill.lightning.strike', '', '', ''] as const,
+      divineArts: [
+        'skill.void.slash',
+        'skill.flame.bolt',
+        'skill.lightning.strike',
+        '',
+        '',
+        '',
+      ] satisfies DivineArtsLoadout,
     };
     const next = catchUpSkillUnlocks(midRun);
     expect(next.unlockedSkills).toContain('skill.life.mend');
