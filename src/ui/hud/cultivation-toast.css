@@ -6,20 +6,30 @@
   max-width: min(92vw, 360px);
   padding: 0.55rem 1rem;
   border-radius: 999px;
-  border: 1px solid rgba(184, 156, 255, 0.55);
-  background: rgba(18, 12, 32, 0.92);
+  border: 1px solid rgba(201, 162, 39, 0.65);
+  background: #12101a;
   color: #e8e4dc;
   font-family: system-ui, sans-serif;
   font-size: 0.82rem;
   font-weight: 600;
   text-align: center;
   pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -8px);
-  transition: opacity 220ms ease, transform 220ms ease;
+  transform: translate(-50%, 0);
+  animation: cultivation-toast-fade 2.4s ease forwards;
 }
 
-.cultivation-toast--visible {
-  opacity: 1;
-  transform: translate(-50%, 0);
+@keyframes cultivation-toast-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+  12%,
+  70% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -4px);
+  }
 }

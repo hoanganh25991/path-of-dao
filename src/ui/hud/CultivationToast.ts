@@ -7,6 +7,7 @@ import '@/ui/hud/cultivation-toast.css';
 export class CultivationToast {
   private static unsubscribers: Array<() => void> = [];
   private static mounted = false;
+  private static active: HTMLElement | null = null;
 
   static init(): void {
     if (CultivationToast.mounted) return;
@@ -25,15 +26,28 @@ export class CultivationToast {
     for (const unsub of CultivationToast.unsubscribers) unsub();
     CultivationToast.unsubscribers = [];
     CultivationToast.mounted = false;
+    CultivationToast.dismiss();
+  }
+
+  private static dismiss(): void {
+    CultivationToast.active?.remove();
+    CultivationToast.active = null;
   }
 
   private static show(message: string): void {
+    CultivationToast.dismiss();
+
     const toast = document.createElement('div');
     toast.className = 'cultivation-toast';
     toast.dataset.testid = 'cultivation-toast';
     toast.textContent = message;
     document.body.appendChild(toast);
-    requestAnimationFrame(() => toast.classList.add('cultivation-toast--visible'));
-    toast.addEventListener('animationend', () => toast.remove());
+    CultivationToast.active = toast;
+
+    toast.addEventListener('animationend', () => {
+      if (CultivationToast.active === toast) {
+        CultivationToast.dismiss();
+      }
+    });
   }
 }

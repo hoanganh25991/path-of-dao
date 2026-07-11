@@ -2,7 +2,7 @@
 
 **Status:** `[x]` Done  
 **Plan:** [plans/13-cultivation-realm-system.md](../plans/13-cultivation-realm-system.md)  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-11
 
 ## Summary
 
@@ -15,6 +15,7 @@ Seven-realm cultivation ladder with breakthrough ceremony when gates are met. Pa
 - Breakthrough gates: level threshold, spirit resource, boss clear, **Tiên Ngọc (Immortal Jade)** inventory cost from qi→foundation onward
 - Combat HUD third bar shows **cultivation XP** (fills on enemy kills), not insight meter
 - Level-up combat toast with realm sub-tier messaging (*Đột phá — Ngưng Khí · Trung Kỳ*)
+- **Level-up toast single-instance** (2026-07-11) — dismiss previous before show; solid bg + keyframe fade so toasts no longer stack/blur
 - Map intro modal on first portal entry (lore + `recommendedRealmOrder` ceiling copy)
 - Full-screen breakthrough modal ceremony
 - Cultivate button appears when breakthrough gates are met
@@ -36,5 +37,6 @@ None for this sub-plan.
 - Health regen scales with realm order (`tests/unit/health-regen.test.ts`)
 - `progression:xp-gained` refreshes combat HUD meter on every kill (`tests/unit/player-status-bar.test.ts`)
 - Level-up toast uses sub-tier at new level via `CultivationRealm.updateTierFromLevel` (`tests/unit/kill-progression-events.test.ts`)
+- Level-up toast replace-not-stack + animation cleanup (`tests/unit/cultivation-toast.test.ts`)
 - Home toast when only Tiên Ngọc blocks breakthrough (`ProfileHeader` + `getBreakthroughBlockers`)
 - Map intro first-entry: `tests/unit/cultivation-display.test.ts` (MapIntroManager)
