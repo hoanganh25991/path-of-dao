@@ -55,7 +55,7 @@ export class App {
     App.registerVisibilityHandlers();
 
     const router = SceneRouter.init(elements, createDefaultSceneHost);
-    OrientationManager.init();
+    OrientationManager.init(root);
     await router.switchTo('home');
 
     App.initialized = true;

@@ -114,15 +114,16 @@ realm → bottleneck → breakthrough → awakening → *return-and-crush* loop,
 
 ### 2.1 Mobile landscape — primary design target
 
-**Landscape is the required ship orientation** for both **Home** and **Combat**. Portrait is a
-degraded fallback only — never design combat or Home around portrait-first layouts.
+**Landscape is the required ship orientation** for both **Home** and **Combat**. Portrait shows a
+**rotate-device prompt** (`RotatePrompt` / `OrientationManager`) — never design combat or Home around
+portrait-first layouts.
 
 | Context | Canonical viewport | Layout |
 |---------|-------------------|--------|
 | **Combat** | **844×390** (landscape phone) | Full-width Phaser stage; joystick bottom-left; action cluster bottom-right; **FPS + menu top-right** (`[FPS][Menu]`, plan 03 §6) |
 | **Home** | **844×390** or wider | Horizontal `\|nav\| · \|3D\| · \|panel\|` (plan 12 §2) |
 | **Dev / CI smoke** | Desktop browser + keyboard | Keyboard is **not** a player-facing control — dev convenience only (plan 03 §8) |
-| Portrait fallback | 390×844 | Home compact stack; combat still touch-only (no keyboard assumption) |
+| Portrait | 390×844 | Full-screen **rotate to landscape** prompt; game paused until landscape |
 
 **Input canon on ship builds:**
 

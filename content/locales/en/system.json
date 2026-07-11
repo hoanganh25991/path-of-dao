@@ -7,6 +7,8 @@
   "system.locale.changed": "Language updated.",
   "system.combat_power": "CP {cp}",
   "system.audio.unlock": "Tap to enable sound",
+  "system.orientation.rotate": "Rotate your device",
+  "system.orientation.rotate_hint": "Path of Dao plays in landscape. Turn your phone sideways to continue.",
   "combat.pause.open": "Pause",
   "combat.pause.title": "Paused",
   "combat.pause.resume": "Resume",

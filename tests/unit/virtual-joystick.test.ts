@@ -3,7 +3,6 @@
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { EventBus } from '@/core/EventBus';
-import { OrientationManager } from '@/app/OrientationManager';
 import {
   JOYSTICK_BASE_RADIUS_PX,
   JOYSTICK_CLAMP_RADIUS_PX,
@@ -121,42 +120,4 @@ describe('VirtualJoystick', () => {
     joystick.destroy();
   });
 
-  it('accepts pointer input on the zone in portrait-rotated layout', () => {
-    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390, writable: true });
-    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 844, writable: true });
-    OrientationManager.init();
-
-    const joystick = new VirtualJoystick(container);
-    joystick.setEnabled(true);
-
-    const zone = joystick.zone;
-    // Physical coords that map to layout x > 50% — rejected by the old half-screen filter.
-    zone.dispatchEvent(
-      new PointerEvent('pointerdown', {
-        bubbles: true,
-        clientX: 80,
-        clientY: 200,
-        pointerId: 1,
-        pointerType: 'touch',
-      }),
-    );
-    window.dispatchEvent(
-      new PointerEvent('pointermove', {
-        bubbles: true,
-        clientX: 80,
-        clientY: 350,
-        pointerId: 1,
-        pointerType: 'touch',
-      }),
-    );
-
-    expect(Math.hypot(joystick.getMoveVector().x, joystick.getMoveVector().y)).toBeGreaterThan(0.5);
-
-    joystick.destroy();
-    EventBus.clear();
-    OrientationManager.resetForTests();
-    document.documentElement.className = '';
-    document.documentElement.style.removeProperty('--layout-w');
-    document.documentElement.style.removeProperty('--layout-h');
-  });
 });

@@ -7,6 +7,8 @@
   "system.locale.changed": "Đã đổi ngôn ngữ.",
   "system.combat_power": "Uy lực {cp}",
   "system.audio.unlock": "Chạm để bật âm thanh",
+  "system.orientation.rotate": "Xoay thiết bị của bạn",
+  "system.orientation.rotate_hint": "Path of Dao chơi ngang. Xoay ngang điện thoại để tiếp tục.",
   "combat.pause.open": "Tạm dừng",
   "combat.pause.title": "Tạm dừng",
   "combat.pause.resume": "Tiếp tục",

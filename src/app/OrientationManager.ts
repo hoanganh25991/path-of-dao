@@ -1,5 +1,8 @@
 import type { SceneId } from '@/app/SceneId';
+import { RotatePrompt } from '@/app/RotatePrompt';
 import { EventBus } from '@/core/EventBus';
+import { GameClock } from '@/core/GameClock';
+import { SceneRouter } from '@/app/SceneRouter';
 import {
   clientToLayout,
   getLayoutDimensions,
@@ -7,25 +10,35 @@ import {
 } from '@/app/orientation/layoutCoords';
 import { syncGameCanvasDisplay } from '@/app/orientation/syncGameCanvasDisplay';
 
-const ROOT_CLASS = 'portrait-rotate';
+const NEEDS_LANDSCAPE_CLASS = 'needs-landscape';
 const LAYOUT_CLASS = 'landscape-layout';
 const SCENE_CLASS_PREFIX = 'scene-';
 
-/** Manages landscape-first layout, portrait auto-rotate, and combat orientation lock. */
+/**
+ * Landscape-first layout + combat orientation lock.
+ * Portrait phones get a rotate prompt (no CSS sideways layout).
+ */
 export class OrientationManager {
   private static started = false;
   private static scene: SceneId = 'home';
-  private static portraitRotate = false;
+  private static needsLandscape = false;
+  private static pausedForPortrait = false;
   private static layoutWidth = 0;
   private static layoutHeight = 0;
   private static unsubscribeScene: (() => void) | null = null;
+  private static unsubscribeLocale: (() => void) | null = null;
 
-  static init(): void {
+  static init(root: HTMLElement = document.body): void {
     if (OrientationManager.started) return;
     OrientationManager.started = true;
 
+    RotatePrompt.mount(root);
+
     OrientationManager.unsubscribeScene = EventBus.on('scene:changed', ({ id }) => {
       void OrientationManager.onSceneChanged(id);
+    });
+    OrientationManager.unsubscribeLocale = EventBus.on('settings:locale-changed', () => {
+      RotatePrompt.refreshCopy();
     });
 
     window.addEventListener('resize', OrientationManager.onViewportChange);
@@ -36,10 +49,16 @@ export class OrientationManager {
   static destroy(): void {
     OrientationManager.unsubscribeScene?.();
     OrientationManager.unsubscribeScene = null;
+    OrientationManager.unsubscribeLocale?.();
+    OrientationManager.unsubscribeLocale = null;
     window.removeEventListener('resize', OrientationManager.onViewportChange);
     window.removeEventListener('orientationchange', OrientationManager.onViewportChange);
     OrientationManager.unlockOrientation();
-    document.documentElement.classList.remove(ROOT_CLASS, LAYOUT_CLASS);
+    OrientationManager.resumeIfPausedForPortrait();
+    OrientationManager.pausedForPortrait = false;
+    OrientationManager.needsLandscape = false;
+    RotatePrompt.destroy();
+    document.documentElement.classList.remove(NEEDS_LANDSCAPE_CLASS, LAYOUT_CLASS, 'portrait-rotate');
     document.documentElement.removeAttribute('data-scene');
     OrientationManager.started = false;
   }
@@ -53,8 +72,17 @@ export class OrientationManager {
     return OrientationManager.scene;
   }
 
+  /** True while the rotate-to-landscape prompt is shown. */
+  static needsLandscapeOrientation(): boolean {
+    return OrientationManager.needsLandscape;
+  }
+
+  /**
+   * CSS portrait-rotate is retired — always false.
+   * Kept so pointer helpers keep a stable no-op path.
+   */
   static isPortraitRotateActive(): boolean {
-    return OrientationManager.portraitRotate;
+    return false;
   }
 
   static getLayoutSize(): { width: number; height: number } {
@@ -71,7 +99,7 @@ export class OrientationManager {
       clientY,
       window.innerWidth,
       window.innerHeight,
-      OrientationManager.portraitRotate,
+      false,
     );
   }
 
@@ -99,22 +127,59 @@ export class OrientationManager {
     const viewportH = window.innerHeight;
     const portrait = isPortraitViewport(viewportW, viewportH);
 
-    // Default landscape; auto-rotate layout when the device/browser is portrait.
-    OrientationManager.portraitRotate = portrait;
+    OrientationManager.needsLandscape = portrait;
 
-    const { width, height } = getLayoutDimensions(viewportW, viewportH, OrientationManager.portraitRotate);
+    // Native viewport size — no CSS axis swap (rotate prompt instead).
+    const { width, height } = getLayoutDimensions(viewportW, viewportH, false);
     OrientationManager.layoutWidth = width;
     OrientationManager.layoutHeight = height;
 
     const root = document.documentElement;
-    root.classList.toggle(ROOT_CLASS, OrientationManager.portraitRotate);
+    root.classList.remove('portrait-rotate');
+    root.classList.toggle(NEEDS_LANDSCAPE_CLASS, OrientationManager.needsLandscape);
     root.classList.add(LAYOUT_CLASS);
     root.style.setProperty('--layout-w', `${width}px`);
     root.style.setProperty('--layout-h', `${height}px`);
 
+    RotatePrompt.setVisible(OrientationManager.needsLandscape);
+    OrientationManager.syncPauseForPortrait(OrientationManager.needsLandscape);
     OrientationManager.syncCanvasDisplays();
 
-    EventBus.emit('layout:changed', { width, height, portraitRotate: OrientationManager.portraitRotate });
+    EventBus.emit('layout:changed', {
+      width,
+      height,
+      portraitRotate: false,
+    });
+  }
+
+  private static syncPauseForPortrait(needsLandscape: boolean): void {
+    if (needsLandscape) {
+      if (OrientationManager.pausedForPortrait || document.hidden) return;
+      OrientationManager.pausedForPortrait = true;
+      GameClock.pause();
+      EventBus.emit('app:pause', undefined);
+      try {
+        SceneRouter.instance.pauseActiveHost();
+      } catch {
+        // Router may not be ready during early boot.
+      }
+      return;
+    }
+
+    OrientationManager.resumeIfPausedForPortrait();
+  }
+
+  private static resumeIfPausedForPortrait(): void {
+    if (!OrientationManager.pausedForPortrait) return;
+    OrientationManager.pausedForPortrait = false;
+    if (document.hidden) return;
+    GameClock.resume();
+    EventBus.emit('app:resume', undefined);
+    try {
+      SceneRouter.instance.resumeActiveHost();
+    } catch {
+      // Router may not be ready during early boot.
+    }
   }
 
   /** Keep shared canvases filling #game-shell after Phaser or resize drift. */

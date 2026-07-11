@@ -3,22 +3,7 @@
   --layout-h: 100vh;
 }
 
-/* Portrait viewport: rotate the whole app 90° to present landscape layout. */
-html.portrait-rotate #app {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: var(--layout-w);
-  height: var(--layout-h);
-  transform: translate(-50%, -50%) rotate(90deg);
-  transform-origin: center center;
-}
-
-html.portrait-rotate #game-shell,
-html.portrait-rotate #ui-root {
-  width: 100%;
-  height: 100%;
-}
+/* Portrait: rotate prompt covers the app (see rotate-prompt.css). No CSS sideways layout. */
 
 /* --- Landscape-first Home UI --- */
 

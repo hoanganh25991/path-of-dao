@@ -3,7 +3,7 @@
 > **This file is the sole progress record** — what is done, in progress, and what needs to do.  
 > **Specs (what to build):** [plans/index.md](../plans/index.md)  
 > **Detail notes:** [tracks/](./) — one `tracks/NN-slug.md` per sub-plan  
-> **Last updated:** 2026-07-10
+> **Last updated:** 2026-07-11
 
 Each sub-plan track has **Done** · **Remaining** · **What needs to do** (where applicable) · **Verification**.
 
@@ -372,6 +372,7 @@ flowchart LR
 | Done | Remaining |
 |------|-----------|
 | QualityProfile, PWA, CI, 37 E2E, SHIP_CHECKLIST doc | Lighthouse, 30 FPS device, manual sign-off |
+| **Portrait rotate prompt** (2026-07-11) — `RotatePrompt` blocks portrait; no CSS sideways layout | |
 | Fullscreen setting; app icons | Fix unit failures first (34) |
 
 → [full track](./26-pwa-performance-ship.md) — **What needs to do** table

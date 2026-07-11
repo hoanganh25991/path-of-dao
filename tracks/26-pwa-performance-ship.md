@@ -2,7 +2,7 @@
 
 **Status:** `[~]` E2E smoke landed — manual sign-off pending  
 **Plan:** [plans/26-pwa-performance-ship.md](../plans/26-pwa-performance-ship.md)  
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-11
 
 ## Summary
 
@@ -17,6 +17,7 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 - **Save settings** — `settings.quality` (back-compat default `auto`)
 - **Settings modal** — performance picker + fullscreen toggle (On/Off) + version row (`0.1.0-mvp`)
 - **PWA** — `vite-plugin-pwa`, `public/manifest.json`, SW precache; **GitHub Pages base** `/path-of-dao/`; **landscape** orientation
+- **Portrait gate** — `RotatePrompt` + `OrientationManager`: portrait phones see “rotate your device” overlay (en/vi); CSS 90° sideways layout removed; game pauses until landscape
 - **App icons** — unarmed cultivator standing pose (no sword, no reticle — Google Play metadata safe); regen via `python3 tools/gen-app-icon.py`
 - **Build** — manual chunks (`phaser`, `three`, `vendor`); build + SW generation green
 - **CI** — unit job + **e2e job** (Playwright chromium)

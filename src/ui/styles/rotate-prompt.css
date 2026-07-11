@@ -1,0 +1,115 @@
+.rotate-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin: 0;
+  padding: max(1.5rem, env(safe-area-inset-top, 0px))
+    max(1.5rem, env(safe-area-inset-right, 0px))
+    max(1.5rem, env(safe-area-inset-bottom, 0px))
+    max(1.5rem, env(safe-area-inset-left, 0px));
+  background: #0a0a12;
+  color: #e8e4dc;
+  text-align: center;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.rotate-prompt[hidden] {
+  display: none !important;
+}
+
+.rotate-prompt__icon {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.rotate-prompt__phone {
+  position: relative;
+  display: block;
+  width: 1.75rem;
+  height: 2.85rem;
+  border: 2px solid #c9a227;
+  border-radius: 0.35rem;
+  box-shadow: inset 0 0 0 1px rgba(201, 162, 39, 0.25);
+  animation: rotate-prompt-tilt 1.6s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.rotate-prompt__phone::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0.35rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgba(201, 162, 39, 0.55);
+}
+
+.rotate-prompt__arrow {
+  position: absolute;
+  right: 0.15rem;
+  top: 0.35rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-top: 2px solid #8fd4c4;
+  border-right: 2px solid #8fd4c4;
+  border-radius: 0 2px 0 0;
+  opacity: 0.85;
+  animation: rotate-prompt-pulse 1.6s ease-in-out infinite;
+}
+
+.rotate-prompt__title {
+  margin: 0;
+  max-width: 16rem;
+  font: 700 1.15rem/1.35 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #f0e6c8;
+  letter-spacing: 0.02em;
+}
+
+.rotate-prompt__hint {
+  margin: 0;
+  max-width: 18rem;
+  font: 500 0.9rem/1.45 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: rgba(232, 228, 220, 0.72);
+}
+
+@keyframes rotate-prompt-tilt {
+  0%,
+  20% {
+    transform: rotate(0deg);
+  }
+  45%,
+  70% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes rotate-prompt-pulse {
+  0%,
+  20% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  45%,
+  70% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+}
