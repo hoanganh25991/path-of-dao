@@ -65,6 +65,7 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - **Skill cast/impact frame audio sync** (2026-07-10, pairs with 19) — `skill:impact` EventBus event; `AudioDirector.playSkillImpact` wired; fires from `SkillExecutor` at the skill's resolved `impactFrameMs` (kind default or JSON override), not just at cast start
 - **Boss telegraph SFX confirmed wired** — `combat:boss-phase-changed` → `boss.telegraph` + `boss.phase_change` + music duck in `AudioDirector.mount()` (already shipped from earlier boss work; docs were stale)
 - **Dedicated UI volume slider** (2026-07-11) — new `settings.uiVolume` save field (zod `.default(0.82)` migrates pre-slider saves), `AudioManager` UI bus now scales off its own volume instead of `sfxVolume * 0.82`; slider lives in `SettingsModal` under a new "Sound" section, live-previews via `AudioManager.setVolume('ui', …)` on drag and persists on release
+- **Music + SFX volume sliders** (2026-07-11) — `SettingsModal` "Sound" section now has all three sliders (Music/SFX/UI); mirrors the UI-volume pattern exactly — live-preview via `AudioManager.setVolume('music'|'sfx', …)` on drag, persists to `save.settings.musicVolume`/`sfxVolume` on release; `AudioManager.init()` already applied both from save on load (`App.ts`), no change needed there; added `home.settings.volume.music`/`.sfx` locale keys (en/vi) and `settings:music-volume-changed`/`settings:sfx-volume-changed` EventBus events
 
 ### Combat juice
 - Hit-stop on heavy hits
@@ -86,7 +87,6 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - Performance profile to disable juice on low-end devices (ties to 26)
 - `player.land` SFX (manifest key exists; no jump/land mechanic yet)
 - Dedicated impact-frame SFX flavor per intent (currently reuses the cast key — fine for MVP procedural placeholders, revisit once real OGG one-shots ship)
-- Music + SFX volume sliders still missing from `SettingsModal` (only the new UI slider exists — `sfxVolume`/`musicVolume` save fields have no UI control yet)
 
 ## What needs to do
 
@@ -96,8 +96,9 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 | 2 | ~~Boss phase screen darken (visual juice) on phase transition~~ | `[x]` Verified already wired 2026-07-11 — `JuiceController.applyBossPhaseJuice()` via `CombatJuiceBridge`; added tests |
 | 3 | ~~Skill `impactFrameMs` sync (pairs with track 19)~~ | `[x]` Done 2026-07-10 — `skillAudioSync.ts` · `SkillExecutor.ts` · `AudioDirector.ts` |
 | 4 | ~~Dedicated **UI volume** slider in settings modal~~ | `[x]` Done 2026-07-11 — `SettingsModal.ts` · `SaveSchema.ts` (`uiVolume`) · `AudioManager.ts` |
-| 5 | Confirm low-tier `QualityProfile` disables hit-stop/shake (26) | already partial — verify on device |
-| 6 | Ship real SFX OGG one-shots (combat/UI) when ready | `public/audio/sfx/` · manifest · `AudioManager` |
+| 5 | ~~**Music + SFX volume sliders** in settings modal~~ | `[x]` Done 2026-07-11 — `SettingsModal.ts` · `content/locales/{en,vi}/home.json` · `EventBus.ts` |
+| 6 | Confirm low-tier `QualityProfile` disables hit-stop/shake (26) | already partial — verify on device |
+| 7 | Ship real SFX OGG one-shots (combat/UI) when ready | `public/audio/sfx/` · manifest · `AudioManager` |
 
 ## Verification
 
@@ -107,4 +108,5 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - Skill cast/impact frame audio sync: `tests/unit/skill-audio-sync.test.ts`, `tests/unit/audio-director.test.ts` (`skill:impact` case)
 - Boss phase screen darken: `tests/unit/juice-controller.test.ts` (veil timing, low-tier quality gate, no input block), `tests/unit/combat-juice-bridge.test.ts` (`combat:boss-phase-changed` wiring + bridge teardown)
 - Dedicated UI volume slider: `tests/unit/settings-modal.test.ts` (slider seeded from save, live preview independent of SFX, persists on release), `tests/unit/audio-manager.test.ts` (ui bus independence), `tests/unit/save-manager.test.ts` (`uiVolume` migration default `0.82`)
+- Music + SFX volume sliders: `tests/unit/settings-modal.test.ts` (both sliders seeded from save, live preview via `AudioManager.setVolume`, persist independently of the other two buses on release) — full suite green at 674/674 (2026-07-11)
 - `npm test -- tests/content/audio-manifest.test.ts tests/unit/audio-manager.test.ts tests/unit/audio-director.test.ts tests/unit/audio-unlock.test.ts tests/unit/skill-audio-sync.test.ts tests/unit/juice-controller.test.ts tests/unit/combat-juice-bridge.test.ts tests/unit/settings-modal.test.ts tests/unit/save-manager.test.ts`

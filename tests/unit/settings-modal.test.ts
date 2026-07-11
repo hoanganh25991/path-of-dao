@@ -160,4 +160,82 @@ describe('SettingsModal', () => {
     expect(loaded.settings.uiVolume).toBeCloseTo(0.2);
     expect(loaded.settings.sfxVolume).toBe(1);
   });
+
+  it('shows dedicated Music and SFX volume sliders seeded from the save', () => {
+    gameStore.getState().patch((save) => ({
+      settings: { ...save.settings, musicVolume: 0.3, sfxVolume: 0.7 },
+    }));
+
+    const uiRoot = document.getElementById('ui-root')!;
+    void showSettingsModal(uiRoot);
+
+    const musicSlider = document.querySelector<HTMLInputElement>('[data-testid="settings-music-volume"]');
+    const sfxSlider = document.querySelector<HTMLInputElement>('[data-testid="settings-sfx-volume"]');
+    expect(musicSlider).toBeTruthy();
+    expect(sfxSlider).toBeTruthy();
+    expect(musicSlider!.value).toBe('30');
+    expect(sfxSlider!.value).toBe('70');
+  });
+
+  it('live-previews Music volume on drag and persists on release, independent of SFX/UI', async () => {
+    gameStore.getState().patch((save) => ({
+      settings: { ...save.settings, musicVolume: 0.5, sfxVolume: 1, uiVolume: 0.9 },
+    }));
+    AudioManager.init(gameStore.getState().save!);
+
+    const uiRoot = document.getElementById('ui-root')!;
+    void showSettingsModal(uiRoot);
+
+    const slider = document.querySelector<HTMLInputElement>('[data-testid="settings-music-volume"]')!;
+    slider.value = '15';
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+
+    expect(AudioManager.getBusVolume('music')).toBeCloseTo(0.15);
+    expect(AudioManager.getBusVolume('sfx')).toBeCloseTo(1);
+    expect(AudioManager.getBusVolume('ui')).toBeCloseTo(0.9);
+    // Not persisted yet — only the live audio preview updates on drag.
+    expect(gameStore.getState().save?.settings.musicVolume).toBe(0.5);
+
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
+
+    await vi.waitFor(() => {
+      expect(gameStore.getState().save?.settings.musicVolume).toBeCloseTo(0.15);
+    });
+
+    const loaded = await SaveManager.load();
+    expect(loaded.settings.musicVolume).toBeCloseTo(0.15);
+    expect(loaded.settings.sfxVolume).toBe(1);
+    expect(loaded.settings.uiVolume).toBe(0.9);
+  });
+
+  it('live-previews SFX volume on drag and persists on release, independent of Music/UI', async () => {
+    gameStore.getState().patch((save) => ({
+      settings: { ...save.settings, musicVolume: 0.8, sfxVolume: 0.5, uiVolume: 0.9 },
+    }));
+    AudioManager.init(gameStore.getState().save!);
+
+    const uiRoot = document.getElementById('ui-root')!;
+    void showSettingsModal(uiRoot);
+
+    const slider = document.querySelector<HTMLInputElement>('[data-testid="settings-sfx-volume"]')!;
+    slider.value = '35';
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+
+    expect(AudioManager.getBusVolume('sfx')).toBeCloseTo(0.35);
+    expect(AudioManager.getBusVolume('music')).toBeCloseTo(0.8);
+    expect(AudioManager.getBusVolume('ui')).toBeCloseTo(0.9);
+    // Not persisted yet — only the live audio preview updates on drag.
+    expect(gameStore.getState().save?.settings.sfxVolume).toBe(0.5);
+
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
+
+    await vi.waitFor(() => {
+      expect(gameStore.getState().save?.settings.sfxVolume).toBeCloseTo(0.35);
+    });
+
+    const loaded = await SaveManager.load();
+    expect(loaded.settings.sfxVolume).toBeCloseTo(0.35);
+    expect(loaded.settings.musicVolume).toBe(0.8);
+    expect(loaded.settings.uiVolume).toBe(0.9);
+  });
 });

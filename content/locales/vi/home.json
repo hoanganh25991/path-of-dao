@@ -264,6 +264,8 @@
   "home.settings.fullscreen.on": "Bật",
   "home.settings.fullscreen.off": "Tắt",
   "home.settings.sound": "Âm Thanh",
+  "home.settings.volume.music": "Âm Lượng Nhạc",
+  "home.settings.volume.sfx": "Âm Lượng Hiệu Ứng",
   "home.settings.volume.ui": "Âm Lượng Giao Diện",
   "home.settings.progress": "Tiến Trình",
   "home.settings.reset": "Chơi Lại Từ Đầu",

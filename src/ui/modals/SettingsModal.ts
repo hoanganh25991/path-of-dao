@@ -235,6 +235,18 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       }
     };
 
+    const syncMusicVolumeSelection = (): void => {
+      const percent = Math.round(selectedMusicVolume * 100);
+      musicVolumeInput.value = String(percent);
+      musicVolumeValue.textContent = `${percent}%`;
+    };
+
+    const syncSfxVolumeSelection = (): void => {
+      const percent = Math.round(selectedSfxVolume * 100);
+      sfxVolumeInput.value = String(percent);
+      sfxVolumeValue.textContent = `${percent}%`;
+    };
+
     const syncUiVolumeSelection = (): void => {
       const percent = Math.round(selectedUiVolume * 100);
       uiVolumeInput.value = String(percent);
@@ -261,6 +273,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       fullscreenTitle.textContent = I18nManager.t('home.settings.fullscreen');
       fullscreenOptions.setAttribute('aria-label', I18nManager.t('home.settings.fullscreen'));
       soundTitle.textContent = I18nManager.t('home.settings.sound');
+      musicVolumeLabel.textContent = I18nManager.t('home.settings.volume.music');
+      sfxVolumeLabel.textContent = I18nManager.t('home.settings.volume.sfx');
       uiVolumeLabel.textContent = I18nManager.t('home.settings.volume.ui');
       version.textContent = I18nManager.t('home.settings.version', { version: VERSION });
       progressTitle.textContent = I18nManager.t('home.settings.progress');
@@ -363,6 +377,26 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       fullscreenOptions.appendChild(label);
     }
 
+    musicVolumeInput.addEventListener('input', () => {
+      const next = Number(musicVolumeInput.value) / 100;
+      selectedMusicVolume = next;
+      musicVolumeValue.textContent = `${Math.round(next * 100)}%`;
+      AudioManager.setVolume('music', next);
+    });
+    musicVolumeInput.addEventListener('change', () => {
+      void applyMusicVolumePreference(selectedMusicVolume);
+    });
+
+    sfxVolumeInput.addEventListener('input', () => {
+      const next = Number(sfxVolumeInput.value) / 100;
+      selectedSfxVolume = next;
+      sfxVolumeValue.textContent = `${Math.round(next * 100)}%`;
+      AudioManager.setVolume('sfx', next);
+    });
+    sfxVolumeInput.addEventListener('change', () => {
+      void applySfxVolumePreference(selectedSfxVolume);
+    });
+
     uiVolumeInput.addEventListener('input', () => {
       const next = Number(uiVolumeInput.value) / 100;
       selectedUiVolume = next;
@@ -382,6 +416,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
       fullscreenTitle,
       fullscreenOptions,
       soundTitle,
+      musicVolumeRow,
+      sfxVolumeRow,
       uiVolumeRow,
       progressTitle,
       resetBtn,
@@ -413,6 +449,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     syncLocaleSelection();
     syncQualitySelection();
     syncFullscreenSelection();
+    syncMusicVolumeSelection();
+    syncSfxVolumeSelection();
     syncUiVolumeSelection();
     requestAnimationFrame(() => overlay.classList.add('settings-modal--active'));
 
@@ -480,6 +518,30 @@ async function applyFullscreenPreference(enabled: boolean): Promise<void> {
     FullscreenManager.clearOptOut();
     void FullscreenManager.requestOnPlay();
   }
+}
+
+async function applyMusicVolumePreference(volume: number): Promise<void> {
+  const current = gameStore.getState().save;
+  if (!current || current.settings.musicVolume === volume) return;
+
+  gameStore.getState().patch((save) => ({
+    settings: { ...save.settings, musicVolume: volume },
+  }));
+  await gameStore.getState().persist();
+
+  EventBus.emit('settings:music-volume-changed', { volume });
+}
+
+async function applySfxVolumePreference(volume: number): Promise<void> {
+  const current = gameStore.getState().save;
+  if (!current || current.settings.sfxVolume === volume) return;
+
+  gameStore.getState().patch((save) => ({
+    settings: { ...save.settings, sfxVolume: volume },
+  }));
+  await gameStore.getState().persist();
+
+  EventBus.emit('settings:sfx-volume-changed', { volume });
 }
 
 async function applyUiVolumePreference(volume: number): Promise<void> {

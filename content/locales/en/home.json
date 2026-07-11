@@ -264,6 +264,8 @@
   "home.settings.fullscreen.on": "On",
   "home.settings.fullscreen.off": "Off",
   "home.settings.sound": "Sound",
+  "home.settings.volume.music": "Music Volume",
+  "home.settings.volume.sfx": "SFX Volume",
   "home.settings.volume.ui": "UI Volume",
   "home.settings.progress": "Progress",
   "home.settings.reset": "Replay from Beginning",
