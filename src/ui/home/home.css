@@ -644,6 +644,13 @@ header.home-profile {
   font-size: 0.875rem;
 }
 
+/* DA-04 procedural/authored 24×24 icon — displayed larger, pixel-crisp. */
+.home-divine-section__icon-img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
 .home-divine-section__info {
   flex: 1;
   min-width: 0;

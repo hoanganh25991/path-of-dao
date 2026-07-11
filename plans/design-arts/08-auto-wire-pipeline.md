@@ -54,6 +54,6 @@ Finished art **plugs into the running game without a code change** — only a fi
 
 ## Acceptance
 
-- [ ] Drop `assets/sprites/hero/wanderer.png` → next `pnpm dev` shows authored hero (no TS edit)
-- [ ] Remove file → procedural fallback returns (no crash)
-- [ ] CI documents manifest schema in plan `20`
+- [~] Drop `assets/sprites/hero/wanderer.png` → next `pnpm dev` shows authored hero (no TS edit) — implemented 2026-07-11 (`AssetArtRegistry` + `preloadHeroArt` + `registerHeroCombatAssets`); no DA-01 PNG authored yet, so the live-render step is unverified until then
+- [x] Remove file → procedural fallback returns (no crash) — verified via `resolveHeroAssetFrom` fallback unit tests + current repo has zero authored PNGs and boots clean
+- [x] CI documents manifest schema in plan `20` — see [`plans/20-content-pipeline.md`](../20-content-pipeline.md) §14

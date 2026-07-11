@@ -189,3 +189,26 @@ Include in README:
 ## 13. Handoff
 
 Sub-plans 21–23 author content using this pipeline. All content PRs must pass validate.
+
+---
+
+## 14. Sprite manifest schema (DA-08 cross-ref)
+
+`assets/sprites/manifest.json` is the DA-08 auto-wire pipeline's asset override map — see [`plans/design-arts/08-auto-wire-pipeline.md`](./design-arts/08-auto-wire-pipeline.md) for the full resolution order and [`assets/sprites/README.md`](../assets/sprites/README.md) for authoring steps. Schema, resolved by `src/combat/art/AssetArtRegistry.ts`:
+
+```json
+{
+  "hero": {
+    "<AttackStyle>": {
+      "sheet": "hero/<file>.png",
+      "frameWidth": 32,
+      "frameHeight": 56,
+      "anims": { "<animKey>": [startFrame, endFrame] }
+    }
+  },
+  "skills": { "<skill.id>": "skills/<file>.png" },
+  "items": { "<item.id>": "items/<file>.png" }
+}
+```
+
+`skill.*` / `item.*` entries are only needed when the PNG isn't at the direct convention path (`assets/sprites/{skills|items}/{id}.png`); `content:validate` warns (does not fail) while an icon PNG is missing.

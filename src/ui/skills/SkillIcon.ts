@@ -1,5 +1,6 @@
 import type { InsightIntentId } from '@/progression/SkillDefinition';
 import { getSkillDefinition } from '@/progression/SkillLoader';
+import { getSkillIconSrc } from '@/combat/art/skillIconDraw';
 
 export interface IntentVisual {
   icon: string;
@@ -96,14 +97,20 @@ export function getSkillVfxTint(skillId: string): number {
   return parseInt(visual.glow.replace('#', ''), 16);
 }
 
+/**
+ * DA-04 — 24×24 procedural (or DA-08 authored PNG) intent icon, rendered as
+ * an `<img>` with inline `image-rendering: pixelated` so it stays crisp when
+ * scaled up in every consumer's CSS (combat wheel, loadout picker, detail panel).
+ */
 export function renderSkillButtonHtml(skillId: string): string {
   if (!skillId) {
     return '';
   }
   const visual = getSkillVisual(skillId);
   const awakened = isAwakenedSkillId(skillId);
+  const iconSrc = getSkillIconSrc(skillId);
   return `
-    <span class="skill-btn__icon" style="--skill-color:${visual.color};--skill-glow:${visual.glow}">${visual.icon}</span>
+    <img class="skill-btn__icon skill-btn__icon--img" src="${iconSrc}" width="24" height="24" alt="" style="image-rendering:pixelated;--skill-color:${visual.color};--skill-glow:${visual.glow}" />
     ${awakened ? '<span class="skill-btn__awakened" aria-hidden="true"></span>' : ''}
   `.trim();
 }

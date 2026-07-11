@@ -9,6 +9,7 @@ import { worldMapFileSchema } from '@/shared/schemas/world-map';
 import { encounterDefinitionSchema } from '@/shared/schemas/fortuitous-encounters';
 import { realmsFileSchema } from '@/shared/schemas/realms';
 import { lootTableSchema } from '@/shared/schemas/loot';
+import { hasSpriteIcon } from '@/combat/art/AssetArtRegistry';
 import type { ContentIndex } from '@/shared/content/validateSchemas';
 import type { ValidationReport } from '@/shared/content/types';
 
@@ -151,6 +152,13 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
         file: `skills/${fileId}.json`,
         message: `nameKey "${skill.nameKey}" missing in en locale`,
         severity: 'error',
+      });
+    }
+    if (!hasSpriteIcon('skills', skill.id)) {
+      warnings.push({
+        file: `skills/${fileId}.json`,
+        message: `no assets/sprites/skills/${skill.id}.png (DA-08: icon not authored yet, using fallback)`,
+        severity: 'warning',
       });
     }
   }
@@ -308,6 +316,13 @@ export function lintCrossrefs(index: ContentIndex, options: LintOptions = {}): V
         file: `items/${fileId}.json`,
         message: `displayNameKey "${item.displayNameKey}" missing in en locale`,
         severity: 'error',
+      });
+    }
+    if (!hasSpriteIcon('items', item.id)) {
+      warnings.push({
+        file: `items/${fileId}.json`,
+        message: `no assets/sprites/items/${item.id}.png (DA-08: icon not authored yet, using fallback)`,
+        severity: 'warning',
       });
     }
   }

@@ -292,6 +292,13 @@
   filter: drop-shadow(0 0 6px var(--skill-glow, rgba(143, 212, 196, 0.5)));
 }
 
+/* DA-04 procedural/authored 24×24 icon — displayed larger, pixel-crisp. */
+.skill-btn__icon--img {
+  width: 28px;
+  height: 28px;
+  image-rendering: pixelated;
+}
+
 .action-btn--attack .skill-btn__icon--attack {
   font-size: 1.65rem;
 }

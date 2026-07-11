@@ -24,6 +24,7 @@ import {
 } from '@/progression/InsightSystem';
 import { listDiscoveredIntentIds } from '@/progression/SkillLoadout';
 import { showAwakeningModal } from '@/ui/modals/AwakeningModal';
+import { getSkillIconSrc } from '@/combat/art/skillIconDraw';
 
 export type ProfileSubTab = 'stats' | 'dharma' | 'divine' | 'intent' | 'destiny';
 
@@ -532,10 +533,10 @@ export function createProfilePanel(): ProfilePanelHandles {
 
     for (const intentId of discovered) {
       const config = getInsightIntentConfig(intentId);
-      const iconChar = SIGNATURE_INTENT_ICONS[intentId] ?? '✦';
       const state = getInsightState(save, intentId);
       const progress = state ? (state.awakened ? 100 : insightDisplayPct(state.xp)) : 0;
       const ready = checkAwakeningReady(save, intentId);
+      const signatureSkillId = state?.awakened ? config.awakenedSkillId : config.baseSkillId;
 
       const row = document.createElement('div');
       row.className = 'home-divine-section__row';
@@ -543,10 +544,17 @@ export function createProfilePanel(): ProfilePanelHandles {
       if (state?.awakened) row.classList.add('home-divine-section__row--awakened');
       if (ready) row.classList.add('home-divine-section__row--ready');
 
+      // DA-04 — 24×24 procedural (or DA-08 authored PNG) intent icon.
       const icon = document.createElement('div');
       icon.className = 'home-divine-section__icon';
-      icon.textContent = iconChar;
       icon.setAttribute('aria-hidden', 'true');
+      const iconImg = document.createElement('img');
+      iconImg.className = 'home-divine-section__icon-img';
+      iconImg.src = getSkillIconSrc(signatureSkillId);
+      iconImg.width = 24;
+      iconImg.height = 24;
+      iconImg.alt = '';
+      icon.appendChild(iconImg);
 
       const info = document.createElement('div');
       info.className = 'home-divine-section__info';

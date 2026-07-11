@@ -47,6 +47,11 @@
   font-size: 1.15rem;
 }
 
+.skill-showcase__icon .skill-btn__icon--img {
+  width: 24px;
+  height: 24px;
+}
+
 .skill-showcase__body {
   display: flex;
   flex-direction: column;
@@ -116,4 +121,9 @@
 
 .skill-icon-strip__icon .skill-btn__icon {
   font-size: 0.95rem;
+}
+
+.skill-icon-strip__icon .skill-btn__icon--img {
+  width: 18px;
+  height: 18px;
 }

@@ -63,6 +63,7 @@ import {
 } from '@/combat/art/stickyManStrikes';
 import type { AttackStyle } from '@/progression/WeaponProgression';
 import { TEXTURE_KEYS } from '@/combat/textures/placeholderTextures';
+import { resolveAssetUrl, resolveHeroAsset } from '@/combat/art/AssetArtRegistry';
 
 export const ANIM = {
   heroIdle: 'hero_sticky_idle',
@@ -224,6 +225,31 @@ function registerWeaponStrikes(
   }
 }
 
+/** Texture key for an authored PNG hero sheet (DA-08), keyed by attack style. */
+export function realHeroTextureKey(style: AttackStyle): string {
+  return `hero_sticky_real_${style}`;
+}
+
+/**
+ * DA-08 auto-wire: queue the authored hero PNG (if any) for `style` during
+ * `Scene.preload()`. No-op when neither a direct file nor a manifest entry
+ * resolves — the procedural sticky-man sheet remains the only texture.
+ */
+export function preloadHeroArt(scene: Phaser.Scene, style: AttackStyle = 'unarmed'): void {
+  const resolution = resolveHeroAsset(style, { frameWidth: FRAME_W, frameHeight: FRAME_H });
+  if (resolution.source === 'fallback') return;
+  const url = resolveAssetUrl(resolution);
+  if (!url) return;
+  const key = realHeroTextureKey(style);
+  if (scene.textures.exists(key)) {
+    scene.textures.remove(key);
+  }
+  scene.load.spritesheet(key, url, {
+    frameWidth: resolution.frameWidth,
+    frameHeight: resolution.frameHeight,
+  });
+}
+
 /** Rebuild hero spritesheet + anims for hand strikes (unarmed) or equipped weapon type. */
 export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle = 'unarmed'): void {
   const combatStyle = toHeroCombatStyle(style);
@@ -239,19 +265,49 @@ export function registerHeroCombatAssets(scene: Phaser.Scene, style: AttackStyle
   addSheetFromCanvas(scene, heroKey, heroCanvas, FRAME_W, FRAME_H);
   removeHeroAnims(scene);
 
-  createAnim(scene, ANIM.heroIdle, heroKey, heroFrameOffset(combatStyle, 'idle'), 4, 6);
-  createAnim(scene, ANIM.heroWalk, heroKey, heroFrameOffset(combatStyle, 'walk'), 6, 10);
-  createAnim(scene, ANIM.heroHit, heroKey, heroFrameOffset(combatStyle, 'hit'), POSES_HIT.length, 10, 0, {
-    0: 70,
-  });
-  createAnim(scene, ANIM.heroSit, heroKey, heroFrameOffset(combatStyle, 'sit'), POSES_SIT.length, 3);
+  // DA-08: swap in the authored PNG sheet queued by `preloadHeroArt`, if it
+  // actually loaded. `source: 'file'` (direct convention path) replaces the
+  // whole sheet — same frame order as `buildHeroFrames`, so every existing
+  // offset keeps working unchanged. `source: 'manifest'` only replaces the
+  // specific anim keys it declares; anything else still uses the sticky-man
+  // canvas, so a partial authored sheet can never leave an anim missing.
+  const resolution = resolveHeroAsset(style, { frameWidth: FRAME_W, frameHeight: FRAME_H });
+  const realKey = realHeroTextureKey(style);
+  const realTextureReady = resolution.source !== 'fallback' && scene.textures.exists(realKey);
+  const baseKey = realTextureReady && resolution.source === 'file' ? realKey : heroKey;
+  const manifestAnims = realTextureReady && resolution.source === 'manifest' ? resolution.anims : undefined;
+
+  const animSource = (
+    animKey: string,
+    fallbackOffset: number,
+    fallbackCount: number,
+  ): { key: string; offset: number; count: number } => {
+    const range = manifestAnims?.[animKey];
+    if (range) {
+      const [start, end] = range;
+      return { key: realKey, offset: start, count: end - start + 1 };
+    }
+    return { key: baseKey, offset: fallbackOffset, count: fallbackCount };
+  };
+
+  const idle = animSource(ANIM.heroIdle, heroFrameOffset(combatStyle, 'idle'), 4);
+  createAnim(scene, ANIM.heroIdle, idle.key, idle.offset, idle.count, 6);
+
+  const walk = animSource(ANIM.heroWalk, heroFrameOffset(combatStyle, 'walk'), 6);
+  createAnim(scene, ANIM.heroWalk, walk.key, walk.offset, walk.count, 10);
+
+  const hit = animSource(ANIM.heroHit, heroFrameOffset(combatStyle, 'hit'), POSES_HIT.length);
+  createAnim(scene, ANIM.heroHit, hit.key, hit.offset, hit.count, 10, 0, { 0: 70 });
+
+  const sit = animSource(ANIM.heroSit, heroFrameOffset(combatStyle, 'sit'), POSES_SIT.length);
+  createAnim(scene, ANIM.heroSit, sit.key, sit.offset, sit.count, 3);
 
   if (combatStyle === 'unarmed') {
-    registerUnarmedStrikes(scene, heroKey);
+    registerUnarmedStrikes(scene, baseKey);
     return;
   }
 
-  registerWeaponStrikes(scene, heroKey, combatStyle);
+  registerWeaponStrikes(scene, baseKey, combatStyle);
 }
 
 /** Register sticky-man spritesheets + Phaser animations (BootScene). */

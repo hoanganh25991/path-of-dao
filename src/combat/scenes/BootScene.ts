@@ -1,11 +1,13 @@
 import Phaser from 'phaser';
 import { getMapConfig, resolveTiledUrl } from '@/combat/map/MapLoader';
 import { createPlaceholderTextures } from '@/combat/textures/placeholderTextures';
-import { registerStickyManAssets } from '@/combat/art/stickyManAssets';
+import { preloadHeroArt, registerStickyManAssets } from '@/combat/art/stickyManAssets';
 import { registerPixelVfxAssets } from '@/combat/art/pixelVfxDraw';
 import { setTilesetBiome, BIOME_PALETTES } from '@/combat/art/tileset/TilesetRegistry';
 import { registerStructureTextures } from '@/combat/art/structures/StructureRegistry';
 import { MapScene } from '@/combat/scenes/MapScene';
+import { gameStore } from '@/core/store/gameStore';
+import { resolveAttackStyle } from '@/progression/WeaponProgression';
 
 export const tilemapKey = (mapId: string): string => `tilemap:${mapId}`;
 
@@ -61,6 +63,12 @@ export class BootScene extends Phaser.Scene {
     const biomeName = CHAPTER_BIOME_NAME[config.chapterId] ?? 'Fallen Village';
     this.registry.set('biomeName', biomeName);
     this.load.tilemapTiledJSON(tilemapKey(this.mapId), resolveTiledUrl(config));
+
+    // DA-08 auto-wire: queue the authored hero PNG for the current attack
+    // style (if any) so it's ready by create() — no-op until PNGs land.
+    const save = gameStore.getState().save;
+    const attackStyle = save ? resolveAttackStyle(save) : 'unarmed';
+    preloadHeroArt(this, attackStyle);
   }
 
   create(): void {

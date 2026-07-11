@@ -331,6 +331,11 @@
   font-size: 1.1rem;
 }
 
+.ancient-demo-modal__pool-icon .skill-btn__icon--img {
+  width: 22px;
+  height: 22px;
+}
+
 /* Phone landscape / short viewports (Pixel 7, iPhone 14) */
 @media (max-height: 520px) {
   .ancient-demo-modal {

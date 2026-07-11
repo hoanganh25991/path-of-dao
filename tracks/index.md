@@ -197,8 +197,9 @@ Ordered by dependency and your 2026-07-10 decisions. Detail checklists live in e
 
 | # | Task | Track | Notes |
 |---|------|-------|-------|
-| 11 | **DA-01 hero** sprites → replace sticky-man | 32, 29 | Ship gate plan 29 §0 |
-| 12 | DA-02/03 enemies + bosses; DA-04 wheel icons | 32, 29, 30 | |
+| 11 | **DA-01 hero** sprites → replace sticky-man | 32, 29 | Ship gate plan 29 §0 — auto-wire pipeline ready (DA-08 done 2026-07-11), drop-in PNG needs no code change |
+| 12 | DA-02/03 enemies + bosses; DA-04 wheel icons | 32, 29, 30 | `[~]` DA-04 procedural placeholders shipped 2026-07-11 — `skillIconDraw.ts` (24×24 intent-hue + pixel glyph, SVG data URL, no canvas/PNG needed) wired into combat wheel (`ActionButtons`) + Home Divine Arts tiles (`ProfilePanel` divine tab) via `renderSkillButtonHtml`/`getSkillIconSrc`; `AssetArtRegistry.resolveIconAsset('skills', …)` still preferred when a PNG lands (DA-08). DA-02/03 enemies+bosses and authored DA-04 PNGs still open |
+| — | ~~DA-08 auto-wire manifest pipeline~~ | 32, 29 | `[x]` Done 2026-07-11 — `AssetArtRegistry` (file → manifest → fallback), `pnpm art:manifest`, `content:validate` icon warnings; see [track 32](./32-design-arts.md) |
 | 13 | Chapter + timeline **illustrations** (webp or null) | 32, 18, 31 | Polish, not logic block |
 | 14 | ~~Skill cast **audio sync** on impact frames~~ | 19, 25 | `[x]` Done 2026-07-10 — `castFrameMs`/`impactFrameMs` schema fields; `SkillExecutor` schedules `skill:cast`/`skill:impact` via scene timer (kind default: melee `impactFrameMs` 140ms); boss telegraph SFX verified already wired (`combat:boss-phase-changed` → `boss.telegraph`) |
 | 15 | Real **OGG** assets + file playback | 25 | Procedural OK for MVP if time short |
@@ -394,9 +395,9 @@ flowchart LR
 | 29 | `[~]` | DA-01 hero sprites; layered props; anim QA all families | [track](./29-pixel-art-combat-canon.md) |
 | 30 | `[~]` | ~~Rename `equippedSkills` → `divineArts`~~ `[x]` done 2026-07-10; DA-04 wheel icons + optional pause editor remain | [track](./30-divine-arts-wheel-loadout.md) |
 | 31 | `[~]` | **Phase E1 only:** illustrations (tooltip + ancient auto-walk hook shipped 2026-07-10) | [track](./31-wang-lin-story-timeline.md) |
-| 32 | `[~]` | DA-01…09 art pipeline; auto-wire on drop | [track](./32-design-arts.md) |
+| 32 | `[~]` | ~~DA-08 auto-wire pipeline~~ `[x]` done 2026-07-11; DA-01…07/09 authored PNGs remain | [track](./32-design-arts.md) |
 | 33 | `[~]` | ~~Loot→item lint + boss audit~~ `[x]` done 2026-07-10; item roster; DA-05 icons | [track](./33-item-loot-system.md) |
-| 34 | `[~]` | Fix 22 unit failures; smoke + DevTools gate | [track](./34-quick-check-smoke-devtools.md) |
+| 34 | `[~]` | Fix 22 unit failures `[x]`; `window.__podErrors` smoke assert `[x]` 2026-07-11; DevTools gate remains | [track](./34-quick-check-smoke-devtools.md) |
 
 ---
 

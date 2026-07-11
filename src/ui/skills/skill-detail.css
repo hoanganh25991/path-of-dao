@@ -27,6 +27,11 @@
   font-size: 1.45rem;
 }
 
+.skill-detail__icon .skill-btn__icon--img {
+  width: 32px;
+  height: 32px;
+}
+
 .skill-detail__titles {
   display: flex;
   flex-direction: column;
@@ -170,6 +175,11 @@
   line-height: 1;
 }
 
+.skill-detail-tabs__tab .skill-btn__icon--img {
+  width: 18px;
+  height: 18px;
+}
+
 .skill-loadout__pool-icons {
   display: flex;
   flex-wrap: wrap;
@@ -230,4 +240,9 @@
 
 .skill-loadout__pool-icon .skill-btn__icon {
   font-size: 1rem;
+}
+
+.skill-loadout__pool-icon .skill-btn__icon--img {
+  width: 22px;
+  height: 22px;
 }
