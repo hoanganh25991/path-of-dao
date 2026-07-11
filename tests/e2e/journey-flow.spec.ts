@@ -257,7 +257,7 @@ async function runFreshChapter(
 const FRESH_CHAPTER_STEPS = [
   {
     exploreMapId: 'map.fallen_village.01',
-    exploreSkillId: 'skill.void.slash',
+    exploreSkillId: 'skill.life.mend',
     bossMapId: 'map.fallen_village.02',
     chapterSkillId: 'skill.life.pulse.v2',
     nextRegionHint: 'Foggy Trail',
@@ -266,54 +266,54 @@ const FRESH_CHAPTER_STEPS = [
   {
     enterHint: 'Foggy Trail',
     exploreMapId: 'map.mist_forest.01',
-    exploreSkillId: 'skill.sword.slash',
+    exploreSkillId: 'skill.life.pulse.v2',
     bossMapId: 'map.mist_forest.02',
-    chapterSkillId: 'skill.time.drift.v2',
+    chapterSkillId: 'skill.life.bloom.v1',
     nextRegionHint: 'Canyon Mouth',
     storySceneId: 'story.ch02.spirit_fox',
   },
   {
     enterHint: 'Canyon Mouth',
     exploreMapId: 'map.stone_canyon.01',
-    exploreSkillId: 'skill.flame.bolt',
+    exploreSkillId: 'skill.life.bloom.v1',
     bossMapId: 'map.stone_canyon.02',
-    chapterSkillId: 'skill.sword.heaven.v5',
+    chapterSkillId: 'skill.time.slow',
     nextRegionHint: 'Lakeshore',
     storySceneId: 'story.ch03.bandit_end',
   },
   {
     enterHint: 'Lakeshore',
     exploreMapId: 'map.moon_lake.01',
-    exploreSkillId: 'skill.life.mend',
+    exploreSkillId: 'skill.time.slow',
     bossMapId: 'map.moon_lake.02',
-    chapterSkillId: 'skill.flame.lotus.v4',
+    chapterSkillId: 'skill.sword.slash',
     nextRegionHint: 'Scorched Dunes',
     storySceneId: 'story.ch04.ancient_seal',
   },
   {
     enterHint: 'Scorched Dunes',
     exploreMapId: 'map.burning_desert.01',
-    exploreSkillId: 'skill.lightning.strike',
+    exploreSkillId: 'skill.flame.scorch.v1',
     bossMapId: 'map.burning_desert.02',
-    chapterSkillId: 'skill.lightning.judgment.v4',
+    chapterSkillId: 'skill.flame.bolt',
     nextRegionHint: 'Storm Pass',
     storySceneId: 'story.ch05.survival',
   },
   {
     enterHint: 'Storm Pass',
     exploreMapId: 'map.thunder_peaks.01',
-    exploreSkillId: 'skill.time.slow',
+    exploreSkillId: 'skill.lightning.fork.v1',
     bossMapId: 'map.thunder_peaks.02',
-    chapterSkillId: 'skill.lightning.fork.v1',
+    chapterSkillId: 'skill.lightning.strike',
     nextRegionHint: 'Ice Gate',
     storySceneId: 'story.ch06.lightning_step',
   },
   {
     enterHint: 'Ice Gate',
     exploreMapId: 'map.frozen_palace.01',
-    exploreSkillId: 'skill.flame.scorch.v1',
+    exploreSkillId: 'skill.time.drift.v2',
     bossMapId: 'map.frozen_palace.02',
-    chapterSkillId: 'skill.life.bloom.v1',
+    chapterSkillId: 'skill.time.stasis.v4',
     nextRegionHint: 'Rift Edge',
     storySceneId: 'story.ch07.forgotten_queen',
   },
@@ -329,9 +329,9 @@ const FRESH_CHAPTER_STEPS = [
   {
     enterHint: 'Celestial Steps',
     exploreMapId: 'map.heavenly_gate.01',
-    exploreSkillId: 'skill.sword.crescent.v1',
+    exploreSkillId: 'skill.sword.burst.v4',
     bossMapId: 'map.heavenly_gate.02',
-    chapterSkillId: 'skill.time.stasis.v4',
+    chapterSkillId: 'skill.sword.heaven.v5',
     nextRegionHint: 'Throne Approach',
     storySceneId: 'story.ch09.guardians',
   },
@@ -487,14 +487,14 @@ test.describe('Journey base flow', () => {
 });
 
 const EXPLORE_CLEAR_CASES = [
-  { chaptersComplete: 2, mapId: 'map.stone_canyon.01', intent: 'flame', skillId: 'skill.flame.bolt', skillName: 'Flame Bolt' },
-  { chaptersComplete: 3, mapId: 'map.moon_lake.01', intent: 'life', skillId: 'skill.life.mend', skillName: 'Life Mend' },
-  { chaptersComplete: 4, mapId: 'map.burning_desert.01', intent: 'lightning', skillId: 'skill.lightning.strike', skillName: 'Lightning Strike' },
-  { chaptersComplete: 5, mapId: 'map.thunder_peaks.01', intent: 'time', skillId: 'skill.time.slow', skillName: 'Time Slow' },
-  { chaptersComplete: 6, mapId: 'map.frozen_palace.01', intent: 'flame', skillId: 'skill.flame.scorch.v1', skillName: 'Scorch Bolt' },
-  { chaptersComplete: 7, mapId: 'map.abyss_rift.01', intent: 'void', skillId: 'skill.void.rift.v1', skillName: 'Void Rift' },
-  { chaptersComplete: 8, mapId: 'map.heavenly_gate.01', intent: 'sword', skillId: 'skill.sword.crescent.v1', skillName: 'Crescent Slash' },
-  { chaptersComplete: 9, mapId: 'map.void_throne.01', intent: 'void', skillId: 'skill.void.tear.v2', skillName: 'Void Tear' },
+  { chaptersComplete: 2, mapId: 'map.stone_canyon.01', intent: 'life_death', skillId: 'skill.life.bloom.v1', skillName: 'Life Bloom' },
+  { chaptersComplete: 3, mapId: 'map.moon_lake.01', intent: 'cause_effect', skillId: 'skill.time.slow', skillName: 'Time Slow' },
+  { chaptersComplete: 4, mapId: 'map.burning_desert.01', intent: 'flame', skillId: 'skill.flame.scorch.v1', skillName: 'Scorch Bolt' },
+  { chaptersComplete: 5, mapId: 'map.thunder_peaks.01', intent: 'lightning', skillId: 'skill.lightning.fork.v1', skillName: 'Fork Lightning' },
+  { chaptersComplete: 6, mapId: 'map.frozen_palace.01', intent: 'cause_effect', skillId: 'skill.time.drift.v2', skillName: 'Time Drift' },
+  { chaptersComplete: 7, mapId: 'map.abyss_rift.01', intent: 'truth_falsehood', skillId: 'skill.void.rift.v1', skillName: 'Void Rift' },
+  { chaptersComplete: 8, mapId: 'map.heavenly_gate.01', intent: 'sword', skillId: 'skill.sword.burst.v4', skillName: 'Sword Burst' },
+  { chaptersComplete: 9, mapId: 'map.void_throne.01', intent: 'truth_falsehood', skillId: 'skill.void.tear.v2', skillName: 'Void Tear' },
 ] as const;
 
 const BOSS_STORY_CASES = [
@@ -624,7 +624,7 @@ test.describe('Fresh save', () => {
       }).__gameStore;
       return store.getState().save?.unlockedSkills ?? [];
     });
-    expect(skillsBefore).not.toContain('skill.void.slash');
+    expect(skillsBefore).not.toContain('skill.life.pulse.v2');
 
     await page.getByTestId('continue-journey-btn').click();
     await waitForCombatCanvas(page);
@@ -632,7 +632,7 @@ test.describe('Fresh save', () => {
     await departClearedMap(page, 'map.fallen_village.01');
 
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
-    await expectSkillUnlocked(page, 'skill.void.slash');
+    await expectSkillUnlocked(page, 'skill.life.mend');
 
     await openPlayPanel(page);
     await page.getByTestId('continue-journey-btn').click();
@@ -794,13 +794,13 @@ test.describe('Base flow sign-off', () => {
     await departClearedMap(page, 'map.fallen_village.01');
 
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
-    await expectSkillUnlocked(page, 'skill.void.slash');
+    await expectSkillUnlocked(page, 'skill.life.mend');
 
     await page.reload();
     await dismissAudioUnlock(page);
     await expect(page.locator('[data-testid="home-ui"]')).toBeVisible({ timeout: 20_000 });
 
-    await expectSkillUnlocked(page, 'skill.void.slash');
+    await expectSkillUnlocked(page, 'skill.life.mend');
     await expect(page.getByTestId('continue-journey-btn')).toHaveText('Continue Journey');
     await expect(page.getByTestId('continue-journey-hint')).toContainText('Ruined Shrine');
   });

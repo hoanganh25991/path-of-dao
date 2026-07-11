@@ -54,7 +54,7 @@ describe('WeaponProgression', () => {
   it('gates sword intent skills until ancient blade (T7)', () => {
     const save = SaveManager.createNew();
     const pool = listUnlockedSkillIds(save);
-    expect(pool.length).toBe(0);
+    expect(pool).toEqual(['skill.life.mend']);
     expect(canUseSwordIntent(save)).toBe(false);
 
     const armed = {

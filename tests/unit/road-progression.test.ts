@@ -16,21 +16,21 @@ describe('full road progression', () => {
     const save = simulateRoadThroughChapter(2);
     expect(save.progress.unlockedChapters).toContain('chapter.03.stone_canyon');
     expect(getNextJourneyMapId(save)).toBe('map.stone_canyon.01');
-    expect(save.unlockedSkills).toContain('skill.flame.bolt');
+    expect(save.unlockedSkills).toContain('skill.life.pulse.v2');
   });
 
   it('each explore map clear grants a unique road technique through chapter 10', () => {
     const save = simulateRoadThroughChapter(10);
     const exploreSkills = [
-      'skill.void.slash',
-      'skill.flame.bolt',
-      'skill.lightning.strike',
       'skill.life.mend',
+      'skill.life.pulse.v2',
+      'skill.life.bloom.v1',
       'skill.time.slow',
       'skill.flame.scorch.v1',
       'skill.lightning.fork.v1',
+      'skill.time.drift.v2',
       'skill.void.rift.v1',
-      'skill.lightning.arc.v2',
+      'skill.sword.burst.v4',
       'skill.void.tear.v2',
     ];
     for (const skillId of exploreSkills) {

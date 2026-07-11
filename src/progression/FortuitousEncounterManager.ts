@@ -7,7 +7,6 @@ import {
   getEncountersForTrigger,
 } from '@/progression/EncounterLoader';
 import type { EncounterDefinition, EncounterTriggerKind } from '@/shared/schemas/fortuitous-encounters';
-import { equipLearnedSkill } from '@/progression/SkillLoadout';
 import { unlockSkillIds } from '@/progression/SkillUnlockManager';
 import { patchAncientSwordMilestone } from '@/progression/WeaponProgression';
 import { recordJourney } from '@/progression/JourneyLog';
@@ -203,8 +202,9 @@ export function applyEncounterReward(
       break;
     case 'skill_variant': {
       const skillId = encounter.reward.skillId;
-      unlockedSkills = unlockSkillIds({ ...save, unlockedSkills }, [skillId]).unlockedSkills;
-      divineArts = equipLearnedSkill(divineArts, skillId);
+      const unlocked = unlockSkillIds({ ...save, unlockedSkills, divineArts }, [skillId]);
+      unlockedSkills = unlocked.unlockedSkills;
+      divineArts = unlocked.divineArts;
       break;
     }
     case 'destiny_choice': {
@@ -230,8 +230,9 @@ export function applyEncounterReward(
         case 'divine': {
           destinyPoints = { ...destinyPoints, divine: destinyPoints.divine + 1 };
           if (r.skillId) {
-            unlockedSkills = unlockSkillIds({ ...save, unlockedSkills }, [r.skillId]).unlockedSkills;
-            divineArts = equipLearnedSkill(divineArts, r.skillId);
+            const unlocked = unlockSkillIds({ ...save, unlockedSkills, divineArts }, [r.skillId]);
+            unlockedSkills = unlocked.unlockedSkills;
+            divineArts = unlocked.divineArts;
           }
           break;
         }

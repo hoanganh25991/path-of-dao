@@ -50,8 +50,8 @@ describe('MVP content data (sub-plan 23)', () => {
     let save = SaveManager.createNew();
     expect(isSkillUnlocked(save, 'skill.void.slash')).toBe(false);
     save = unlockSkillsForLevel({ ...save, stats: { ...save.stats, level: 3 } }, 3, 4);
-    expect(isSkillUnlocked(save, 'skill.lightning.strike')).toBe(true);
+    expect(isSkillUnlocked(save, 'skill.life.bloom.v1')).toBe(true);
     save = unlockSkillForBoss(save, 'boss.jade_guardian');
-    expect(isSkillUnlocked(save, 'skill.sword.rain.v3')).toBe(true);
+    expect(isSkillUnlocked(save, 'skill.life.pulse.v2')).toBe(true);
   });
 });

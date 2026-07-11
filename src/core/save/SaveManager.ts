@@ -7,6 +7,7 @@ import { DB_NAME, DB_VERSION, DEFAULT_SLOT, STORE_NAME, slotKey } from '@/core/s
 import { emptyDivineArts } from '@/progression/SkillSlots';
 import { seedDefaultInsights } from '@/progression/InsightSystem';
 import { buildPlayerStats } from '@/progression/playerStats';
+import { catchUpSkillUnlocks } from '@/progression/SkillUnlockManager';
 
 export class SaveCorruptError extends Error {
   constructor(message = 'Save data failed checksum validation') {
@@ -129,8 +130,9 @@ export class SaveManager {
       destinyPoints: { dharma: 0, divine: 0, intent: 0, unspent: 0 },
     };
 
-    save.checksum = checksumOf(save);
-    return save;
+    const withStarter = catchUpSkillUnlocks(save);
+    withStarter.checksum = checksumOf(withStarter);
+    return withStarter;
   }
 
   static async load(slot: number = DEFAULT_SLOT): Promise<PlayerSaveV1> {
@@ -146,8 +148,11 @@ export class SaveManager {
       throw new SaveCorruptError();
     }
 
-    SaveManager.cached = parsed;
-    return parsed;
+    // After integrity check: grant Life-and-Death starter / remapped byLevel arts
+    // for mid-run saves that still only hold gated void/flame/lightning unlocks.
+    const caughtUp = catchUpSkillUnlocks(parsed);
+    SaveManager.cached = caughtUp;
+    return caughtUp;
   }
 
   static async save(state: PlayerSaveV1, slot: number = DEFAULT_SLOT): Promise<void> {

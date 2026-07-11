@@ -14,10 +14,10 @@ import { unlockSkillIds } from '@/progression/SkillUnlockManager';
 import type { DivineArtsLoadout } from '@/progression/SkillSlots';
 
 describe('SkillLoadout', () => {
-  it('starts with no unlocked skills on a fresh save', () => {
+  it('starts with Life-and-Death mend on a fresh save', () => {
     const save = SaveManager.createNew();
-    expect(listUnlockedSkillIds(save)).toEqual([]);
-    expect(listDiscoveredIntentIds(save)).toEqual([]);
+    expect(listUnlockedSkillIds(save)).toEqual(['skill.life.mend']);
+    expect(listDiscoveredIntentIds(save)).toEqual(['life_death']);
   });
 
   it('does not include gather qi in assignable pool — it lives on the health button', () => {

@@ -98,11 +98,11 @@ describe('applyMapClearPatch', () => {
     expect(patch.progress?.clearedMaps).toEqual(['map.fallen_village.01']);
   });
 
-  it('unlocks and equips the first technique on first explore clear', () => {
+  it('unlocks and equips Life-and-Death mend on first explore clear', () => {
     const save = SaveManager.createNew();
     const { patch } = applyMapClearPatch(save, 'map.fallen_village.01', true);
-    expect(patch.unlockedSkills).toContain('skill.void.slash');
-    expect(Object.values(patch.divineArts ?? {})).toContain('skill.void.slash');
+    expect(patch.unlockedSkills).toContain('skill.life.mend');
+    expect(Object.values(patch.divineArts ?? {})).toContain('skill.life.mend');
   });
 
   it('chapter 1 loop clears explore, boss, story, then opens chapter 2', () => {
@@ -111,7 +111,7 @@ describe('applyMapClearPatch', () => {
     const stage1 = applyMapClearPatch(save, 'map.fallen_village.01', true);
     save = { ...save, ...stage1.patch };
     expect(save.progress.clearedMaps).toEqual(['map.fallen_village.01']);
-    expect(save.unlockedSkills).toContain('skill.void.slash');
+    expect(save.unlockedSkills).toContain('skill.life.mend');
 
     const stage2 = applyMapClearPatch(save, 'map.fallen_village.02', true);
     expect(stage2.result.pendingStory).toEqual({
@@ -129,6 +129,6 @@ describe('applyMapClearPatch', () => {
   it('chapter 2 explore clear teaches a road technique', () => {
     const save = SaveManager.createNew();
     const { patch } = applyMapClearPatch(save, 'map.mist_forest.01', true);
-    expect(patch.unlockedSkills).toContain('skill.flame.bolt');
+    expect(patch.unlockedSkills).toContain('skill.life.pulse.v2');
   });
 });

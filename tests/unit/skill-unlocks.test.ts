@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { getMapConfig } from '@/combat/map/MapLoader';
 import { getChapter } from '@/progression/ChapterLoader';
 import { getSkillDefinition } from '@/progression/SkillLoader';
-import { unlockSkillsForChapter, unlockSkillsForMapClear } from '@/progression/SkillUnlockManager';
+import { unlockSkillsForChapter, unlockSkillsForMapClear, catchUpSkillUnlocks } from '@/progression/SkillUnlockManager';
 import { SaveManager } from '@/core/save/SaveManager';
 import skillUnlocks from '../../content/progression/skill-unlocks.json';
 
@@ -55,12 +55,37 @@ describe('skill-unlocks.json references', () => {
   });
 });
 
+describe('Master Intent early unlocks', () => {
+  it('new game starts with castable Life Mend on the wheel', () => {
+    const save = SaveManager.createNew();
+    expect(save.unlockedSkills).toContain('skill.life.mend');
+    expect(Object.values(save.divineArts)).toContain('skill.life.mend');
+  });
+
+  it('catchUp grants Life Mend and level arts for a mid-run lv6 save with empty wheel', () => {
+    const bare = SaveManager.createNew();
+    const midRun = {
+      ...bare,
+      stats: { ...bare.stats, level: 6 },
+      unlockedSkills: ['skill.void.slash', 'skill.flame.bolt', 'skill.lightning.strike'],
+      divineArts: ['skill.void.slash', 'skill.flame.bolt', 'skill.lightning.strike', '', '', ''] as const,
+    };
+    const next = catchUpSkillUnlocks(midRun);
+    expect(next.unlockedSkills).toContain('skill.life.mend');
+    expect(next.unlockedSkills).toContain('skill.life.surge.v3');
+    expect(Object.values(next.divineArts)).toContain('skill.life.mend');
+    // Gated arts stay unlocked but are scrubbed off the wheel until their Intent opens.
+    expect(Object.values(next.divineArts)).not.toContain('skill.void.slash');
+    expect(Object.values(next.divineArts)).not.toContain('skill.flame.bolt');
+  });
+});
+
 describe('unlockSkillsForMapClear on the road', () => {
-  it('teaches flame bolt on mist forest explore clear', () => {
+  it('teaches life pulse on mist forest explore clear', () => {
     const save = SaveManager.createNew();
     const next = unlockSkillsForMapClear(save, 'map.mist_forest.01');
-    expect(next.unlockedSkills).toContain('skill.flame.bolt');
-    expect(Object.values(next.divineArts)).toContain('skill.flame.bolt');
+    expect(next.unlockedSkills).toContain('skill.life.pulse.v2');
+    expect(Object.values(next.divineArts)).toContain('skill.life.pulse.v2');
   });
 
   it('does not re-unlock on repeat clear', () => {

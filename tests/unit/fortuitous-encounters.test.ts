@@ -105,13 +105,14 @@ describe('FortuitousEncounterManager', () => {
     );
   });
 
-  it('secret manual unlocks and equips a skill variant', () => {
+  it('secret manual unlocks a skill variant without auto-equipping gated intents', () => {
     const save = makeSave();
     const encounter = getEncounterDefinition('encounter.secret_manual');
     const next = { ...save, ...applyEncounterReward(encounter, save) };
 
     expect(next.unlockedSkills).toContain('skill.flame.bolt');
-    expect(Object.values(next.divineArts ?? {})).toContain('skill.flame.bolt');
+    // Flame is a gate Intent — stays unlocked-but-unequipped until desert boss.
+    expect(Object.values(next.divineArts ?? {})).not.toContain('skill.flame.bolt');
   });
 
   it('spirit beast unlocks pet cosmetic', () => {
