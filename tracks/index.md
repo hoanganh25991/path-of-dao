@@ -360,11 +360,12 @@ flowchart LR
 | Done | Remaining |
 |------|-----------|
 | Web Audio buses; **26 procedural SFX**; **6 real BGM file loops** (oriental/cultivation) | Real SFX OGG one-shots |
-| File BGM playback (MP3/OGG, cache, crossfade); licenses in `assets/audio/README.md` | Boss telegraph SFX (no event yet) |
-| First-visit unlock overlay; silent resume on return | Low-end juice disable profile (26) |
-| Preset SFX; crit + duck; per-map Fallen Village BGM | Boss phase screen darken (visual) |
-| Hit-stop, camera shake, crit flash | Dedicated UI volume slider |
-| `ui.panel_open` + `loot.pickup` wired; UI bus tier | `player.land` (no jump mechanic) |
+| File BGM playback (MP3/OGG, cache, crossfade); licenses in `assets/audio/README.md` | Low-end juice disable profile (26) |
+| First-visit unlock overlay; silent resume on return | `player.land` (no jump mechanic) |
+| Preset SFX; crit + duck; per-map Fallen Village BGM | Music + SFX volume sliders (only UI slider shipped so far) |
+| Hit-stop, camera shake, crit flash; boss phase screen darken (~500ms veil, quality-gated) | |
+| `ui.panel_open` + `loot.pickup` wired; boss telegraph SFX wired | |
+| **Dedicated UI volume slider** (2026-07-11) — independent `uiVolume` save field + bus | |
 | Home aura pulse Core Formation+ | |
 
 → [full track](./25-audio-vfx-polish.md) — **What needs to do** table

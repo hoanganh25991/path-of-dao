@@ -32,6 +32,8 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     let selectedLocale = save.settings.locale;
     let selectedQuality = save.settings.quality;
     let selectedFullscreen = save.settings.fullscreen;
+    let selectedMusicVolume = save.settings.musicVolume;
+    let selectedSfxVolume = save.settings.sfxVolume;
     let selectedUiVolume = save.settings.uiVolume;
 
     const overlay = document.createElement('div');
@@ -89,6 +91,58 @@ export function showSettingsModal(uiRoot: HTMLElement): Promise<void> {
     const soundTitle = document.createElement('p');
     soundTitle.className = 'settings-modal__section-title';
     soundTitle.textContent = I18nManager.t('home.settings.sound');
+
+    const musicVolumeRow = document.createElement('div');
+    musicVolumeRow.className = 'settings-modal__slider-row';
+
+    const musicVolumeLabel = document.createElement('label');
+    musicVolumeLabel.className = 'settings-modal__slider-label';
+    musicVolumeLabel.htmlFor = 'settings-music-volume';
+    musicVolumeLabel.textContent = I18nManager.t('home.settings.volume.music');
+
+    const musicVolumeValue = document.createElement('span');
+    musicVolumeValue.className = 'settings-modal__slider-value';
+
+    const musicVolumeLabelRow = document.createElement('div');
+    musicVolumeLabelRow.className = 'settings-modal__slider-label-row';
+    musicVolumeLabelRow.append(musicVolumeLabel, musicVolumeValue);
+
+    const musicVolumeInput = document.createElement('input');
+    musicVolumeInput.type = 'range';
+    musicVolumeInput.id = 'settings-music-volume';
+    musicVolumeInput.className = 'settings-modal__slider';
+    musicVolumeInput.dataset.testid = 'settings-music-volume';
+    musicVolumeInput.min = '0';
+    musicVolumeInput.max = '100';
+    musicVolumeInput.step = '1';
+
+    musicVolumeRow.append(musicVolumeLabelRow, musicVolumeInput);
+
+    const sfxVolumeRow = document.createElement('div');
+    sfxVolumeRow.className = 'settings-modal__slider-row';
+
+    const sfxVolumeLabel = document.createElement('label');
+    sfxVolumeLabel.className = 'settings-modal__slider-label';
+    sfxVolumeLabel.htmlFor = 'settings-sfx-volume';
+    sfxVolumeLabel.textContent = I18nManager.t('home.settings.volume.sfx');
+
+    const sfxVolumeValue = document.createElement('span');
+    sfxVolumeValue.className = 'settings-modal__slider-value';
+
+    const sfxVolumeLabelRow = document.createElement('div');
+    sfxVolumeLabelRow.className = 'settings-modal__slider-label-row';
+    sfxVolumeLabelRow.append(sfxVolumeLabel, sfxVolumeValue);
+
+    const sfxVolumeInput = document.createElement('input');
+    sfxVolumeInput.type = 'range';
+    sfxVolumeInput.id = 'settings-sfx-volume';
+    sfxVolumeInput.className = 'settings-modal__slider';
+    sfxVolumeInput.dataset.testid = 'settings-sfx-volume';
+    sfxVolumeInput.min = '0';
+    sfxVolumeInput.max = '100';
+    sfxVolumeInput.step = '1';
+
+    sfxVolumeRow.append(sfxVolumeLabelRow, sfxVolumeInput);
 
     const uiVolumeRow = document.createElement('div');
     uiVolumeRow.className = 'settings-modal__slider-row';

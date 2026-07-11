@@ -2,7 +2,7 @@
 
 **Status:** `[~]` In progress  
 **Plan:** [plans/25-audio-vfx-polish.md](../plans/25-audio-vfx-polish.md)  
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-11
 
 ## Summary
 
@@ -56,7 +56,7 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - **UI tap sound** on buttons/tabs/action controls via global click bridge
 - **Per-map BGM:** `MapScene` plays `config.bgm` when set; `bgm.combat.fallen_village` for Fallen Village star explore
 - **Preset-based SFX** — layered impacts, skill sweeps, UI stings, death dissolve, loot chime (less “beepy”)
-- **Mix polish:** UI bus 82% of SFX slider; BGM ducks on crit, heavy hits, stings, boss phase, death
+- **Mix polish:** BGM ducks on crit, heavy hits, stings, boss phase, death
 - **`ui.panel_open` wired:** world map, settings, encounter, awakening, ancient demo modals
 - **`loot.pickup` wired:** gold magnet collect in SpawnManager + RoamingSpawnManager
 - **Real BGM files shipped** under `public/audio/bgm/` (MP3 + OGG) — oriental/cultivation loops replace procedural “è è è” drones
@@ -64,12 +64,14 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - Licenses documented in `assets/audio/README.md`
 - **Skill cast/impact frame audio sync** (2026-07-10, pairs with 19) — `skill:impact` EventBus event; `AudioDirector.playSkillImpact` wired; fires from `SkillExecutor` at the skill's resolved `impactFrameMs` (kind default or JSON override), not just at cast start
 - **Boss telegraph SFX confirmed wired** — `combat:boss-phase-changed` → `boss.telegraph` + `boss.phase_change` + music duck in `AudioDirector.mount()` (already shipped from earlier boss work; docs were stale)
+- **Dedicated UI volume slider** (2026-07-11) — new `settings.uiVolume` save field (zod `.default(0.82)` migrates pre-slider saves), `AudioManager` UI bus now scales off its own volume instead of `sfxVolume * 0.82`; slider lives in `SettingsModal` under a new "Sound" section, live-previews via `AudioManager.setVolume('ui', …)` on drag and persists on release
 
 ### Combat juice
 - Hit-stop on heavy hits
 - Camera shake on crits and heavy impacts
 - Brief crit screen flash
 - Guard against stale EventBus callbacks after Phaser scene shutdown (`cameras.main` cleared)
+- **Boss phase screen darken confirmed wired + tested** (2026-07-11) — `JuiceController.applyBossPhaseJuice()` already darkened the screen via a non-interactive `0x000000` veil rectangle (~500ms fade-in/hold/fade-out) on `combat:boss-phase-changed` / boss defeat, gated by `QualityProfile.juiceEnabled` (low tier skips it); docs were stale, no code gap — added unit tests to lock in behavior
 
 ### Home aura
 - Pulsing point light for Core Formation+ aura tiers
@@ -80,21 +82,20 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 ## Remaining
 
 - Replace procedural **SFX** placeholders with real OGG one-shots (`public/audio/sfx/`)
-- Boss phase sting + screen darken (visual)
 - Map ambience loops per region (optional) — Fallen Village star shipped; ch2–10 deferred
 - Performance profile to disable juice on low-end devices (ties to 26)
 - `player.land` SFX (manifest key exists; no jump/land mechanic yet)
-- Dedicated UI volume slider in settings (currently UI bus scales off SFX slider)
 - Dedicated impact-frame SFX flavor per intent (currently reuses the cast key — fine for MVP procedural placeholders, revisit once real OGG one-shots ship)
+- Music + SFX volume sliders still missing from `SettingsModal` (only the new UI slider exists — `sfxVolume`/`musicVolume` save fields have no UI control yet)
 
 ## What needs to do
 
 | # | Task | Files |
 |---|------|-------|
 | 1 | ~~Emit `boss.telegraph` from boss AI telegraph phase → play manifest SFX~~ | `[x]` Verified already wired 2026-07-10 — `combat:boss-phase-changed` → `AudioDirector.mount()` |
-| 2 | Boss phase screen darken (visual juice) on phase transition | `CombatJuiceBridge` or MapScene overlay |
+| 2 | ~~Boss phase screen darken (visual juice) on phase transition~~ | `[x]` Verified already wired 2026-07-11 — `JuiceController.applyBossPhaseJuice()` via `CombatJuiceBridge`; added tests |
 | 3 | ~~Skill `impactFrameMs` sync (pairs with track 19)~~ | `[x]` Done 2026-07-10 — `skillAudioSync.ts` · `SkillExecutor.ts` · `AudioDirector.ts` |
-| 4 | Optional: dedicated **UI volume** slider in settings modal | `SettingsModal.ts` |
+| 4 | ~~Dedicated **UI volume** slider in settings modal~~ | `[x]` Done 2026-07-11 — `SettingsModal.ts` · `SaveSchema.ts` (`uiVolume`) · `AudioManager.ts` |
 | 5 | Confirm low-tier `QualityProfile` disables hit-stop/shake (26) | already partial — verify on device |
 | 6 | Ship real SFX OGG one-shots (combat/UI) when ready | `public/audio/sfx/` · manifest · `AudioManager` |
 
@@ -104,4 +105,6 @@ Tiên Nghịch tone: **perseverance and quiet cultivation**, not arcade chaos. *
 - Audio manifest, director, UI sound, and juice profile unit tests pass
 - iOS autoplay: overlay once per device; silent resume on return
 - Skill cast/impact frame audio sync: `tests/unit/skill-audio-sync.test.ts`, `tests/unit/audio-director.test.ts` (`skill:impact` case)
-- `npm test -- tests/content/audio-manifest.test.ts tests/unit/audio-manager.test.ts tests/unit/audio-director.test.ts tests/unit/audio-unlock.test.ts tests/unit/skill-audio-sync.test.ts`
+- Boss phase screen darken: `tests/unit/juice-controller.test.ts` (veil timing, low-tier quality gate, no input block), `tests/unit/combat-juice-bridge.test.ts` (`combat:boss-phase-changed` wiring + bridge teardown)
+- Dedicated UI volume slider: `tests/unit/settings-modal.test.ts` (slider seeded from save, live preview independent of SFX, persists on release), `tests/unit/audio-manager.test.ts` (ui bus independence), `tests/unit/save-manager.test.ts` (`uiVolume` migration default `0.82`)
+- `npm test -- tests/content/audio-manifest.test.ts tests/unit/audio-manager.test.ts tests/unit/audio-director.test.ts tests/unit/audio-unlock.test.ts tests/unit/skill-audio-sync.test.ts tests/unit/juice-controller.test.ts tests/unit/combat-juice-bridge.test.ts tests/unit/settings-modal.test.ts tests/unit/save-manager.test.ts`
