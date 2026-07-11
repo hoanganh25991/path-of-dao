@@ -146,7 +146,7 @@ From [plans/index.md §12](../plans/index.md). Checked items reflect current bui
 - [ ] **Fake 2.5D ship gate** — authored sprites replace sticky-man (plans 29 + 32)
 - [ ] Full UI in English and Vietnamese (24)
 - [ ] PWA installable; 30 FPS on mid-range Android (26)
-- [~] No console errors in 10-minute playthrough — **22 unit tests failing** at 2026-07-10 (fix before ship)
+- [~] No console errors in 10-minute playthrough — unit suite green (677+); manual DevTools/console pass still open (34)
 - [~] Quick check — `pnpm smoke:test` exists; wire into every batch sign-off (plan 34)
 
 ---
@@ -396,7 +396,7 @@ flowchart LR
 | ID | Status | What needs to do (summary) | Detail |
 |----|--------|---------------------------|--------|
 | 29 | `[~]` | DA-01 hero sprites; layered props; anim QA all families | [track](./29-pixel-art-combat-canon.md) |
-| 30 | `[~]` | ~~Rename `equippedSkills` → `divineArts`~~ `[x]` done 2026-07-10; DA-04 wheel icons + optional pause editor remain | [track](./30-divine-arts-wheel-loadout.md) |
+| 30 | `[~]` | ~~Rename `equippedSkills` → `divineArts`~~ `[x]` done 2026-07-10; ~~pause-menu Divine Arts editor~~ `[x]` done 2026-07-11; DA-04 authored wheel icon PNGs remain | [track](./30-divine-arts-wheel-loadout.md) |
 | 31 | `[~]` | **Phase E1 only:** illustrations (tooltip + ancient auto-walk hook shipped 2026-07-10) | [track](./31-wang-lin-story-timeline.md) |
 | 32 | `[~]` | ~~DA-08 auto-wire pipeline~~ `[x]` done 2026-07-11; DA-01…07/09 authored PNGs remain | [track](./32-design-arts.md) |
 | 33 | `[~]` | ~~Loot→item lint + boss audit~~ `[x]` done 2026-07-10; ~~DA-05 procedural icons~~ `[x]` done 2026-07-11; item roster; authored DA-05 PNGs remain | [track](./33-item-loot-system.md) |

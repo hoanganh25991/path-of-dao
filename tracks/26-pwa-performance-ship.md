@@ -32,13 +32,13 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 - Lighthouse PWA audit + 30 FPS throttled device sign-off
 - Manual SHIP_CHECKLIST walkthrough (10-min playthrough)
 - GitHub Pages deploy + `assetlinks.json` for TWA
-- **22 unit test failures** — fix before ship sign-off (see track 34)
+- Unit suite green (track 34) — remaining ship blockers are Lighthouse / device FPS / manual checklist
 
 ## What needs to do
 
 | # | Task | How |
 |---|------|-----|
-| 1 | `pnpm test` — triage and fix all failing unit tests | track 34 |
+| 1 | ~~`pnpm test` — triage and fix all failing unit tests~~ | track 34 — `[x]` done |}
 | 2 | `pnpm test:e2e` — full 37-case suite green | CI |
 | 3 | Lighthouse PWA audit on production build (`docs/` or deploy URL) | manual |
 | 4 | Chrome **CPU 6× slowdown** — combat 30 FPS for 5 min on Android mid-tier | manual |
@@ -49,6 +49,6 @@ Installable PWA shell, performance profiles for mobile, CI pipeline, E2E smoke, 
 ## Verification
 
 - `pnpm typecheck` — clean
-- `pnpm test` — all unit tests green (currently ~22 failures)
+- `pnpm test` — all unit tests green
 - `pnpm test:e2e` — smoke + journey-flow green
 - `pnpm build` — `docs/` + `sw.js` generated

@@ -256,7 +256,7 @@ replace digit labels (plan 29).
 | `wheel:slot-visual` sync | ✅ |
 | Intent icons on wheel (not digits) | ✅ procedural `pixelWheelIconDraw` |
 | Echoes modal loadout editor | ✅ §4.2 |
-| Pause combat editor | ⬜ optional |
+| Pause combat editor | ✅ §4.3 — nested `CombatSkillPicker` from pause row |
 | Locale `combat.wheel.*` | ✅ |
 
 ---

@@ -51,6 +51,15 @@ export class CombatPauseMenu {
     resumeBtn.textContent = I18nManager.t('combat.pause.resume');
     resumeBtn.addEventListener('click', () => CombatPauseMenu.close());
 
+    const divineArtsBtn = document.createElement('button');
+    divineArtsBtn.type = 'button';
+    divineArtsBtn.className = 'combat-pause-menu__btn';
+    divineArtsBtn.dataset.testid = 'combat-pause-divine-arts-btn';
+    divineArtsBtn.textContent = I18nManager.t('combat.pause.divine_arts');
+    divineArtsBtn.addEventListener('click', () => {
+      EventBus.emit('combat:open-skill-picker', {});
+    });
+
     const saveBtn = document.createElement('button');
     saveBtn.type = 'button';
     saveBtn.className = 'combat-pause-menu__btn';
@@ -69,7 +78,7 @@ export class CombatPauseMenu {
       EventBus.emit('combat:request-exit', { wavesCleared: false });
     });
 
-    actions.append(resumeBtn, saveBtn, homeBtn);
+    actions.append(resumeBtn, divineArtsBtn, saveBtn, homeBtn);
     card.append(title, actions);
     overlay.append(backdrop, card);
     parent.appendChild(overlay);

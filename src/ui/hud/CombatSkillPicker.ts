@@ -1,4 +1,5 @@
 import { EventBus } from '@/core/EventBus';
+import { SaveManager } from '@/core/save/SaveManager';
 import { gameStore } from '@/core/store/gameStore';
 import { I18nManager } from '@/core/i18n/I18nManager';
 import { listAssignableSkillPool } from '@/progression/SkillLoadout';
@@ -58,6 +59,10 @@ export class CombatSkillPicker {
     const picker = createLoadoutPickerElement(save.divineArts, pool, (loadout) => {
       gameStore.getState().patch({ divineArts: loadout });
       EventBus.emit('loadout:changed', { divineArts: loadout });
+      // Hero: schedules an IndexedDB write. Ancient demo: gameStore.persist()
+      // no-ops while the demo session is active, so nothing leaks to disk.
+      void gameStore.getState().persist();
+      SaveManager.scheduleAutosave();
     });
 
     CombatSkillPicker.panel.replaceChildren();

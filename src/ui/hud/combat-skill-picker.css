@@ -1,7 +1,9 @@
 .combat-skill-picker {
   position: absolute;
   inset: 0;
-  z-index: 5;
+  /* Above .combat-pause-menu (z-index: 90) so it can open nested from the
+     pause menu's Divine Arts row without the picker rendering underneath. */
+  z-index: 91;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.22s ease;
